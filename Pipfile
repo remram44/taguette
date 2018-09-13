@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 tornado = "*"
+sqlalchemy = "*"
 
 [dev-packages]
 
