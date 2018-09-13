@@ -31,6 +31,9 @@ class BaseHandler(RequestHandler):
     def login(self, username):
         self.set_secure_cookie('user', username)
 
+    def logout(self):
+        self.clear_cookie('user')
+
 
 class Index(BaseHandler):
     """Index page, shows welcome message and user's projects.
@@ -47,8 +50,14 @@ class Index(BaseHandler):
 class Login(BaseHandler):
     def get(self):
         self.login('remram')
-        self.redirect(self.get_argument('next', '/'))
+        self.redirect(self.get_argument('next', self.reverse_url('index')))
         # TODO: Actual login form
+
+
+class Logout(BaseHandler):
+    def get(self):
+        self.logout()
+        self.redirect(self.reverse_url('index'))
 
 
 class NewProject(BaseHandler):
@@ -105,6 +114,7 @@ app = tornado.web.Application(
     [
         URLSpec('/', Index, name='index'),
         URLSpec('/login', Login, name='login'),
+        URLSpec('/logout', Logout, name='logout'),
         URLSpec('/new', NewProject, name='new_project'),
         URLSpec('/project/([0-9]+)', Project, name='project'),
         URLSpec('/project/([0-9]+)/new', NewDocument, name='new_document'),
