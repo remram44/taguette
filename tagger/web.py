@@ -34,6 +34,10 @@ class BaseHandler(RequestHandler):
     def logout(self):
         self.clear_cookie('user')
 
+    def render(self, template_name, **kwargs):
+        kwargs.setdefault('project', None)
+        super(BaseHandler, self).render(template_name, **kwargs)
+
 
 class Index(BaseHandler):
     """Index page, shows welcome message and user's projects.
