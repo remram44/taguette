@@ -21,7 +21,7 @@ class User(Base):
     created = Column(DateTime, nullable=False,
                      server_default=functions.now())
     hashed_password = Column(String, nullable=True)
-    # projects = ...
+    projects = relationship('Project')
 
     def set_password(self, password, method='bcrypt'):
         if method == 'bcrypt':
@@ -51,7 +51,7 @@ class Project(Base):
                      server_default=functions.now())
     owner_login = Column(String, ForeignKey('users.login'))
     owner = relationship('User', back_populates='projects')
-    # documents = ...
+    documents = relationship('Document')
 
 
 class Document(Base):
@@ -140,4 +140,4 @@ def connect():
         logger.warning("The tables don't seem to exist; creating")
         Base.metadata.create_all(bind=engine)
 
-    return engine, sessionmaker(bind=engine)
+    return sessionmaker(bind=engine)
