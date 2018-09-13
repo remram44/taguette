@@ -1,4 +1,5 @@
 import logging
+import jinja2
 import os
 from tornado.web import authenticated, HTTPError, RequestHandler
 import tornado.ioloop
@@ -17,6 +18,28 @@ DBSession = database.connect()
 class BaseHandler(RequestHandler):
     """Base class for all request handlers.
     """
+    template_env = jinja2.Environment(
+        loader=jinja2.FileSystemLoader(
+            [os.path.join(os.path.dirname(__file__), 'templates')]
+        ),
+        autoescape=jinja2.select_autoescape(['html'])
+    )
+
+    @jinja2.contextfunction
+    def _tpl_static_url(context, path):
+        return context['handler'].static_url(path)
+    template_env.globals['static_url'] = _tpl_static_url
+
+    @jinja2.contextfunction
+    def _tpl_reverse_url(context, path, *args):
+        return context['handler'].reverse_url(path, *args)
+    template_env.globals['reverse_url'] = _tpl_reverse_url
+
+    @jinja2.contextfunction
+    def _tpl_xsrf_form_html(context):
+        return jinja2.Markup(context['handler'].xsrf_form_html())
+    template_env.globals['xsrf_form_html'] = _tpl_xsrf_form_html
+
     def __init__(self, application, request, **kwargs):
         super(BaseHandler, self).__init__(application, request, **kwargs)
         self.db = DBSession()
@@ -34,9 +57,9 @@ class BaseHandler(RequestHandler):
     def logout(self):
         self.clear_cookie('user')
 
-    def render(self, template_name, **kwargs):
-        kwargs.setdefault('project', None)
-        super(BaseHandler, self).render(template_name, **kwargs)
+    def render_string(self, template_name, **kwargs):
+        template = self.template_env.get_template(template_name)
+        return template.render(handler=self, **kwargs)
 
 
 class Index(BaseHandler):
@@ -123,7 +146,6 @@ app = tornado.web.Application(
         URLSpec('/project/([0-9]+)', Project, name='project'),
         URLSpec('/project/([0-9]+)/new', NewDocument, name='new_document'),
     ],
-    template_path=os.path.join(os.path.dirname(__file__), 'templates'),
     static_path=os.path.join(os.path.dirname(__file__), 'static'),
     login_url='/login',
     xsrf_cookies=True,

@@ -1,11 +1,12 @@
 {% extends "base.html" %}
+
 {% block contents %}
 <p>New project</p>
 {% if error %}
 <p style="color: red;">{{ error }}</p>
-{% end %}
+{% endif %}
 <form action="{{ reverse_url('new_project') }}" method="post">
-  {% module xsrf_form_html() %}
+  {{ xsrf_form_html() }}
   <table>
     <tr>
       <td><label for="name">Name:</label></td>
@@ -18,4 +19,4 @@
     <tr><td></td><td><input type="submit" value="Create" /></td></tr>
   </table>
 </form>
-{% end %}
+{% endblock %}

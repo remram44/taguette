@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{{ static_url('css/custom.css') }}">
     <link rel="stylesheet" href="{{ static_url('css/bootstrap.min.css') }}">
-    <title>{% block title %}Nocturnal Retriever{% end %}</title>
+    <title>{% block title %}Nocturnal Retriever{% endblock %}</title>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary" id="special-nav">
@@ -15,7 +15,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarColor01">
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
+            <li class="nav-item {{ 'active' if active_page == 'index' else '' }}">
               <a class="nav-link" href="{{ reverse_url('index') }}">Home</a>
             </li>
           </ul>
@@ -24,7 +24,7 @@
     </nav>
 
     <div class="container container-body">
-      {% block contents %}{% end %}
+      {% block contents %}{% endblock %}
 
       <footer class="footer">
         <hr/>

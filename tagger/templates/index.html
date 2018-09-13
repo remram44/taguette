@@ -2,18 +2,14 @@
 {% set active_page = "index" %}
 
 {% block contents %}
-{% comment <div class="row"> %}
 <h1>Welcome {{ user.login }}</h1>
 <p>Here are your projects:</p>
 <ul class="list-group">
-{% if projects %}
 {% for project in projects %}
   <li class="list-group-item"><a href="{{ reverse_url('project', project.id) }}">{{ project.name }}</a></li>
-{% end %}
 {% else %}
   <li class="list-group-item disabled" style="font-style: oblique;">You have no projects yet.</li>
-{% end %}
+{% endfor %}
   <li class="list-group-item list-group-item-primary" style="font-weight: bold;"><a href="{{ reverse_url('new_project') }}">Create a project</a></li>
 </ul>
-</div>
-{% end %}
+{% endblock %}
