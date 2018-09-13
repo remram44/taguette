@@ -10,7 +10,7 @@
 {% end %}
 </ul>
 {% else %}
-<p>There are no documents in this project yet.</p>
+<p style="font-style: oblique;">There are no documents in this project yet.</p>
 {% end %}
-<p><a href="{{ reverse_url('new_document', project.id) }}">Add a document</a></p>
+<p style="font-weight: bold;"><a href="{{ reverse_url('new_document', project.id) }}">Add a document</a></p>
 {% end %}

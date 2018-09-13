@@ -1,14 +1,19 @@
 {% extends "base.html" %}
+{% set active_page = "index" %}
+
 {% block contents %}
-<p>Welcome {{ user.login }}, here are your projects:</p>
-{% if projects %}
+{% comment <div class="row"> %}
+<h1>Welcome {{ user.login }}</h1>
+<p>Here are your projects:</p>
 <ul>
-{% for project in {{ projects }} %}
-  <li>{{ project.name }}</li>
+{% if projects %}
+{% for project in projects %}
+  <li><a href="{{ reverse_url('project', project.id) }}">{{ project.name }}</a></li>
 {% end %}
-</ul>
 {% else %}
-<p>You have no projects yet.</p>
+  <li style="font-style: oblique;">You have no projects yet.</li>
 {% end %}
-<p><a href="{{ reverse_url('new_project') }}">Create a project</a></p>
+  <li style="font-weight: bold;"><a href="{{ reverse_url('new_project') }}">Create a project</a></li>
+</ul>
+</div>
 {% end %}

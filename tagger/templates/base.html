@@ -1,10 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>{% block title %}Nocturnal Retriever{% end %}</title>
-</head>
-<body>
-{% block contents %}{% end %}
-</body>
+  <head>
+    <meta charset="UTF-8">
+    {% if False %}<link rel="stylesheet" href="{{ static_url('css/custom.css') }}">{% end %}
+    <link rel="stylesheet" href="{{ static_url('css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ static_url('css/bootswatch.css') }}">
+    <link rel="stylesheet" href="{{ static_url('css/custom.css') }}">
+    <title>{% block title %}Nocturnal Retriever{% end %}</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary" id="special-nav">
+      <div class="container">
+        <a class="navbar-brand special-brand" href="{{ reverse_url('index') }}">Nocturnal Retriever</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarColor01">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{{ reverse_url('index') }}">Home</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container container-body">
+      {% block contents %}{% end %}
+
+      <footer class="footer">
+        <hr/>
+        <div class="container">
+          <p>Copyright (c) Rémi Rampin</p>
+        </div>
+      </footer>
+    </div>
+
+    <script src="{{ static_url('js/jquery-3.3.1.min.js') }}"></script>
+    <script src="{{ static_url('js/bootstrap.bundle.min.js') }}"></script>
+  </body>
 </html>
