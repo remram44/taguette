@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 tornado = "*"
 sqlalchemy = "*"
+bcrypt = "*"
 
 [dev-packages]
 

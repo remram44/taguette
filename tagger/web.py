@@ -3,6 +3,10 @@ import tornado.ioloop
 import tornado.web
 
 from .login import AuthHandler
+from . import models
+
+
+database = models.connect()
 
 
 class BaseHandler(AuthHandler):
