@@ -59,7 +59,10 @@ class BaseHandler(RequestHandler):
 
     def render_string(self, template_name, **kwargs):
         template = self.template_env.get_template(template_name)
-        return template.render(handler=self, **kwargs)
+        return template.render(
+            handler=self,
+            current_user=self.current_user,
+            **kwargs)
 
 
 class Index(BaseHandler):
