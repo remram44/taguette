@@ -1,16 +1,113 @@
 {% extends "base.html" %}
 {% set active_page = "project" %}
 
+{% block containerclass %}container-fluid{% endblock %}
+
 {% block contents %}
-<h1>Project: {{ project.name }}</h1>
-<p>{{ project.description }}</p>
-<p>Documents:</p>
-<ul>
-{% for document in project.documents %}
-  <li>{{ document.name }}</li>
-{% else %}
-  <li style="font-style: oblique;">There are no documents in this project yet.</li>
-{% endfor %}
-</ul>
-<p style="font-weight: bold;"><a href="{{ reverse_url('new_document', project.id) }}">Add a document</a></p>
+<div class="row">
+  <!-- Left panel -->
+  <div class="col-lg-3">
+    <!-- Tab selector -->
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" id="project-tab" data-toggle="tab" href="#project" role="tab" aria-controls="project" aria-selected="true">Project info</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="documents-tab" data-toggle="tab" href="#documents" role="tab" aria-controls="documents" aria-selected="false">Documents</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="highlights-tab" data-toggle="tab" href="#highlights" role="tab" aria-controls="highlights" aria-selected="false">Highlights</a>
+      </li>
+    </ul>
+
+    <div class="tab-content" id="myTabContent">
+
+      <!-- Project info and metadata -->
+      <div class="tab-pane fade show active" id="project" role="tabpanel" aria-labelledby="project-tab">
+        <form>
+          <div class="form-group row">
+            <label for="project-name" class="col-sm-2 col-form-label">Name</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="project-name" name="project-name" value="{{ project.name }}" />
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="project-description" class="col-sm-2 col-form-label">Description</label>
+            <div class="col-sm-10">
+              <textarea class="form-control" id="project-description" name="project-description">{{ project.description }}</textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- List of documents -->
+      <div class="tab-pane fade" id="documents" role="tabpanel" aria-labelledby="documents-tab">
+        <div class="list-group list-group-flush">
+          <a class="list-group-item" href="#">main doc</a>
+          <a class="list-group-item" href="#">tweet#310</a>
+          <a class="list-group-item" href="#">tweet#311</a>
+          <a class="list-group-item" href="#">tweet#312</a>
+        {% for document in project.documents %}
+          <a class="list-group-item" href="#">{{ document.name }}</a>
+        {% else %}
+          <div class="list-group-item disabled" style="font-style: oblique;">There are no documents in this project yet.</div>
+        {% endfor %}
+          <a class="list-group-item list-group-item-primary" href="{{ reverse_url('new_document', project.id) }}">Add a document</a>
+        </div>
+      </div>
+
+      <!-- List of highlights -->
+      <div class="tab-pane fade" id="highlights" role="tabpanel" aria-labelledby="highlights-tab">
+        <div class="list-group list-group-flush">
+          <div class="list-group-item flex-column align-items-start overlay-outer">
+            <a href="#" class="overlay-bottom"></a>
+            <div class="overlay-top">
+              <div class="d-flex justify-content-between">
+                The All-Father
+                <small><a href="#">main doc</a></small>
+              </div>
+            <div><a href="#" class="badge badge-secondary badge-pill">family</a> <a href="#" class="badge badge-secondary badge-pill">religion</a></div>
+            </div>
+          </div>
+          <div class="list-group-item flex-column align-items-start overlay-outer">
+            <a href="#" class="overlay-bottom"></a>
+            <div class="overlay-top">
+              <div class="d-flex justify-content-between">
+                his mother
+                <small><a href="#">main doc</a></small>
+              </div>
+              <div><a href="#" class="badge badge-secondary badge-pill">family</a></div>
+            </div>
+          </div>
+          <div class="list-group-item flex-column align-items-start overlay-outer">
+            <a href="#" class="overlay-bottom"></a>
+            <div class="overlay-top">
+              <div class="d-flex justify-content-between">
+                a bro
+                <small><a href="#">tweet#312</a></small>
+              </div>
+              <div><a href="#" class="badge badge-secondary badge-pill">family</a> <a href="#" class="badge badge-secondary badge-pill">colloquial</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Right panel -->
+  <div class="col-lg-9">
+
+    <div class="document-view">
+      <a href="#" class="document-link badge badge-primary">main doc</a>
+
+      <p>Vitae cras adipiscing cubilia nulla quis, tincidunt mauris iaculis ipsum justo praesent, urna nam sagittis elit tristique, conubia nullam sed mauris class,. Turpis sapien morbi litora pulvinar fermentum justo, vulputate integer interdum tortor vitae taciti, rhoncus dui porttitor feugiat, nec per urna. Habitant vulputate.</p>
+      <p>Blandit curabitur blandit aenean volutpat ridiculus, curabitur sociis mattis enim ridiculus lobortis, eget tempus faucibus ligula sapien ullamcorper. Penatibus enim semper sagittis.</p>
+      <p>Sociosqu facilisis lacus tristique vestibulum, ipsum proin facilisi lobortis condimentum, hendrerit donec libero nascetur orci nascetur, aliquam elit odio justo, aliquet odio tellus. Tincidunt sodales arcu sociis nec scelerisque, sollicitudin congue suscipit curabitur nullam volutpat, suspendisse praesent integer risus dictumst inceptos, enim. Condimentum fermentum sociosqu nulla semper parturient fames, dictum fringilla iaculis quam sit, nec amet taciti diam. Velit mattis primis sodales tincidunt tortor, vel cursus porta odio nisi, curabitur suscipit malesuada nam viverra id, cum porttitor vivamus fusce ante ullamcorper. Nostra elit nam eros aliquet, aptent risus lorem.</p>
+      <p>Turpis malesuada sit suscipit pulvinar congue dictum dis, volutpat dictumst vulputate vehicula facilisi suscipit, leo nisi aliquet vivamus,. Pulvinar curabitur neque tincidunt congue senectus, phasellus vulputate risus luctus etiam, mus elit nibh ut curabitur risus. Hymenaeos tempor quisque molestie tristique gravida accumsan, lorem nullam ante sociosqu taciti ad euismod.</p>
+      <p>Turpis libero dictumst class dolor scelerisque, lobortis torquent purus porta luctus litora dictumst, habitasse ante ac magnis, cursus per ligula lectus. In hac vivamus montes mauris volutpat, laoreet erat a elementum, feugiat aptent lobortis fringilla imperdiet, pharetra platea pede ligula dignissim, taciti lobortis eros. Potenti risus varius aptent, fusce montes luctus tellus fringilla, non phasellus quam vivamus ac, dis pede donec egestas nibh. Volutpat fusce per tempor, ultrices iaculis sociosqu orci senectus odio, cras sagittis sociosqu sociis eleifend, phasellus cubilia libero porttitor. Quis sagittis bibendum tincidunt, vehicula dignissim curae lacus interdum, malesuada augue ut volutpat.</p>
+    </div>
+
+  </div>
+</div>
 {% endblock %}

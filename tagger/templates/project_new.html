@@ -7,16 +7,22 @@
 {% endif %}
 <form action="{{ reverse_url('new_project') }}" method="post">
   {{ xsrf_form_html() }}
-  <table>
-    <tr>
-      <td><label for="name">Name:</label></td>
-      <td><input name="name" id="name" value="{{ name }}"/></td>
-    </tr>
-    <tr>
-      <td><label for="description">Description:</label></td>
-      <td><textarea name="description" id="description">{{ description }}</textarea></td>
-    </tr>
-    <tr><td></td><td><input type="submit" value="Create" /></td></tr>
-  </table>
+  <div class="form-group row">
+    <label for="project-name" class="col-sm-2 col-form-label">Name</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="project-name" name="name" value="{{ name }}" />
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="project-description" class="col-sm-2 col-form-label">Description</label>
+    <div class="col-sm-10">
+      <textarea class="form-control" id="project-description" name="description">{{ description }}</textarea>
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-10 offset-sm-2">
+      <button type="submit" class="btn btn-primary">Create</button>
+    </div>
+  </div>
 </form>
 {% endblock %}

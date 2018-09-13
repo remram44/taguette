@@ -1,3 +1,46 @@
+/* Some space before content */
 .container-body {
-  padding-top:1em;
+  padding-top: 1em;
+}
+
+/* Border for the tab container */
+.tab-content {
+  border-style: solid;
+  border-width: 1px;
+  border-color: #fff #dee2e6 #dee2e6 #dee2e6;
+  padding: 0.4em;
+}
+
+/* Don't show the resize control on textareas */
+textarea.form-control {
+  resize: none;
+}
+
+/* Work-around to make a whole element clickable while it contains links */
+.overlay-outer {
+  position: relative;
+}
+.overlay-bottom {
+  position: absolute;
+  left: 0; top: 0; bottom: 0; right: 0;
+}
+.overlay-top {
+  position: relative;
+  pointer-events: none;
+  z-index: 1;
+}
+.overlay-top a {
+  pointer-events: all;
+}
+
+.document-view {
+  border: 2px solid #dee2e6;
+  padding: 1em 0.3em;
+  position: relative;
+}
+
+.document-view .document-link {
+  position: absolute;
+  top: .1em;
+  right: .5em;
 }

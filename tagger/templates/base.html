@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% set fluid = False %}
 <html lang="en">
   <head>
     <meta charset="UTF-8">
@@ -18,12 +19,17 @@
             <li class="nav-item {{ 'active' if active_page == 'index' else '' }}">
               <a class="nav-link" href="{{ reverse_url('index') }}">Home</a>
             </li>
+            {% if project %}
+            <li class="nav-item {{ 'active' if active_page == 'project' else '' }}">
+              <a class="nav-link" href="{{ reverse_url('project', project.id) }}">{{ project.name }}</a>
+            </li>
+            {% endif %}
           </ul>
         </div>
       </div>
     </nav>
 
-    <div class="container container-body">
+    <div class="{% block containerclass %}container{% endblock %} container-body">
       {% block contents %}{% endblock %}
 
       <footer class="footer">
