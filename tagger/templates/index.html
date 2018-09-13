@@ -1,4 +1,14 @@
 {% extends "base.html" %}
 {% block contents %}
-<h1>{{ message }}</h1>
+<p>Welcome {{ user.login }}, here are your projects:</p>
+{% if projects %}
+<ul>
+{% for project in {{ projects }} %}
+  <li>{{ project.name }}</li>
+{% end %}
+</ul>
+{% else %}
+<p>You have no projects yet.</p>
+{% end %}
+<p><a href="{{ reverse_url('new_project') }}">Create a project</a></p>
 {% end %}

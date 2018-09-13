@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block contents %}
+<h1>Project: {{ project.name }}</h1>
+<p>{{ project.description }}</p>
+<p>Documents:</p>
+{% if project.documents %}
+<ul>
+{% for document in {{ project.documents }} %}
+  <li>{{ document.name }}</li>
+{% end %}
+</ul>
+{% else %}
+<p>There are no documents in this project yet.</p>
+{% end %}
+<p><a href="{{ reverse_url('new_document', project.id) }}">Add a document</a></p>
+{% end %}

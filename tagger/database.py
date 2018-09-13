@@ -47,6 +47,7 @@ class Project(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
+    description = Column(Text, nullable=False)
     created = Column(DateTime, nullable=False,
                      server_default=functions.now())
     owner_login = Column(String, ForeignKey('users.login'))
