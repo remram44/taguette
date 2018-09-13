@@ -1,0 +1,34 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "ceeb9a8f77635ec57e99c4acd2df0d977131c50c88a3e30c6af978660f20310f"
+        },
+        "pipfile-spec": 6,
+        "requires": {
+            "python_version": "3.6"
+        },
+        "sources": [
+            {
+                "name": "pypi",
+                "url": "https://pypi.python.org/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {
+        "tornado": {
+            "hashes": [
+                "sha256:1c0816fc32b7d31b98781bd8ebc7a9726d7dce67407dc353a2e66e697e138448",
+                "sha256:4f66a2172cb947387193ca4c2c3e19131f1c70fa8be470ddbbd9317fd0801582",
+                "sha256:5327ba1a6c694e0149e7d9126426b3704b1d9d520852a3e4aa9fc8fe989e4046",
+                "sha256:6a7e8657618268bb007646b9eae7661d0b57f13efc94faa33cd2588eae5912c9",
+                "sha256:a9b14804783a1d77c0bd6c66f7a9b1196cbddfbdf8bceb64683c5ae60bd1ec6f",
+                "sha256:c58757e37c4a3172949c99099d4d5106e4d7b63aa0617f9bb24bfbff712c7866",
+                "sha256:d8984742ce86c0855cccecd5c6f54a9f7532c983947cff06f3a0e2115b47f85c"
+            ],
+            "index": "pypi",
+            "version": "==5.1"
+        }
+    },
+    "develop": {}
+}
