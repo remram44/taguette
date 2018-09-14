@@ -44,3 +44,7 @@ textarea.form-control {
   top: .1em;
   right: .5em;
 }
+
+.highlight {
+  background-color: #ff0;
+}
