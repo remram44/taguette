@@ -47,9 +47,9 @@
         {% for document in project.documents %}
           <a class="list-group-item" href="#">{{ document.name }}</a>
         {% else %}
-          <div class="list-group-item disabled" style="font-style: oblique;">There are no documents in this project yet.</div>
+          <div class="list-group-item disabled">There are no documents in this project yet.</div>
         {% endfor %}
-          <a class="list-group-item list-group-item-primary" href="{{ reverse_url('new_document', project.id) }}">Add a document</a>
+          <a class="list-group-item list-group-item-primary" href="javascript:addDocument()">Add a document</a>
         </div>
       </div>
 

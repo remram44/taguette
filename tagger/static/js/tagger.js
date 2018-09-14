@@ -28,6 +28,18 @@ function getPageXY(e) {
   return {x: e.pageX, y: e.pageY};
 }
 
+function getJSON(url='') {
+  return fetch(
+    url + '?_xsrf=' + encodeURIComponent(getCookie('_xsrf')),
+    {
+      credentials: 'same-origin',
+      mode: 'same-origin'
+    }
+  ).then(function(response) {
+    return response.json();
+  });
+}
+
 function postJSON(url='', data={}) {
   return fetch(
     url + '?_xsrf=' + encodeURIComponent(getCookie('_xsrf')),
@@ -235,5 +247,65 @@ project_description_input.addEventListener('blur', function(e) {
 });
 
 
+/*
+ * Documents list
+ */
+
 var documents_list = document.getElementById('documents-list');
+var documents_retry = 5;
+var documents = null;
+
+function loadDocumentsList() {
+  getJSON(
+    '/project/' + project_id + '/documents'
+  )
+  .then(function(result) {
+    documents_retry = 5;
+    documents = result.documents;
+
+    // Empty the list
+    while(documents_list.firstChild) {
+      var first = documents_list.firstChild;
+      if(first.classList
+       && first.classList.contains('list-group-item-primary')) {
+        break;
+      }
+      documents_list.removeChild(documents_list.firstChild);
+    }
+
+    // Fill up the list again
+    var before = documents_list.firstChild;
+    for(var i = 0; i < documents.length; ++i) {
+      var elem = document.createElement('a');
+      elem.className = 'list-group-item';
+      elem.href = '#';
+      elem.textContent = document[i].name;
+      documents_list.insertBefore(elem, before);
+    }
+    if(documents.length == 0) {
+      var elem = document.createElement('div');
+      elem.className = 'list-group-item disabled';
+      elem.textContent = "There are no documents in this project yet.";
+      documents_list.insertBefore(elem, before);
+    }
+  })
+  .catch(function(error) {
+    console.error("failed to download documents list");
+    setTimeout(loadDocumentsList, 5000);
+    if(documents_retry < 60) {
+      documents_retry *= 2;
+    }
+  });
+}
+loadDocumentsList();
+
+function addDocument() {
+  // TODO
+}
+
+
+/*
+ * Tags list
+ */
+
 var tags_list = document.getElementById('tags-list');

@@ -85,18 +85,21 @@ class BaseHandler(RequestHandler):
             raise HTTPError(404)
         return project_member.project
 
+    def get_json(self):
+        type_ = self.request.headers.get('Content-Type', '')
+        if not type_.startswith('application/json'):
+            raise HTTPError(400, "Expected JSON")
+        return json.loads(self.request.body)
+
 
 def json_view(wrapped):
     def wrapper(self, *args):
-        type_ = self.request.headers.get('Content-Type', '')
-        if not type_.startswith('application/json'):
-            self.set_status(400, "Expected JSON")
-            return self.finish("Expected JSON")
         obj = wrapped(self, *args)
         if isinstance(obj, list):
             obj = {'results': obj}
         elif not isinstance(obj, dict):
             raise ValueError("Can't encode %r to JSON" % type(obj))
+        self.set_header('Content-Type', 'text/json; charset=utf-8')
         return self.finish(json.dumps(obj))
     return functools.update_wrapper(wrapper, wrapped)
 
@@ -170,7 +173,7 @@ class ProjectMeta(BaseHandler):
     @authenticated
     @json_view
     def post(self, project_id):
-        obj = json.loads(self.request.body)
+        obj = self.get_json()
         project = self.get_project(project_id)
         project.name = obj['name']
         project.description = obj['description']
@@ -180,11 +183,17 @@ class ProjectMeta(BaseHandler):
         return {}
 
 
-class NewDocument(BaseHandler):
+class ProjectDocuments(BaseHandler):
     @authenticated
     @json_view
-    def post(self, project_id):
-        raise NotImplementedError
+    def get(self, project_id):
+        project = self.get_project(project_id)
+        return {
+            'documents': [
+                {'name': doc.name}
+                for doc in project.documents
+            ]
+        }
 
 
 app = tornado.web.Application(
@@ -194,8 +203,8 @@ app = tornado.web.Application(
         URLSpec('/logout', Logout, name='logout'),
         URLSpec('/new', NewProject, name='new_project'),
         URLSpec('/project/([0-9]+)', Project, name='project'),
-        URLSpec('/project/([0-9]+)/meta', ProjectMeta, name='project_meta'),
-        URLSpec('/project/([0-9]+)/new', NewDocument, name='new_document'),
+        URLSpec('/project/([0-9]+)/meta', ProjectMeta),
+        URLSpec('/project/([0-9]+)/documents', ProjectDocuments),
     ],
     static_path=os.path.join(os.path.dirname(__file__), 'static'),
     login_url='/login',
