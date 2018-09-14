@@ -80,7 +80,7 @@ class Index(BaseHandler):
 
 class Login(BaseHandler):
     def get(self):
-        self.login('remram')
+        self.login('admin')
         self.redirect(self.get_argument('next', self.reverse_url('index')))
         # TODO: Actual login form
 

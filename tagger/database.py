@@ -141,4 +141,16 @@ def connect():
         logger.warning("The tables don't seem to exist; creating")
         Base.metadata.create_all(bind=engine)
 
-    return sessionmaker(bind=engine)
+    DBSession = sessionmaker(bind=engine)
+
+    db = DBSession()
+    if db.query(User).count() == 0:
+        logger.warning("Creating user 'admin'")
+        user = User(login='admin')
+        #import getpass
+        #passwd = getpass.getpass("Enter password for admin user: ")
+        #user.set_password(passwd)
+        db.add(user)
+        db.commit()
+
+    return DBSession
