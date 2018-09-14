@@ -105,7 +105,7 @@ function restoreSelection(saved) {
   var sel = window.getSelection();
   sel.removeAllRanges();
   if(saved !== null) {
-    var range = new Range();//document.createRange();
+    var range = document.createRange();
     var start = locatePos(saved[0]);
     var end = locatePos(saved[1]);
     range.setStart(start[0], start[1]);
