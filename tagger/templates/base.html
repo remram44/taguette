@@ -21,7 +21,7 @@
             </li>
             {% if project %}
             <li class="nav-item {{ 'active' if active_page == 'project' else '' }}">
-              <a class="nav-link" href="{{ reverse_url('project', project.id) }}">{{ project.name }}</a>
+              <a class="nav-link project-name" href="{{ reverse_url('project', project.id) }}">{{ project.name }}</a>
             </li>
             {% endif %}
           </ul>

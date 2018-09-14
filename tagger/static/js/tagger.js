@@ -28,6 +28,24 @@ function getPageXY(e) {
   return {x: e.pageX, y: e.pageY};
 }
 
+function postJSON(url='', data={}) {
+  return fetch(
+    url + '?_xsrf=' + encodeURIComponent(getCookie('_xsrf')),
+    {
+      credentials: 'same-origin',
+      mode: 'same-origin',
+      cache: 'no-cache',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8'
+      },
+      body: JSON.stringify(data)
+    }
+  ).then(function(response) {
+    return response.json();
+  });
+}
+
 
 /*
  * Selection stuff
@@ -161,3 +179,61 @@ function mouseIsUp(e) {
   }, 1);
 }
 document.addEventListener('mouseup', mouseIsUp);
+
+
+/*
+ * Project metadata
+ */
+
+var project_id = parseInt(document.getElementById('project-id').value);
+
+var project_name_input = document.getElementById('project-name');
+var project_name = project_name_input.value;
+
+var project_description_input = document.getElementById('project-description');
+var project_description = project_description_input.value;
+
+function getCookie(name) {
+  var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
+  return r ? r[1] : undefined;
+}
+
+function updateProjectMetadata() {
+  if(project_name_input.value != project_name
+   || project_description_input.value != project_description) {
+     var name = project_name_input.value;
+     var description = project_description_input.value;
+     postJSON(
+       '/project/' + project_id + '/meta',
+       {name: name, description: description}
+     )
+     .then(function() {
+       project_name = name;
+       var elems = document.getElementsByClassName('project-name');
+       for(var i = 0; i < elems.length; ++i) {
+         elems[i].textContent = name;
+       }
+       project_description = description;
+     })
+     .catch(function(error) {
+       console.error("failed to update project metadata:", error);
+       project_name_input.value = project_name;
+       project_description_input.value = project_description;
+     });
+   }
+}
+
+document.getElementById('project-metadata-form').addEventListener('submit', function(e) {
+  updateProjectMetadata();
+   e.preventDefault();
+});
+project_name_input.addEventListener('blur', function(e) {
+  updateProjectMetadata();
+});
+project_description_input.addEventListener('blur', function(e) {
+  updateProjectMetadata();
+});
+
+
+var documents_list = document.getElementById('documents-list');
+var tags_list = document.getElementById('tags-list');

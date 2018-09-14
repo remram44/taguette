@@ -24,7 +24,8 @@
 
       <!-- Project info and metadata -->
       <div class="tab-pane fade show active" id="project" role="tabpanel" aria-labelledby="project-tab">
-        <form>
+        <form id="project-metadata-form">
+          <input type="hidden" id="project-id" name="project-id" value="{{ project.id }}" />
           <div class="form-group">
             <label for="project-name" class="col-sm-2 col-form-label">Name</label>
             <input type="text" class="form-control" id="project-name" name="project-name" value="{{ project.name }}" />
@@ -38,7 +39,7 @@
 
       <!-- List of documents -->
       <div class="tab-pane fade" id="documents" role="tabpanel" aria-labelledby="documents-tab">
-        <div class="list-group list-group-flush">
+        <div class="list-group list-group-flush" id="documents-list">
           <a class="list-group-item" href="#">main doc</a>
           <a class="list-group-item" href="#">tweet#310</a>
           <a class="list-group-item" href="#">tweet#311</a>
@@ -54,7 +55,7 @@
 
       <!-- List of tags -->
       <div class="tab-pane fade" id="tags" role="tabpanel" aria-labelledby="tags-tab">
-        <ul class="list-group list-group-flush">
+        <ul class="list-group list-group-flush" id="tags-list">
           <li class="list-group-item">
             <div class="d-flex justify-content-between align-items-center">
               <div><span class="expand-marker">-</span> family</div>

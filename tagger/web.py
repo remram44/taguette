@@ -1,3 +1,5 @@
+import functools
+import json
 import logging
 import jinja2
 import os
@@ -69,6 +71,35 @@ class BaseHandler(RequestHandler):
             current_user=self.current_user,
             **kwargs)
 
+    def get_project(self, project_id):
+        try:
+            project_id = int(project_id)
+        except ValueError:
+            raise HTTPError(404)
+        project_member = (
+            self.db.query(database.ProjectMember)
+            .options(joinedload(database.ProjectMember.project))
+            .get((project_id, self.current_user))
+        )
+        if project_member is None:
+            raise HTTPError(404)
+        return project_member.project
+
+
+def json_view(wrapped):
+    def wrapper(self, *args):
+        type_ = self.request.headers.get('Content-Type', '')
+        if not type_.startswith('application/json'):
+            self.set_status(400, "Expected JSON")
+            return self.finish("Expected JSON")
+        obj = wrapped(self, *args)
+        if isinstance(obj, list):
+            obj = {'results': obj}
+        elif not isinstance(obj, dict):
+            raise ValueError("Can't encode %r to JSON" % type(obj))
+        return self.finish(json.dumps(obj))
+    return functools.update_wrapper(wrapper, wrapped)
+
 
 class Index(BaseHandler):
     """Index page, shows welcome message and user's projects.
@@ -132,27 +163,26 @@ class NewProject(BaseHandler):
 class Project(BaseHandler):
     @authenticated
     def get(self, project_id):
-        try:
-            project_id = int(project_id)
-        except ValueError:
-            raise HTTPError(404)
-        project_member = (
-            self.db.query(database.ProjectMember)
-            .options(joinedload(database.ProjectMember.project))
-            .get((project_id, self.current_user))
-        )
-        if project_member is None:
-            raise HTTPError(404)
-        project = project_member.project
-        self.render('project.html', project=project)
+        self.render('project.html', project=self.get_project(project_id))
+
+
+class ProjectMeta(BaseHandler):
+    @authenticated
+    @json_view
+    def post(self, project_id):
+        obj = json.loads(self.request.body)
+        project = self.get_project(project_id)
+        project.name = obj['name']
+        project.description = obj['description']
+        logger.info("Updated project: %r %r",
+                    project.name, project.description)
+        self.db.commit()
+        return {}
 
 
 class NewDocument(BaseHandler):
     @authenticated
-    def get(self, project_id):
-        self.render('document_new.html')
-
-    @authenticated
+    @json_view
     def post(self, project_id):
         raise NotImplementedError
 
@@ -164,6 +194,7 @@ app = tornado.web.Application(
         URLSpec('/logout', Logout, name='logout'),
         URLSpec('/new', NewProject, name='new_project'),
         URLSpec('/project/([0-9]+)', Project, name='project'),
+        URLSpec('/project/([0-9]+)/meta', ProjectMeta, name='project_meta'),
         URLSpec('/project/([0-9]+)/new', NewDocument, name='new_document'),
     ],
     static_path=os.path.join(os.path.dirname(__file__), 'static'),
