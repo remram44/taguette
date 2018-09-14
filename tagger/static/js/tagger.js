@@ -1,5 +1,3 @@
-var output = document.getElementById('output');
-
 function nextElement(node) {
   while(node && !node.nextSibling) {
     node = node.parentNode;
@@ -50,25 +48,6 @@ function locatePos(pos) {
 
 var current_selection = null;
 
-var record_timer = null;
-function recordSelection() {
-  var new_node = document.createElement('p');
-  if(current_selection === null) {
-    new_node.innerHTML = (
-      'empty <a href="javascript:restoreSelection(null);">[restore]</a>'
-    );
-  } else {
-    var repr = '[\'' + current_selection[0] + '\', \'' + current_selection[1] + '\']';
-    new_node.innerHTML = (
-      current_selection[0] + ' ; ' + current_selection[1] +
-      ' <a href="javascript:restoreSelection(' +
-      repr + ');">[restore]</a>' +
-      ' <a href="javascript:highlightSelection(' + repr + ');">[highlight]</a>'
-    );
-  }
-  output.parentNode.insertBefore(new_node, output);
-}
-
 function describeSelection() {
   var sel = window.getSelection();
   if(sel.rangeCount != 0) {
@@ -77,26 +56,17 @@ function describeSelection() {
       var start = describePos(range.startContainer, range.startOffset);
       var end = describePos(range.endContainer, range.endOffset);
       if(start && end) {
-        output.innerText = "current selection: " + start + " ; " + end;
         return [start, end];
       }
     }
   }
-  output.innerText = "no selection";
   return null;
 }
 
 function selectionChanged() {
-  var old_selection = current_selection;
   current_selection = describeSelection();
   if(current_selection === null) {
     document.getElementById('hlinfo').style.display = 'none';
-  }
-  if(old_selection !== current_selection) {
-    if(record_timer) {
-      clearTimeout(record_timer);
-    }
-    record_timer = setTimeout(recordSelection, 2000);
   }
 }
 document.addEventListener('selectionchange', selectionChanged);
