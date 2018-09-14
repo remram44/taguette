@@ -23,6 +23,9 @@ function describePos(node, offset) {
       node = node.parentElement;
     }
   }
+  if(node.id.substring(0, 9) != 'doc-item-') {
+    return null;
+  }
   return node.id.substring(9) + "+" + offset;
 }
 
@@ -73,8 +76,10 @@ function describeSelection() {
     if(!range.collapsed) {
       var start = describePos(range.startContainer, range.startOffset);
       var end = describePos(range.endContainer, range.endOffset);
-      output.innerText = "current selection: " + start + " ; " + end;
-      return [start, end];
+      if(start && end) {
+        output.innerText = "current selection: " + start + " ; " + end;
+        return [start, end];
+      }
     }
   }
   output.innerText = "no selection";
@@ -87,10 +92,10 @@ function selectionChanged() {
   if(current_selection === null) {
     document.getElementById('hlinfo').style.display = 'none';
   }
-  if(record_timer) {
-    clearTimeout(record_timer);
-  }
-  if(old_selection != current_selection) {
+  if(old_selection !== current_selection) {
+    if(record_timer) {
+      clearTimeout(record_timer);
+    }
     record_timer = setTimeout(recordSelection, 2000);
   }
 }
