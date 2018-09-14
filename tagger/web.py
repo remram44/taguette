@@ -74,9 +74,14 @@ class Index(BaseHandler):
     def get(self):
         if self.current_user is not None:
             user = self.db.query(database.User).get(self.current_user)
-            self.render('index.html', user=user, projects=user.projects)
-        else:
-            self.render('welcome.html')
+            if user is None:
+                logger.warning("User is logged in as non-existent user %r",
+                               self.current_user)
+                self.logout()
+            else:
+                self.render('index.html', user=user, projects=user.projects)
+                return
+        self.render('welcome.html')
 
 
 class Login(BaseHandler):
