@@ -27,7 +27,8 @@ class BaseHandler(RequestHandler):
 
     @jinja2.contextfunction
     def _tpl_static_url(context, path):
-        return context['handler'].static_url(path)
+        v = not context['handler'].application.settings.get('debug', False)
+        return context['handler'].static_url(path, include_version=v)
     template_env.globals['static_url'] = _tpl_static_url
 
     @jinja2.contextfunction
