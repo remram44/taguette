@@ -53,9 +53,11 @@ class BaseHandler(RequestHandler):
             return None
 
     def login(self, username):
+        logger.info("Logged in as %r", username)
         self.set_secure_cookie('user', username)
 
     def logout(self):
+        logger.info("Logged out")
         self.clear_cookie('user')
 
     def render_string(self, template_name, **kwargs):
@@ -72,7 +74,6 @@ class Index(BaseHandler):
     def get(self):
         if self.current_user is not None:
             user = self.db.query(database.User).get(self.current_user)
-            logger.warning("%r %r", self.current_user, user)
             self.render('index.html', user=user, projects=user.projects)
         else:
             self.render('welcome.html')
@@ -133,11 +134,11 @@ class Project(BaseHandler):
 
 class NewDocument(BaseHandler):
     @authenticated
-    def get(self):
+    def get(self, project_id):
         self.render('document_new.html')
 
     @authenticated
-    def post(self):
+    def post(self, project_id):
         raise NotImplementedError
 
 
@@ -159,6 +160,7 @@ app = tornado.web.Application(
 
 
 def main():
+    logging.basicConfig(level=logging.INFO)
     app.listen(8000)
     tornado.ioloop.IOLoop.current().start()
 
