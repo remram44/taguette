@@ -1,6 +1,8 @@
 import logging
 import jinja2
 import os
+
+from sqlalchemy.orm import joinedload
 from tornado.web import authenticated, HTTPError, RequestHandler
 import tornado.ioloop
 import tornado.web
@@ -110,9 +112,14 @@ class NewProject(BaseHandler):
             return self.render('project_new.html',
                                name=name, description=description,
                                error="Please enter a name")
-        project = database.Project(name=name, description=description,
-                                   owner_login=self.current_user)
+        project = database.Project(name=name, description=description)
         self.db.add(project)
+        membership = database.ProjectMember(
+            project=project,
+            user_login=self.current_user,
+            privileges=database.Privileges.ADMIN
+        )
+        self.db.add(membership)
         self.db.commit()
         self.redirect(self.reverse_url('project', project.id))
 
@@ -129,11 +136,14 @@ class Project(BaseHandler):
             project_id = int(project_id)
         except ValueError:
             raise HTTPError(404)
-        project = self.db.query(database.Project).get(project_id)
-        if project is None:
+        project_member = (
+            self.db.query(database.ProjectMember)
+            .options(joinedload(database.ProjectMember.project))
+            .get((project_id, self.current_user))
+        )
+        if project_member is None:
             raise HTTPError(404)
-        if project.owner_login != self.current_user:
-            raise HTTPError(403)
+        project = project_member.project
         self.render('project.html', project=project)
 
 

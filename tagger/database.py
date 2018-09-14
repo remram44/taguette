@@ -1,11 +1,12 @@
 import bcrypt
+import enum
 import logging
 import os
 from sqlalchemy import Column, ForeignKey, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy.sql import functions
-from sqlalchemy.types import DateTime, Integer, String, Text
+from sqlalchemy.types import DateTime, Enum, Integer, String, Text
 
 
 logger = logging.getLogger(__name__)
@@ -21,7 +22,7 @@ class User(Base):
     created = Column(DateTime, nullable=False,
                      server_default=functions.now())
     hashed_password = Column(String, nullable=True)
-    projects = relationship('Project')
+    projects = relationship('Project', secondary='project_members')
 
     def set_password(self, password, method='bcrypt'):
         if method == 'bcrypt':
@@ -50,9 +51,24 @@ class Project(Base):
     description = Column(Text, nullable=False)
     created = Column(DateTime, nullable=False,
                      server_default=functions.now())
-    owner_login = Column(String, ForeignKey('users.login'))
-    owner = relationship('User', back_populates='projects')
     documents = relationship('Document')
+    members = relationship('User', secondary='project_members')
+
+class Privileges(enum.Enum):
+    READ = 0
+    ADMIN = 1
+    TAG = 2
+    MANAGE_DOCS = 3
+
+
+class ProjectMember(Base):
+    __tablename__ = 'project_members'
+
+    project_id = Column(Integer, ForeignKey('projects.id'), primary_key=True)
+    project = relationship('Project')
+    user_login = Column(Integer, ForeignKey('users.login'), primary_key=True)
+    user = relationship('User')
+    privileges = Column(Enum(Privileges), nullable=False)
 
 
 class Document(Base):
