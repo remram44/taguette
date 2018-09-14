@@ -16,7 +16,7 @@
         <a class="nav-link" id="documents-tab" data-toggle="tab" href="#documents" role="tab" aria-controls="documents" aria-selected="false">Documents</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" id="highlights-tab" data-toggle="tab" href="#highlights" role="tab" aria-controls="highlights" aria-selected="false">Highlights</a>
+        <a class="nav-link" id="tags-tab" data-toggle="tab" href="#tags" role="tab" aria-controls="tags" aria-selected="false">Tags</a>
       </li>
     </ul>
 
@@ -52,40 +52,42 @@
         </div>
       </div>
 
-      <!-- List of highlights -->
-      <div class="tab-pane fade" id="highlights" role="tabpanel" aria-labelledby="highlights-tab">
-        <div class="list-group list-group-flush">
-          <div class="list-group-item flex-column align-items-start overlay-outer">
-            <a href="#" class="overlay-bottom"></a>
-            <div class="overlay-top">
-              <div class="d-flex justify-content-between">
-                The All-Father
-                <small><a href="#">main doc</a></small>
-              </div>
-            <div><a href="#" class="badge badge-secondary badge-pill">family</a> <a href="#" class="badge badge-secondary badge-pill">religion</a></div>
+      <!-- List of tags -->
+      <div class="tab-pane fade" id="tags" role="tabpanel" aria-labelledby="tags-tab">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <div class="d-flex justify-content-between align-items-center">
+              <div><span class="expand-marker">-</span> family</div>
+              <a href="#" class="badge badge-primary badge-pill">15</a>
             </div>
-          </div>
-          <div class="list-group-item flex-column align-items-start overlay-outer">
-            <a href="#" class="overlay-bottom"></a>
-            <div class="overlay-top">
-              <div class="d-flex justify-content-between">
-                his mother
-                <small><a href="#">main doc</a></small>
-              </div>
-              <div><a href="#" class="badge badge-secondary badge-pill">family</a></div>
-            </div>
-          </div>
-          <div class="list-group-item flex-column align-items-start overlay-outer">
-            <a href="#" class="overlay-bottom"></a>
-            <div class="overlay-top">
-              <div class="d-flex justify-content-between">
-                a bro
-                <small><a href="#">tweet#312</a></small>
-              </div>
-              <div><a href="#" class="badge badge-secondary badge-pill">family</a> <a href="#" class="badge badge-secondary badge-pill">colloquial</a></div>
-            </div>
-          </div>
-        </div>
+            <ul class="sublist">
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div><span class="expand-marker">+</span> father</div>
+                <a href="#" class="badge badge-primary badge-pill">5</a>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div><span class="expand-marker">&nbsp;</span> mother</div>
+                <a href="#" class="badge badge-primary badge-pill">2</a>
+              </li>
+              <li class="list-group-item">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div><span class="expand-marker">-</span> brother</div>
+                  <a href="#" class="badge badge-primary badge-pill">3</a>
+                </div>
+                <ul class="sublist">
+                  <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div><span class="expand-marker">&nbsp;</span> bro</div>
+                    <a href="#" class="badge badge-primary badge-pill">2</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            + interviewees
+            <a href="#" class="badge badge-primary badge-pill">6</a>
+          </li>
+        </ul>
       </div>
 
     </div>
