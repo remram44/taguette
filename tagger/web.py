@@ -158,6 +158,10 @@ app = tornado.web.Application(
 )
 
 
-if __name__ == '__main__':
+def main():
     app.listen(8000)
     tornado.ioloop.IOLoop.current().start()
+
+
+if __name__ == '__main__':
+    main()
