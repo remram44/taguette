@@ -66,26 +66,26 @@ function recordSelection() {
   output.parentNode.insertBefore(new_node, output);
 }
 
-function selectionChanged() {
-  var hlinfo = document.getElementById('hlinfo');
-  var old_selection = current_selection;
+function describeSelection() {
   var sel = window.getSelection();
-  if(sel.rangeCount == 0) {
-    output.innerText = "no selection";
-    current_selection = null;
-    hlinfo.style.display = 'none';
-  } else {
+  if(sel.rangeCount != 0) {
     var range = sel.getRangeAt(0);
-    if(range.collapsed) {
-      output.innerText = "no selection";
-      current_selection = null;
-      hlinfo.style.display = 'none';
-    } else {
+    if(!range.collapsed) {
       var start = describePos(range.startContainer, range.startOffset);
       var end = describePos(range.endContainer, range.endOffset);
       output.innerText = "current selection: " + start + " ; " + end;
-      current_selection = [start, end];
+      return [start, end];
     }
+  }
+  output.innerText = "no selection";
+  return null;
+}
+
+function selectionChanged() {
+  var old_selection = current_selection;
+  current_selection = describeSelection();
+  if(current_selection === null) {
+    document.getElementById('hlinfo').style.display = 'none';
   }
   if(record_timer) {
     clearTimeout(record_timer);
