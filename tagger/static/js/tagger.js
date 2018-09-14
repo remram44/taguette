@@ -1,3 +1,7 @@
+/*
+ * Utilities
+ */
+
 function nextElement(node) {
   while(node && !node.nextSibling) {
     node = node.parentNode;
@@ -12,6 +16,24 @@ function nextElement(node) {
   return node;
 }
 
+function getPageXY(e) {
+  // from jQuery
+  // Calculate pageX/Y if missing
+  if(e.pageX == null) {
+    var doc = document.documentElement, body = document.body;
+    var x = e.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc.clientLeft || 0);
+    var y = e.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc.clientTop || 0);
+    return {x: x, y: y};
+  }
+  return {x: e.pageX, y: e.pageY};
+}
+
+
+/*
+ * Selection stuff
+ */
+
+// Describe a position e.g. "3+56"
 function describePos(node, offset) {
   while(!node.id) {
     if(node.previousSibling) {
@@ -27,6 +49,7 @@ function describePos(node, offset) {
   return node.id.substring(9) + "+" + offset;
 }
 
+// Find a described position
 function locatePos(pos) {
   var split = pos.lastIndexOf("+");
   var id = "doc-item-" + pos.substring(0, split);
@@ -48,6 +71,7 @@ function locatePos(pos) {
 
 var current_selection = null;
 
+// Describe a selection e.g. ["3+56", "5+14"]
 function describeSelection() {
   var sel = window.getSelection();
   if(sel.rangeCount != 0) {
@@ -63,14 +87,7 @@ function describeSelection() {
   return null;
 }
 
-function selectionChanged() {
-  current_selection = describeSelection();
-  if(current_selection === null) {
-    document.getElementById('hlinfo').style.display = 'none';
-  }
-}
-document.addEventListener('selectionchange', selectionChanged);
-
+// Restore a described selection
 function restoreSelection(saved) {
   var sel = window.getSelection();
   sel.removeAllRanges();
@@ -94,6 +111,7 @@ function splitAtPos(pos, after) {
   }
 }
 
+// Highlight a described selection using <span class="highlight">
 function highlightSelection(saved) {
   if(saved == null) {
     return;
@@ -116,18 +134,21 @@ function highlightSelection(saved) {
   }
 }
 
-function getPageXY(e) {
-  // from jQuery
-  // Calculate pageX/Y if missing
-  if(e.pageX == null) {
-    var doc = document.documentElement, body = document.body;
-    var x = e.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc.clientLeft || 0);
-    var y = e.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc.clientTop || 0);
-    return {x: x, y: y};
-  }
-  return {x: e.pageX, y: e.pageY};
-}
 
+/*
+ * Controls
+ */
+
+// Updates current_selection and visibility of the controls
+function selectionChanged() {
+  current_selection = describeSelection();
+  if(current_selection === null) {
+    document.getElementById('hlinfo').style.display = 'none';
+  }
+}
+document.addEventListener('selectionchange', selectionChanged);
+
+// Update controls position
 function mouseIsUp(e) {
   var coords = getPageXY(e);
   var hlinfo = document.getElementById('hlinfo');
