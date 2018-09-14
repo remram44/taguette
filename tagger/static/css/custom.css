@@ -48,3 +48,10 @@ textarea.form-control {
 .highlight {
   background-color: #ff0;
 }
+
+#hlinfo {
+  display: none;
+  position: absolute;
+  background-color: white;
+  padding: 0.2em;
+}

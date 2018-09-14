@@ -67,16 +67,19 @@ function recordSelection() {
 }
 
 function selectionChanged() {
+  var hlinfo = document.getElementById('hlinfo');
   var old_selection = current_selection;
   var sel = window.getSelection();
   if(sel.rangeCount == 0) {
     output.innerText = "no selection";
     current_selection = null;
+    hlinfo.style.display = 'none';
   } else {
     var range = sel.getRangeAt(0);
     if(range.collapsed) {
       output.innerText = "no selection";
       current_selection = null;
+      hlinfo.style.display = 'none';
     } else {
       var start = describePos(range.startContainer, range.startOffset);
       var end = describePos(range.endContainer, range.endOffset);
@@ -149,3 +152,16 @@ function getPageXY(e) {
   }
   return {x: e.pageX, y: e.pageY};
 }
+
+function mouseIsUp(e) {
+  var coords = getPageXY(e);
+  var hlinfo = document.getElementById('hlinfo');
+  setTimeout(function() {
+    hlinfo.style.top = coords.y + 'px';
+    hlinfo.style.left = coords.x + 'px';
+    if(current_selection !== null) {
+      hlinfo.style.display = 'block';
+    }
+  }, 1);
+}
+document.addEventListener('mouseup', mouseIsUp);
