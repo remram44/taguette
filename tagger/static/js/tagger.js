@@ -28,6 +28,11 @@ function getPageXY(e) {
   return {x: e.pageX, y: e.pageY};
 }
 
+function getCookie(name) {
+  var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
+  return r ? r[1] : undefined;
+}
+
 function getJSON(url='') {
   return fetch(
     url + '?_xsrf=' + encodeURIComponent(getCookie('_xsrf')),
@@ -194,10 +199,16 @@ document.addEventListener('mouseup', mouseIsUp);
 
 
 /*
- * Project metadata
+ * TODO: Supplied by server with page?
  */
 
 var project_id = parseInt(document.getElementById('project-id').value);
+var documents = null;
+
+
+/*
+ * Project metadata
+ */
 
 var project_name_input = document.getElementById('project-name');
 var project_name = project_name_input.value;
@@ -205,27 +216,35 @@ var project_name = project_name_input.value;
 var project_description_input = document.getElementById('project-description');
 var project_description = project_description_input.value;
 
-function getCookie(name) {
-  var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
-  return r ? r[1] : undefined;
+function setProjectMetadata(metadata, form=true) {
+  // Update globals
+  project_name = metadata.name;
+  project_description = metadata.description;
+  // Update form
+  if(form) {
+    project_name_input.value = project_name;
+    project_description_input.value = project_description;
+  }
+  // Update elements
+  var elems = document.getElementsByClassName('project-name');
+  for(var i = 0; i < elems.length; ++i) {
+    elems[i].textContent = project_name;
+  }
 }
 
-function updateProjectMetadata() {
+function projectMetadataChanged() {
   if(project_name_input.value != project_name
    || project_description_input.value != project_description) {
-     var name = project_name_input.value;
-     var description = project_description_input.value;
+     var meta = {
+       name: project_name_input.value,
+       description: project_description_input.value
+     };
      postJSON(
        '/project/' + project_id + '/meta',
-       {name: name, description: description}
+       meta
      )
-     .then(function() {
-       project_name = name;
-       var elems = document.getElementsByClassName('project-name');
-       for(var i = 0; i < elems.length; ++i) {
-         elems[i].textContent = name;
-       }
-       project_description = description;
+     .then(function(result) {
+       setProjectMetadata(meta, false);
      })
      .catch(function(error) {
        console.error("failed to update project metadata:", error);
@@ -236,15 +255,11 @@ function updateProjectMetadata() {
 }
 
 document.getElementById('project-metadata-form').addEventListener('submit', function(e) {
-  updateProjectMetadata();
-   e.preventDefault();
+  projectMetadataChanged();
+  e.preventDefault();
 });
-project_name_input.addEventListener('blur', function(e) {
-  updateProjectMetadata();
-});
-project_description_input.addEventListener('blur', function(e) {
-  updateProjectMetadata();
-});
+project_name_input.addEventListener('blur', projectMetadataChanged);
+project_description_input.addEventListener('blur', projectMetadataChanged);
 
 
 /*
@@ -253,45 +268,49 @@ project_description_input.addEventListener('blur', function(e) {
 
 var documents_list = document.getElementById('documents-list');
 var documents_retry = 5;
-var documents = null;
 
+function setDocumentsList(docs) {
+  documents = docs
+
+  // Empty the list
+  while(documents_list.firstChild) {
+    var first = documents_list.firstChild;
+    if(first.classList
+     && first.classList.contains('list-group-item-primary')) {
+      break;
+    }
+    documents_list.removeChild(documents_list.firstChild);
+  }
+
+  // Fill up the list again
+  var before = documents_list.firstChild;
+  for(var i = 0; i < documents.length; ++i) {
+    var elem = document.createElement('a');
+    elem.className = 'list-group-item';
+    elem.href = '#';
+    elem.textContent = document[i].name;
+    documents_list.insertBefore(elem, before);
+  }
+  if(documents.length == 0) {
+    var elem = document.createElement('div');
+    elem.className = 'list-group-item disabled';
+    elem.textContent = "There are no documents in this project yet.";
+    documents_list.insertBefore(elem, before);
+  }
+}
+
+// TODO: remove endpoint entirely
 function loadDocumentsList() {
   getJSON(
     '/project/' + project_id + '/documents'
   )
   .then(function(result) {
     documents_retry = 5;
-    documents = result.documents;
-
-    // Empty the list
-    while(documents_list.firstChild) {
-      var first = documents_list.firstChild;
-      if(first.classList
-       && first.classList.contains('list-group-item-primary')) {
-        break;
-      }
-      documents_list.removeChild(documents_list.firstChild);
-    }
-
-    // Fill up the list again
-    var before = documents_list.firstChild;
-    for(var i = 0; i < documents.length; ++i) {
-      var elem = document.createElement('a');
-      elem.className = 'list-group-item';
-      elem.href = '#';
-      elem.textContent = document[i].name;
-      documents_list.insertBefore(elem, before);
-    }
-    if(documents.length == 0) {
-      var elem = document.createElement('div');
-      elem.className = 'list-group-item disabled';
-      elem.textContent = "There are no documents in this project yet.";
-      documents_list.insertBefore(elem, before);
-    }
+    setDocumentsList(result.documents);
   })
   .catch(function(error) {
     console.error("failed to download documents list");
-    setTimeout(loadDocumentsList, 5000);
+    setTimeout(loadDocumentsList, documents_retry * 1000);
     if(documents_retry < 60) {
       documents_retry *= 2;
     }
