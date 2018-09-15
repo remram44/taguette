@@ -219,6 +219,7 @@ class ProjectEvents(BaseHandler):
             for doc in project.documents
         ]
 
+    @authenticated
     async def get(self, project_id):
         self.project_id = project_id
         from_ts = int(self.get_query_argument('from'))
