@@ -203,7 +203,29 @@ class ProjectDocuments(BaseHandler):
 class ProjectDocumentAdd(BaseHandler):
     @authenticated
     def post(self, project_id):
-        self.send_json({})
+        name = self.get_body_argument('name')
+        description = self.get_body_argument('description')
+        file = self.request.files['file'][0]
+        content_type = file.content_type
+        filename = file.filename
+
+        if content_type.startswith('text/plain'):
+            doc = database.Document(
+                name=name,
+                description=description,
+                project_id=project_id,
+                contents=file.body,
+            )
+            self.db.add(doc)
+            self.db.commit()
+            self.application.notify_long_polling(('project', project_id),
+                                                 'documents')
+            self.send_json({'created': doc.id})
+        else:
+            self.set_status(400)
+            self.send_json({
+                'error': "Invalid file type %r" % content_type,
+            })
 
 
 class ProjectEvents(BaseHandler):

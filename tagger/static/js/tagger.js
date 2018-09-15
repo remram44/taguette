@@ -358,7 +358,7 @@ function setDocumentsList(docs) {
     var elem = document.createElement('a');
     elem.className = 'list-group-item';
     elem.href = '#';
-    elem.textContent = document[i].name;
+    elem.textContent = documents[i].name;
     documents_list.insertBefore(elem, before);
   }
   if(documents.length == 0) {
