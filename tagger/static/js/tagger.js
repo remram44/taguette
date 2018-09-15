@@ -251,15 +251,13 @@ function longPollForEvents() {
   .then(function(result) {
     console.log("Polling: ", result);
     long_polling_retry = 5;
-    if(result.ts > last_event) {
-      if('project' in result) {
-        setProjectMetadata(result.project);
-      }
-      if('documents' in result) {
-        setDocumentsList(result.documents);
-      }
-      last_event = result.ts;
+    if('project' in result) {
+      setProjectMetadata(result.project);
     }
+    if('documents' in result) {
+      setDocumentsList(result.documents);
+    }
+    last_event = result.ts;
 
     // Re-open connection
     setTimeout(longPollForEvents, 500);
@@ -286,6 +284,10 @@ var project_description_input = document.getElementById('project-description');
 var project_description = project_description_input.value;
 
 function setProjectMetadata(metadata, form=true) {
+  if(project_name == metadata.name
+   && project_description == metadata.description) {
+    return;
+  }
   // Update globals
   project_name = metadata.name;
   project_description = metadata.description;
