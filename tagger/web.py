@@ -200,6 +200,12 @@ class ProjectDocuments(BaseHandler):
         })
 
 
+class ProjectDocumentAdd(BaseHandler):
+    @authenticated
+    def post(self, project_id):
+        self.send_json({})
+
+
 class ProjectEvents(BaseHandler):
     def meta_updated(self, result, project=None):
         if project is None:
@@ -286,6 +292,7 @@ app = Application(
         URLSpec('/project/([0-9]+)', Project, name='project'),
         URLSpec('/project/([0-9]+)/meta', ProjectMeta),
         URLSpec('/project/([0-9]+)/documents', ProjectDocuments),
+        URLSpec('/project/([0-9]+)/documents/new', ProjectDocumentAdd),
         URLSpec('/project/([0-9]+)/events', ProjectEvents),
     ],
     static_path=os.path.join(os.path.dirname(__file__), 'static'),

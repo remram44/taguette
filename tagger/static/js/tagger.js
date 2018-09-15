@@ -390,9 +390,53 @@ function loadDocumentsList() {
 }
 loadDocumentsList();
 
+var document_add_modal = document.getElementById('document-add-modal');
+
 function addDocument() {
-  // TODO
+  $(document_add_modal).modal();
 }
+
+/*
+ * Add document
+ */
+
+var progress = document.getElementById('document-add-progress');
+
+document.getElementById('document-add-form').addEventListener('submit', function(e) {
+  var form_data = new FormData();
+  form_data.append('name',
+                   document.getElementById('document-add-name').value);
+  form_data.append('description',
+                   document.getElementById('document-add-description').value);
+  form_data.append('file',
+                   document.getElementById('document-add-file').files[0]);
+  form_data.append('_xsrf', getCookie('_xsrf'));
+
+  var xhr = new XMLHttpRequest();
+  xhr.responseType = 'json';
+  xhr.open('POST', '/project/' + project_id + '/documents/new');
+  xhr.onload = function() {
+    if(xhr.status == 200) {
+      $(document_add_modal).modal('hide');
+      document.getElementById('document-add-form').reset();
+    } else {
+      alert("Error uploading file!");
+    }
+  };
+  xhr.onerror = function(e) {
+    alert("Error uploading file!");
+  }
+  xhr.onprogress = function(e) {
+    if(e.lengthComputable) {
+      var pc = e.loaded / e.total * 100;
+      progress.setAttribute('aria-valuenow', '' + pc);
+      progress.style.width = pc + '%';
+    }
+  };
+  xhr.send(form_data);
+
+  e.preventDefault();
+})
 
 
 /*
