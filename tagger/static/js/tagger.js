@@ -2,6 +2,26 @@
  * Utilities
  */
 
+if(!Object.entries) {
+  Object.entries = function(obj) {
+    var ownProps = Object.keys(obj),
+      i = ownProps.length,
+      resArray = new Array(i); // preallocate the Array
+    while(i--) {
+      resArray[i] = [ownProps[i], obj[ownProps[i]]];
+    }
+
+    return resArray;
+  };
+}
+
+function encodeGetParams(params) {
+  return Object.entries(params)
+    .map(function(kv) { return kv.map(encodeURIComponent).join("="); })
+    .join("&");
+}
+
+
 function nextElement(node) {
   while(node && !node.nextSibling) {
     node = node.parentNode;
@@ -33,9 +53,14 @@ function getCookie(name) {
   return r ? r[1] : undefined;
 }
 
-function getJSON(url='') {
+function getJSON(url='', args) {
+  if(args) {
+    args = '&' + encodeGetParams(args);
+  } else {
+    args = '';
+  }
   return fetch(
-    url + '?_xsrf=' + encodeURIComponent(getCookie('_xsrf')),
+    url + '?_xsrf=' + encodeURIComponent(getCookie('_xsrf')) + args,
     {
       credentials: 'same-origin',
       mode: 'same-origin'
@@ -45,9 +70,14 @@ function getJSON(url='') {
   });
 }
 
-function postJSON(url='', data={}) {
+function postJSON(url='', data={}, args) {
+  if(args) {
+    args = '&' + encodeGetParams(args);
+  } else {
+    args = '';
+  }
   return fetch(
-    url + '?_xsrf=' + encodeURIComponent(getCookie('_xsrf')),
+    url + '?_xsrf=' + encodeURIComponent(getCookie('_xsrf')) + args,
     {
       credentials: 'same-origin',
       mode: 'same-origin',
@@ -203,7 +233,46 @@ document.addEventListener('mouseup', mouseIsUp);
  */
 
 var project_id = parseInt(document.getElementById('project-id').value);
+var last_event = 0;
 var documents = null;
+
+
+/*
+ * Long polling
+ */
+
+var long_polling_retry = 5;
+
+function longPollForEvents() {
+  getJSON(
+    '/project/' + project_id + '/events',
+    {from: last_event}
+  )
+  .then(function(result) {
+    console.log("Polling: ", result);
+    long_polling_retry = 5;
+    if(result.ts > last_event) {
+      if('project' in result) {
+        setProjectMetadata(result.project);
+      }
+      if('documents' in result) {
+        setDocumentsList(result.documents);
+      }
+      last_event = result.ts;
+    }
+
+    // Re-open connection
+    setTimeout(longPollForEvents, 500);
+  })
+  .catch(function(error) {
+    console.error("failed to poll for events");
+    setTimeout(longPollForEvents, long_polling_retry * 1000);
+    if(long_polling_retry < 60) {
+      long_polling_retry *= 2;
+    }
+  });
+}
+longPollForEvents();
 
 
 /*
@@ -245,6 +314,7 @@ function projectMetadataChanged() {
      )
      .then(function(result) {
        setProjectMetadata(meta, false);
+       last_event = result.ts;
      })
      .catch(function(error) {
        console.error("failed to update project metadata:", error);

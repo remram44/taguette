@@ -51,6 +51,10 @@ class Project(Base):
     description = Column(Text, nullable=False)
     created = Column(DateTime, nullable=False,
                      server_default=functions.now())
+    meta_updated = Column(DateTime, nullable=False,
+                          server_default=functions.now())
+    documents_updated = Column(DateTime, nullable=False,
+                               server_default=functions.now())
     documents = relationship('Document')
     members = relationship('User', secondary='project_members')
 

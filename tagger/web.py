@@ -1,13 +1,14 @@
+import asyncio
+from datetime import datetime
 import json
 import logging
 import jinja2
 import os
-
 from sqlalchemy.orm import joinedload
-from tornado.web import authenticated, HTTPError, RequestHandler
+from tornado.concurrent import Future
 import tornado.ioloop
-import tornado.web
 from tornado.routing import URLSpec
+from tornado.web import authenticated, HTTPError, RequestHandler
 
 from . import database
 
@@ -164,6 +165,12 @@ class Project(BaseHandler):
         self.render('project.html', project=self.get_project(project_id))
 
 
+def js_timestamp(dt=None):
+    if dt is None:
+        dt = datetime.utcnow()
+    return int(dt.timestamp())
+
+
 class ProjectMeta(BaseHandler):
     @authenticated
     def post(self, project_id):
@@ -171,10 +178,14 @@ class ProjectMeta(BaseHandler):
         project = self.get_project(project_id)
         project.name = obj['name']
         project.description = obj['description']
+        now = datetime.utcnow()
+        project.meta_updated = now
         logger.info("Updated project: %r %r",
                     project.name, project.description)
         self.db.commit()
-        return self.send_json({})
+        logger.info("COMMIT PROJECT")
+        self.application.notify_long_polling(('project', project_id), 'meta')
+        return self.send_json({'ts': js_timestamp(now)})
 
 
 class ProjectDocuments(BaseHandler):
@@ -189,7 +200,83 @@ class ProjectDocuments(BaseHandler):
         })
 
 
-app = tornado.web.Application(
+class ProjectEvents(BaseHandler):
+    def meta_updated(self, result, project=None):
+        if project is None:
+            project = self.get_project(self.project_id)
+        result['ts'] = max(result.get('ts', 0),
+                           js_timestamp(project.meta_updated))
+        result['project'] = {'name': project.name,
+                             'description': project.description}
+
+    def documents_updated(self, result, project=None):
+        if project is None:
+            project = self.get_project(self.project_id)
+        result['ts'] = max(result.get('ts', 0),
+                           js_timestamp(project.meta_updated))
+        result['documents'] = [
+            {'name': doc.name, 'description': doc.description}
+            for doc in project.documents
+        ]
+
+    async def get(self, project_id):
+        self.project_id = project_id
+        from_ts = int(self.get_query_argument('from'))
+        project = self.get_project(project_id)
+        result = {}
+
+        # Check for immediate update
+        if js_timestamp(project.meta_updated) > from_ts:
+            self.meta_updated(result, project)
+        if js_timestamp(project.documents_updated) > from_ts:
+            self.documents_updated(result, project)
+        if result:
+            self.send_json(result)
+            return
+
+        # Wait for an event
+        self.wait_future = Future()
+        self.application.register_long_polling(('project', project_id),
+                                               self.wait_future)
+        self.db.expire_all()
+        try:
+            event = await self.wait_future
+        except asyncio.CancelledError:
+            return
+
+        if js_timestamp(project.meta_updated) > from_ts:
+            self.meta_updated(result)
+        if js_timestamp(project.documents_updated) > from_ts:
+            self.documents_updated(result)
+        if result:
+            self.send_json(result)
+        else:
+            self.set_status(500)
+
+    def on_connection_close(self):
+        self.wait_future.cancel()
+        self.application.remove_long_polling(('project', self.project_id),
+                                             self.wait_future)
+
+
+class Application(tornado.web.Application):
+    def __init__(self, *args, **kwargs):
+        super(Application, self).__init__(*args, **kwargs)
+
+        self.event_waiters = {}
+
+    def register_long_polling(self, key, future):
+        self.event_waiters.setdefault(key, set()).add(future)
+
+    def remove_long_polling(self, key, future):
+        self.event_waiters[key].remove(future)
+
+    def notify_long_polling(self, key, value):
+        for future in self.event_waiters.pop(key, []):
+            future.set_result(value)
+
+
+app = Application(
     [
         URLSpec('/', Index, name='index'),
         URLSpec('/login', Login, name='login'),
@@ -198,6 +285,7 @@ app = tornado.web.Application(
         URLSpec('/project/([0-9]+)', Project, name='project'),
         URLSpec('/project/([0-9]+)/meta', ProjectMeta),
         URLSpec('/project/([0-9]+)/documents', ProjectDocuments),
+        URLSpec('/project/([0-9]+)/events', ProjectEvents),
     ],
     static_path=os.path.join(os.path.dirname(__file__), 'static'),
     login_url='/login',
