@@ -1,4 +1,3 @@
-import functools
 import json
 import logging
 import jinja2
@@ -91,17 +90,13 @@ class BaseHandler(RequestHandler):
             raise HTTPError(400, "Expected JSON")
         return json.loads(self.request.body)
 
-
-def json_view(wrapped):
-    def wrapper(self, *args):
-        obj = wrapped(self, *args)
+    def send_json(self, obj):
         if isinstance(obj, list):
             obj = {'results': obj}
         elif not isinstance(obj, dict):
             raise ValueError("Can't encode %r to JSON" % type(obj))
         self.set_header('Content-Type', 'text/json; charset=utf-8')
         return self.finish(json.dumps(obj))
-    return functools.update_wrapper(wrapper, wrapped)
 
 
 class Index(BaseHandler):
@@ -171,7 +166,6 @@ class Project(BaseHandler):
 
 class ProjectMeta(BaseHandler):
     @authenticated
-    @json_view
     def post(self, project_id):
         obj = self.get_json()
         project = self.get_project(project_id)
@@ -180,20 +174,19 @@ class ProjectMeta(BaseHandler):
         logger.info("Updated project: %r %r",
                     project.name, project.description)
         self.db.commit()
-        return {}
+        return self.send_json({})
 
 
 class ProjectDocuments(BaseHandler):
     @authenticated
-    @json_view
     def get(self, project_id):
         project = self.get_project(project_id)
-        return {
+        return self.send_json({
             'documents': [
                 {'name': doc.name}
                 for doc in project.documents
             ]
-        }
+        })
 
 
 app = tornado.web.Application(
