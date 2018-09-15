@@ -261,8 +261,7 @@ function longPollForEvents() {
 
     // Re-open connection
     setTimeout(longPollForEvents, 500);
-  })
-  .catch(function(error) {
+  }, function(error) {
     console.error("failed to poll for events");
     setTimeout(longPollForEvents, long_polling_retry * 1000);
     if(long_polling_retry < 60) {
@@ -317,8 +316,7 @@ function projectMetadataChanged() {
      .then(function(result) {
        setProjectMetadata(meta, false);
        last_event = result.ts;
-     })
-     .catch(function(error) {
+     }, function(error) {
        console.error("failed to update project metadata:", error);
        project_name_input.value = project_name;
        project_description_input.value = project_description;
@@ -379,8 +377,7 @@ function loadDocumentsList() {
   .then(function(result) {
     documents_retry = 5;
     setDocumentsList(result.documents);
-  })
-  .catch(function(error) {
+  }, function(error) {
     console.error("failed to download documents list");
     setTimeout(loadDocumentsList, documents_retry * 1000);
     if(documents_retry < 60) {
