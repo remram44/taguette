@@ -1,0 +1,11 @@
+stages:
+  - test
+  - deploy
+
+run_tests:
+  stage: test
+  image: python:3.6
+  script:
+    - pip install pipenv
+    - pipenv install
+    - pipenv run python tests.py
