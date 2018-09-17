@@ -40,15 +40,11 @@
       <!-- List of documents -->
       <div class="tab-pane fade" id="documents" role="tabpanel" aria-labelledby="documents-tab">
         <div class="list-group list-group-flush" id="documents-list">
-          <a class="list-group-item" href="#">main doc</a>
-          <a class="list-group-item" href="#">tweet#310</a>
-          <a class="list-group-item" href="#">tweet#311</a>
-          <a class="list-group-item" href="#">tweet#312</a>
-        {% for document in project.documents %}
+          {% for document in project.documents %}
           <a class="list-group-item" href="#">{{ document.name }}</a>
-        {% else %}
+          {% else %}
           <div class="list-group-item disabled">There are no documents in this project yet.</div>
-        {% endfor %}
+          {% endfor %}
           <a class="list-group-item list-group-item-primary" href="javascript:addDocument()">Add a document</a>
         </div>
       </div>
@@ -100,11 +96,9 @@
     <div class="document-view">
       <a href="#" class="document-link badge badge-primary">main doc</a>
 
-      <p id="doc-item-1">Vitae cras adipiscing cubilia <strong>nulla quis</strong>, tincidunt mauris iaculis ipsum justo praesent, urna nam sagittis elit tristique, conubia nullam sed mauris class,. Turpis sapien morbi litora pulvinar fermentum justo, vulputate integer interdum tortor vitae taciti, rhoncus dui porttitor feugiat, nec per urna. Habitant vulputate.</p>
-      <p id="doc-item-2">Blandit curabitur blandit aenean volutpat ridiculus, curabitur sociis mattis enim ridiculus lobortis, eget tempus faucibus ligula sapien ullamcorper. Penatibus enim semper sagittis.</p>
-      <p id="doc-item-3">Sociosqu facilisis lacus tristique vestibulum, ipsum proin facilisi lobortis condimentum, hendrerit donec libero nascetur orci nascetur, aliquam elit odio justo, aliquet odio tellus. Tincidunt sodales arcu sociis nec scelerisque, sollicitudin congue suscipit curabitur nullam volutpat, suspendisse praesent integer risus dictumst inceptos, enim. Condimentum fermentum sociosqu nulla semper parturient fames, dictum fringilla iaculis quam sit, nec amet taciti diam. Velit mattis primis sodales tincidunt tortor, vel cursus porta odio nisi, curabitur suscipit malesuada nam viverra id, cum porttitor vivamus fusce ante ullamcorper. Nostra elit nam eros aliquet, aptent risus lorem.</p>
-      <p id="doc-item-4">Turpis malesuada sit suscipit pulvinar congue dictum dis, volutpat dictumst vulputate vehicula facilisi suscipit, leo nisi aliquet vivamus,. Pulvinar curabitur neque tincidunt congue senectus, phasellus vulputate risus luctus etiam, mus elit nibh ut curabitur risus. Hymenaeos tempor quisque molestie tristique gravida accumsan, lorem nullam ante sociosqu taciti ad euismod.</p>
-      <p id="doc-item-5">Turpis libero dictumst class dolor scelerisque, lobortis torquent purus porta luctus litora dictumst, habitasse ante ac magnis, cursus per ligula lectus. In hac vivamus montes mauris volutpat, laoreet erat a elementum, feugiat aptent lobortis fringilla imperdiet, pharetra platea pede ligula dignissim, taciti lobortis eros. Potenti risus varius aptent, fusce montes luctus tellus fringilla, non phasellus quam vivamus ac, dis pede donec egestas nibh. Volutpat fusce per tempor, ultrices iaculis sociosqu orci senectus odio, cras sagittis sociosqu sociis eleifend, phasellus cubilia libero porttitor. Quis sagittis bibendum tincidunt, vehicula dignissim curae lacus interdum, malesuada augue ut volutpat.</p>
+      <div id="document-contents">
+        <p style="font-style: oblique; text-align: center;">Load a document on the left</p>
+      </div>
     </div>
 
   </div>

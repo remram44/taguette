@@ -4,7 +4,7 @@ import logging
 import os
 from sqlalchemy import Column, ForeignKey, create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, sessionmaker
+from sqlalchemy.orm import deferred, relationship, sessionmaker
 from sqlalchemy.sql import functions
 from sqlalchemy.types import DateTime, Enum, Integer, String, Text
 
@@ -58,6 +58,7 @@ class Project(Base):
     documents = relationship('Document')
     members = relationship('User', secondary='project_members')
 
+
 class Privileges(enum.Enum):
     READ = 0
     ADMIN = 1
@@ -81,11 +82,12 @@ class Document(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     description = Column(Text, nullable=False)
+    filename = Column(String, nullable=True)
     created = Column(DateTime, nullable=False,
                      server_default=functions.now())
     project_id = Column(Integer, ForeignKey('projects.id'))
     project = relationship('Project', back_populates='documents')
-    contents = Column(Text, nullable=False)
+    contents = deferred(Column(Text, nullable=False))
     doctags = relationship('DocTag', secondary='document_doctags')
 
 

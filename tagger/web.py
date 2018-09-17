@@ -4,12 +4,13 @@ import json
 import logging
 import jinja2
 import os
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, undefer
 from tornado.concurrent import Future
 import tornado.ioloop
 from tornado.routing import URLSpec
 from tornado.web import authenticated, HTTPError, RequestHandler
 
+from .convert import convert_file, ConversionError
 from . import database
 
 
@@ -194,7 +195,8 @@ class ProjectDocuments(BaseHandler):
         project = self.get_project(project_id)
         return self.send_json({
             'documents': [
-                {'name': doc.name}
+                {'id': doc.id, 'name': doc.name,
+                 'description': doc.description,}
                 for doc in project.documents
             ]
         })
@@ -203,29 +205,57 @@ class ProjectDocuments(BaseHandler):
 class ProjectDocumentAdd(BaseHandler):
     @authenticated
     def post(self, project_id):
+        project = self.get_project(project_id)
+
         name = self.get_body_argument('name')
         description = self.get_body_argument('description')
         file = self.request.files['file'][0]
         content_type = file.content_type
-        filename = file.filename
 
-        if content_type.startswith('text/plain'):
+        try:
+            body = convert_file(file.body, content_type, file.filename)
+        except ConversionError as err:
+            self.set_status(400)
+            self.send_json({
+                'error': str(err),
+            })
+        else:
             doc = database.Document(
                 name=name,
                 description=description,
-                project_id=project_id,
-                contents=file.body,
+                filename=file.filename or None,
+                project=project,
+                contents=body,
             )
             self.db.add(doc)
             self.db.commit()
             self.application.notify_long_polling(('project', project_id),
                                                  'documents')
             self.send_json({'created': doc.id})
-        else:
-            self.set_status(400)
-            self.send_json({
-                'error': "Invalid file type %r" % content_type,
-            })
+
+
+class ProjectDocumentContents(BaseHandler):
+    @authenticated
+    def get(self, project_id, document_id):
+        try:
+            project_id = int(project_id)
+            document_id = int(document_id)
+        except ValueError:
+            raise HTTPError(404)
+
+        document = (
+            self.db.query(database.Document)
+            .options(joinedload(database.Document.project)
+                     .joinedload(database.Project.members))
+            .filter(database.Project.id == project_id)
+            .filter(database.ProjectMember.user_login == self.current_user)
+            .options(undefer(database.Document.contents))
+            .filter(database.Document.id == document_id)
+        ).one_or_none()
+        if document is None:
+            raise HTTPError(404)
+
+        self.finish(document.contents)
 
 
 class ProjectEvents(BaseHandler):
@@ -243,7 +273,7 @@ class ProjectEvents(BaseHandler):
         result['ts'] = max(result.get('ts', 0),
                            js_timestamp(project.meta_updated))
         result['documents'] = [
-            {'name': doc.name, 'description': doc.description}
+            {'id': doc.id, 'name': doc.name, 'description': doc.description}
             for doc in project.documents
         ]
 
@@ -315,6 +345,8 @@ app = Application(
         URLSpec('/project/([0-9]+)/meta', ProjectMeta),
         URLSpec('/project/([0-9]+)/documents', ProjectDocuments),
         URLSpec('/project/([0-9]+)/documents/new', ProjectDocumentAdd),
+        URLSpec('/project/([0-9]+)/documents/([0-9]+)',
+                ProjectDocumentContents),
         URLSpec('/project/([0-9]+)/events', ProjectEvents),
     ],
     static_path=os.path.join(os.path.dirname(__file__), 'static'),

@@ -53,7 +53,7 @@ function getCookie(name) {
   return r ? r[1] : undefined;
 }
 
-function getJSON(url='', args) {
+function getPage(url='', args) {
   if(args) {
     args = '&' + encodeGetParams(args);
   } else {
@@ -65,7 +65,12 @@ function getJSON(url='', args) {
       credentials: 'same-origin',
       mode: 'same-origin'
     }
-  ).then(function(response) {
+  );
+}
+
+function getJSON(url='', args) {
+  return getPage(url, args)
+  .then(function(response) {
     return response.json();
   });
 }
@@ -355,10 +360,15 @@ function setDocumentsList(docs) {
   // Fill up the list again
   var before = documents_list.firstChild;
   for(var i = 0; i < documents.length; ++i) {
+    var doc = documents[i];
     var elem = document.createElement('a');
     elem.className = 'list-group-item';
     elem.href = '#';
-    elem.textContent = documents[i].name;
+    elem.textContent = doc.name;
+    elem.addEventListener('click', function(e) {
+      loadDocument(doc.id);
+      e.preventDefault();
+    });
     documents_list.insertBefore(elem, before);
   }
   if(documents.length == 0) {
@@ -387,15 +397,33 @@ function loadDocumentsList() {
 }
 loadDocumentsList();
 
+var document_contents = document.getElementById('document-contents');
+
+function loadDocument(document_id) {
+  getPage(
+    '/project/' + project_id + '/documents/' + document_id
+  )
+  .then(function(result) {
+    if(result.status == 200) {
+      result.text().then(function(contents) {
+        document_contents.innerHTML = contents;
+      });
+    }
+  }, function(error) {
+    console.error("failed to load document");
+  });
+}
+
+
+/*
+ * Add document
+ */
+
 var document_add_modal = document.getElementById('document-add-modal');
 
 function addDocument() {
   $(document_add_modal).modal();
 }
-
-/*
- * Add document
- */
 
 var progress = document.getElementById('document-add-progress');
 
