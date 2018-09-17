@@ -10,7 +10,7 @@ import tornado.ioloop
 from tornado.routing import URLSpec
 from tornado.web import authenticated, HTTPError, RequestHandler
 
-from .convert import convert_file, ConversionError
+from . import convert
 from . import database
 
 
@@ -213,8 +213,9 @@ class ProjectDocumentAdd(BaseHandler):
         content_type = file.content_type
 
         try:
-            body = convert_file(file.body, content_type, file.filename)
-        except ConversionError as err:
+            body = convert.to_numbered_html(file.body, content_type,
+                                            file.filename)
+        except convert.ConversionError as err:
             self.set_status(400)
             self.send_json({
                 'error': str(err),
@@ -228,6 +229,7 @@ class ProjectDocumentAdd(BaseHandler):
                 contents=body,
             )
             self.db.add(doc)
+            project.documents_updated = datetime.utcnow()
             self.db.commit()
             self.application.notify_long_polling(('project', project_id),
                                                  'documents')
@@ -310,6 +312,8 @@ class ProjectEvents(BaseHandler):
         if result:
             self.send_json(result)
         else:
+            logger.error("Got an event but nothing changed? (project_id=%d)",
+                         project_id)
             self.set_status(500)
 
     def on_connection_close(self):
@@ -335,30 +339,32 @@ class Application(tornado.web.Application):
             future.set_result(value)
 
 
-app = Application(
-    [
-        URLSpec('/', Index, name='index'),
-        URLSpec('/login', Login, name='login'),
-        URLSpec('/logout', Logout, name='logout'),
-        URLSpec('/new', NewProject, name='new_project'),
-        URLSpec('/project/([0-9]+)', Project, name='project'),
-        URLSpec('/project/([0-9]+)/meta', ProjectMeta),
-        URLSpec('/project/([0-9]+)/documents', ProjectDocuments),
-        URLSpec('/project/([0-9]+)/documents/new', ProjectDocumentAdd),
-        URLSpec('/project/([0-9]+)/documents/([0-9]+)',
-                ProjectDocumentContents),
-        URLSpec('/project/([0-9]+)/events', ProjectEvents),
-    ],
-    static_path=os.path.join(os.path.dirname(__file__), 'static'),
-    login_url='/login',
-    xsrf_cookies=True,
-    debug=True,
-    cookie_secret='TODO:_cookie_here_',
-)
+def make_app():
+    return Application(
+        [
+            URLSpec('/', Index, name='index'),
+            URLSpec('/login', Login, name='login'),
+            URLSpec('/logout', Logout, name='logout'),
+            URLSpec('/new', NewProject, name='new_project'),
+            URLSpec('/project/([0-9]+)', Project, name='project'),
+            URLSpec('/project/([0-9]+)/meta', ProjectMeta),
+            URLSpec('/project/([0-9]+)/documents', ProjectDocuments),
+            URLSpec('/project/([0-9]+)/documents/new', ProjectDocumentAdd),
+            URLSpec('/project/([0-9]+)/documents/([0-9]+)',
+                    ProjectDocumentContents),
+            URLSpec('/project/([0-9]+)/events', ProjectEvents),
+        ],
+        static_path=os.path.join(os.path.dirname(__file__), 'static'),
+        login_url='/login',
+        xsrf_cookies=True,
+        debug=True,
+        cookie_secret='TODO:_cookie_here_',
+    )
 
 
 def main():
     logging.basicConfig(level=logging.INFO)
+    app = make_app()
     app.listen(8000)
     tornado.ioloop.IOLoop.current().start()
 
