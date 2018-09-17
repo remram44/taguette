@@ -1,4 +1,17 @@
 /*
+ * Table of contents
+ *
+ * - Utilities
+ * - Selection stuff
+ * - Long polling
+ * - Project metadata
+ * - Documents list
+ * - Add document
+ * - Tags list
+ * - Highlights
+
+
+/*
  * Utilities
  */
 
@@ -203,34 +216,6 @@ function highlightSelection(saved) {
     node = next;
   }
 }
-
-
-/*
- * Controls
- */
-
-// Updates current_selection and visibility of the controls
-function selectionChanged() {
-  current_selection = describeSelection();
-  if(current_selection === null) {
-    document.getElementById('hlinfo').style.display = 'none';
-  }
-}
-document.addEventListener('selectionchange', selectionChanged);
-
-// Update controls position
-function mouseIsUp(e) {
-  var coords = getPageXY(e);
-  var hlinfo = document.getElementById('hlinfo');
-  setTimeout(function() {
-    hlinfo.style.top = coords.y + 'px';
-    hlinfo.style.left = coords.x + 'px';
-    if(current_selection !== null) {
-      hlinfo.style.display = 'block';
-    }
-  }, 1);
-}
-document.addEventListener('mouseup', mouseIsUp);
 
 
 /*
@@ -444,3 +429,31 @@ document.getElementById('document-add-form').addEventListener('submit', function
  */
 
 var tags_list = document.getElementById('tags-list');
+
+
+/*
+ * Highlights
+ */
+
+// Updates current_selection and visibility of the controls
+function selectionChanged() {
+  current_selection = describeSelection();
+  if(current_selection === null) {
+    document.getElementById('hlinfo').style.display = 'none';
+  }
+}
+document.addEventListener('selectionchange', selectionChanged);
+
+// Update controls position
+function mouseIsUp(e) {
+  var coords = getPageXY(e);
+  var hlinfo = document.getElementById('hlinfo');
+  setTimeout(function() {
+    hlinfo.style.top = coords.y + 'px';
+    hlinfo.style.left = coords.x + 'px';
+    if(current_selection !== null) {
+      hlinfo.style.display = 'block';
+    }
+  }, 1);
+}
+document.addEventListener('mouseup', mouseIsUp);
