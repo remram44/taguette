@@ -164,13 +164,11 @@ class Project(BaseHandler):
     @authenticated
     def get(self, project_id):
         project = self.get_project(project_id)
-        documents_json = jinja2.Markup(json.dumps({
-            'documents': [
-                {'id': doc.id, 'name': doc.name,
-                 'description': doc.description,}
-                for doc in project.documents
-            ]
-        }))
+        documents_json = jinja2.Markup(json.dumps([
+            {'id': doc.id, 'name': doc.name,
+             'description': doc.description,}
+            for doc in project.documents
+        ]))
         self.render('project.html',
                     project=project,
                     last_event=js_timestamp(project.last_event),

@@ -39,11 +39,7 @@
       <!-- List of documents -->
       <div class="tab-pane fade" id="documents" role="tabpanel" aria-labelledby="documents-tab">
         <div class="list-group list-group-flush" id="documents-list">
-          {% for document in project.documents %}
-          <a class="list-group-item" href="#">{{ document.name }}</a>
-          {% else %}
-          <div class="list-group-item disabled">There are no documents in this project yet.</div>
-          {% endfor %}
+          <div class="list-group-item disabled">Loading...</div>
           <a class="list-group-item list-group-item-primary" href="javascript:addDocument()">Add a document</a>
         </div>
       </div>

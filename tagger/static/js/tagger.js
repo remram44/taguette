@@ -370,6 +370,8 @@ function setDocumentsList(docs) {
   }
 }
 
+setDocumentsList(documents);
+
 var document_contents = document.getElementById('document-contents');
 
 function loadDocument(document_id) {
