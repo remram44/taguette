@@ -265,7 +265,7 @@ function longPollForEvents() {
     last_event = result.ts;
 
     // Re-open connection
-    setTimeout(longPollForEvents, 500);
+    setTimeout(longPollForEvents, 1000);
   }, function(error) {
     console.error("failed to poll for events");
     setTimeout(longPollForEvents, long_polling_retry * 1000);

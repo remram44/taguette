@@ -273,7 +273,7 @@ class ProjectEvents(BaseHandler):
         if project is None:
             project = self.get_project(self.project_id)
         result['ts'] = max(result.get('ts', 0),
-                           js_timestamp(project.meta_updated))
+                           js_timestamp(project.documents_updated))
         result['documents'] = [
             {'id': doc.id, 'name': doc.name, 'description': doc.description}
             for doc in project.documents
