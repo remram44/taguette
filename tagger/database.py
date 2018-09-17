@@ -108,7 +108,6 @@ class Highlight(Base):
 class Tag(object):
     id = Column(Integer, primary_key=True)
     path = Column(String, nullable=False)
-    name = Column(String, nullable=False)
     description = Column(Text, nullable=False)
 
 

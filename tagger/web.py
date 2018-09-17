@@ -143,14 +143,23 @@ class NewProject(BaseHandler):
             return self.render('project_new.html',
                                name=name, description=description,
                                error="Please enter a name")
+
+        # Create project
         project = database.Project(name=name, description=description)
         self.db.add(project)
+        # Add user as admin
         membership = database.ProjectMember(
             project=project,
             user_login=self.current_user,
             privileges=database.Privileges.ADMIN
         )
         self.db.add(membership)
+        # Add default set of tags
+        self.db.add(database.HlTag(path='interesting',
+                                   description="Further review required"))
+        self.db.add(database.HlTag(path='people',
+                                   description="Known people"))
+
         self.db.commit()
         self.redirect(self.reverse_url('project', project.id))
 
