@@ -58,6 +58,10 @@ class Project(Base):
     documents = relationship('Document')
     members = relationship('User', secondary='project_members')
 
+    @property
+    def last_event(self):
+        return max(self.meta_updated, self.documents_updated)
+
 
 class Privileges(enum.Enum):
     READ = 0

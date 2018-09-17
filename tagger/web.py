@@ -163,7 +163,18 @@ class NewProject(BaseHandler):
 class Project(BaseHandler):
     @authenticated
     def get(self, project_id):
-        self.render('project.html', project=self.get_project(project_id))
+        project = self.get_project(project_id)
+        documents_json = jinja2.Markup(json.dumps({
+            'documents': [
+                {'id': doc.id, 'name': doc.name,
+                 'description': doc.description,}
+                for doc in project.documents
+            ]
+        }))
+        self.render('project.html',
+                    project=project,
+                    last_event=js_timestamp(project.last_event),
+                    documents=documents_json)
 
 
 def js_timestamp(dt=None):
@@ -187,19 +198,6 @@ class ProjectMeta(BaseHandler):
         logger.info("COMMIT PROJECT")
         self.application.notify_long_polling(('project', project_id), 'meta')
         return self.send_json({'ts': js_timestamp(now)})
-
-
-class ProjectDocuments(BaseHandler):
-    @authenticated
-    def get(self, project_id):
-        project = self.get_project(project_id)
-        return self.send_json({
-            'documents': [
-                {'id': doc.id, 'name': doc.name,
-                 'description': doc.description,}
-                for doc in project.documents
-            ]
-        })
 
 
 class ProjectDocumentAdd(BaseHandler):
@@ -348,7 +346,6 @@ def make_app():
             URLSpec('/new', NewProject, name='new_project'),
             URLSpec('/project/([0-9]+)', Project, name='project'),
             URLSpec('/project/([0-9]+)/meta', ProjectMeta),
-            URLSpec('/project/([0-9]+)/documents', ProjectDocuments),
             URLSpec('/project/([0-9]+)/documents/new', ProjectDocumentAdd),
             URLSpec('/project/([0-9]+)/documents/([0-9]+)',
                     ProjectDocumentContents),

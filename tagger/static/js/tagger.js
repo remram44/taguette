@@ -234,15 +234,6 @@ document.addEventListener('mouseup', mouseIsUp);
 
 
 /*
- * TODO: Supplied by server with page?
- */
-
-var project_id = parseInt(document.getElementById('project-id').value);
-var last_event = 0;
-var documents = null;
-
-
-/*
  * Long polling
  */
 
@@ -378,24 +369,6 @@ function setDocumentsList(docs) {
     documents_list.insertBefore(elem, before);
   }
 }
-
-// TODO: remove endpoint entirely
-function loadDocumentsList() {
-  getJSON(
-    '/project/' + project_id + '/documents'
-  )
-  .then(function(result) {
-    documents_retry = 5;
-    setDocumentsList(result.documents);
-  }, function(error) {
-    console.error("failed to download documents list");
-    setTimeout(loadDocumentsList, documents_retry * 1000);
-    if(documents_retry < 60) {
-      documents_retry *= 2;
-    }
-  });
-}
-loadDocumentsList();
 
 var document_contents = document.getElementById('document-contents');
 
