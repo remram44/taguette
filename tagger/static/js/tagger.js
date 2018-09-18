@@ -3,12 +3,13 @@
  *
  * - Utilities
  * - Selection stuff
- * - Long polling
  * - Project metadata
  * - Documents list
  * - Add document
  * - Tags list
  * - Highlights
+ * - Add highlight
+ * - Long polling
 
 
 /*
@@ -30,6 +31,7 @@ if(!Object.entries) {
 
 function encodeGetParams(params) {
   return Object.entries(params)
+    .filter(function(kv) { return kv[1] !== undefined; })
     .map(function(kv) { return kv.map(encodeURIComponent).join("="); })
     .join("&");
 }
@@ -194,8 +196,9 @@ function splitAtPos(pos, after) {
   }
 }
 
-// Highlight a described selection using <span class="highlight">
+// Highlight a described selection
 function highlightSelection(saved) {
+  console.log("Highlighting", saved);
   if(saved == null) {
     return;
   }
@@ -216,41 +219,6 @@ function highlightSelection(saved) {
     node = next;
   }
 }
-
-
-/*
- * Long polling
- */
-
-var long_polling_retry = 5;
-
-function longPollForEvents() {
-  getJSON(
-    '/project/' + project_id + '/events',
-    {from: last_event}
-  )
-  .then(function(result) {
-    console.log("Polling: ", result);
-    long_polling_retry = 5;
-    if('project' in result) {
-      setProjectMetadata(result.project);
-    }
-    if('documents' in result) {
-      setDocumentsList(result.documents);
-    }
-    last_event = result.ts;
-
-    // Re-open connection
-    setTimeout(longPollForEvents, 1000);
-  }, function(error) {
-    console.error("failed to poll for events");
-    setTimeout(longPollForEvents, long_polling_retry * 1000);
-    if(long_polling_retry < 60) {
-      long_polling_retry *= 2;
-    }
-  });
-}
-longPollForEvents();
 
 
 /*
@@ -281,28 +249,30 @@ function setProjectMetadata(metadata, form=true) {
   for(var i = 0; i < elems.length; ++i) {
     elems[i].textContent = project_name;
   }
+  console.log("Project metadata updated");
 }
 
 function projectMetadataChanged() {
   if(project_name_input.value != project_name
    || project_description_input.value != project_description) {
-     var meta = {
-       name: project_name_input.value,
-       description: project_description_input.value
-     };
-     postJSON(
-       '/project/' + project_id + '/meta',
-       meta
-     )
-     .then(function(result) {
-       setProjectMetadata(meta, false);
-       last_event = result.ts;
-     }, function(error) {
-       console.error("failed to update project metadata:", error);
-       project_name_input.value = project_name;
-       project_description_input.value = project_description;
-     });
-   }
+    console.log("Posting project metadata update");
+    var meta = {
+      name: project_name_input.value,
+      description: project_description_input.value
+    };
+    postJSON(
+      '/project/' + project_id + '/meta',
+      meta
+    )
+    .then(function(result) {
+      setProjectMetadata(meta, false);
+      last_event = result.ts;
+    }, function(error) {
+      console.error("failed to update project metadata:", error);
+      project_name_input.value = project_name;
+      project_description_input.value = project_description;
+    });
+  }
 }
 
 document.getElementById('project-metadata-form').addEventListener('submit', function(e) {
@@ -317,6 +287,7 @@ project_description_input.addEventListener('blur', projectMetadataChanged);
  * Documents list
  */
 
+var current_document = null;
 var documents_list = document.getElementById('documents-list');
 var documents_retry = 5;
 
@@ -353,6 +324,7 @@ function setDocumentsList(docs) {
     elem.textContent = "There are no documents in this project yet.";
     documents_list.insertBefore(elem, before);
   }
+  console.log("Documents list updated");
 }
 
 setDocumentsList(documents);
@@ -367,7 +339,9 @@ function loadDocument(document_id) {
     if(result.status == 200) {
       result.text().then(function(contents) {
         document_contents.innerHTML = contents;
+        current_document = document_id;
       });
+      console.log("Loaded document", document_id);
     }
   }, function(error) {
     console.error("failed to load document");
@@ -388,6 +362,8 @@ function addDocument() {
 var progress = document.getElementById('document-add-progress');
 
 document.getElementById('document-add-form').addEventListener('submit', function(e) {
+  console.log("Uploading document...");
+
   var form_data = new FormData();
   form_data.append('name',
                    document.getElementById('document-add-name').value);
@@ -404,11 +380,14 @@ document.getElementById('document-add-form').addEventListener('submit', function
     if(xhr.status == 200) {
       $(document_add_modal).modal('hide');
       document.getElementById('document-add-form').reset();
+      console.log("Document upload complete");
     } else {
+      console.error("Document upload failed: status", xhr.status);
       alert("Error uploading file!");
     }
   };
   xhr.onerror = function(e) {
+    console.log("Document upload failed:", e);
     alert("Error uploading file!");
   }
   xhr.onprogress = function(e) {
@@ -457,3 +436,53 @@ function mouseIsUp(e) {
   }, 1);
 }
 document.addEventListener('mouseup', mouseIsUp);
+
+
+/*
+ * Long polling
+ */
+
+var long_polling_retry = 5;
+
+function longPollForEvents() {
+  getJSON(
+    '/project/' + project_id + '/events',
+    {from: last_event}
+  )
+  .then(function(result) {
+    console.log("Polling: ", result);
+    long_polling_retry = 5;
+    if('project' in result) {
+      setProjectMetadata(result.project);
+    }
+    if('documents' in result) {
+      setDocumentsList(result.documents);
+    }
+    if('highlightsRemove' in result) {
+      var removed = result.highlightsRemove[current_document];
+      if(removed) {
+        for(var i = 0; i < removed.length; ++i) {
+          removeHighlight(removed[i]);
+        }
+      }
+    }
+    if('highlightsAdd' in result) {
+      var added = result.highlightsAdd[current_document];
+      if(added) {
+        for(var i = 0; i < added.length; ++i) {
+          setHighlight(added[i]);
+        }
+      }
+    }
+    last_event = result.ts;
+
+    // Re-open connection
+    setTimeout(longPollForEvents, 1000);
+  }, function(error) {
+    setTimeout(longPollForEvents, long_polling_retry * 1000);
+    if(long_polling_retry < 60) {
+      long_polling_retry *= 2;
+    }
+  });
+}
+longPollForEvents();
