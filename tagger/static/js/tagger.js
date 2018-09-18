@@ -339,7 +339,7 @@ var document_contents = document.getElementById('document-contents');
 
 function loadDocument(document_id) {
   getPage(
-    '/project/' + project_id + '/documents/' + document_id
+    '/project/' + project_id + '/document/' + document_id
   )
   .then(function(result) {
     if(result.status == 200) {
@@ -381,7 +381,7 @@ document.getElementById('document-add-form').addEventListener('submit', function
 
   var xhr = new XMLHttpRequest();
   xhr.responseType = 'json';
-  xhr.open('POST', '/project/' + project_id + '/documents/new');
+  xhr.open('POST', '/project/' + project_id + '/document/new');
   xhr.onload = function() {
     if(xhr.status == 200) {
       $(document_add_modal).modal('hide');
@@ -499,7 +499,7 @@ function createHighlight(selection) {
   console.log("Posting new highlight");
   // TODO: Modal to add tags
   postJSON(
-    '/project/' + project_id + '/documents/' + current_document + '/highlights/new',
+    '/project/' + project_id + '/document/' + current_document + '/highlight/new',
     {offsetStart: selection[0],
      offsetEnd: selection[1]}
   )
