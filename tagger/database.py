@@ -93,13 +93,15 @@ class Document(Base):
     project = relationship('Project', back_populates='documents')
     contents = deferred(Column(Text, nullable=False))
     doctags = relationship('DocTag', secondary='document_doctags')
+    highlights = relationship('Highlight')
 
 
 class Highlight(Base):
     __tablename__ = 'highlights'
 
     id = Column(Integer, primary_key=True)
-    document = Column(Integer, ForeignKey('documents.id'))
+    document_id = Column(Integer, ForeignKey('documents.id'))
+    document = relationship('Document', back_populates='highlights')
     start_offset = Column(Integer, nullable=False)
     end_offset = Column(Integer, nullable=False)
     doctags = relationship('HlTag', secondary='highlight_hltags')

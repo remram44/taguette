@@ -86,6 +86,28 @@ class BaseHandler(RequestHandler):
             raise HTTPError(404)
         return project_member.project
 
+    def get_document(self, project_id, document_id, contents=False):
+        try:
+            project_id = int(project_id)
+            document_id = int(document_id)
+        except ValueError:
+            raise HTTPError(404)
+
+        q = (
+            self.db.query(database.Document)
+            .options(joinedload(database.Document.project)
+                     .joinedload(database.Project.members))
+            .filter(database.Project.id == project_id)
+            .filter(database.ProjectMember.user_login == self.current_user)
+            .filter(database.Document.id == document_id)
+        )
+        if contents:
+            q = q.options(undefer(database.Document.contents))
+        document = q.one_or_none()
+        if document is None:
+            raise HTTPError(404)
+        return document
+
     def get_json(self):
         type_ = self.request.headers.get('Content-Type', '')
         if not type_.startswith('application/json'):
@@ -175,7 +197,7 @@ class Project(BaseHandler):
         project = self.get_project(project_id)
         documents_json = jinja2.Markup(json.dumps([
             {'id': doc.id, 'name': doc.name,
-             'description': doc.description,}
+             'description': doc.description}
             for doc in project.documents
         ]))
         self.render('project.html',
@@ -243,25 +265,43 @@ class DocumentAdd(BaseHandler):
 class DocumentContents(BaseHandler):
     @authenticated
     def get(self, project_id, document_id):
-        try:
-            project_id = int(project_id)
-            document_id = int(document_id)
-        except ValueError:
-            raise HTTPError(404)
-
-        document = (
-            self.db.query(database.Document)
-            .options(joinedload(database.Document.project)
-                     .joinedload(database.Project.members))
-            .filter(database.Project.id == project_id)
-            .filter(database.ProjectMember.user_login == self.current_user)
-            .options(undefer(database.Document.contents))
-            .filter(database.Document.id == document_id)
-        ).one_or_none()
-        if document is None:
-            raise HTTPError(404)
-
+        document = self.get_document(project_id, document_id, True)
         self.finish(document.contents)
+
+
+class HighlightAdd(BaseHandler):
+    @authenticated
+    def post(self, project_id, document_id):
+        obj = self.get_json()
+        document = self.get_document(project_id, document_id)
+        hl = database.Highlight(document=document,
+                                start_offset=obj['offsetStart'],
+                                end_offset=obj['offsetEnd'])
+        self.db.add(hl)
+        self.db.commit()
+        # TODO: Notify long polling
+
+        self.send_json({'id': hl.id})
+
+
+class HighlightUpdate(BaseHandler):
+    @authenticated
+    def post(self, project_id, document_id, highlight_id):
+        obj = self.get_json()
+        document = self.get_document(project_id, document_id)
+        hl = self.db.query(database.Highlight).get(int(highlight_id))
+        if hl.document_id != document.id:
+            raise HTTPError(404)
+        if not obj:
+            self.db.delete(hl)
+            self.db.commit()
+        else:
+            hl.start_offset = obj['offsetStart']
+            hl.end_offset = obj['offsetEnd']
+            self.db.commit()
+        # TODO: Notify long polling
+
+        self.send_json({'id': hl.id})
 
 
 class ProjectEvents(BaseHandler):
@@ -355,6 +395,9 @@ def make_app():
             URLSpec('/project/([0-9]+)/meta', ProjectMeta),
             URLSpec('/project/([0-9]+)/document/new', DocumentAdd),
             URLSpec('/project/([0-9]+)/document/([0-9]+)', DocumentContents),
+            URLSpec('/project/([0-9]+)/document/([0-9]+)/highlight/new',
+                    HighlightAdd),
+            URLSpec('/project/([0-9]+)/highlight', HighlightUpdate),
             URLSpec('/project/([0-9]+)/events', ProjectEvents),
         ],
         static_path=os.path.join(os.path.dirname(__file__), 'static'),
