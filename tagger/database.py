@@ -163,14 +163,14 @@ class Command(Base):
         )
 
     @classmethod
-    def highlight_delete(cls, user_login, document, highlight):
-        assert isinstance(highlight.id, int)
+    def highlight_delete(cls, user_login, document, highlight_id):
+        assert isinstance(highlight_id, int)
         return cls(
             user_login=user_login,
             project_id=document.project_id,
             document=document,
             payload={'type': 'highlight_delete',
-                     'id': highlight.id},
+                     'id': highlight_id},
         )
 
 
