@@ -86,6 +86,9 @@ function getPage(url='', args) {
 function getJSON(url='', args) {
   return getPage(url, args)
   .then(function(response) {
+    if(response.status != 200) {
+      throw "Status " + response.status;
+    }
     return response.json();
   });
 }
@@ -109,6 +112,9 @@ function postJSON(url='', data={}, args) {
       body: JSON.stringify(data)
     }
   ).then(function(response) {
+    if(response.status != 200) {
+      throw "Status " + response.status;
+    }
     return response.json();
   });
 }
