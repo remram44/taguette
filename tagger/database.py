@@ -1,10 +1,13 @@
 import bcrypt
 import enum
+import json
 import logging
 import os
-from sqlalchemy import Column, ForeignKey, Index, create_engine
+from sqlalchemy import Column, ForeignKey, Index, TypeDecorator, \
+    create_engine, select
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import deferred, relationship, sessionmaker
+from sqlalchemy.orm import column_property, deferred, relationship, \
+    sessionmaker
 from sqlalchemy.sql import functions
 from sqlalchemy.types import DateTime, Enum, Integer, String, Text
 
@@ -13,6 +16,22 @@ logger = logging.getLogger(__name__)
 
 
 Base = declarative_base()
+
+
+class JSON(TypeDecorator):
+    """Platform-independent UUID type.
+
+    Uses PostgreSQL's UUID type, otherwise uses
+    CHAR(32), storing as stringified hex values.
+
+    """
+    impl = String
+
+    def process_bind_param(self, value, dialect):
+        return json.dumps(value, sort_keys=True)
+
+    def process_result_value(self, value, dialect):
+        return json.loads(value)
 
 
 class User(Base):
@@ -51,16 +70,8 @@ class Project(Base):
     description = Column(Text, nullable=False)
     created = Column(DateTime, nullable=False,
                      server_default=functions.now())
-    meta_updated = Column(DateTime, nullable=False,
-                          server_default=functions.now())
-    documents_updated = Column(DateTime, nullable=False,
-                               server_default=functions.now())
     documents = relationship('Document')
     members = relationship('User', secondary='project_members')
-
-    @property
-    def last_event(self):
-        return max(self.meta_updated, self.documents_updated)
 
 
 class Privileges(enum.Enum):
@@ -96,6 +107,82 @@ class Document(Base):
     contents = deferred(Column(Text, nullable=False))
     doctags = relationship('DocTag', secondary='document_doctags')
     highlights = relationship('Highlight')
+
+
+class Command(Base):
+    __tablename__ = 'commands'
+
+    id = Column(Integer, primary_key=True)
+    date = Column(DateTime, nullable=False,
+                  server_default=functions.now(), index=True)
+    user_login = Column(String, ForeignKey('users.login'))
+    user = relationship('User')
+    project_id = Column(Integer, ForeignKey('projects.id'), index=True)
+    project = relationship('Project')
+    document_id = Column(Integer, ForeignKey('documents.id'),
+                         nullable=True)
+    document = relationship('Document')
+    payload = Column(JSON, nullable=False)
+
+    __table_args__ = (
+        Index('idx_project_document', 'project_id', 'document_id'),
+    )
+
+    @classmethod
+    def project_meta(cls, user_login, project_id, name, description):
+        return cls(
+            user_login=user_login,
+            project_id=project_id,
+            payload={'type': 'project_meta',
+                     'name': name,
+                     'description': description},
+        )
+
+    @classmethod
+    def document_add(cls, user_login, document):
+        return cls(
+            user_login=user_login,
+            project_id=document.project_id,
+            document=document,
+            payload={'type': 'document_add',
+                     'name': document.name,
+                     'description': document.description},
+        )
+
+    @classmethod
+    def highlight_add(cls, user_login, document, highlight):
+        assert isinstance(highlight.id, int)
+        return cls(
+            user_login=user_login,
+            project_id=document.project_id,
+            document=document,
+            payload={'type': 'highlight_add',
+                     'id': highlight.id,
+                     'start_offset': highlight.start_offset,
+                     'end_offset': highlight.end_offset},
+        )
+
+    @classmethod
+    def highlight_delete(cls, user_login, document, highlight):
+        assert isinstance(highlight.id, int)
+        return cls(
+            user_login=user_login,
+            project_id=document.project_id,
+            document=document,
+            payload={'type': 'highlight_delete',
+                     'id': highlight.id},
+        )
+
+
+Project.last_event = column_property(
+    select(
+        [Command.date]
+    ).where(
+        Command.project_id == 1
+    ).order_by(
+        Command.id.desc()
+    ).as_scalar()
+)
 
 
 class Highlight(Base):

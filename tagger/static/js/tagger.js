@@ -292,9 +292,7 @@ var current_document = null;
 var documents_list = document.getElementById('documents-list');
 var documents_retry = 5;
 
-function setDocumentsList(docs) {
-  documents = docs
-
+function updateDocumentsList() {
   // Empty the list
   while(documents_list.firstChild) {
     var first = documents_list.firstChild;
@@ -307,8 +305,9 @@ function setDocumentsList(docs) {
 
   // Fill up the list again
   var before = documents_list.firstChild;
-  for(var i = 0; i < documents.length; ++i) {
-    var doc = documents[i];
+  var entries = Object.entries(documents);
+  for(var i = 0; i < entries.length; ++i) {
+    var doc = entries[i][1];
     var elem = document.createElement('a');
     elem.className = 'list-group-item';
     elem.href = '#';
@@ -319,7 +318,7 @@ function setDocumentsList(docs) {
     });
     documents_list.insertBefore(elem, before);
   }
-  if(documents.length == 0) {
+  if(entries.length == 0) {
     var elem = document.createElement('div');
     elem.className = 'list-group-item disabled';
     elem.textContent = "There are no documents in this project yet.";
@@ -328,7 +327,17 @@ function setDocumentsList(docs) {
   console.log("Documents list updated");
 }
 
-setDocumentsList(documents);
+updateDocumentsList();
+
+function addDocument(document) {
+  documents['' + document.id] = document;
+  updateDocumentsList();
+}
+
+function removeDocument(document_id) {
+  delete documents['' + document_id];
+  updateDocumentsList();
+}
 
 var document_contents = document.getElementById('document-contents');
 
@@ -356,7 +365,7 @@ function loadDocument(document_id) {
 
 var document_add_modal = document.getElementById('document-add-modal');
 
-function addDocument() {
+function createDocument() {
   $(document_add_modal).modal();
 }
 
@@ -424,7 +433,7 @@ function setHighlight(highlight) {
     removeHighlight(highlight[id]);
   }
   highlight[id] = highlight;
-  highlightSelection([highlight.offsetStart, highlight.offsetEnd], id);
+  highlightSelection([highlight.start_offset, highlight.end_offset], id);
   console.log("Highlight updated:", highlight);
 }
 
@@ -438,8 +447,8 @@ function removeHighlight(id) {
   console.log("Highlight removed:", id);
   delete highlights[id];
 
-  var start = locatePos(highlights[id].offsetStart)[0];
-  var end = locatePos(highlights[id].offsetEnd)[0];
+  var start = locatePos(highlights[id].start_offset)[0];
+  var end = locatePos(highlights[id].end_offset)[0];
 
   var node = start;
   while(node != end) {
@@ -495,11 +504,9 @@ function createHighlight(selection) {
   // TODO: Modal to add tags
   postJSON(
     '/project/' + project_id + '/document/' + current_document + '/highlight/new',
-    {offsetStart: selection[0],
-     offsetEnd: selection[1]}
+    {start_offset: selection[0],
+     end_offset: selection[1]}
   )
-  // FIXME: For now, reload document (no notification)
-  .then(function() { loadDocument(current_document); })
   .catch(function(error) {
     console.error("failed to create highlight:", error);
   });
@@ -520,25 +527,27 @@ function longPollForEvents() {
   .then(function(result) {
     console.log("Polling: ", result);
     long_polling_retry = 5;
-    if('project' in result) {
+    if('project_meta' in result) {
       setProjectMetadata(result.project);
     }
-    if('documents' in result) {
-      setDocumentsList(result.documents);
-    }
-    if('highlightsRemove' in result) {
-      var removed = result.highlightsRemove[current_document];
-      if(removed) {
-        for(var i = 0; i < removed.length; ++i) {
-          removeHighlight(removed[i]);
-        }
+    if('document_add' in result) {
+      for(var i = 0; i < result.document_add.length; ++i) {
+        addDocument(result.document_add[i]);
       }
     }
-    if('highlightsAdd' in result) {
-      var added = result.highlightsAdd[current_document];
+    if('highlight_add' in result) {
+      var added = result.highlight_add[current_document];
       if(added) {
         for(var i = 0; i < added.length; ++i) {
           setHighlight(added[i]);
+        }
+      }
+    }
+    if('highlight_delete' in result) {
+      var removed = result.highlight_delete[current_document];
+      if(removed) {
+        for(var i = 0; i < removed.length; ++i) {
+          removeHighlight(removed[i]);
         }
       }
     }

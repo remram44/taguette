@@ -4,7 +4,7 @@ import json
 import logging
 import jinja2
 import os
-from sqlalchemy.orm import joinedload, undefer
+from sqlalchemy.orm import joinedload, undefer, make_transient
 from tornado.concurrent import Future
 import tornado.ioloop
 from tornado.routing import URLSpec
@@ -195,11 +195,14 @@ class Project(BaseHandler):
     @authenticated
     def get(self, project_id):
         project = self.get_project(project_id)
-        documents_json = jinja2.Markup(json.dumps([
-            {'id': doc.id, 'name': doc.name,
-             'description': doc.description}
-            for doc in project.documents
-        ]))
+        documents_json = jinja2.Markup(json.dumps(
+            {
+                doc.id: {'id': doc.id, 'name': doc.name,
+                 'description': doc.description}
+                for doc in project.documents
+            },
+            sort_keys=True,
+        ))
         self.render('project.html',
                     project=project,
                     last_event=js_timestamp(project.last_event),
@@ -223,9 +226,16 @@ class ProjectMeta(BaseHandler):
         project.meta_updated = now
         logger.info("Updated project: %r %r",
                     project.name, project.description)
+        cmd = database.Command.project_meta(
+            self.current_user,
+            project.id,
+            obj['name'],
+            obj['description'],
+        )
+        self.db.add(cmd)
         self.db.commit()
-        logger.info("COMMIT PROJECT")
-        self.application.notify_project(project.id, 'meta')
+        self.db.refresh(cmd)
+        self.application.notify_project(project.id, cmd)
         return self.send_json({'ts': js_timestamp(now)})
 
 
@@ -257,8 +267,16 @@ class DocumentAdd(BaseHandler):
             )
             self.db.add(doc)
             project.documents_updated = datetime.utcnow()
+            cmd = database.Command.document_add(
+                self.current_user,
+                doc,
+            )
+            self.db.add(cmd)
+            logger.info("Document added to project %r: %r %r (%d bytes)",
+                        project.id, doc.id, doc.name, len(doc.contents))
             self.db.commit()
-            self.application.notify_project(project.id, 'documents')
+            self.db.refresh(cmd)
+            self.application.notify_project(project.id, cmd)
             self.send_json({'created': doc.id})
 
 
@@ -270,8 +288,8 @@ class DocumentContents(BaseHandler):
             'contents': document.contents,
             'highlights': [
                 {'id': hl.id,
-                 'offsetStart': hl.start_offset,
-                 'offsetEnd': hl.end_offset}
+                 'start_offset': hl.start_offset,
+                 'end_offset': hl.end_offset}
                 for hl in document.highlights
             ],
         })
@@ -283,11 +301,19 @@ class HighlightAdd(BaseHandler):
         obj = self.get_json()
         document = self.get_document(project_id, document_id)
         hl = database.Highlight(document=document,
-                                start_offset=obj['offsetStart'],
-                                end_offset=obj['offsetEnd'])
+                                start_offset=obj['start_offset'],
+                                end_offset=obj['end_offset'])
         self.db.add(hl)
+        self.db.commit()  # Need to commit to get hl.id
+        cmd = database.Command.highlight_add(
+            self.current_user,
+            document,
+            hl,
+        )
+        self.db.add(cmd)
         self.db.commit()
-        # TODO: Notify long polling
+        self.db.refresh(cmd)
+        self.application.notify_project(document.project_id, cmd)
 
         self.send_json({'id': hl.id})
 
@@ -302,70 +328,69 @@ class HighlightUpdate(BaseHandler):
             raise HTTPError(404)
         if not obj:
             self.db.delete(hl)
-            self.db.commit()
+            cmd = database.Command.highlight_delete(
+                self.current_user,
+                document,
+                hl.id,
+            )
         else:
-            hl.start_offset = obj['offsetStart']
-            hl.end_offset = obj['offsetEnd']
-            self.db.commit()
-        # TODO: Notify long polling
+            hl.start_offset = obj['start_offset']
+            hl.end_offset = obj['end_offset']
+            cmd = database.Command.highlight_add(
+                self.current_user,
+                document,
+                hl,
+            )
+        self.db.add(cmd)
+        self.db.commit()
+        self.db.refresh(cmd)
+        self.application.notify_project(document.project_id, cmd)
 
         self.send_json({'id': hl.id})
 
 
 class ProjectEvents(BaseHandler):
-    def meta_updated(self, result, project=None):
-        if project is None:
-            project = self.get_project(self.project_id)
-        result['ts'] = max(result.get('ts', 0),
-                           js_timestamp(project.meta_updated))
-        result['project'] = {'name': project.name,
-                             'description': project.description}
-
-    def documents_updated(self, result, project=None):
-        if project is None:
-            project = self.get_project(self.project_id)
-        result['ts'] = max(result.get('ts', 0),
-                           js_timestamp(project.documents_updated))
-        result['documents'] = [
-            {'id': doc.id, 'name': doc.name, 'description': doc.description}
-            for doc in project.documents
-        ]
-
     @authenticated
     async def get(self, project_id):
         from_ts = int(self.get_query_argument('from'))
+        from_dt = datetime.utcfromtimestamp(from_ts)
         project = self.get_project(project_id)
         self.project_id = int(project_id)
-        result = {}
 
         # Check for immediate update
-        if js_timestamp(project.meta_updated) > from_ts:
-            self.meta_updated(result, project)
-        if js_timestamp(project.documents_updated) > from_ts:
-            self.documents_updated(result, project)
-        if result:
-            self.send_json(result)
-            return
+        cmd = (
+            self.db.query(database.Command)
+            .filter(database.Command.date > from_dt)
+        ).one_or_none()
 
         # Wait for an event
-        self.wait_future = Future()
-        self.application.observe_project(project.id, self.wait_future)
-        self.db.expire_all()
-        try:
-            event = await self.wait_future
-        except asyncio.CancelledError:
-            return
+        if cmd is None:
+            self.wait_future = Future()
+            self.application.observe_project(project.id, self.wait_future)
+            self.db.expire_all()
+            try:
+                cmd = await self.wait_future
+            except asyncio.CancelledError:
+                return
 
-        if js_timestamp(project.meta_updated) > from_ts:
-            self.meta_updated(result)
-        if js_timestamp(project.documents_updated) > from_ts:
-            self.documents_updated(result)
-        if result:
-            self.send_json(result)
+        payload = dict(cmd.payload)
+        type_ = payload.pop('type', None)
+        if type_ == 'project_meta':
+            result = {'project_meta': payload}
+        elif type_ == 'document_add':
+            payload['id'] = cmd.document_id
+            result = {'document_add': [payload]}
+        elif type_ == 'highlight_add':
+            result = {'highlight_add': {cmd.document_id: [payload]}}
+        elif type_ == 'highlight_delete':
+            result = {
+                'highlight_delete': {cmd.document_id: [payload['id']]}
+            }
         else:
-            logger.error("Got an event but nothing changed? (project_id=%d)",
-                         project_id)
-            self.set_status(500)
+            raise ValueError("Unknown command type %r" % type_)
+
+        result['ts'] = js_timestamp(cmd.date)
+        self.send_json(result)
 
     def on_connection_close(self):
         self.wait_future.cancel()
@@ -386,10 +411,11 @@ class Application(tornado.web.Application):
         assert isinstance(project_id, int)
         self.event_waiters[project_id].remove(future)
 
-    def notify_project(self, project_id, *args):
+    def notify_project(self, project_id, cmd):
         assert isinstance(project_id, int)
+        make_transient(cmd)
         for future in self.event_waiters.pop(project_id, []):
-            future.set_result(args)
+            future.set_result(cmd)
 
 
 def make_app():
