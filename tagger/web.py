@@ -203,11 +203,11 @@ class ProjectMeta(BaseHandler):
                     project.name, project.description)
         self.db.commit()
         logger.info("COMMIT PROJECT")
-        self.application.notify_long_polling(('project', project_id), 'meta')
+        self.application.notify_project(project.id, 'meta')
         return self.send_json({'ts': js_timestamp(now)})
 
 
-class ProjectDocumentAdd(BaseHandler):
+class DocumentAdd(BaseHandler):
     @authenticated
     def post(self, project_id):
         project = self.get_project(project_id)
@@ -236,12 +236,11 @@ class ProjectDocumentAdd(BaseHandler):
             self.db.add(doc)
             project.documents_updated = datetime.utcnow()
             self.db.commit()
-            self.application.notify_long_polling(('project', project_id),
-                                                 'documents')
+            self.application.notify_project(project.id, 'documents')
             self.send_json({'created': doc.id})
 
 
-class ProjectDocumentContents(BaseHandler):
+class DocumentContents(BaseHandler):
     @authenticated
     def get(self, project_id, document_id):
         try:
@@ -286,9 +285,9 @@ class ProjectEvents(BaseHandler):
 
     @authenticated
     async def get(self, project_id):
-        self.project_id = project_id
         from_ts = int(self.get_query_argument('from'))
         project = self.get_project(project_id)
+        self.project_id = int(project_id)
         result = {}
 
         # Check for immediate update
@@ -302,8 +301,7 @@ class ProjectEvents(BaseHandler):
 
         # Wait for an event
         self.wait_future = Future()
-        self.application.register_long_polling(('project', project_id),
-                                               self.wait_future)
+        self.application.observe_project(project.id, self.wait_future)
         self.db.expire_all()
         try:
             event = await self.wait_future
@@ -323,8 +321,7 @@ class ProjectEvents(BaseHandler):
 
     def on_connection_close(self):
         self.wait_future.cancel()
-        self.application.remove_long_polling(('project', self.project_id),
-                                             self.wait_future)
+        self.application.unobserve_project(self.project_id, self.wait_future)
 
 
 class Application(tornado.web.Application):
@@ -333,15 +330,18 @@ class Application(tornado.web.Application):
 
         self.event_waiters = {}
 
-    def register_long_polling(self, key, future):
-        self.event_waiters.setdefault(key, set()).add(future)
+    def observe_project(self, project_id, future):
+        assert isinstance(project_id, int)
+        self.event_waiters.setdefault(project_id, set()).add(future)
 
-    def remove_long_polling(self, key, future):
-        self.event_waiters[key].remove(future)
+    def unobserve_project(self, project_id, future):
+        assert isinstance(project_id, int)
+        self.event_waiters[project_id].remove(future)
 
-    def notify_long_polling(self, key, value):
-        for future in self.event_waiters.pop(key, []):
-            future.set_result(value)
+    def notify_project(self, project_id, *args):
+        assert isinstance(project_id, int)
+        for future in self.event_waiters.pop(project_id, []):
+            future.set_result(args)
 
 
 def make_app():
@@ -353,9 +353,8 @@ def make_app():
             URLSpec('/new', NewProject, name='new_project'),
             URLSpec('/project/([0-9]+)', Project, name='project'),
             URLSpec('/project/([0-9]+)/meta', ProjectMeta),
-            URLSpec('/project/([0-9]+)/documents/new', ProjectDocumentAdd),
-            URLSpec('/project/([0-9]+)/documents/([0-9]+)',
-                    ProjectDocumentContents),
+            URLSpec('/project/([0-9]+)/documents/new', DocumentAdd),
+            URLSpec('/project/([0-9]+)/documents/([0-9]+)', DocumentContents),
             URLSpec('/project/([0-9]+)/events', ProjectEvents),
         ],
         static_path=os.path.join(os.path.dirname(__file__), 'static'),
