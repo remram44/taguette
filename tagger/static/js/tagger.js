@@ -68,7 +68,7 @@ function getCookie(name) {
   return r ? r[1] : undefined;
 }
 
-function getPage(url='', args) {
+function getJSON(url='', args) {
   if(args) {
     args = '&' + encodeGetParams(args);
   } else {
@@ -80,12 +80,7 @@ function getPage(url='', args) {
       credentials: 'same-origin',
       mode: 'same-origin'
     }
-  );
-}
-
-function getJSON(url='', args) {
-  return getPage(url, args)
-  .then(function(response) {
+  ).then(function(response) {
     if(response.status != 200) {
       throw "Status " + response.status;
     }
@@ -338,17 +333,17 @@ setDocumentsList(documents);
 var document_contents = document.getElementById('document-contents');
 
 function loadDocument(document_id) {
-  getPage(
+  getJSON(
     '/project/' + project_id + '/document/' + document_id
   )
   .then(function(result) {
-    if(result.status == 200) {
-      result.text().then(function(contents) {
-        document_contents.innerHTML = contents;
-        current_document = document_id;
-      });
-      console.log("Loaded document", document_id);
+    document_contents.innerHTML = result.contents;
+    current_document = document_id;
+    console.log("Loaded document", document_id);
+    for(var i = 0; i < result.highlights.length; ++i) {
+      setHighlight(result.highlights[i]);
     }
+    console.log("Loaded " + result.highlights.length + " highlights")
   }, function(error) {
     console.error("failed to load document");
   });
@@ -503,6 +498,8 @@ function createHighlight(selection) {
     {offsetStart: selection[0],
      offsetEnd: selection[1]}
   )
+  // FIXME: For now, reload document (no notification)
+  .then(function() { loadDocument(current_document); })
   .catch(function(error) {
     console.error("failed to create highlight:", error);
   });

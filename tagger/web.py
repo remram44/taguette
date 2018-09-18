@@ -266,7 +266,15 @@ class DocumentContents(BaseHandler):
     @authenticated
     def get(self, project_id, document_id):
         document = self.get_document(project_id, document_id, True)
-        self.finish(document.contents)
+        self.send_json({
+            'contents': document.contents,
+            'highlights': [
+                {'id': hl.id,
+                 'offsetStart': hl.start_offset,
+                 'offsetEnd': hl.end_offset}
+                for hl in document.highlights
+            ],
+        })
 
 
 class HighlightAdd(BaseHandler):
