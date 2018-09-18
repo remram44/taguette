@@ -414,6 +414,58 @@ var tags_list = document.getElementById('tags-list');
  * Highlights
  */
 
+var highlights = {};
+
+// Add or replace a highlight
+function setHighlight(highlight) {
+  var id = '' + highlight.id;
+  if(highlight[id]) {
+    removeHighlight(highlight[id]);
+  }
+  highlight[id] = highlight;
+  highlightSelection([highlight.offsetStart, highlight.offsetEnd], id);
+  console.log("Highlight updated:", highlight);
+}
+
+// Remove a highlight
+function removeHighlight(id) {
+  id = '' + id;
+  if(!highlights[id]) {
+    return;
+  }
+
+  console.log("Highlight removed:", id);
+  delete highlights[id];
+
+  var start = locatePos(highlights[id].offsetStart)[0];
+  var end = locatePos(highlights[id].offsetEnd)[0];
+
+  var node = start;
+  while(node != end) {
+    var classes = node.classList;
+    if(classes && classes.contains('highlight-' + id)) {
+      while(node.firstChild) {
+        node.parent.insertBefore(node.firstChild, node);
+      }
+      node.parent.removeChild(node);
+    }
+    if(node.firstChild) {
+      node = node.firstChild;
+    } else {
+      while(!node.nextSibling) {
+        node = node.parentNode;
+        if(node == end) return;
+      }
+      node = node.nextSibling;
+    }
+  }
+}
+
+
+/*
+ * Add highlight
+ */
+
 // Updates current_selection and visibility of the controls
 function selectionChanged() {
   current_selection = describeSelection();
@@ -436,6 +488,19 @@ function mouseIsUp(e) {
   }, 1);
 }
 document.addEventListener('mouseup', mouseIsUp);
+
+function createHighlight(selection) {
+  console.log("Posting new highlight");
+  // TODO: Modal to add tags
+  postJSON(
+    '/project/' + project_id + '/documents/' + current_document + '/highlights/new',
+    {offsetStart: selection[0],
+     offsetEnd: selection[1]}
+  )
+  .catch(function(error) {
+    console.error("failed to create highlight:", error);
+  });
+}
 
 
 /*
