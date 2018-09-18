@@ -10,10 +10,10 @@
     <!-- Tab selector -->
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item">
-        <a class="nav-link active" id="project-tab" data-toggle="tab" href="#project" role="tab" aria-controls="project" aria-selected="true">Project info</a>
+        <a class="nav-link" id="project-tab" data-toggle="tab" href="#project" role="tab" aria-controls="project" aria-selected="true">Project info</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" id="documents-tab" data-toggle="tab" href="#documents" role="tab" aria-controls="documents" aria-selected="false">Documents</a>
+        <a class="nav-link active" id="documents-tab" data-toggle="tab" href="#documents" role="tab" aria-controls="documents" aria-selected="false">Documents</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" id="tags-tab" data-toggle="tab" href="#tags" role="tab" aria-controls="tags" aria-selected="false">Tags</a>
@@ -23,7 +23,7 @@
     <div class="tab-content" id="myTabContent">
 
       <!-- Project info and metadata -->
-      <div class="tab-pane fade show active" id="project" role="tabpanel" aria-labelledby="project-tab">
+      <div class="tab-pane fade" id="project" role="tabpanel" aria-labelledby="project-tab">
         <form id="project-metadata-form">
           <div class="form-group">
             <label for="project-name" class="col-sm-2 col-form-label">Name</label>
@@ -37,7 +37,7 @@
       </div>
 
       <!-- List of documents -->
-      <div class="tab-pane fade" id="documents" role="tabpanel" aria-labelledby="documents-tab">
+      <div class="tab-pane fade show active" id="documents" role="tabpanel" aria-labelledby="documents-tab">
         <div class="list-group list-group-flush" id="documents-list">
           <div class="list-group-item disabled">Loading...</div>
           <a class="list-group-item list-group-item-primary" href="javascript:createDocument()">Add a document</a>
