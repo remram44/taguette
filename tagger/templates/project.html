@@ -99,6 +99,7 @@
   </div>
 </div>
 
+<!-- Add document modal -->
 <div class="modal" id="document-add-modal" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <form id="document-add-form" class="modal-content">
@@ -133,14 +134,17 @@
   </div>
 </div>
 
+<!-- Avoid doing requests, this is 2018 and we are good at engineering -->
 <script type="text/javascript">
   var project_id = {{ project.id }};
   var last_event = {{ last_event }};
   var documents = {{ documents }};
 </script>
 
+<!-- Should minify this but I hate NPM -->
 <script type="text/javascript" src="{{ static_url('js/tagger.js') }}"></script>
 
+<!-- "New highlight" button shown after selecting text -->
 <div id="hlinfo"><a href="javascript:createHighlight(current_selection);">[new highlight]</a></div>
 
 {% endblock %}
