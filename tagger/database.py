@@ -2,7 +2,7 @@ import bcrypt
 import enum
 import logging
 import os
-from sqlalchemy import Column, ForeignKey, create_engine
+from sqlalchemy import Column, ForeignKey, Index, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import deferred, relationship, sessionmaker
 from sqlalchemy.sql import functions
@@ -73,9 +73,11 @@ class Privileges(enum.Enum):
 class ProjectMember(Base):
     __tablename__ = 'project_members'
 
-    project_id = Column(Integer, ForeignKey('projects.id'), primary_key=True)
+    project_id = Column(Integer, ForeignKey('projects.id'), primary_key=True,
+                        index=True)
     project = relationship('Project')
-    user_login = Column(Integer, ForeignKey('users.login'), primary_key=True)
+    user_login = Column(Integer, ForeignKey('users.login'), primary_key=True,
+                        index=True)
     user = relationship('User')
     privileges = Column(Enum(Privileges), nullable=False)
 
@@ -89,7 +91,7 @@ class Document(Base):
     filename = Column(String, nullable=True)
     created = Column(DateTime, nullable=False,
                      server_default=functions.now())
-    project_id = Column(Integer, ForeignKey('projects.id'))
+    project_id = Column(Integer, ForeignKey('projects.id'), index=True)
     project = relationship('Project', back_populates='documents')
     contents = deferred(Column(Text, nullable=False))
     doctags = relationship('DocTag', secondary='document_doctags')
@@ -100,7 +102,7 @@ class Highlight(Base):
     __tablename__ = 'highlights'
 
     id = Column(Integer, primary_key=True)
-    document_id = Column(Integer, ForeignKey('documents.id'))
+    document_id = Column(Integer, ForeignKey('documents.id'), index=True)
     document = relationship('Document', back_populates='highlights')
     start_offset = Column(Integer, nullable=False)
     end_offset = Column(Integer, nullable=False)
