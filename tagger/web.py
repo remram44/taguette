@@ -304,6 +304,7 @@ class HighlightAdd(BaseHandler):
                                 start_offset=obj['start_offset'],
                                 end_offset=obj['end_offset'])
         self.db.add(hl)
+        # TODO: hltags
         self.db.commit()  # Need to commit to get hl.id
         cmd = database.Command.highlight_add(
             self.current_user,
@@ -334,8 +335,11 @@ class HighlightUpdate(BaseHandler):
                 hl.id,
             )
         else:
-            hl.start_offset = obj['start_offset']
-            hl.end_offset = obj['end_offset']
+            if 'start_offset' in obj:
+                hl.start_offset = obj['start_offset']
+            if 'end_offset' in obj:
+                hl.end_offset = obj['end_offset']
+            # TODO: hltags
             cmd = database.Command.highlight_add(
                 self.current_user,
                 document,
@@ -431,7 +435,8 @@ def make_app():
             URLSpec('/project/([0-9]+)/document/([0-9]+)', DocumentContents),
             URLSpec('/project/([0-9]+)/document/([0-9]+)/highlight/new',
                     HighlightAdd),
-            URLSpec('/project/([0-9]+)/highlight', HighlightUpdate),
+            URLSpec('/project/([0-9]+)/document/([0-9]+)/highlight/([0-9]+)',
+                    HighlightUpdate),
             URLSpec('/project/([0-9]+)/events', ProjectEvents),
         ],
         static_path=os.path.join(os.path.dirname(__file__), 'static'),

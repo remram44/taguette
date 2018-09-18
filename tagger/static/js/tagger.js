@@ -269,7 +269,7 @@ function projectMetadataChanged() {
       setProjectMetadata(meta, false);
       last_event = result.ts;
     }, function(error) {
-      console.error("failed to update project metadata:", error);
+      console.error("Failed to update project metadata:", error);
       project_name_input.value = project_name;
       project_description_input.value = project_description;
     });
@@ -354,7 +354,7 @@ function loadDocument(document_id) {
     }
     console.log("Loaded " + result.highlights.length + " highlights")
   }, function(error) {
-    console.error("failed to load document");
+    console.error("Failed to load document");
   });
 }
 
@@ -434,7 +434,7 @@ function setHighlight(highlight) {
   }
   highlight[id] = highlight;
   highlightSelection([highlight.start_offset, highlight.end_offset], id);
-  console.log("Highlight updated:", highlight);
+  console.log("Highlight set:", highlight);
 }
 
 // Remove a highlight
@@ -476,6 +476,8 @@ function removeHighlight(id) {
  * Add highlight
  */
 
+var highlight_add_modal = document.getElementById('highlight-add-modal');
+
 // Updates current_selection and visibility of the controls
 function selectionChanged() {
   current_selection = describeSelection();
@@ -500,17 +502,65 @@ function mouseIsUp(e) {
 document.addEventListener('mouseup', mouseIsUp);
 
 function createHighlight(selection) {
-  console.log("Posting new highlight");
-  // TODO: Modal to add tags
-  postJSON(
-    '/project/' + project_id + '/document/' + current_document + '/highlight/new',
-    {start_offset: selection[0],
-     end_offset: selection[1]}
-  )
-  .catch(function(error) {
-    console.error("failed to create highlight:", error);
-  });
+  document.getElementById('highlight-add-id').value = '';
+  document.getElementById('highlight-add-start').value = selection[0];
+  document.getElementById('highlight-add-end').value = selection[1];
+  $(highlight_add_modal).modal();
 }
+
+// Save highlight button
+document.getElementById('highlight-add-form').addEventListener('submit', function(e) {
+  var highlight_id = document.getElementById('highlight-add-id').value;
+  var selection = [
+    document.getElementById('highlight-add-start').value,
+    document.getElementById('highlight-add-end').value
+  ];
+  var req;
+  if(highlight_id) {
+    console.log("Posting update for highlight " + highlight_id);
+    req = postJSON(
+      '/project/' + project_id + '/document/' + current_document + '/highlight/' + highlight_id,
+      {start_offset: selection[0],
+       end_offset: selection[1]}
+    );
+  } else {
+    console.log("Posting new highlight");
+    req = postJSON(
+      '/project/' + project_id + '/document/' + current_document + '/highlight/new',
+      {start_offset: selection[0],
+       end_offset: selection[1]}
+    );
+  }
+  req.then(function() {
+    console.log("Highlight posted");
+    $(highlight_add_modal).modal('hide');
+    document.getElementById('highlight-add-form').reset();
+  }, function(error) {
+    console.error("Failed to create highlight:", error);
+  });
+
+  e.preventDefault();
+});
+
+// Delete highlight button
+document.getElementById('highlight-delete').addEventListener('click', function(e) {
+  var highlight_id = document.getElementById('highlight-add-id').value;
+  if(highlight_id) {
+    highlight_id = parseInt(highlight_id);
+    console.log("Posting highlight " + highlight_id + "deletion");
+    postJSON(
+      '/project/' + project_id + '/document/' + current_document + '/highlight/' + highlight_id,
+      {}
+    )
+    .then(function() {
+      $(highlight_add_modal).modal('hide');
+      document.getElementById('highlight-add-form').reset();
+    }, function(error) {
+      console.error("Failed to delete highlight:", error);
+    });
+  }
+  document.getElementById('highlight-add-form').reset();
+});
 
 
 /*
