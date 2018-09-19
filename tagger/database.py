@@ -102,7 +102,8 @@ class Document(Base):
     filename = Column(String, nullable=True)
     created = Column(DateTime, nullable=False,
                      server_default=functions.now())
-    project_id = Column(Integer, ForeignKey('projects.id'), index=True)
+    project_id = Column(Integer, ForeignKey('projects.id'), nullable=False,
+                        index=True)
     project = relationship('Project', back_populates='documents')
     contents = deferred(Column(Text, nullable=False))
     doctags = relationship('DocTag', secondary='document_doctags')
@@ -115,9 +116,10 @@ class Command(Base):
     id = Column(Integer, primary_key=True)
     date = Column(DateTime, nullable=False,
                   server_default=functions.now(), index=True)
-    user_login = Column(String, ForeignKey('users.login'))
+    user_login = Column(String, ForeignKey('users.login'), nullable=False)
     user = relationship('User')
-    project_id = Column(Integer, ForeignKey('projects.id'), index=True)
+    project_id = Column(Integer, ForeignKey('projects.id'), nullable=False,
+                        index=True)
     project = relationship('Project')
     document_id = Column(Integer, ForeignKey('documents.id'),
                          nullable=True)
@@ -189,7 +191,8 @@ class Highlight(Base):
     __tablename__ = 'highlights'
 
     id = Column(Integer, primary_key=True)
-    document_id = Column(Integer, ForeignKey('documents.id'), index=True)
+    document_id = Column(Integer, ForeignKey('documents.id'), nullable=False,
+                         index=True)
     document = relationship('Document', back_populates='highlights')
     start_offset = Column(Integer, nullable=False)
     end_offset = Column(Integer, nullable=False)
