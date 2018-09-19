@@ -177,9 +177,9 @@ class NewProject(BaseHandler):
         )
         self.db.add(membership)
         # Add default set of tags
-        self.db.add(database.HlTag(path='interesting',
+        self.db.add(database.HlTag(project=project, path='interesting',
                                    description="Further review required"))
-        self.db.add(database.HlTag(path='people',
+        self.db.add(database.HlTag(project=project, path='people',
                                    description="Known people"))
 
         self.db.commit()

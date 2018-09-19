@@ -5,7 +5,7 @@ import logging
 import os
 from sqlalchemy import Column, ForeignKey, Index, TypeDecorator, \
     create_engine, select
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.ext.declarative import declarative_base, declared_attr
 from sqlalchemy.orm import column_property, deferred, relationship, \
     sessionmaker
 from sqlalchemy.sql import functions
@@ -70,8 +70,9 @@ class Project(Base):
     description = Column(Text, nullable=False)
     created = Column(DateTime, nullable=False,
                      server_default=functions.now())
-    documents = relationship('Document')
     members = relationship('User', secondary='project_members')
+    documents = relationship('Document')
+    hltags = relationship('HlTag')
 
 
 class Privileges(enum.Enum):
@@ -201,6 +202,13 @@ class Highlight(Base):
 
 class Tag(object):
     id = Column(Integer, primary_key=True)
+    @declared_attr
+    def project_id(cls):
+        return Column(Integer, ForeignKey('projects.id'), nullable=False,
+                      index=True)
+    @declared_attr
+    def project(cls):
+        return relationship('Project')
     path = Column(String, nullable=False)
     description = Column(Text, nullable=False)
 
