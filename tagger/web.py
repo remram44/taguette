@@ -8,7 +8,7 @@ from sqlalchemy.orm import joinedload, undefer, make_transient
 from tornado.concurrent import Future
 import tornado.ioloop
 from tornado.routing import URLSpec
-from tornado.web import authenticated, HTTPError, RequestHandler, asynchronous
+from tornado.web import authenticated, HTTPError, RequestHandler
 
 from . import convert
 from . import database
@@ -241,7 +241,6 @@ class ProjectMeta(BaseHandler):
 
 class DocumentAdd(BaseHandler):
     @authenticated
-    @asynchronous
     async def post(self, project_id):
         project = self.get_project(project_id)
 
