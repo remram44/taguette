@@ -605,8 +605,6 @@ function highlightClicked(e) {
  * Long polling
  */
 
-var long_polling_retry = 5;
-
 function longPollForEvents() {
   getJSON(
     '/project/' + project_id + '/events',
@@ -614,7 +612,6 @@ function longPollForEvents() {
   )
   .then(function(result) {
     console.log("Polling: ", result);
-    long_polling_retry = 5;
     if('project_meta' in result) {
       setProjectMetadata(result.project);
     }
@@ -644,10 +641,7 @@ function longPollForEvents() {
     // Re-open connection
     setTimeout(longPollForEvents, 1000);
   }, function(error) {
-    setTimeout(longPollForEvents, long_polling_retry * 1000);
-    if(long_polling_retry < 60) {
-      long_polling_retry *= 2;
-    }
+    setTimeout(longPollForEvents, 5000);
   });
 }
 longPollForEvents();
