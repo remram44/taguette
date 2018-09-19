@@ -8,7 +8,7 @@ from sqlalchemy.orm import joinedload, undefer, make_transient
 from tornado.concurrent import Future
 import tornado.ioloop
 from tornado.routing import URLSpec
-from tornado.web import authenticated, HTTPError, RequestHandler
+from tornado.web import authenticated, HTTPError, RequestHandler, asynchronous
 
 from . import convert
 from . import database
@@ -241,7 +241,8 @@ class ProjectMeta(BaseHandler):
 
 class DocumentAdd(BaseHandler):
     @authenticated
-    def post(self, project_id):
+    @asynchronous
+    async def post(self, project_id):
         project = self.get_project(project_id)
 
         name = self.get_body_argument('name')
@@ -250,8 +251,8 @@ class DocumentAdd(BaseHandler):
         content_type = file.content_type
 
         try:
-            body = convert.to_numbered_html(file.body, content_type,
-                                            file.filename)
+            body = await convert.to_numbered_html(file.body, content_type,
+                                                  file.filename)
         except convert.ConversionError as err:
             self.set_status(400)
             self.send_json({
