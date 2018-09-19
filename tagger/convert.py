@@ -1,15 +1,16 @@
 import bleach
 import bs4
-import html
 import logging
 import os
-import re
 import shutil
 import tempfile
 from tornado.process import Subprocess, CalledProcessError
 
 
 logger = logging.getLogger(__name__)
+
+
+HTML_EXTENSIONS = ('.htm', '.html', '.xhtml')
 
 
 class ConversionError(ValueError):
@@ -20,27 +21,28 @@ class ConversionError(ValueError):
 async def to_html(body, content_type, filename):
     logger.info("Converting file %r, type %r", filename, content_type)
 
-    # Convert file to HTML using Calibre
-    tmp = tempfile.mkdtemp(prefix='tagger_calibre_')
-    try:
-        input_filename = os.path.join(tmp, filename)
-        with open(input_filename, 'wb') as fp:
-            fp.write(body)
-        output_dir = os.path.join(tmp, 'output')
-        cmd = ['ebook-convert', input_filename, output_dir]
-        logger.info("Running: %s", ' '.join(cmd))
-        proc = Subprocess(cmd)
+    if os.path.splitext(filename)[1].lower() not in HTML_EXTENSIONS:
+        # Convert file to HTML using Calibre
+        tmp = tempfile.mkdtemp(prefix='tagger_calibre_')
         try:
-            await proc.wait_for_exit()
-        except CalledProcessError as e:
-            raise ConversionError("Calibre returned %d" % e.returncode)
-        logger.info("ebook-convert successful")
-        output_filename = os.path.join(output_dir, 'index.html')
-        with open(output_filename, 'rb') as fp:
-            body = fp.read()
-        # TODO: Store media files
-    finally:
-        shutil.rmtree(tmp)
+            input_filename = os.path.join(tmp, filename)
+            with open(input_filename, 'wb') as fp:
+                fp.write(body)
+            output_dir = os.path.join(tmp, 'output')
+            cmd = ['ebook-convert', input_filename, output_dir]
+            logger.info("Running: %s", ' '.join(cmd))
+            proc = Subprocess(cmd)
+            try:
+                await proc.wait_for_exit()
+            except CalledProcessError as e:
+                raise ConversionError("Calibre returned %d" % e.returncode)
+            logger.info("ebook-convert successful")
+            output_filename = os.path.join(output_dir, 'index.html')
+            with open(output_filename, 'rb') as fp:
+                body = fp.read()
+            # TODO: Store media files
+        finally:
+            shutil.rmtree(tmp)
 
     # Use beautifulsoup to remove head, script, style elements
     # (bleach can do that, but would keep the text inside them)
