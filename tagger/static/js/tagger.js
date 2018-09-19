@@ -310,14 +310,18 @@ function updateDocumentsList() {
   var entries = Object.entries(documents);
   for(var i = 0; i < entries.length; ++i) {
     var doc = entries[i][1];
+    var url = '/project/' + project_id + '/document/' + doc.id;
     var elem = document.createElement('a');
     elem.className = 'list-group-item';
-    elem.href = '#';
+    elem.href = url;
     elem.textContent = doc.name;
-    elem.addEventListener('click', function(e) {
-      loadDocument(doc.id);
-      e.preventDefault();
-    });
+    (function(doc_id, url) {
+      elem.addEventListener('click', function(e) {
+        window.history.pushState({'document_id': doc_id}, "Document " + doc_id, url);
+        loadDocument(doc_id);
+        e.preventDefault();
+      });
+    })(doc.id, url);
     documents_list.insertBefore(elem, before);
   }
   if(entries.length == 0) {
@@ -344,8 +348,12 @@ function removeDocument(document_id) {
 var document_contents = document.getElementById('document-contents');
 
 function loadDocument(document_id) {
+  if(document_id === null) {
+    document_contents.innerHTML = '<p style="font-style: oblique; text-align: center;">Load a document on the left</p>';
+    return;
+  }
   getJSON(
-    '/project/' + project_id + '/document/' + document_id
+    '/project/' + project_id + '/document/' + document_id + '/content'
   )
   .then(function(result) {
     document_contents.innerHTML = result.contents;
@@ -359,6 +367,21 @@ function loadDocument(document_id) {
     console.error("Failed to load document");
   });
 }
+
+// Load the document if the URL includes one
+var m = window.location.pathname.match(/\/project\/([0-9]+)\/document\/([0-9]+)/);
+if(m) {
+  loadDocument(parseInt(m[2]));
+}
+
+// Load documents as we go through browser history
+window.onpopstate = function(e) {
+  if(e.state) {
+    loadDocument(e.state.document_id);
+  } else {
+    loadDocument(null);
+  }
+};
 
 
 /*
