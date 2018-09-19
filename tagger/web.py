@@ -250,8 +250,8 @@ class DocumentAdd(BaseHandler):
         content_type = file.content_type
 
         try:
-            body = await convert.to_numbered_html(file.body, content_type,
-                                                  file.filename)
+            body = await convert.to_html_chunks(file.body, content_type,
+                                                file.filename)
         except convert.ConversionError as err:
             self.set_status(400)
             self.send_json({
@@ -285,7 +285,7 @@ class DocumentContents(BaseHandler):
     def get(self, project_id, document_id):
         document = self.get_document(project_id, document_id, True)
         self.send_json({
-            'contents': document.contents,
+            'contents': '<div id="doc-item-1">%s</div>' % document.contents,
             'highlights': [
                 {'id': hl.id,
                  'start_offset': hl.start_offset,

@@ -13,6 +13,7 @@ req = [
     'sqlalchemy',
     'bcrypt',
     'jinja2',
+    'beautifulsoup4',
 ]
 setup(name='qualtag',
       version='0.0',

@@ -1,6 +1,7 @@
+import bleach
+import bs4
 import html
 import logging
-import mimetypes
 import os
 import re
 import shutil
@@ -16,57 +17,53 @@ class ConversionError(ValueError):
     """
 
 
-_re_paragraph_break = re.compile(r'(?:\s*\n){2,}\s*')
-
-
-def _plaintext_to_paragraphs(body):
-    body = body.decode('utf-8', 'replace')
-    body = html.escape(body).strip()
-    return _re_paragraph_break.split(body)
-
-
-async def to_paragraphs(body, content_type, filename):
-    # Use extension, browser might not understand type
-    if filename and '.' in filename:
-        guessed_type = mimetypes.guess_type(filename)[0]
-        if guessed_type:
-            content_type = guessed_type
-
+async def to_html(body, content_type, filename):
     logger.info("Converting file %r, type %r", filename, content_type)
 
-    if content_type == 'text/plain':
-        pass  # No conversion needed
-    else:
-        # Try Calibre
-        body = await _calibre(body, 'input.pdf')
-
-    return _plaintext_to_paragraphs(body)
-
-
-async def to_numbered_html(body, content_type, filename):
-    paragraphs = await to_paragraphs(body, content_type, filename)
-    return '\n\n'.join('<p id="doc-item-%d">%s</p>' % (i + 1, p)
-                       for i, p in enumerate(paragraphs))
-
-
-async def _calibre(body, filename):
+    # Convert file to HTML using Calibre
     tmp = tempfile.mkdtemp(prefix='tagger_calibre_')
     try:
         input_filename = os.path.join(tmp, filename)
         with open(input_filename, 'wb') as fp:
             fp.write(body)
-        output_filename = os.path.join(tmp, 'output.txt')
-        logger.info("Running ebook-convert")
-        proc = Subprocess(['ebook-convert',
-                           input_filename, output_filename,
-                           #'--txt-output-formatting=markdown', '--keep-links',
-                           '--newline=unix'])
+        output_dir = os.path.join(tmp, 'output')
+        cmd = ['ebook-convert', input_filename, output_dir]
+        logger.info("Running: %s", ' '.join(cmd))
+        proc = Subprocess(cmd)
         try:
             await proc.wait_for_exit()
         except CalledProcessError as e:
             raise ConversionError("Calibre returned %d" % e.returncode)
         logger.info("ebook-convert successful")
+        output_filename = os.path.join(output_dir, 'index.html')
         with open(output_filename, 'rb') as fp:
-            return fp.read()
+            body = fp.read()
+        # TODO: Store media files
     finally:
         shutil.rmtree(tmp)
+
+    # Use beautifulsoup to remove head, script, style elements
+    # (bleach can do that, but would keep the text inside them)
+    soup = bs4.BeautifulSoup(body, 'html5lib')
+    for tag in ['head', 'script', 'style']:
+        for e in soup.find_all(tag):
+            e.extract()
+    body = str(soup)
+    del soup
+
+    # Use bleach to sanitize the content
+    body = bleach.clean(
+        body,
+        tags=['p', 'a', 'img',
+              'strong', 'em', 'b', 'u'],
+        attributes={'a': ['href'], 'img': ['src']},
+        strip=True,
+    )
+
+    return body
+
+
+async def to_html_chunks(body, content_type, filename):
+    html = await to_html(body, content_type, filename)
+    # TODO: Do chunks
+    return html

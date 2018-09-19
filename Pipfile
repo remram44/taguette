@@ -8,6 +8,8 @@ tornado = "*"
 sqlalchemy = "*"
 bcrypt = "*"
 "jinja2" = "*"
+"beautifulsoup4" = "*"
+bleach = "*"
 
 [dev-packages]
 
