@@ -292,7 +292,6 @@ project_description_input.addEventListener('blur', projectMetadataChanged);
 
 var current_document = null;
 var documents_list = document.getElementById('documents-list');
-var documents_retry = 5;
 
 function updateDocumentsList() {
   // Empty the list
@@ -473,29 +472,15 @@ function removeHighlight(id) {
   delete highlights[id];
   console.log("Highlight removed:", id);
 
-  var start = locatePos(highlight.start_offset)[0];
-  var end = locatePos(highlight.end_offset)[0];
-
-  var node = start;
-  while(node != end) {
-    var classes = node.classList;
-    if(classes && classes.contains('highlight-' + id)) {
-      while(node.firstChild) {
-        node.parentNode.insertBefore(node.firstChild, node);
-      }
-      var parent = node.parentNode;
-      parent.removeChild(node);
-      node = parent;
+  // Loop over highlight-<id> elements
+  var elements = document.getElementsByClassName('highlight-' + id);
+  for(var i = 0; i < elements.length; ++i) {
+    // Move children up and delete this element
+    var node = elements[i];
+    while(node.firstChild) {
+      node.parentNode.insertBefore(node.firstChild, node);
     }
-    if(node.firstChild) {
-      node = node.firstChild;
-    } else {
-      while(!node.nextSibling) {
-        node = node.parentNode;
-        if(node == end) return;
-      }
-      node = node.nextSibling;
-    }
+    node.parentNode.removeChild(node);
   }
 }
 
