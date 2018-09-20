@@ -197,7 +197,7 @@ class Highlight(Base):
     document = relationship('Document', back_populates='highlights')
     start_offset = Column(Integer, nullable=False)
     end_offset = Column(Integer, nullable=False)
-    doctags = relationship('HlTag', secondary='highlight_hltags')
+    hltags = relationship('HlTag', secondary='highlight_hltags')
 
 
 class Tag(object):
