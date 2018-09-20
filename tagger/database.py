@@ -239,8 +239,10 @@ class HighlightHlTag(Base):
 
     highlight_id = Column(Integer, ForeignKey('highlights.id'),
                           primary_key=True)
+    highlight = relationship('Highlight')
     hltag_id = Column(Integer, ForeignKey('hltags.id'),
                       primary_key=True)
+    hltag = relationship('HlTag')
 
 
 def connect():

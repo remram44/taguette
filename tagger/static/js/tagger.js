@@ -648,7 +648,7 @@ function loadDocument(document_id) {
     }
     console.log("Loaded " + result.highlights.length + " highlights")
   }, function(error) {
-    console.error("Failed to load document");
+    console.error("Failed to load document:", error);
   });
 }
 
