@@ -303,7 +303,9 @@ class DocumentContents(BaseHandler):
     def get(self, project_id, document_id):
         document = self.get_document(project_id, document_id, True)
         self.send_json({
-            'contents': '<div id="doc-item-1">%s</div>' % document.contents,
+            'contents': [
+                {'offset': 0, 'contents': document.contents},
+            ],
             'highlights': [
                 {'id': hl.id,
                  'start_offset': hl.start_offset,

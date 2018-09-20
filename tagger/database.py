@@ -145,7 +145,7 @@ class Command(Base):
     def document_add(cls, user_login, document):
         return cls(
             user_login=user_login,
-            project_id=document.project_id,
+            project=document.project,
             document=document,
             payload={'type': 'document_add',
                      'name': document.name,

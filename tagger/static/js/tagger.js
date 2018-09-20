@@ -128,7 +128,9 @@ function postJSON(url='', data={}, args) {
  * Selection stuff
  */
 
-// Describe a position e.g. "3+56"
+var chunk_offsets = [];
+
+// Get the document offset from a position
 function describePos(node, offset) {
   while(!node.id) {
     if(node.previousSibling) {
@@ -138,18 +140,25 @@ function describePos(node, offset) {
       node = node.parentNode;
     }
   }
-  if(node.id.substring(0, 9) != 'doc-item-') {
+  if(node.id.substring(0, 11) != 'doc-offset-') {
     return null;
   }
-  return node.id.substring(9) + "+" + offset;
+  return parseInt(node.id.substring(11)) + offset;
 }
 
-// Find a described position
+// Find a position from the document offset
 function locatePos(pos) {
-  var split = pos.lastIndexOf("+");
-  var id = "doc-item-" + pos.substring(0, split);
-  var offset = parseInt(pos.substring(split + 1));
-  var node = document.getElementById(id);
+  // Find the right chunk
+  var chunk_start = 0;
+  for(var i = 0; i < chunk_offsets.length; ++i) {
+    if(chunk_offsets[i] > pos) {
+      break;
+    }
+    chunk_start = chunk_offsets[i];
+  }
+
+  var offset = pos - chunk_start;
+  var node = document.getElementById('doc-offset-' + chunk_start);
   while(node.firstChild) {
     node = node.firstChild;
   }
@@ -166,7 +175,7 @@ function locatePos(pos) {
 
 var current_selection = null;
 
-// Describe a selection e.g. ["3+56", "5+14"]
+// Describe the selection e.g. [14, 56]
 function describeSelection() {
   var sel = window.getSelection();
   if(sel.rangeCount != 0) {
@@ -174,7 +183,7 @@ function describeSelection() {
     if(!range.collapsed) {
       var start = describePos(range.startContainer, range.startOffset);
       var end = describePos(range.endContainer, range.endOffset);
-      if(start && end) {
+      if(start != null && end != null) {
         return [start, end];
       }
     }
@@ -622,7 +631,16 @@ function loadDocument(document_id) {
     '/project/' + project_id + '/document/' + document_id + '/content'
   )
   .then(function(result) {
-    document_contents.innerHTML = result.contents;
+    document_contents.innerHTML = '';
+    chunk_offsets = [];
+    for(var i = 0; i < result.contents.length; ++i) {
+      var chunk = result.contents[i];
+      var elem = document.createElement('div');
+      elem.setAttribute('id', 'doc-offset-' + chunk.offset);
+      elem.innerHTML = chunk.contents;
+      document_contents.appendChild(elem);
+      chunk_offsets.push(chunk.offset);
+    }
     current_document = document_id;
     console.log("Loaded document", document_id);
     for(var i = 0; i < result.highlights.length; ++i) {
