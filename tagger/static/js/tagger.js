@@ -9,6 +9,7 @@
  * - Tags list
  * - Highlights
  * - Add highlight
+ * - Load contents
  * - Long polling
 
 
@@ -36,6 +37,14 @@ function encodeGetParams(params) {
     .join("&");
 }
 
+function escapeHtml(s) {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 
 function nextElement(node) {
   while(node && !node.nextSibling) {
@@ -301,7 +310,7 @@ function updateDocumentsList() {
      && first.classList.contains('list-group-item-primary')) {
       break;
     }
-    documents_list.removeChild(documents_list.firstChild);
+    documents_list.removeChild(first);
   }
 
   // Fill up the list again
@@ -343,44 +352,6 @@ function removeDocument(document_id) {
   delete documents['' + document_id];
   updateDocumentsList();
 }
-
-var document_contents = document.getElementById('document-contents');
-
-function loadDocument(document_id) {
-  if(document_id === null) {
-    document_contents.innerHTML = '<p style="font-style: oblique; text-align: center;">Load a document on the left</p>';
-    return;
-  }
-  getJSON(
-    '/project/' + project_id + '/document/' + document_id + '/content'
-  )
-  .then(function(result) {
-    document_contents.innerHTML = result.contents;
-    current_document = document_id;
-    console.log("Loaded document", document_id);
-    for(var i = 0; i < result.highlights.length; ++i) {
-      setHighlight(result.highlights[i]);
-    }
-    console.log("Loaded " + result.highlights.length + " highlights")
-  }, function(error) {
-    console.error("Failed to load document");
-  });
-}
-
-// Load the document if the URL includes one
-var m = window.location.pathname.match(/\/project\/([0-9]+)\/document\/([0-9]+)/);
-if(m) {
-  loadDocument(parseInt(m[2]));
-}
-
-// Load documents as we go through browser history
-window.onpopstate = function(e) {
-  if(e.state) {
-    loadDocument(e.state.document_id);
-  } else {
-    loadDocument(null);
-  }
-};
 
 
 /*
@@ -441,7 +412,57 @@ document.getElementById('document-add-form').addEventListener('submit', function
  * Tags list
  */
 
-var tags_list = document.getElementById('tags-list');
+var hltags_list = document.getElementById('tags-list');
+
+function updateHlTagsList() {
+  // Empty the list
+  while(hltags_list.firstChild) {
+    var first = hltags_list.firstChild;
+    if(first.classList
+     && first.classList.contains('list-group-item-primary')) {
+      break;
+    }
+    hltags_list.removeChild(first);
+  }
+
+  // Fill up the list again
+  // TODO: Show this as a tree
+  var tree = {};
+  var before = hltags_list.firstChild;
+  var entries = Object.entries(hltags);
+  for(var i = 0; i < entries.length; ++i) {
+    var tag = entries[i][1];
+    var url = '/project/' + project_id + '/tag/' + tag.id;
+    var elem = document.createElement('li');
+    elem.className = 'list-group-item';
+    elem.innerHTML =
+      '<div class="d-flex justify-content-between align-items-center">' +
+      '  <div>' +
+      '    <a class="expand-marker">&nbsp;</a> ' +
+      '    <a href="' + url + '" id="hltag-link-' + tag.id + '">' + escapeHtml(tag.path) + '</a>' +
+      '  </div>' +
+      '  <span href="#" class="badge badge-primary badge-pill">?</span>' + // TODO: highlight count
+      '</div>' +
+      '<ul class="sublist"></div>';
+    hltags_list.insertBefore(elem, before);
+    (function(tag_id, url) {
+      document.getElementById('hltag-link-' + tag_id).addEventListener('click', function(e) {
+        window.history.pushState({'hltag_id': tag_id}, "Tag " + tag_id, url);
+        loadHltag(tag_id);
+        e.preventDefault();
+      });
+    })(tag.id, url);
+  }
+  if(entries.length == 0) {
+    var elem = document.createElement('div');
+    elem.className = 'list-group-item disabled';
+    elem.textContent = "There are no highlight tags in this project yet.";
+    hltags_list.insertBefore(elem, before);
+  }
+  console.log("HlTags list updated");
+}
+
+updateHlTagsList();
 
 
 /*
@@ -584,6 +605,65 @@ function highlightClicked(e) {
   document.getElementById('highlight-add-end').value = highlights[id].end_offset;
   $(highlight_add_modal).modal();
 }
+
+
+/*
+ * Load contents
+ */
+
+var document_contents = document.getElementById('document-contents');
+
+function loadDocument(document_id) {
+  if(document_id === null) {
+    document_contents.innerHTML = '<p style="font-style: oblique; text-align: center;">Load a document on the left</p>';
+    return;
+  }
+  getJSON(
+    '/project/' + project_id + '/document/' + document_id + '/content'
+  )
+  .then(function(result) {
+    document_contents.innerHTML = result.contents;
+    current_document = document_id;
+    console.log("Loaded document", document_id);
+    for(var i = 0; i < result.highlights.length; ++i) {
+      setHighlight(result.highlights[i]);
+    }
+    console.log("Loaded " + result.highlights.length + " highlights")
+  }, function(error) {
+    console.error("Failed to load document");
+  });
+}
+
+function loadHltag(tag_id) {
+  // TODO: show highlight view
+  document_contents.innerHTML = '<h1>Tag ' + tag_id + ' (' + hltags['' + tag_id].path + ') here</h1>';
+}
+
+// Load the document if the URL includes one
+var m = window.location.pathname.match(/\/project\/([0-9]+)\/document\/([0-9]+)/);
+if(m) {
+  loadDocument(parseInt(m[2]));
+}
+// Or a tag
+m = window.location.pathname.match(/\/project\/([0-9]+)\/tag\/([0-9]+)/);
+if(m) {
+  loadHltag(parseInt(m[2]));
+}
+
+// Load documents as we go through browser history
+window.onpopstate = function(e) {
+  if(e.state) {
+    if(e.state.document_id != undefined) {
+      loadDocument(e.state.document_id);
+    } else if(e.state.hltag_id != undefined) {
+      loadHltag(e.state.hltag_id);
+    } else {
+      console.error("History state unrecognized");
+    }
+  } else {
+    loadDocument(null);
+  }
+};
 
 
 /*

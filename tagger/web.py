@@ -181,6 +181,14 @@ class NewProject(BaseHandler):
                                    description="Further review required"))
         self.db.add(database.HlTag(project=project, path='people',
                                    description="Known people"))
+        self.db.add(database.HlTag(project=project, path='people.devs',
+                                   description="Software developers"))
+        self.db.add(database.HlTag(project=project, path='people.family',
+                                   description="Family mentions"))
+        self.db.add(database.HlTag(project=project, path='people.family.father',
+                                   description="Mothers"))
+        self.db.add(database.HlTag(project=project, path='people.family.mother',
+                                   description="Fathers"))
 
         self.db.commit()
         self.redirect(self.reverse_url('project', project.id))
@@ -197,16 +205,26 @@ class Project(BaseHandler):
         project = self.get_project(project_id)
         documents_json = jinja2.Markup(json.dumps(
             {
-                doc.id: {'id': doc.id, 'name': doc.name,
+                str(doc.id): {'id': doc.id, 'name': doc.name,
                  'description': doc.description}
                 for doc in project.documents
+            },
+            sort_keys=True,
+        ))
+        hltags_json = jinja2.Markup(json.dumps(
+            {
+                str(hltag.id): {'id': hltag.id,
+                             'path': hltag.path,
+                             'description': hltag.description}
+                for hltag in project.hltags
             },
             sort_keys=True,
         ))
         self.render('project.html',
                     project=project,
                     last_event=js_timestamp(project.last_event),
-                    documents=documents_json)
+                    documents=documents_json,
+                    hltags=hltags_json)
 
 
 def js_timestamp(dt=None):
@@ -432,6 +450,8 @@ def make_app():
             URLSpec('/project/([0-9]+)', Project, name='project'),
             URLSpec('/project/([0-9]+)/document/[0-9]+', Project,
                     name='project_doc'),
+            URLSpec('/project/([0-9]+)/tag/[0-9]+', Project,
+                    name='project_tag'),
             URLSpec('/project/([0-9]+)/meta', ProjectMeta),
             URLSpec('/project/([0-9]+)/document/new', DocumentAdd),
             URLSpec('/project/([0-9]+)/document/([0-9]+)/content',
