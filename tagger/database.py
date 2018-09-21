@@ -85,11 +85,11 @@ class Privileges(enum.Enum):
 class ProjectMember(Base):
     __tablename__ = 'project_members'
 
-    project_id = Column(Integer, ForeignKey('projects.id'), primary_key=True,
-                        index=True)
+    project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
+                        primary_key=True, index=True)
     project = relationship('Project')
-    user_login = Column(Integer, ForeignKey('users.login'), primary_key=True,
-                        index=True)
+    user_login = Column(Integer, ForeignKey('users.login', ondelete='CASCADE'),
+                        primary_key=True, index=True)
     user = relationship('User')
     privileges = Column(Enum(Privileges), nullable=False)
 
@@ -103,8 +103,8 @@ class Document(Base):
     filename = Column(String, nullable=True)
     created = Column(DateTime, nullable=False,
                      server_default=functions.now())
-    project_id = Column(Integer, ForeignKey('projects.id'), nullable=False,
-                        index=True)
+    project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
+                        nullable=False, index=True)
     project = relationship('Project', back_populates='documents')
     contents = deferred(Column(Text, nullable=False))
     doctags = relationship('DocTag', secondary='document_doctags')
@@ -192,8 +192,9 @@ class Highlight(Base):
     __tablename__ = 'highlights'
 
     id = Column(Integer, primary_key=True)
-    document_id = Column(Integer, ForeignKey('documents.id'), nullable=False,
-                         index=True)
+    document_id = Column(Integer, ForeignKey('documents.id',
+                                             ondelete='CASCADE'),
+                         nullable=False, index=True)
     document = relationship('Document', back_populates='highlights')
     start_offset = Column(Integer, nullable=False)
     end_offset = Column(Integer, nullable=False)
@@ -204,8 +205,8 @@ class Tag(object):
     id = Column(Integer, primary_key=True)
     @declared_attr
     def project_id(cls):
-        return Column(Integer, ForeignKey('projects.id'), nullable=False,
-                      index=True)
+        return Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
+                      nullable=False, index=True)
     @declared_attr
     def project(cls):
         return relationship('Project')
@@ -222,9 +223,10 @@ class DocTag(Base, Tag):
 class DocumentDocTag(Base):
     __tablename__ = 'document_doctags'
 
-    document_id = Column(Integer, ForeignKey('documents.id'),
+    document_id = Column(Integer, ForeignKey('documents.id',
+                                             ondelete='CASCADE'),
                          primary_key=True)
-    doctag_id = Column(Integer, ForeignKey('doctags.id'),
+    doctag_id = Column(Integer, ForeignKey('doctags.id', ondelete='CASCADE'),
                        primary_key=True)
 
 
@@ -237,10 +239,12 @@ class HlTag(Base, Tag):
 class HighlightHlTag(Base):
     __tablename__ = 'highlight_hltags'
 
-    highlight_id = Column(Integer, ForeignKey('highlights.id'),
+    highlight_id = Column(Integer, ForeignKey('highlights.id',
+                                              ondelete='CASCADE'),
                           primary_key=True)
     highlight = relationship('Highlight')
-    hltag_id = Column(Integer, ForeignKey('hltags.id'),
+    hltag_id = Column(Integer, ForeignKey('hltags.id',
+                                          ondelete='CASCADE'),
                       primary_key=True)
     hltag = relationship('HlTag')
 
