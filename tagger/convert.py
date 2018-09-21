@@ -60,10 +60,13 @@ async def to_html(body, content_type, filename):
     body = bleach.clean(
         body,
         tags=['p', 'a', 'img',
+              'h1', 'h2', 'h3', 'h4', 'h5',
               'strong', 'em', 'b', 'u'],
         attributes={'a': ['href'], 'img': ['src']},
         strip=True,
     )
+
+    body = body.strip()
 
     return body
 
