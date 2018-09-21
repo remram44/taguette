@@ -123,6 +123,25 @@ function postJSON(url='', data={}, args) {
   });
 }
 
+// Returns the byte length of a string encoded in UTF-8
+// https://stackoverflow.com/q/5515869/711380
+if(window.TextEncoder) {
+  function lengthUTF8(s) {
+    return (new TextEncoder('utf-8').encode(s)).length;
+  }
+} else {
+  function lengthUTF8(s) {
+    var l = s.length;
+    for(var i = s.length - 1; i >= 0; --i) {
+      var code = s.charCodeAt(i);
+      if(code > 0x7f && code <= 0x7ff) ++l;
+      else if(code > 0x7ff && code <= 0xffff) l += 2;
+      if (code >= 0xDC00 && code <= 0xDFFF) i--; // trailing surrogate
+    }
+    return l;
+  }
+}
+
 
 /*
  * Selection stuff
@@ -135,7 +154,7 @@ function describePos(node, offset) {
   while(!node.id) {
     if(node.previousSibling) {
       node = node.previousSibling;
-      offset += node.textContent.length;
+      offset += lengthUTF8(node.textContent);
     } else {
       node = node.parentNode;
     }
@@ -163,10 +182,10 @@ function locatePos(pos) {
     node = node.firstChild;
   }
   while(offset > 0) {
-    if(node.textContent.length >= offset) {
+    if(lengthUTF8(node.textContent) >= offset) {
       break;
     } else {
-      offset -= node.textContent.length;
+      offset -= lengthUTF8(node.textContent);
       node = nextElement(node);
     }
   }
@@ -208,7 +227,7 @@ function restoreSelection(saved) {
 function splitAtPos(pos, after) {
   if(pos[1] == 0) {
     return pos[0];
-  } else if(pos[1] == pos[0].textContent.length) {
+  } else if(pos[1] == lengthUTF8(pos[0].textContent.length)) {
     return nextElement(pos[0]);
   } else {
     return pos[0].splitText(pos[1]);
@@ -229,7 +248,7 @@ function highlightSelection(saved, id) {
   var node = start;
   while(node != end) {
     var next = nextElement(node);
-    if(node.nodeType == 3) {
+    if(node.nodeType == 3 && node.textContent) { // TEXT_NODE
       var span = document.createElement('a');
       span.className = 'highlight highlight-' + id;
       span.setAttribute('data-highlight-id', '' + id);
@@ -587,8 +606,8 @@ function createHighlight(selection) {
 document.getElementById('highlight-add-form').addEventListener('submit', function(e) {
   var highlight_id = document.getElementById('highlight-add-id').value;
   var selection = [
-    document.getElementById('highlight-add-start').value,
-    document.getElementById('highlight-add-end').value
+    parseInt(document.getElementById('highlight-add-start').value),
+    parseInt(document.getElementById('highlight-add-end').value)
   ];
   var hl_tags = [];
   var entries = Object.entries(tags);
