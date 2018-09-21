@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-tornado = "*"
+tornado = ">=5.0"
 sqlalchemy = "*"
 bcrypt = "*"
 "jinja2" = "*"

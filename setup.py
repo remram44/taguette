@@ -14,6 +14,7 @@ req = [
     'bcrypt',
     'jinja2',
     'beautifulsoup4',
+    'bleach',
 ]
 setup(name='qualtag',
       version='0.0',
