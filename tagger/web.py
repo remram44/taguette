@@ -3,7 +3,7 @@ from datetime import datetime
 import json
 import logging
 import jinja2
-import os
+import pkg_resources
 from sqlalchemy.orm import joinedload, undefer, make_transient
 from tornado.concurrent import Future
 import tornado.ioloop
@@ -25,7 +25,7 @@ class BaseHandler(RequestHandler):
     """
     template_env = jinja2.Environment(
         loader=jinja2.FileSystemLoader(
-            [os.path.join(os.path.dirname(__file__), 'templates')]
+            [pkg_resources.resource_filename('tagger', 'templates')]
         ),
         autoescape=jinja2.select_autoescape(['html'])
     )
@@ -486,7 +486,7 @@ def make_app():
                     HighlightUpdate),
             URLSpec('/project/([0-9]+)/events', ProjectEvents),
         ],
-        static_path=os.path.join(os.path.dirname(__file__), 'static'),
+        static_path=pkg_resources.resource_filename('tagger', 'static'),
         login_url='/login',
         xsrf_cookies=True,
         debug=True,
@@ -495,6 +495,7 @@ def make_app():
 
 
 def main():
+    logging.root.handlers.clear()
     logging.basicConfig(level=logging.INFO)
     app = make_app()
     app.listen(8000)

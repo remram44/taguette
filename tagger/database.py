@@ -265,8 +265,7 @@ def connect():
         if 'SQLITE_DB' in os.environ:
             fname = os.path.abspath(os.environ['SQLITE_DB'])
         else:
-            fname = os.path.join(os.path.dirname(os.path.dirname(__file__)),
-                                 'db.sqlite3')
+            fname = 'db.sqlite3'
         url = 'sqlite:///%s' % fname
 
     engine = create_engine(url, echo=False)

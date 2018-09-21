@@ -19,6 +19,12 @@ req = [
 setup(name='qualtag',
       version='0.0',
       packages=['tagger'],
+      package_data={'tagger': [
+          'static/missing.png',
+          'static/css/*.css', 'static/css/*.css.map',
+          'static/js/*.js', 'static/js/*.js.map',
+          'templates/*.html',
+      ]},
       entry_points={
           'console_scripts': [
               'qualtag = tagger.web:main']},
