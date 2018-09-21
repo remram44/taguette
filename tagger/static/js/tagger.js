@@ -422,8 +422,11 @@ document.getElementById('document-add-form').addEventListener('submit', function
  */
 
 var hltags_list = document.getElementById('tags-list');
+var hltags_modal_list = document.getElementById('highlight-add-tags');
 
 function updateHlTagsList() {
+  // The list in the left panel
+
   // Empty the list
   while(hltags_list.firstChild) {
     var first = hltags_list.firstChild;
@@ -433,7 +436,6 @@ function updateHlTagsList() {
     }
     hltags_list.removeChild(first);
   }
-
   // Fill up the list again
   // TODO: Show this as a tree
   var tree = {};
@@ -468,6 +470,31 @@ function updateHlTagsList() {
     elem.textContent = "There are no highlight tags in this project yet.";
     hltags_list.insertBefore(elem, before);
   }
+
+  // The list in the highlight modal
+
+  // Empty the list
+  while(hltags_modal_list.firstChild) {
+    hltags_modal_list.removeChild(hltags_modal_list.firstChild);
+  }
+  // Fill up the list again
+  // TODO: Show this as a tree
+  var tree = {};
+  var entries = Object.entries(hltags);
+  for(var i = 0; i < entries.length; ++i) {
+    var tag = entries[i][1];
+    var elem = document.createElement('li');
+    elem.innerHTML =
+      '<input type="checkbox" value="' + tag.id + '" name="highlight-add-tags" id="highlight-add-tags-' + tag.id + '" />' +
+      '<label for="highlight-add-tags-' + tag.id + '">' + tag.path + '</label>';
+    hltags_modal_list.appendChild(elem);
+  }
+  if(entries.length == 0) {
+    var elem = document.createElement('li');
+    elem.textContent = "no highlight tags";
+    hltags_modal_list.appendChild(elem);
+  }
+
   console.log("HlTags list updated");
 }
 
@@ -612,6 +639,7 @@ function highlightClicked(e) {
   document.getElementById('highlight-add-id').value = id;
   document.getElementById('highlight-add-start').value = highlights[id].start_offset;
   document.getElementById('highlight-add-end').value = highlights[id].end_offset;
+  // TODO: check the checkboxes in the modal
   $(highlight_add_modal).modal();
 }
 
