@@ -287,7 +287,6 @@ function projectMetadataChanged() {
     )
     .then(function(result) {
       setProjectMetadata(meta, false);
-      last_event = result.ts;
     }, function(error) {
       console.error("Failed to update project metadata:", error);
       project_name_input.value = project_name;
@@ -370,6 +369,7 @@ function removeDocument(document_id) {
 var document_add_modal = document.getElementById('document-add-modal');
 
 function createDocument() {
+  document.getElementById('document-add-form').reset();
   $(document_add_modal).modal();
 }
 
@@ -575,6 +575,7 @@ function createHighlight(selection) {
   document.getElementById('highlight-add-id').value = '';
   document.getElementById('highlight-add-start').value = selection[0];
   document.getElementById('highlight-add-end').value = selection[1];
+  document.getElementById('highlight-add-form').reset();
   $(highlight_add_modal).modal();
 }
 
@@ -585,20 +586,30 @@ document.getElementById('highlight-add-form').addEventListener('submit', functio
     document.getElementById('highlight-add-start').value,
     document.getElementById('highlight-add-end').value
   ];
+  var hl_tags = [];
+  var entries = Object.entries(hltags);
+  for(var i = 0; i < entries.length; ++i) {
+    var id = entries[i][1].id;
+    if(document.getElementById('highlight-add-tags-' + id).checked) {
+      hl_tags.push(id);
+    }
+  }
   var req;
   if(highlight_id) {
     console.log("Posting update for highlight " + highlight_id);
     req = postJSON(
       '/project/' + project_id + '/document/' + current_document + '/highlight/' + highlight_id,
       {start_offset: selection[0],
-       end_offset: selection[1]}
+       end_offset: selection[1],
+       hltags: hl_tags}
     );
   } else {
     console.log("Posting new highlight");
     req = postJSON(
       '/project/' + project_id + '/document/' + current_document + '/highlight/new',
       {start_offset: selection[0],
-       end_offset: selection[1]}
+       end_offset: selection[1],
+       hltags: hl_tags}
     );
   }
   req.then(function() {
@@ -629,17 +640,19 @@ document.getElementById('highlight-delete').addEventListener('click', function(e
       console.error("Failed to delete highlight:", error);
     });
   }
-  document.getElementById('highlight-add-form').reset();
 });
 
 // When clicking on a highlight
 function highlightClicked(e) {
+  document.getElementById('highlight-add-form').reset();
   var id = this.getAttribute('data-highlight-id');
-  console.log(id, highlights);
   document.getElementById('highlight-add-id').value = id;
   document.getElementById('highlight-add-start').value = highlights[id].start_offset;
   document.getElementById('highlight-add-end').value = highlights[id].end_offset;
-  // TODO: check the checkboxes in the modal
+  var hl_tags = highlights['' + id].hltags;
+  for(var i = 0; i < hl_tags.length; ++i) {
+    document.getElementById('highlight-add-tags-' + hl_tags[i]).checked = true;
+  }
   $(highlight_add_modal).modal();
 }
 
