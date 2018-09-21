@@ -153,7 +153,7 @@ class Command(Base):
         )
 
     @classmethod
-    def highlight_add(cls, user_login, document, highlight):
+    def highlight_add(cls, user_login, document, highlight, hltags):
         assert isinstance(highlight.id, int)
         return cls(
             user_login=user_login,
@@ -162,7 +162,8 @@ class Command(Base):
             payload={'type': 'highlight_add',
                      'id': highlight.id,
                      'start_offset': highlight.start_offset,
-                     'end_offset': highlight.end_offset},
+                     'end_offset': highlight.end_offset,
+                     'hltags': hltags},
         )
 
     @classmethod

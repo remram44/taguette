@@ -185,9 +185,11 @@ class NewProject(BaseHandler):
                                    description="Software developers"))
         self.db.add(database.HlTag(project=project, path='people.family',
                                    description="Family mentions"))
-        self.db.add(database.HlTag(project=project, path='people.family.father',
+        self.db.add(database.HlTag(project=project,
+                                   path='people.family.mother',
                                    description="Mothers"))
-        self.db.add(database.HlTag(project=project, path='people.family.mother',
+        self.db.add(database.HlTag(project=project,
+                                   path='people.family.father',
                                    description="Fathers"))
 
         self.db.commit()
@@ -309,7 +311,8 @@ class DocumentContents(BaseHandler):
             'highlights': [
                 {'id': hl.id,
                  'start_offset': hl.start_offset,
-                 'end_offset': hl.end_offset}
+                 'end_offset': hl.end_offset,
+                 'hltags': [t.id for t in hl.hltags]}
                 for hl in document.highlights
             ],
         })
@@ -324,12 +327,19 @@ class HighlightAdd(BaseHandler):
                                 start_offset=obj['start_offset'],
                                 end_offset=obj['end_offset'])
         self.db.add(hl)
-        # TODO: hltags
         self.db.commit()  # Need to commit to get hl.id
+        self.db.bulk_insert_mappings(database.HighlightHlTag, [
+            dict(
+                highlight_id=hl.id,
+                hltag_id=tag,
+            )
+            for tag in obj.get('hltags', [])
+        ])
         cmd = database.Command.highlight_add(
             self.current_user,
             document,
             hl,
+            obj.get('hltags', []),
         )
         self.db.add(cmd)
         self.db.commit()
@@ -359,11 +369,23 @@ class HighlightUpdate(BaseHandler):
                 hl.start_offset = obj['start_offset']
             if 'end_offset' in obj:
                 hl.end_offset = obj['end_offset']
-            # TODO: hltags
+            if 'hltags' in obj:
+                (
+                    self.db.query(database.HighlightHlTag)
+                    .filter(database.HighlightHlTag.highlight == hl)
+                ).delete()
+                self.db.bulk_insert_mappings(database.HighlightHlTag, [
+                    dict(
+                        highlight_id=hl.id,
+                        hltag_id=tag,
+                    )
+                    for tag in obj.get('hltags', [])
+                ])
             cmd = database.Command.highlight_add(
                 self.current_user,
                 document,
                 hl,
+                obj.get('hltags', []),
             )
         self.db.add(cmd)
         self.db.commit()
