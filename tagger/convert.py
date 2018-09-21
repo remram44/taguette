@@ -50,6 +50,9 @@ async def to_html(body, content_type, filename):
     for tag in ['head', 'script', 'style']:
         for e in soup.find_all(tag):
             e.extract()
+    # Update 'src' URLs
+    for e in soup.find_all('img'):
+        e.attrs['src'] = '/static/missing.png'
     body = str(soup)
     del soup
 
