@@ -500,6 +500,10 @@ function updateTagsList() {
 
 updateTagsList();
 
+function createTag() {
+  // TODO
+}
+
 
 /*
  * Highlights
