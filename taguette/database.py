@@ -73,6 +73,7 @@ class Project(Base):
     members = relationship('User', secondary='project_members')
     documents = relationship('Document')
     tags = relationship('Tag')
+    groups = relationship('Group')
 
 
 class Privileges(enum.Enum):
