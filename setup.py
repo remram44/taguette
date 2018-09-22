@@ -16,10 +16,10 @@ req = [
     'beautifulsoup4',
     'bleach',
 ]
-setup(name='qualtag',
+setup(name='taguette',
       version='0.0',
-      packages=['tagger'],
-      package_data={'tagger': [
+      packages=['taguette'],
+      package_data={'taguette': [
           'static/missing.png',
           'static/css/*.css', 'static/css/*.css.map',
           'static/js/*.js', 'static/js/*.js.map',
@@ -27,19 +27,19 @@ setup(name='qualtag',
       ]},
       entry_points={
           'console_scripts': [
-              'qualtag = tagger.web:main']},
+              'taguette = taguette.web:main']},
       install_requires=req,
       description="Document tagger",
       author="Remi Rampin",
       author_email='remirampin@gmail.com',
       maintainer="Remi Rampin",
       maintainer_email='remirampin@gmail.com',
-      url='https://gitlab.com/remram44/nocturnal-retriever',
+      url='https://gitlab.com/remram44/taguette',
       project_urls={
-          'Homepage': 'https://gitlab.com/remram44/nocturnal-retriever',
+          'Homepage': 'https://taguette.fr/',
           'Say Thanks': 'https://saythanks.io/to/remram44',
-          'Source': 'https://gitlab.com/remram44/nocturnal-retriever',
-          'Tracker': 'https://gitlab.com/remram44/nocturnal-retriever/issues',
+          'Source': 'https://gitlab.com/remram44/taguette',
+          'Tracker': 'https://gitlab.com/remram44/taguette/issues',
       },
       long_description=description,
       license='BSD-3-Clause',

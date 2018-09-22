@@ -25,7 +25,7 @@ class BaseHandler(RequestHandler):
     """
     template_env = jinja2.Environment(
         loader=jinja2.FileSystemLoader(
-            [pkg_resources.resource_filename('tagger', 'templates')]
+            [pkg_resources.resource_filename('taguette', 'templates')]
         ),
         autoescape=jinja2.select_autoescape(['html'])
     )
@@ -486,7 +486,7 @@ def make_app():
                     HighlightUpdate),
             URLSpec('/project/([0-9]+)/events', ProjectEvents),
         ],
-        static_path=pkg_resources.resource_filename('tagger', 'static'),
+        static_path=pkg_resources.resource_filename('taguette', 'static'),
         login_url='/login',
         xsrf_cookies=True,
         debug=True,

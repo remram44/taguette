@@ -2,7 +2,7 @@ from tornado.testing import AsyncTestCase, gen_test
 import unittest
 from unittest import mock
 
-from tagger import convert
+from taguette import convert
 
 
 class TestConvert(AsyncTestCase):

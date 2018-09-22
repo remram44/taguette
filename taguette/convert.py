@@ -23,7 +23,7 @@ async def to_html(body, content_type, filename):
 
     if os.path.splitext(filename)[1].lower() not in HTML_EXTENSIONS:
         # Convert file to HTML using Calibre
-        tmp = tempfile.mkdtemp(prefix='tagger_calibre_')
+        tmp = tempfile.mkdtemp(prefix='taguette_calibre_')
         try:
             input_filename = os.path.join(tmp, filename)
             with open(input_filename, 'wb') as fp:
