@@ -719,6 +719,14 @@ function loadDocument(document_id) {
 function loadtag(tag_id) {
   // TODO: show highlight view
   document_contents.innerHTML = '<h1>Tag ' + tag_id + ' (' + tags['' + tag_id].path + ') here</h1>';
+  getJSON(
+    '/project/' + project_id + '/tag/' + tag_id + '/highlights'
+  )
+  .then(function(result) {
+    console.log(result);
+  }, function(error) {
+    console.error("Failed to load tag highlights:", error);
+  });
 }
 
 // Load the document if the URL includes one

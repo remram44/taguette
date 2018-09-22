@@ -1,9 +1,11 @@
 import asyncio
 from datetime import datetime
+import itertools
 import json
 import logging
 import jinja2
 import pkg_resources
+import re
 from sqlalchemy.orm import joinedload, undefer, make_transient
 from tornado.concurrent import Future
 import tornado.ioloop
@@ -318,14 +320,28 @@ class DocumentContents(BaseHandler):
         })
 
 
+# Parsing HTML with regular expressions is a bad idea
+# Here we're just trying to count tags, and those have already been run through
+# Bleach... errors here also just mean a highlight is off by a few bytes
+_re_tags = re.compile(br'<\s*(/?)\s*([^ >]+)'  # Opening tag
+                      br'(?:\s+'
+                      br'[^">]*' # Other junk (ie attributes)
+                      br'(?:="[^"]*")?'  # ="value" whch may contain >
+                      br')*'
+                      br'\s*>')
+
+
 class HighlightAdd(BaseHandler):
     @authenticated
     def post(self, project_id, document_id):
         obj = self.get_json()
-        document = self.get_document(project_id, document_id)
+        document = self.get_document(project_id, document_id, True)
+        start, end = obj['start_offset'], obj['end_offset']
+        snippet = self.extract_highlight(document.contents, start, end)
         hl = database.Highlight(document=document,
-                                start_offset=obj['start_offset'],
-                                end_offset=obj['end_offset'])
+                                start_offset=start,
+                                end_offset=end,
+                                snippet=snippet)
         self.db.add(hl)
         self.db.commit()  # Need to commit to get hl.id
         self.db.bulk_insert_mappings(database.HighlightTag, [
@@ -347,6 +363,73 @@ class HighlightAdd(BaseHandler):
         self.application.notify_project(document.project_id, cmd)
 
         self.send_json({'id': hl.id})
+
+    @staticmethod
+    def extract_highlight(html, start, end):
+        s = html.encode('utf-8')
+        # Skip over tags
+        tags = _re_tags.finditer(s)
+        start_stack = []
+        tag = None
+        print("moving start over tags, start=%d" % start)
+        for tag in tags:
+            print("next tag: %d:%d %r" % (
+                  tag.start(), tag.end(), tag.group(0)))
+            if tag.start() > start:
+                print("break")
+                break
+            start += tag.end() - tag.start()
+            end += tag.end() - tag.start()
+            if tag.group(1) == '/':
+                assert start_stack.pop()[0] == tag.group(2)
+            else:
+                start_stack.append((tag.group(2), tag.group(0)))
+            print("start=%d stack: %r" % (start, start_stack))
+        # Adjust start
+        if s[start] & 0xC0 == 0x80:  # Continuation byte
+            old_start = start
+            start += 1
+            while s[start] & 0xC0 == 0x80:
+                start += 1
+            logger.warning("Invalid highlight start offset %d, moved to %d",
+                           old_start, start)
+        # Potentially skip another tag
+        m = _re_tags.match(s[start:])
+        if m:
+            start = m.end()
+            logger.warning("Also skipping over tag %r, start=%d",
+                           m.group(1) + m.group(2), start)
+        end_stack = list(start_stack)
+        print("moving end over tags, end=%d" % end)
+        # Skip over tags
+        if tag and tag.end() > end:
+            tags = itertools.chain([tag], tags)
+        for tag in tags:
+            print("next tag: %d:%d %r" % (
+                  tag.start(), tag.end(), tag.group(0)))
+            if tag.start() > end:
+                print("break")
+                break
+            end += tag.end() - tag.start()
+            if tag.group(1) == '/':
+                assert end_stack.pop()[0] == tag.group(2)
+            else:
+                end_stack.append((tag.group(2), tag.group(0)))
+            print("end=%d stack: %r" % (end, end_stack))
+        # Adjust end
+        if end < len(s) and s[end] & 0xC0 == 0x80:
+            old_end = end
+            end += 1
+            while end < len(s) and s[end] & 0xC0 == 0x80:
+                end += 1
+            logger.warning("Invalid highlight end offset %d, moved to %d",
+                           old_end, end)
+        logger.info("Highlighted: %r", s[start:end].decode('utf-8'))
+        return (
+            b''.join(t[1] for t in start_stack) +
+            s[start:end] +
+            b''.join(b'</%s>' % t[0] for t in end_stack)
+        ).decode('utf-8')
 
 
 class HighlightUpdate(BaseHandler):
@@ -393,6 +476,38 @@ class HighlightUpdate(BaseHandler):
         self.application.notify_project(document.project_id, cmd)
 
         self.send_json({'id': hl.id})
+
+
+class Highlights(BaseHandler):
+    @authenticated
+    def get(self, project_id, tag_id):
+        project = self.get_project(project_id)
+        highlights = (
+            self.db.query(database.HighlightTag)
+            .filter(database.HighlightTag.tag_id == int(tag_id))
+            .filter(database.Document.project == project)
+            .options(joinedload(database.HighlightTag.highlight)
+                     .joinedload(database.Highlight.document)
+                     .undefer(database.Document.contents))
+        ).all()
+        highlights = (hltag.highlight for hltag in highlights)
+        self.send_json({
+            'highlights': [
+                {
+                    'id': hl.id,
+                    'document_id': hl.document_id,
+                    'content': self.extract_highlight(hl.document.contents,
+                                                      hl.start_offset,
+                                                      hl.end_offset),
+                }
+                for hl in highlights
+            ],
+        })
+
+    @staticmethod
+    def extract_highlight(html, start, end):
+        # TODO: Be aware of tags
+        return html[start:end]
 
 
 class ProjectEvents(BaseHandler):
@@ -484,6 +599,7 @@ def make_app():
                     HighlightAdd),
             URLSpec('/project/([0-9]+)/document/([0-9]+)/highlight/([0-9]+)',
                     HighlightUpdate),
+            URLSpec('/project/([0-9]+)/tag/([0-9]+)/highlights', Highlights),
             URLSpec('/project/([0-9]+)/events', ProjectEvents),
         ],
         static_path=pkg_resources.resource_filename('taguette', 'static'),
