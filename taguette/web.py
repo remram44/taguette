@@ -16,6 +16,7 @@ import webbrowser
 from . import __version__
 from . import convert
 from . import database
+from .extract import extract
 
 
 logger = logging.getLogger(__name__)
@@ -326,10 +327,13 @@ class HighlightAdd(BaseHandler):
     @authenticated
     def post(self, project_id, document_id):
         obj = self.get_json()
-        document = self.get_document(project_id, document_id)
+        document = self.get_document(project_id, document_id, True)
+        start, end = obj['start_offset'], obj['end_offset']
+        snippet = extract(document.contents, start, end)
         hl = database.Highlight(document=document,
-                                start_offset=obj['start_offset'],
-                                end_offset=obj['end_offset'])
+                                start_offset=start,
+                                end_offset=end,
+                                snippet=snippet)
         self.db.add(hl)
         self.db.commit()  # Need to commit to get hl.id
         self.db.bulk_insert_mappings(database.HighlightTag, [
