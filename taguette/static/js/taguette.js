@@ -421,26 +421,26 @@ document.getElementById('document-add-form').addEventListener('submit', function
  * Tags list
  */
 
-var hltags_list = document.getElementById('tags-list');
-var hltags_modal_list = document.getElementById('highlight-add-tags');
+var tags_list = document.getElementById('tags-list');
+var tags_modal_list = document.getElementById('highlight-add-tags');
 
-function updateHlTagsList() {
+function updateTagsList() {
   // The list in the left panel
 
   // Empty the list
-  while(hltags_list.firstChild) {
-    var first = hltags_list.firstChild;
+  while(tags_list.firstChild) {
+    var first = tags_list.firstChild;
     if(first.classList
      && first.classList.contains('list-group-item-primary')) {
       break;
     }
-    hltags_list.removeChild(first);
+    tags_list.removeChild(first);
   }
   // Fill up the list again
   // TODO: Show this as a tree
   var tree = {};
-  var before = hltags_list.firstChild;
-  var entries = Object.entries(hltags);
+  var before = tags_list.firstChild;
+  var entries = Object.entries(tags);
   for(var i = 0; i < entries.length; ++i) {
     var tag = entries[i][1];
     var url = '/project/' + project_id + '/tag/' + tag.id;
@@ -450,16 +450,16 @@ function updateHlTagsList() {
       '<div class="d-flex justify-content-between align-items-center">' +
       '  <div>' +
       '    <a class="expand-marker">&nbsp;</a> ' +
-      '    <a href="' + url + '" id="hltag-link-' + tag.id + '">' + escapeHtml(tag.path) + '</a>' +
+      '    <a href="' + url + '" id="tag-link-' + tag.id + '">' + escapeHtml(tag.path) + '</a>' +
       '  </div>' +
       '  <span href="#" class="badge badge-primary badge-pill">?</span>' + // TODO: highlight count
       '</div>' +
       '<ul class="sublist"></div>';
-    hltags_list.insertBefore(elem, before);
+    tags_list.insertBefore(elem, before);
     (function(tag_id, url) {
-      document.getElementById('hltag-link-' + tag_id).addEventListener('click', function(e) {
-        window.history.pushState({'hltag_id': tag_id}, "Tag " + tag_id, url);
-        loadHltag(tag_id);
+      document.getElementById('tag-link-' + tag_id).addEventListener('click', function(e) {
+        window.history.pushState({'tag_id': tag_id}, "Tag " + tag_id, url);
+        loadtag(tag_id);
         e.preventDefault();
       });
     })(tag.id, url);
@@ -467,38 +467,38 @@ function updateHlTagsList() {
   if(entries.length == 0) {
     var elem = document.createElement('div');
     elem.className = 'list-group-item disabled';
-    elem.textContent = "There are no highlight tags in this project yet.";
-    hltags_list.insertBefore(elem, before);
+    elem.textContent = "There are no tags in this project yet.";
+    tags_list.insertBefore(elem, before);
   }
 
   // The list in the highlight modal
 
   // Empty the list
-  while(hltags_modal_list.firstChild) {
-    hltags_modal_list.removeChild(hltags_modal_list.firstChild);
+  while(tags_modal_list.firstChild) {
+    tags_modal_list.removeChild(tags_modal_list.firstChild);
   }
   // Fill up the list again
   // TODO: Show this as a tree
   var tree = {};
-  var entries = Object.entries(hltags);
+  var entries = Object.entries(tags);
   for(var i = 0; i < entries.length; ++i) {
     var tag = entries[i][1];
     var elem = document.createElement('li');
     elem.innerHTML =
       '<input type="checkbox" value="' + tag.id + '" name="highlight-add-tags" id="highlight-add-tags-' + tag.id + '" />' +
       '<label for="highlight-add-tags-' + tag.id + '">' + tag.path + '</label>';
-    hltags_modal_list.appendChild(elem);
+    tags_modal_list.appendChild(elem);
   }
   if(entries.length == 0) {
     var elem = document.createElement('li');
-    elem.textContent = "no highlight tags";
-    hltags_modal_list.appendChild(elem);
+    elem.textContent = "no tags";
+    tags_modal_list.appendChild(elem);
   }
 
-  console.log("HlTags list updated");
+  console.log("Tags list updated");
 }
 
-updateHlTagsList();
+updateTagsList();
 
 
 /*
@@ -587,7 +587,7 @@ document.getElementById('highlight-add-form').addEventListener('submit', functio
     document.getElementById('highlight-add-end').value
   ];
   var hl_tags = [];
-  var entries = Object.entries(hltags);
+  var entries = Object.entries(tags);
   for(var i = 0; i < entries.length; ++i) {
     var id = entries[i][1].id;
     if(document.getElementById('highlight-add-tags-' + id).checked) {
@@ -601,7 +601,7 @@ document.getElementById('highlight-add-form').addEventListener('submit', functio
       '/project/' + project_id + '/document/' + current_document + '/highlight/' + highlight_id,
       {start_offset: selection[0],
        end_offset: selection[1],
-       hltags: hl_tags}
+       tags: hl_tags}
     );
   } else {
     console.log("Posting new highlight");
@@ -609,7 +609,7 @@ document.getElementById('highlight-add-form').addEventListener('submit', functio
       '/project/' + project_id + '/document/' + current_document + '/highlight/new',
       {start_offset: selection[0],
        end_offset: selection[1],
-       hltags: hl_tags}
+       tags: hl_tags}
     );
   }
   req.then(function() {
@@ -649,7 +649,7 @@ function highlightClicked(e) {
   document.getElementById('highlight-add-id').value = id;
   document.getElementById('highlight-add-start').value = highlights[id].start_offset;
   document.getElementById('highlight-add-end').value = highlights[id].end_offset;
-  var hl_tags = highlights['' + id].hltags;
+  var hl_tags = highlights['' + id].tags;
   for(var i = 0; i < hl_tags.length; ++i) {
     document.getElementById('highlight-add-tags-' + hl_tags[i]).checked = true;
   }
@@ -693,9 +693,9 @@ function loadDocument(document_id) {
   });
 }
 
-function loadHltag(tag_id) {
+function loadtag(tag_id) {
   // TODO: show highlight view
-  document_contents.innerHTML = '<h1>Tag ' + tag_id + ' (' + hltags['' + tag_id].path + ') here</h1>';
+  document_contents.innerHTML = '<h1>Tag ' + tag_id + ' (' + tags['' + tag_id].path + ') here</h1>';
 }
 
 // Load the document if the URL includes one
@@ -706,7 +706,7 @@ if(m) {
 // Or a tag
 m = window.location.pathname.match(/\/project\/([0-9]+)\/tag\/([0-9]+)/);
 if(m) {
-  loadHltag(parseInt(m[2]));
+  loadtag(parseInt(m[2]));
 }
 
 // Load documents as we go through browser history
@@ -714,8 +714,8 @@ window.onpopstate = function(e) {
   if(e.state) {
     if(e.state.document_id != undefined) {
       loadDocument(e.state.document_id);
-    } else if(e.state.hltag_id != undefined) {
-      loadHltag(e.state.hltag_id);
+    } else if(e.state.tag_id != undefined) {
+      loadtag(e.state.tag_id);
     } else {
       console.error("History state unrecognized");
     }

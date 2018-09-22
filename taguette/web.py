@@ -177,20 +177,20 @@ class NewProject(BaseHandler):
         )
         self.db.add(membership)
         # Add default set of tags
-        self.db.add(database.HlTag(project=project, path='interesting',
-                                   description="Further review required"))
-        self.db.add(database.HlTag(project=project, path='people',
-                                   description="Known people"))
-        self.db.add(database.HlTag(project=project, path='people.devs',
-                                   description="Software developers"))
-        self.db.add(database.HlTag(project=project, path='people.family',
-                                   description="Family mentions"))
-        self.db.add(database.HlTag(project=project,
-                                   path='people.family.mother',
-                                   description="Mothers"))
-        self.db.add(database.HlTag(project=project,
-                                   path='people.family.father',
-                                   description="Fathers"))
+        self.db.add(database.Tag(project=project, path='interesting',
+                                 description="Further review required"))
+        self.db.add(database.Tag(project=project, path='people',
+                                 description="Known people"))
+        self.db.add(database.Tag(project=project, path='people.devs',
+                                 description="Software developers"))
+        self.db.add(database.Tag(project=project, path='people.family',
+                                 description="Family mentions"))
+        self.db.add(database.Tag(project=project,
+                                 path='people.family.mother',
+                                 description="Mothers"))
+        self.db.add(database.Tag(project=project,
+                                 path='people.family.father',
+                                 description="Fathers"))
 
         self.db.commit()
         self.redirect(self.reverse_url('project', project.id))
@@ -213,12 +213,12 @@ class Project(BaseHandler):
             },
             sort_keys=True,
         ))
-        hltags_json = jinja2.Markup(json.dumps(
+        tags_json = jinja2.Markup(json.dumps(
             {
-                str(hltag.id): {'id': hltag.id,
-                             'path': hltag.path,
-                             'description': hltag.description}
-                for hltag in project.hltags
+                str(tag.id): {'id': tag.id,
+                             'path': tag.path,
+                             'description': tag.description}
+                for tag in project.tags
             },
             sort_keys=True,
         ))
@@ -226,7 +226,7 @@ class Project(BaseHandler):
                     project=project,
                     last_event=js_timestamp(project.last_event),
                     documents=documents_json,
-                    hltags=hltags_json)
+                    tags=tags_json)
 
 
 def js_timestamp(dt=None):
@@ -312,7 +312,7 @@ class DocumentContents(BaseHandler):
                 {'id': hl.id,
                  'start_offset': hl.start_offset,
                  'end_offset': hl.end_offset,
-                 'hltags': [t.id for t in hl.hltags]}
+                 'tags': [t.id for t in hl.tags]}
                 for hl in document.highlights
             ],
         })
@@ -328,18 +328,18 @@ class HighlightAdd(BaseHandler):
                                 end_offset=obj['end_offset'])
         self.db.add(hl)
         self.db.commit()  # Need to commit to get hl.id
-        self.db.bulk_insert_mappings(database.HighlightHlTag, [
+        self.db.bulk_insert_mappings(database.HighlightTag, [
             dict(
                 highlight_id=hl.id,
-                hltag_id=tag,
+                tag_id=tag,
             )
-            for tag in obj.get('hltags', [])
+            for tag in obj.get('tags', [])
         ])
         cmd = database.Command.highlight_add(
             self.current_user,
             document,
             hl,
-            obj.get('hltags', []),
+            obj.get('tags', []),
         )
         self.db.add(cmd)
         self.db.commit()
@@ -369,23 +369,23 @@ class HighlightUpdate(BaseHandler):
                 hl.start_offset = obj['start_offset']
             if 'end_offset' in obj:
                 hl.end_offset = obj['end_offset']
-            if 'hltags' in obj:
+            if 'tags' in obj:
                 (
-                    self.db.query(database.HighlightHlTag)
-                    .filter(database.HighlightHlTag.highlight == hl)
+                    self.db.query(database.HighlightTag)
+                    .filter(database.HighlightTag.highlight == hl)
                 ).delete()
-                self.db.bulk_insert_mappings(database.HighlightHlTag, [
+                self.db.bulk_insert_mappings(database.HighlightTag, [
                     dict(
                         highlight_id=hl.id,
-                        hltag_id=tag,
+                        tag_id=tag,
                     )
-                    for tag in obj.get('hltags', [])
+                    for tag in obj.get('tags', [])
                 ])
             cmd = database.Command.highlight_add(
                 self.current_user,
                 document,
                 hl,
-                obj.get('hltags', []),
+                obj.get('tags', []),
             )
         self.db.add(cmd)
         self.db.commit()

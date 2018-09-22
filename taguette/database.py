@@ -72,14 +72,14 @@ class Project(Base):
                      server_default=functions.now())
     members = relationship('User', secondary='project_members')
     documents = relationship('Document')
-    hltags = relationship('HlTag')
+    tags = relationship('Tag')
 
 
 class Privileges(enum.Enum):
-    READ = 0
     ADMIN = 1
-    TAG = 2
     MANAGE_DOCS = 3
+    TAG = 2
+    READ = 0
 
 
 class ProjectMember(Base):
@@ -107,7 +107,7 @@ class Document(Base):
                         nullable=False, index=True)
     project = relationship('Project', back_populates='documents')
     contents = deferred(Column(Text, nullable=False))
-    doctags = relationship('DocTag', secondary='document_doctags')
+    group = relationship('Group', secondary='document_groups')
     highlights = relationship('Highlight')
 
 
@@ -153,7 +153,7 @@ class Command(Base):
         )
 
     @classmethod
-    def highlight_add(cls, user_login, document, highlight, hltags):
+    def highlight_add(cls, user_login, document, highlight, tags):
         assert isinstance(highlight.id, int)
         return cls(
             user_login=user_login,
@@ -163,7 +163,7 @@ class Command(Base):
                      'id': highlight.id,
                      'start_offset': highlight.start_offset,
                      'end_offset': highlight.end_offset,
-                     'hltags': hltags},
+                     'tags': tags},
         )
 
     @classmethod
@@ -199,10 +199,10 @@ class Highlight(Base):
     document = relationship('Document', back_populates='highlights')
     start_offset = Column(Integer, nullable=False)
     end_offset = Column(Integer, nullable=False)
-    hltags = relationship('HlTag', secondary='highlight_hltags')
+    tags = relationship('Tag', secondary='highlight_tags')
 
 
-class Tag(object):
+class BaseHierarchy(object):
     id = Column(Integer, primary_key=True)
     @declared_attr
     def project_id(cls):
@@ -215,39 +215,39 @@ class Tag(object):
     description = Column(Text, nullable=False)
 
 
-class DocTag(Base, Tag):
-    __tablename__ = 'doctags'
+class Group(Base, BaseHierarchy):
+    __tablename__ = 'groups'
 
-    documents = relationship('Document', secondary='document_doctags')
+    documents = relationship('Document', secondary='document_groups')
 
 
-class DocumentDocTag(Base):
-    __tablename__ = 'document_doctags'
+class DocumentGroup(Base):
+    __tablename__ = 'document_groups'
 
     document_id = Column(Integer, ForeignKey('documents.id',
                                              ondelete='CASCADE'),
                          primary_key=True)
-    doctag_id = Column(Integer, ForeignKey('doctags.id', ondelete='CASCADE'),
-                       primary_key=True)
+    group_id = Column(Integer, ForeignKey('groups.id', ondelete='CASCADE'),
+                      primary_key=True)
 
 
-class HlTag(Base, Tag):
-    __tablename__ = 'hltags'
+class Tag(Base, BaseHierarchy):
+    __tablename__ = 'tags'
 
-    documents = relationship('Highlight', secondary='highlight_hltags')
+    documents = relationship('Highlight', secondary='highlight_tags')
 
 
-class HighlightHlTag(Base):
-    __tablename__ = 'highlight_hltags'
+class HighlightTag(Base):
+    __tablename__ = 'highlight_tags'
 
     highlight_id = Column(Integer, ForeignKey('highlights.id',
                                               ondelete='CASCADE'),
                           primary_key=True)
     highlight = relationship('Highlight')
-    hltag_id = Column(Integer, ForeignKey('hltags.id',
-                                          ondelete='CASCADE'),
-                      primary_key=True)
-    hltag = relationship('HlTag')
+    tag_id = Column(Integer, ForeignKey('tags.id',
+                                        ondelete='CASCADE'),
+                    primary_key=True)
+    tag = relationship('Tag')
 
 
 def connect():
