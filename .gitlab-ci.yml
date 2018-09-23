@@ -2,7 +2,7 @@ pages:
   stage: deploy
   script:
     - mkdir public
-    - "cp index.html public/"
+    - "cp -r *.html css imgs js webfonts public/"
   artifacts:
     paths:
       - public
