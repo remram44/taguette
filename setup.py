@@ -29,7 +29,7 @@ setup(name='taguette',
           'console_scripts': [
               'taguette = taguette.web:main']},
       install_requires=req,
-      description="Document tagger",
+      description="Document tagger for qualitative analysis",
       author="Remi Rampin",
       author_email='remirampin@gmail.com',
       maintainer="Remi Rampin",

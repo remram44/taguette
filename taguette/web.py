@@ -1,3 +1,4 @@
+import argparse
 import asyncio
 import os
 from datetime import datetime
@@ -12,6 +13,7 @@ from tornado.routing import URLSpec
 from tornado.web import authenticated, HTTPError, RequestHandler
 import webbrowser
 
+from . import __version__
 from . import convert
 from . import database
 
@@ -528,12 +530,31 @@ def make_app(debug=False):
 
 def main():
     logging.root.handlers.clear()
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.INFO,
+                        format="%(asctime)s %(levelname)s: %(message)s")
+
+    parser = argparse.ArgumentParser(
+        description="Document tagger for qualitative analysis",
+    )
+    parser.add_argument('--version', action='version',
+                        version='taguette version %s' % __version__)
+    parser.add_argument('-p', '--port', default='8000',
+                        help="Port number on which to listen")
+    parser.add_argument('-b', '--bind', default='127.0.0.1',
+                        help="Address to bind on")
+    parser.add_argument('--browser', action='store_true', default=True,
+                        help="Open web browser to the application")
+    parser.add_argument('--no-browser', action='store_false', dest='browser',
+                        help="Don't open the web browser")
+    args = parser.parse_args()
+    address = args.bind
+    port = int(args.port)
+
     app = make_app()
-    port = 8000
-    app.listen(port)
+    app.listen(port, address=address)
     loop = tornado.ioloop.IOLoop.current()
-    loop.call_later(0.01, webbrowser.open, 'http://localhost:%d/' % port)
+    if args.browser:
+        loop.call_later(0.01, webbrowser.open, 'http://localhost:%d/' % port)
     loop.start()
 
 
