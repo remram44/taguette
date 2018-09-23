@@ -10,6 +10,7 @@ from tornado.concurrent import Future
 import tornado.ioloop
 from tornado.routing import URLSpec
 from tornado.web import authenticated, HTTPError, RequestHandler
+import webbrowser
 
 from . import convert
 from . import database
@@ -529,8 +530,11 @@ def main():
     logging.root.handlers.clear()
     logging.basicConfig(level=logging.INFO)
     app = make_app()
-    app.listen(8000)
-    tornado.ioloop.IOLoop.current().start()
+    port = 8000
+    app.listen(port)
+    loop = tornado.ioloop.IOLoop.current()
+    loop.call_later(0.01, webbrowser.open, 'http://localhost:%d/' % port)
+    loop.start()
 
 
 if __name__ == '__main__':
