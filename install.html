@@ -58,14 +58,14 @@
       </div>
     </nav>
 
-    <main role="main" class="container">
+    <main class="container">
     <div id="container-body">		
     
 			<h2>Install <span style="font-family: BadScript;">TAGUETTE</span></h2>
 
 			<h3 id="prereq">Pre-requisites</h3>
 
-				<p>To use Taguette right now, you first need to install <a href="https://www.python.org/downloads/>">Python 3</a> and <a href="<https://calibre-ebook.com/>">Calibre</a>, the open source e-book management software. Taguette uses a part of Calibre to convert uploaded documents into HTML, allowing you to highlight and tag parts of them. In the future, we hope to have a one-click installer for you. These instructions will work for Mac, Linux, and Windows.</p>
+				<p>To use Taguette right now, you first need to install <a href="https://www.python.org/downloads">Python 3</a> and <a href="https://calibre-ebook.com">Calibre</a>, the open source e-book management software. Taguette uses a part of Calibre to convert uploaded documents into HTML, allowing you to highlight and tag parts of them. In the future, we hope to have a one-click installer for you. These instructions will work for Mac, Linux, and Windows.</p>
 				
 			<h3 id="quick">Quick install</h3>
 
@@ -82,8 +82,9 @@
 		 <ol>
 		 	<li>Clone this git repository from the terminal: <code>git clone https://gitlab.com/remram44/taguette.git</code></li>
 		 	<li>Navigate on the command line to the repository you've just cloned locally, using the <code>cd</code> command. To get help using <code>cd</code>, use <a href="https://swcarpentry.github.io/shell-novice/02-filedir/index.html">this tutorial</a>.</li>
-			<li>To install the dependencies of Taguette, enter the command <code>pip install .</code> in the terminal.</li>
+			<li>To install the dependencies of Taguette, enter the command <code>pip install .</code> in the terminal.
 				<ul><li>We recommend you run this inside of a <a href="https://docs.python-guide.org/dev/virtualenvs"> virtualenv or pipenv</a> if possible.</li></ul>
+            </li>
 			<li>Once the dependencies have been installed, enter the command <code>taguette</code> in the terminal and you'll see it will stay running. This is ok! Don't worry about the terminal but do leave it running. In your web browser, navigate to <a href="http://localhost:8000/">localhost:8000</a> to begin working on your projects!</li>
 		</ol>
 		
