@@ -403,6 +403,31 @@ class HighlightUpdate(BaseHandler):
         self.send_json({'id': hl.id})
 
 
+class Highlights(BaseHandler):
+    @authenticated
+    def get(self, project_id, tag_id):
+        project = self.get_project(project_id)
+        highlights = (
+            self.db.query(database.HighlightTag)
+            .filter(database.HighlightTag.tag_id == int(tag_id))
+            .filter(database.Document.project == project)
+            .options(joinedload(database.HighlightTag.highlight)
+                     .joinedload(database.Highlight.document)
+                     .undefer(database.Document.contents))
+        ).all()
+        highlights = (hltag.highlight for hltag in highlights)
+        self.send_json({
+            'highlights': [
+                {
+                    'id': hl.id,
+                    'document_id': hl.document_id,
+                    'content': hl.snippet,
+                }
+                for hl in highlights
+            ],
+        })
+
+
 class ProjectEvents(BaseHandler):
     @authenticated
     async def get(self, project_id):
@@ -522,6 +547,7 @@ def make_app(debug=False):
                     HighlightAdd),
             URLSpec('/project/([0-9]+)/document/([0-9]+)/highlight/([0-9]+)',
                     HighlightUpdate),
+            URLSpec('/project/([0-9]+)/tag/([0-9]+)/highlights', Highlights),
             URLSpec('/project/([0-9]+)/events', ProjectEvents),
         ],
         static_path=pkg_resources.resource_filename('taguette', 'static'),

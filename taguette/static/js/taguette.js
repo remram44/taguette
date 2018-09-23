@@ -327,6 +327,7 @@ project_description_input.addEventListener('blur', projectMetadataChanged);
  */
 
 var current_document = null;
+var current_tag = null;
 var documents_list = document.getElementById('documents-list');
 
 function updateDocumentsList() {
@@ -585,7 +586,7 @@ function mouseIsUp(e) {
   var coords = getPageXY(e);
   var hlinfo = document.getElementById('hlinfo');
   setTimeout(function() {
-    hlinfo.style.top = coords.y + 'px';
+    hlinfo.style.top = (coords.y + 20) + 'px';
     hlinfo.style.left = coords.x + 'px';
     if(current_selection !== null) {
       hlinfo.style.display = 'block';
@@ -706,6 +707,7 @@ function loadDocument(document_id) {
       chunk_offsets.push(chunk.offset);
     }
     current_document = document_id;
+    current_tag = null;
     console.log("Loaded document", document_id);
     for(var i = 0; i < result.highlights.length; ++i) {
       setHighlight(result.highlights[i]);
@@ -717,8 +719,27 @@ function loadDocument(document_id) {
 }
 
 function loadtag(tag_id) {
-  // TODO: show highlight view
-  document_contents.innerHTML = '<h1>Tag ' + tag_id + ' (' + tags['' + tag_id].path + ') here</h1>';
+  getJSON(
+    '/project/' + project_id + '/tag/' + tag_id + '/highlights'
+  )
+  .then(function(result) {
+    console.log("Loaded highlights for tag", tag_id);
+    current_tag = tag_id;
+    current_document = null;
+    document_contents.innerHTML = '';
+    for(var i = 0; i < result.highlights.length; ++i) {
+      var elem = document.createElement('div');
+      elem.className = 'highlight-entry';
+      elem.setAttribute('id', 'highlight-entry-' + result.highlights[i].id);
+      elem.innerHTML = result.highlights[i].content;
+      document_contents.appendChild(elem);
+    }
+    if(result.highlights.length == 0) {
+      document_contents.innerHTML = '<p style="font-style: oblique; text-align: center;">No highlights with this tag yet.</p>';
+    }
+  }, function(error) {
+    console.error("Failed to load tag highlights:", error);
+  });
 }
 
 // Load the document if the URL includes one
