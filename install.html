@@ -15,89 +15,89 @@
 
     <!-- FontAwesome -->
     <link href="css/all.css" rel="stylesheet">
-    
+
     <!-- Custom -->
     <link href="css/custom.css" rel="stylesheet">
-    
+
   </head>
 
   <body>
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <div class="container">
-      <a class="navbar-brand" href="#" style="font-family: BadScript;">TAGUETTE</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+      <div class="container">
+        <a class="navbar-brand" href="#" style="font-family: BadScript;">TAGUETTE</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="index.html">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="about.html">About</a>
-          </li>
-          <li class="nav-item active">
-            <a class="nav-link" href="#">Install <span class="sr-only">(current)</span></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="getting-started.html">Getting Started</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="https://docs.taguette.fr">Technical Docs <i class="fas fa-external-link-alt"></i></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="https://gitlab.com/remram44/taguette"><i class="fab fa-gitlab"></i></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="https://twitter.com/TaguetteProject"><i class="fab fa-twitter"></i></a>
-          </li>
-        </ul>
-      </div>
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="about.html">About</a>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Install <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="getting-started.html">Getting Started</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="https://docs.taguette.fr">Technical Docs <i class="fas fa-external-link-alt"></i></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="https://gitlab.com/remram44/taguette"><i class="fab fa-gitlab"></i></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="https://twitter.com/TaguetteProject"><i class="fab fa-twitter"></i></a>
+            </li>
+          </ul>
+        </div>
       </div>
     </nav>
 
     <main class="container">
-    <div id="container-body">		
-    
-			<h2>Install <span style="font-family: BadScript;">TAGUETTE</span></h2>
+      <div id="container-body">
 
-			<h3 id="prereq">Pre-requisites</h3>
+        <h2>Install <span style="font-family: BadScript;">TAGUETTE</span></h2>
 
-				<p>To use Taguette right now, you first need to install <a href="https://www.python.org/downloads">Python 3</a> and <a href="https://calibre-ebook.com">Calibre</a>, the open source e-book management software. Taguette uses a part of Calibre to convert uploaded documents into HTML, allowing you to highlight and tag parts of them. In the future, we hope to have a one-click installer for you. These instructions will work for Mac, Linux, and Windows.</p>
-				
-			<h3 id="quick">Quick install</h3>
+        <h3 id="prereq">Pre-requisites</h3>
 
-				<p>Once you've installed Calibre, you can quickly install Taguette with it's dependencies from the command line with the following: <code>pip install taguette</code></p>
+        <p>To use Taguette right now, you first need to install <a href="https://www.python.org/downloads">Python 3</a> and <a href="https://calibre-ebook.com">Calibre</a>, the open source e-book management software. Taguette uses a part of Calibre to convert uploaded documents into HTML, allowing you to highlight and tag parts of them. In the future, we hope to have a one-click installer for you. These instructions will work for Mac, Linux, and Windows.</p>
 
-				<p>After which you can simply run <code>taguette</code> in the terminal to get it going. You'll see the command line will still be running. This is ok! Don't worry about the terminal but do leave it running. If you kill the terminal window, you'll kill Taguette!</p>
-				
-				<p>In your web browser, navigate to <a href="http://localhost:8000/">localhost:8000</a> to begin working on your projects. Learn more about uploading and tagging materials at our <a href="getting-started.html">getting started</a> page!</p>
-				
-		 <h3 id="long">Development set-up</h3>
-		 
-		 <p>You can follow these steps to use Taguette from source:</p>
-		 
-		 <ol>
-		 	<li>Clone this git repository: <code>git clone https://gitlab.com/remram44/taguette.git</code></li>
-		 	<li>Navigate on the command line to the repository you've just cloned locally, using the <code>cd</code> command. To get help using <code>cd</code>, use <a href="https://swcarpentry.github.io/shell-novice/02-filedir/index.html">this tutorial</a>.</li>
-			<li>To install the dependencies of Taguette, enter the command <code>pip install -e .</code> in the terminal.
-				<ul><li>We recommend you run this inside of a <a href="https://docs.python-guide.org/dev/virtualenvs"> virtualenv or pipenv</a> if possible.</li></ul>
-            </li>
-			<li>Once the dependencies have been installed, enter the command <code>taguette</code> in the terminal and you'll see it will stay running. This is ok! Don't worry about the terminal but do leave it running. In your web browser, navigate to <a href="http://localhost:8000/">localhost:8000</a> to begin working on your projects!</li>
-		</ol>
-		
-		<p>Learn about using Taguette at our <a href="getting-started.html">getting started</a> page!</p>
+        <h3 id="quick">Quick install</h3>
 
-			<h3>Coming soon: installers for Mac and Windows!</h3>
+        <p>Once you've installed Calibre, you can quickly install Taguette with it's dependencies from the command line with the following: <code>pip install taguette</code></p>
 
-		<hr/>
-		</div>
+        <p>After which you can simply run <code>taguette</code> in the terminal to get it going. You'll see the command line will still be running. This is ok! Don't worry about the terminal but do leave it running. If you kill the terminal window, you'll kill Taguette!</p>
+
+        <p>In your web browser, navigate to <a href="http://localhost:8000/">localhost:8000</a> to begin working on your projects. Learn more about uploading and tagging materials at our <a href="getting-started.html">getting started</a> page!</p>
+
+        <h3 id="long">Development set-up</h3>
+
+        <p>You can follow these steps to use Taguette from source:</p>
+
+        <ol>
+          <li>Clone this git repository: <code>git clone https://gitlab.com/remram44/taguette.git</code></li>
+          <li>Navigate on the command line to the repository you've just cloned locally, using the <code>cd</code> command. To get help using <code>cd</code>, use <a href="https://swcarpentry.github.io/shell-novice/02-filedir/index.html">this tutorial</a>.</li>
+          <li>To install the dependencies of Taguette, enter the command <code>pip install -e .</code> in the terminal.
+            <ul><li>We recommend you run this inside of a <a href="https://docs.python-guide.org/dev/virtualenvs"> virtualenv or pipenv</a> if possible.</li></ul>
+          </li>
+          <li>Once the dependencies have been installed, enter the command <code>taguette</code> in the terminal and you'll see it will stay running. This is ok! Don't worry about the terminal but do leave it running. In your web browser, navigate to <a href="http://localhost:8000/">localhost:8000</a> to begin working on your projects!</li>
+        </ol>
+
+        <p>Learn about using Taguette at our <a href="getting-started.html">getting started</a> page!</p>
+
+        <h3>Coming soon: installers for Mac and Windows!</h3>
+
+        <hr/>
+      </div>
     </main>
-    
+
     <footer class="container">
-    	<p> Last Updated: 2018-09-22 |  Email: <a href="mailto:hi@taguette.fr">hi@taguette.fr</a> | Tweet us: <a href="https://twitter.com/TaguetteProject">@TaguetteProject</a> |  Any issues using Taguette? Tell us on <a href="https://gitlab.com/remram44/taguette">GitLab</a>!</p>
+      <p> Last Updated: 2018-09-22 |  Email: <a href="mailto:hi@taguette.fr">hi@taguette.fr</a> | Tweet us: <a href="https://twitter.com/TaguetteProject">@TaguetteProject</a> |  Any issues using Taguette? Tell us on <a href="https://gitlab.com/remram44/taguette">GitLab</a>!</p>
     </footer>
     <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -107,4 +107,3 @@
     <script src="/js/jquery-slim.min.js"></script>
   </body>
 </html>
-
