@@ -79,5 +79,5 @@ textarea.form-control {
 .highlight-entry {
   border: 1px solid rgba(0,0,0,.125);
   margin: 1rem 0;
-  padding: 1rem 0.6rem 0 0.6rem;
+  padding: 1rem 0.6rem 1rem 0.6rem;
 }

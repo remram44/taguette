@@ -728,10 +728,24 @@ function loadtag(tag_path) {
     current_document = null;
     document_contents.innerHTML = '';
     for(var i = 0; i < result.highlights.length; ++i) {
+      var hl = result.highlights[i];
       var elem = document.createElement('div');
       elem.className = 'highlight-entry';
-      elem.setAttribute('id', 'highlight-entry-' + result.highlights[i].id);
+      elem.setAttribute('id', 'highlight-entry-' + hl.id);
       elem.innerHTML = result.highlights[i].content;
+      var doclink = document.createElement('a');
+      var url = '/project/' + project_id + '/document/' + hl.document_id
+      doclink.setAttribute('href', url);
+      doclink.className = 'badge badge-secondary';
+      doclink.textContent = documents[hl.document_id].name;
+      (function(document_id, url) {
+        doclink.addEventListener('click', function(e) {
+          window.history.pushState({'document_id': document_id}, "Document " + document_id, url);
+          loadDocument(document_id);
+          e.preventDefault();
+        });
+      })(hl.document_id, url);
+      elem.appendChild(doclink);
       document_contents.appendChild(elem);
     }
     if(result.highlights.length == 0) {
