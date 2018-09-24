@@ -703,8 +703,10 @@ function updateTagsList() {
       '    <a class="expand-marker">&nbsp;</a> ' +
       '    <a id="tag-link-' + tag.id + '">' + escapeHtml(tag.path) + '</a>' +
       '  </div>' +
-      '  <a href="javascript:editTag(' + tag.id + ');" class="badge badge-primary badge-pill">' + gettext("edit") + '</a>' +
-      //'  <span href="#" class="badge badge-primary badge-pill">?</span>' + // TODO: highlight count
+      '  <div>' +
+      '    <span href="#" class="badge badge-secondary badge-pill">' + tag.count + '</span>' +
+      '    <a href="javascript:editTag(' + tag.id + ');" class="badge badge-primary badge-pill">' + gettext("edit") + '</a>' +
+      '  </div>' +
       '</div>' +
       '<ul class="sublist"></div>';
     tags_list.insertBefore(elem, before);

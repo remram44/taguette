@@ -402,6 +402,15 @@ class HighlightTag(Base):
     tag = relationship('Tag')
 
 
+Tag.highlights_count = column_property(
+    select(
+        [functions.count(HighlightTag.highlight_id)],
+    ).where(
+        HighlightTag.tag_id == Tag.id,
+    ).correlate_except(HighlightTag)
+)
+
+
 def connect(db_url):
     """Connect to the database using an environment variable.
     """

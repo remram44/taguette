@@ -450,7 +450,8 @@ class Project(BaseHandler):
             {
                 str(tag.id): {'id': tag.id,
                               'path': tag.path,
-                              'description': tag.description}
+                              'description': tag.description,
+                              'count': tag.highlights_count}
                 for tag in project.tags
             },
             sort_keys=True,
