@@ -6,7 +6,7 @@ import json
 import logging
 import jinja2
 import pkg_resources
-from sqlalchemy.orm import joinedload, undefer, make_transient
+from sqlalchemy.orm import aliased, joinedload, undefer, make_transient
 from tornado.concurrent import Future
 import tornado.ioloop
 from tornado.routing import URLSpec
@@ -405,17 +405,19 @@ class HighlightUpdate(BaseHandler):
 
 class Highlights(BaseHandler):
     @authenticated
-    def get(self, project_id, tag_id):
+    def get(self, project_id, path):
         project = self.get_project(project_id)
+
+        tag = aliased(database.Tag)
+        hltag = aliased(database.HighlightTag)
         highlights = (
-            self.db.query(database.HighlightTag)
-            .filter(database.HighlightTag.tag_id == int(tag_id))
-            .filter(database.Document.project == project)
-            .options(joinedload(database.HighlightTag.highlight)
-                     .joinedload(database.Highlight.document)
-                     .undefer(database.Document.contents))
+            self.db.query(database.Highlight)
+            .join(hltag, hltag.highlight_id == database.Highlight.id)
+            .join(tag, hltag.tag_id == tag.id)
+            .filter(tag.path.startswith(path))
+            .filter(tag.project == project)
         ).all()
-        highlights = (hltag.highlight for hltag in highlights)
+
         self.send_json({
             'highlights': [
                 {
@@ -547,7 +549,7 @@ def make_app(debug=False):
                     HighlightAdd),
             URLSpec('/project/([0-9]+)/document/([0-9]+)/highlight/([0-9]+)',
                     HighlightUpdate),
-            URLSpec('/project/([0-9]+)/tag/([0-9]+)/highlights', Highlights),
+            URLSpec('/project/([0-9]+)/tag/([^/]+)/highlights', Highlights),
             URLSpec('/project/([0-9]+)/events', ProjectEvents),
         ],
         static_path=pkg_resources.resource_filename('taguette', 'static'),

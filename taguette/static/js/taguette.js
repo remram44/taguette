@@ -463,7 +463,7 @@ function updateTagsList() {
   var entries = Object.entries(tags);
   for(var i = 0; i < entries.length; ++i) {
     var tag = entries[i][1];
-    var url = '/project/' + project_id + '/tag/' + tag.id;
+    var url = '/project/' + project_id + '/tag/' + tag.path;
     var elem = document.createElement('li');
     elem.className = 'list-group-item';
     elem.innerHTML =
@@ -720,7 +720,7 @@ function loadDocument(document_id) {
 
 function loadtag(tag_id) {
   getJSON(
-    '/project/' + project_id + '/tag/' + tag_id + '/highlights'
+    '/project/' + project_id + '/tag/' + tags[tag_id].path + '/highlights'
   )
   .then(function(result) {
     console.log("Loaded highlights for tag", tag_id);
