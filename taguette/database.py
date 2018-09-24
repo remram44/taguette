@@ -252,25 +252,11 @@ class HighlightTag(Base):
     tag = relationship('Tag')
 
 
-def connect():
+def connect(db_url):
     """Connect to the database using an environment variable.
     """
-    logger.info("Connecting to SQL database")
-    if 'POSTGRES_HOST' in os.environ:
-        url = 'postgresql://{user}:{password}@{host}/{database}'.format(
-            user=os.environ['POSTGRES_USER'],
-            password=os.environ['POSTGRES_PASSWORD'],
-            host=os.environ['POSTGRES_HOST'],
-            database=os.environ['POSTGRES_DB'],
-        )
-    else:
-        if 'SQLITE_DB' in os.environ:
-            fname = os.path.abspath(os.environ['SQLITE_DB'])
-        else:
-            fname = 'db.sqlite3'
-        url = 'sqlite:///%s' % fname
-
-    engine = create_engine(url, echo=False)
+    logger.info("Connecting to SQL database %r", db_url)
+    engine = create_engine(db_url, echo=False)
 
     if not engine.dialect.has_table(engine.connect(), Project.__tablename__):
         logger.warning("The tables don't seem to exist; creating")

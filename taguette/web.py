@@ -11,6 +11,7 @@ from tornado.concurrent import Future
 import tornado.ioloop
 from tornado.routing import URLSpec
 from tornado.web import authenticated, HTTPError, RequestHandler
+from urllib.parse import urlparse
 import webbrowser
 
 from . import __version__
@@ -476,10 +477,10 @@ class ProjectEvents(BaseHandler):
 
 
 class Application(tornado.web.Application):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, db_url, **kwargs):
         super(Application, self).__init__(*args, **kwargs)
 
-        self.DBSession = database.connect()
+        self.DBSession = database.connect(db_url)
         self.event_waiters = {}
 
     def observe_project(self, project_id, future):
@@ -497,7 +498,7 @@ class Application(tornado.web.Application):
             future.set_result(cmd)
 
 
-def make_app(debug=False):
+def make_app(db_url, debug=False):
     if 'XDG_CACHE_HOME' in os.environ:
         cache = os.environ['XDG_CACHE_HOME']
     else:
@@ -555,6 +556,7 @@ def make_app(debug=False):
         xsrf_cookies=True,
         debug=debug,
         cookie_secret=secret,
+        db_url=db_url,
     )
 
 
@@ -578,11 +580,21 @@ def main():
                         help="Don't open the web browser")
     parser.add_argument('--debug', action='store_true', default=False,
                         help=argparse.SUPPRESS)
+    parser.add_argument('--database', action='store',
+                        default='sqlite:///db.sqlite3',
+                        help="Database location or connection string, for "
+                             "example 'project.db' or "
+                             "'postgresql://me:pw@localhost/mydb' "
+                             "(default: 'sqlite:///db.sqlite3')")
     args = parser.parse_args()
     address = args.bind
     port = int(args.port)
+    if urlparse(args.database).scheme:
+        db_url = args.database
+    else:
+        db_url = 'sqlite:///' + args.database
 
-    app = make_app(args.debug)
+    app = make_app(db_url, args.debug)
     app.listen(port, address=address)
     loop = tornado.ioloop.IOLoop.current()
     if args.browser and not args.debug:
