@@ -123,6 +123,25 @@ function postJSON(url='', data={}, args) {
   });
 }
 
+// Returns the byte length of a string encoded in UTF-8
+// https://stackoverflow.com/q/5515869/711380
+if(window.TextEncoder) {
+  function lengthUTF8(s) {
+    return (new TextEncoder('utf-8').encode(s)).length;
+  }
+} else {
+  function lengthUTF8(s) {
+    var l = s.length;
+    for(var i = s.length - 1; i >= 0; --i) {
+      var code = s.charCodeAt(i);
+      if(code > 0x7f && code <= 0x7ff) ++l;
+      else if(code > 0x7ff && code <= 0xffff) l += 2;
+      if (code >= 0xDC00 && code <= 0xDFFF) i--; // trailing surrogate
+    }
+    return l;
+  }
+}
+
 
 /*
  * Selection stuff
@@ -135,7 +154,7 @@ function describePos(node, offset) {
   while(!node.id) {
     if(node.previousSibling) {
       node = node.previousSibling;
-      offset += node.textContent.length;
+      offset += lengthUTF8(node.textContent);
     } else {
       node = node.parentNode;
     }
@@ -163,10 +182,10 @@ function locatePos(pos) {
     node = node.firstChild;
   }
   while(offset > 0) {
-    if(node.textContent.length >= offset) {
+    if(lengthUTF8(node.textContent) >= offset) {
       break;
     } else {
-      offset -= node.textContent.length;
+      offset -= lengthUTF8(node.textContent);
       node = nextElement(node);
     }
   }
@@ -208,7 +227,7 @@ function restoreSelection(saved) {
 function splitAtPos(pos, after) {
   if(pos[1] == 0) {
     return pos[0];
-  } else if(pos[1] == pos[0].textContent.length) {
+  } else if(pos[1] == lengthUTF8(pos[0].textContent.length)) {
     return nextElement(pos[0]);
   } else {
     return pos[0].splitText(pos[1]);
@@ -229,7 +248,7 @@ function highlightSelection(saved, id) {
   var node = start;
   while(node != end) {
     var next = nextElement(node);
-    if(node.nodeType == 3) {
+    if(node.nodeType == 3 && node.textContent) { // TEXT_NODE
       var span = document.createElement('a');
       span.className = 'highlight highlight-' + id;
       span.setAttribute('data-highlight-id', '' + id);
@@ -308,6 +327,7 @@ project_description_input.addEventListener('blur', projectMetadataChanged);
  */
 
 var current_document = null;
+var current_tag = null;
 var documents_list = document.getElementById('documents-list');
 
 function updateDocumentsList() {
@@ -566,7 +586,7 @@ function mouseIsUp(e) {
   var coords = getPageXY(e);
   var hlinfo = document.getElementById('hlinfo');
   setTimeout(function() {
-    hlinfo.style.top = coords.y + 'px';
+    hlinfo.style.top = (coords.y + 20) + 'px';
     hlinfo.style.left = coords.x + 'px';
     if(current_selection !== null) {
       hlinfo.style.display = 'block';
@@ -587,8 +607,8 @@ function createHighlight(selection) {
 document.getElementById('highlight-add-form').addEventListener('submit', function(e) {
   var highlight_id = document.getElementById('highlight-add-id').value;
   var selection = [
-    document.getElementById('highlight-add-start').value,
-    document.getElementById('highlight-add-end').value
+    parseInt(document.getElementById('highlight-add-start').value),
+    parseInt(document.getElementById('highlight-add-end').value)
   ];
   var hl_tags = [];
   var entries = Object.entries(tags);
@@ -687,6 +707,7 @@ function loadDocument(document_id) {
       chunk_offsets.push(chunk.offset);
     }
     current_document = document_id;
+    current_tag = null;
     console.log("Loaded document", document_id);
     for(var i = 0; i < result.highlights.length; ++i) {
       setHighlight(result.highlights[i]);
@@ -698,8 +719,27 @@ function loadDocument(document_id) {
 }
 
 function loadtag(tag_id) {
-  // TODO: show highlight view
-  document_contents.innerHTML = '<h1>Tag ' + tag_id + ' (' + tags['' + tag_id].path + ') here</h1>';
+  getJSON(
+    '/project/' + project_id + '/tag/' + tag_id + '/highlights'
+  )
+  .then(function(result) {
+    console.log("Loaded highlights for tag", tag_id);
+    current_tag = tag_id;
+    current_document = null;
+    document_contents.innerHTML = '';
+    for(var i = 0; i < result.highlights.length; ++i) {
+      var elem = document.createElement('div');
+      elem.className = 'highlight-entry';
+      elem.setAttribute('id', 'highlight-entry-' + result.highlights[i].id);
+      elem.innerHTML = result.highlights[i].content;
+      document_contents.appendChild(elem);
+    }
+    if(result.highlights.length == 0) {
+      document_contents.innerHTML = '<p style="font-style: oblique; text-align: center;">No highlights with this tag yet.</p>';
+    }
+  }, function(error) {
+    console.error("Failed to load tag highlights:", error);
+  });
 }
 
 // Load the document if the URL includes one

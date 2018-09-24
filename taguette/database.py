@@ -200,6 +200,7 @@ class Highlight(Base):
     document = relationship('Document', back_populates='highlights')
     start_offset = Column(Integer, nullable=False)
     end_offset = Column(Integer, nullable=False)
+    snippet = Column(Text, nullable=False)
     tags = relationship('Tag', secondary='highlight_tags')
 
 

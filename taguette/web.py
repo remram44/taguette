@@ -16,6 +16,7 @@ import webbrowser
 from . import __version__
 from . import convert
 from . import database
+from .extract import extract
 
 
 logger = logging.getLogger(__name__)
@@ -326,10 +327,13 @@ class HighlightAdd(BaseHandler):
     @authenticated
     def post(self, project_id, document_id):
         obj = self.get_json()
-        document = self.get_document(project_id, document_id)
+        document = self.get_document(project_id, document_id, True)
+        start, end = obj['start_offset'], obj['end_offset']
+        snippet = extract(document.contents, start, end)
         hl = database.Highlight(document=document,
-                                start_offset=obj['start_offset'],
-                                end_offset=obj['end_offset'])
+                                start_offset=start,
+                                end_offset=end,
+                                snippet=snippet)
         self.db.add(hl)
         self.db.commit()  # Need to commit to get hl.id
         self.db.bulk_insert_mappings(database.HighlightTag, [
@@ -397,6 +401,31 @@ class HighlightUpdate(BaseHandler):
         self.application.notify_project(document.project_id, cmd)
 
         self.send_json({'id': hl.id})
+
+
+class Highlights(BaseHandler):
+    @authenticated
+    def get(self, project_id, tag_id):
+        project = self.get_project(project_id)
+        highlights = (
+            self.db.query(database.HighlightTag)
+            .filter(database.HighlightTag.tag_id == int(tag_id))
+            .filter(database.Document.project == project)
+            .options(joinedload(database.HighlightTag.highlight)
+                     .joinedload(database.Highlight.document)
+                     .undefer(database.Document.contents))
+        ).all()
+        highlights = (hltag.highlight for hltag in highlights)
+        self.send_json({
+            'highlights': [
+                {
+                    'id': hl.id,
+                    'document_id': hl.document_id,
+                    'content': hl.snippet,
+                }
+                for hl in highlights
+            ],
+        })
 
 
 class ProjectEvents(BaseHandler):
@@ -518,6 +547,7 @@ def make_app(debug=False):
                     HighlightAdd),
             URLSpec('/project/([0-9]+)/document/([0-9]+)/highlight/([0-9]+)',
                     HighlightUpdate),
+            URLSpec('/project/([0-9]+)/tag/([0-9]+)/highlights', Highlights),
             URLSpec('/project/([0-9]+)/events', ProjectEvents),
         ],
         static_path=pkg_resources.resource_filename('taguette', 'static'),
