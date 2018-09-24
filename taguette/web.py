@@ -22,9 +22,6 @@ from .extract import extract
 logger = logging.getLogger(__name__)
 
 
-DBSession = database.connect()
-
-
 class BaseHandler(RequestHandler):
     """Base class for all request handlers.
     """
@@ -53,7 +50,7 @@ class BaseHandler(RequestHandler):
 
     def __init__(self, application, request, **kwargs):
         super(BaseHandler, self).__init__(application, request, **kwargs)
-        self.db = DBSession()
+        self.db = application.DBSession()
 
     def get_current_user(self):
         user = self.get_secure_cookie('user')
@@ -482,6 +479,7 @@ class Application(tornado.web.Application):
     def __init__(self, *args, **kwargs):
         super(Application, self).__init__(*args, **kwargs)
 
+        self.DBSession = database.connect()
         self.event_waiters = {}
 
     def observe_project(self, project_id, future):
