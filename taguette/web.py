@@ -576,14 +576,16 @@ def main():
                         help="Open web browser to the application")
     parser.add_argument('--no-browser', action='store_false', dest='browser',
                         help="Don't open the web browser")
+    parser.add_argument('--debug', action='store_true', default=False,
+                        help=argparse.SUPPRESS)
     args = parser.parse_args()
     address = args.bind
     port = int(args.port)
 
-    app = make_app()
+    app = make_app(args.debug)
     app.listen(port, address=address)
     loop = tornado.ioloop.IOLoop.current()
-    if args.browser:
+    if args.browser and not args.debug:
         loop.call_later(0.01, webbrowser.open, 'http://localhost:%d/' % port)
     loop.start()
 
