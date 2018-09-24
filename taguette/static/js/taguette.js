@@ -476,13 +476,13 @@ function updateTagsList() {
       '</div>' +
       '<ul class="sublist"></div>';
     tags_list.insertBefore(elem, before);
-    (function(tag_id, url) {
+    (function(tag_id, tag_path, url) {
       document.getElementById('tag-link-' + tag_id).addEventListener('click', function(e) {
-        window.history.pushState({'tag_id': tag_id}, "Tag " + tag_id, url);
-        loadtag(tag_id);
+        window.history.pushState({'tag_path': tag_path}, "Tag " + tag_path, url);
+        loadtag(tag_path);
         e.preventDefault();
       });
-    })(tag.id, url);
+    })(tag.id, tag.path, url);
   }
   if(entries.length == 0) {
     var elem = document.createElement('div');
@@ -718,13 +718,13 @@ function loadDocument(document_id) {
   });
 }
 
-function loadtag(tag_id) {
+function loadtag(tag_path) {
   getJSON(
-    '/project/' + project_id + '/tag/' + tags[tag_id].path + '/highlights'
+    '/project/' + project_id + '/tag/' + tag_path + '/highlights'
   )
   .then(function(result) {
-    console.log("Loaded highlights for tag", tag_id);
-    current_tag = tag_id;
+    console.log("Loaded highlights for tag", tag_path);
+    current_tag = tag_path;
     current_document = null;
     document_contents.innerHTML = '';
     for(var i = 0; i < result.highlights.length; ++i) {
@@ -748,9 +748,9 @@ if(m) {
   loadDocument(parseInt(m[2]));
 }
 // Or a tag
-m = window.location.pathname.match(/\/project\/([0-9]+)\/tag\/([0-9]+)/);
+m = window.location.pathname.match(/\/project\/([0-9]+)\/tag\/([^\/]+)/);
 if(m) {
-  loadtag(parseInt(m[2]));
+  loadtag(m[2]);
 }
 
 // Load documents as we go through browser history
@@ -758,8 +758,8 @@ window.onpopstate = function(e) {
   if(e.state) {
     if(e.state.document_id != undefined) {
       loadDocument(e.state.document_id);
-    } else if(e.state.tag_id != undefined) {
-      loadtag(e.state.tag_id);
+    } else if(e.state.tag_path != undefined) {
+      loadtag(e.state.tag_path);
     } else {
       console.error("History state unrecognized");
     }

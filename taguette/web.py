@@ -539,7 +539,7 @@ def make_app(debug=False):
             URLSpec('/project/([0-9]+)', Project, name='project'),
             URLSpec('/project/([0-9]+)/document/[0-9]+', Project,
                     name='project_doc'),
-            URLSpec('/project/([0-9]+)/tag/[0-9]+', Project,
+            URLSpec('/project/([0-9]+)/tag/[^/]+', Project,
                     name='project_tag'),
             URLSpec('/project/([0-9]+)/meta', ProjectMeta),
             URLSpec('/project/([0-9]+)/document/new', DocumentAdd),
