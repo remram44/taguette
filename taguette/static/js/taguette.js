@@ -472,7 +472,7 @@ function updateTagsList() {
       '    <a class="expand-marker">&nbsp;</a> ' +
       '    <a href="' + url + '" id="tag-link-' + tag.id + '">' + escapeHtml(tag.path) + '</a>' +
       '  </div>' +
-      '  <span href="#" class="badge badge-primary badge-pill">?</span>' + // TODO: highlight count
+      //'  <span href="#" class="badge badge-primary badge-pill">?</span>' + // TODO: highlight count
       '</div>' +
       '<ul class="sublist"></div>';
     tags_list.insertBefore(elem, before);
