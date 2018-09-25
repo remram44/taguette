@@ -14,7 +14,13 @@ class TestConvert(AsyncTestCase):
             b"<html>\n  <head>\n  <title>Test</title>\n</head>\n<body>"
             b"<h1>Example</h1><p>This is an example text document.\n"
             b"It should be <blink>converted</blink>.</p>\n\n"
-            b"<p>It has another paragraph <strong>here</strong>.</p>\n"
+            b"<p>It has another paragraph <strong>here</strong>, "
+            b"images: <img width=\"50\" src=\"here.png\"> "
+            b"<img title=\"important\" src=\"/over/there.png\" width=\"30\"> "
+            b"<img src=\"http://and/the/last/one.png\" class=\"a\">, and "
+            b"links: <a href=\"here\">1</a> "
+            b"<a title=\"important\" href=\"/over/there\">2</a> "
+            b"<a href=\"http://and/the/last/one\" class=\"a\">3</a></p>\n"
             b"</body></html>\n"
         )
         with mock.patch('tornado.process.Subprocess', object()):
@@ -23,7 +29,13 @@ class TestConvert(AsyncTestCase):
             body,
             "<h1>Example</h1><p>This is an example text document.\n"
             "It should be converted.</p>\n\n"
-            "<p>It has another paragraph <strong>here</strong>.</p>"
+            "<p>It has another paragraph <strong>here</strong>, "
+            "images: <img src=\"/static/missing.png\" width=\"50\"> "
+            "<img src=\"/static/missing.png\" width=\"30\"> "
+            "<img src=\"/static/missing.png\">, and "
+            "links: <a href=\"#\">1</a> "
+            "<a href=\"#\">2</a> "
+            "<a href=\"http://and/the/last/one\">3</a></p>"
         )
 
 
