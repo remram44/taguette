@@ -330,6 +330,16 @@ var current_document = null;
 var current_tag = null;
 var documents_list = document.getElementById('documents-list');
 
+function linkDocument(elem, doc_id) {
+  var url = '/project/' + project_id + '/document/' + doc_id;
+  elem.setAttribute('href', url);
+  elem.addEventListener('click', function(e) {
+    window.history.pushState({'document_id': doc_id}, "Document " + doc_id, url);
+    loadDocument(doc_id);
+    e.preventDefault();
+  });
+}
+
 function updateDocumentsList() {
   // Empty the list
   while(documents_list.firstChild) {
@@ -346,18 +356,10 @@ function updateDocumentsList() {
   var entries = Object.entries(documents);
   for(var i = 0; i < entries.length; ++i) {
     var doc = entries[i][1];
-    var url = '/project/' + project_id + '/document/' + doc.id;
     var elem = document.createElement('a');
     elem.className = 'list-group-item';
-    elem.href = url;
     elem.textContent = doc.name;
-    (function(doc_id, url) {
-      elem.addEventListener('click', function(e) {
-        window.history.pushState({'document_id': doc_id}, "Document " + doc_id, url);
-        loadDocument(doc_id);
-        e.preventDefault();
-      });
-    })(doc.id, url);
+    linkDocument(elem, doc.id);
     documents_list.insertBefore(elem, before);
   }
   if(entries.length == 0) {
@@ -444,6 +446,16 @@ document.getElementById('document-add-form').addEventListener('submit', function
 var tags_list = document.getElementById('tags-list');
 var tags_modal_list = document.getElementById('highlight-add-tags');
 
+function linkTag(elem, tag_path) {
+  var url = '/project/' + project_id + '/tag/' + tag_path;
+  elem.setAttribute('href', url);
+  elem.addEventListener('click', function(e) {
+    window.history.pushState({'tag_path': tag_path}, "Tag " + tag_path, url);
+    loadtag(tag_path);
+    e.preventDefault();
+  });
+}
+
 function updateTagsList() {
   // The list in the left panel
 
@@ -463,26 +475,19 @@ function updateTagsList() {
   var entries = Object.entries(tags);
   for(var i = 0; i < entries.length; ++i) {
     var tag = entries[i][1];
-    var url = '/project/' + project_id + '/tag/' + tag.path;
     var elem = document.createElement('li');
     elem.className = 'list-group-item';
     elem.innerHTML =
       '<div class="d-flex justify-content-between align-items-center">' +
       '  <div>' +
       '    <a class="expand-marker">&nbsp;</a> ' +
-      '    <a href="' + url + '" id="tag-link-' + tag.id + '">' + escapeHtml(tag.path) + '</a>' +
+      '    <a id="tag-link-' + tag.id + '">' + escapeHtml(tag.path) + '</a>' +
       '  </div>' +
       //'  <span href="#" class="badge badge-primary badge-pill">?</span>' + // TODO: highlight count
       '</div>' +
       '<ul class="sublist"></div>';
     tags_list.insertBefore(elem, before);
-    (function(tag_id, tag_path, url) {
-      document.getElementById('tag-link-' + tag_id).addEventListener('click', function(e) {
-        window.history.pushState({'tag_path': tag_path}, "Tag " + tag_path, url);
-        loadtag(tag_path);
-        e.preventDefault();
-      });
-    })(tag.id, tag.path, url);
+    linkTag(document.getElementById('tag-link-' + tag.id), tag.path);
   }
   if(entries.length == 0) {
     var elem = document.createElement('div');
@@ -734,17 +739,9 @@ function loadtag(tag_path) {
       elem.setAttribute('id', 'highlight-entry-' + hl.id);
       elem.innerHTML = result.highlights[i].content;
       var doclink = document.createElement('a');
-      var url = '/project/' + project_id + '/document/' + hl.document_id
-      doclink.setAttribute('href', url);
       doclink.className = 'badge badge-secondary';
       doclink.textContent = documents[hl.document_id].name;
-      (function(document_id, url) {
-        doclink.addEventListener('click', function(e) {
-          window.history.pushState({'document_id': document_id}, "Document " + document_id, url);
-          loadDocument(document_id);
-          e.preventDefault();
-        });
-      })(hl.document_id, url);
+      linkDocument(doclink, hl.document_id);
       elem.appendChild(doclink);
       document_contents.appendChild(elem);
     }
