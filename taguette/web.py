@@ -503,6 +503,7 @@ def make_app(db_url, debug=False):
         cache = os.environ['XDG_CACHE_HOME']
     else:
         cache = os.path.expanduser('~/.cache')
+    os.makedirs(cache, 0o700, exist_ok=True)
     cache = os.path.join(cache, 'taguette.json')
     secret = None
     try:
