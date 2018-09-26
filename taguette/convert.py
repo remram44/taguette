@@ -55,6 +55,8 @@ async def to_html(body, content_type, filename):
         e.attrs['src'] = '/static/missing.png'
     # Update 'href' URLs
     for e in soup.find_all('a'):
+        if 'href' not in e.attrs:
+            continue
         href = e.attrs['href'].lower()
         if not href.startswith('http://') and not href.startswith('https://'):
             e.attrs['href'] = '#'
