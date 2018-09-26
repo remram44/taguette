@@ -20,7 +20,7 @@ setup(name='taguette',
       version='0.0',
       packages=['taguette'],
       package_data={'taguette': [
-          'static/missing.png',
+          'static/missing.png', 'static/favicon.ico',
           'static/css/*.css', 'static/css/*.css.map',
           'static/js/*.js', 'static/js/*.js.map',
           'templates/*.html',
