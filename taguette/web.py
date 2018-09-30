@@ -122,7 +122,7 @@ class BaseHandler(RequestHandler):
             obj = {'results': obj}
         elif not isinstance(obj, dict):
             raise ValueError("Can't encode %r to JSON" % type(obj))
-        self.set_header('Content-Type', 'text/json; charset=utf-8')
+        self.set_header('Content-Type', 'application/json; charset=utf-8')
         return self.finish(json.dumps(obj))
 
 
