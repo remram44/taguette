@@ -5,9 +5,15 @@ from taguette.web import main
 
 
 if sys.platform == 'win32':
-    os.environ['PATH'] = os.path.join(
+    os.environ['CALIBRE'] = os.path.join(
         os.path.dirname(sys.executable),
         'Calibre2',
-    ) + os.pathsep + os.environ['PATH']
+    )
+elif sys.platform == 'darwin':
+    os.environ['CALIBRE'] = os.path.join(
+        os.path.dirname(os.path.dirname(sys.executable)),
+        'Resources/calibre.app/Contents/MacOS',
+    )
+
 
 main()
