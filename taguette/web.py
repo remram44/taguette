@@ -6,6 +6,7 @@ import json
 import logging
 import jinja2
 import pkg_resources
+import re
 from sqlalchemy.orm import aliased, joinedload, undefer, make_transient
 import sys
 from tornado.concurrent import Future
@@ -614,8 +615,13 @@ def main():
     args = parser.parse_args()
     address = args.bind
     port = int(args.port)
-    url = urlparse(args.database)
-    if url.scheme:
+
+    # Windows paths kinda look like URLs, but aren't
+    if sys.platform == 'win32' and re.match(r'^[a-zA-Z]:\\', args.database):
+        url = None
+    else:
+        url = urlparse(args.database)
+    if url is not None and url.scheme:
         # Full URL: use it, create path if sqlite
         db_url = args.database
         if url.scheme == 'sqlite' and url.path.startswith('/'):
