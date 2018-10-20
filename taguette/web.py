@@ -13,7 +13,7 @@ from tornado.concurrent import Future
 import tornado.ioloop
 from tornado.routing import URLSpec
 from tornado.web import authenticated, HTTPError, RequestHandler
-from urllib.parse import quote, unquote, urlparse
+from urllib.parse import urlparse
 import webbrowser
 
 from . import __version__
@@ -625,11 +625,11 @@ def main():
         # Full URL: use it, create path if sqlite
         db_url = args.database
         if url.scheme == 'sqlite' and url.path.startswith('/'):
-            os.makedirs(unquote(url.path)[1:])
+            os.makedirs(url.path[1:])
     else:
         # Path: create it, turn into URL
         os.makedirs(os.path.dirname(args.database), exist_ok=True)
-        db_url = 'sqlite:///' + quote(args.database)
+        db_url = 'sqlite:///' + args.database
 
     app = make_app(db_url, args.debug)
     app.listen(port, address=address)
