@@ -50,7 +50,10 @@ async def to_html(body, content_type, filename):
             with open(input_filename, 'wb') as fp:
                 fp.write(body)
             output_dir = os.path.join(tmp, 'output')
-            cmd = ['ebook-convert', input_filename, output_dir]
+            convert = 'ebook-convert'
+            if os.environ.get('CALIBRE'):
+                convert = os.path.join(os.environ['CALIBRE'], convert)
+            cmd = [convert, input_filename, output_dir]
             logger.info("Running: %s", ' '.join(cmd))
             try:
                 await check_call(cmd)
