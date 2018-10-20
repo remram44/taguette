@@ -2,9 +2,9 @@ import bleach
 import bs4
 import logging
 import os
+import signal
 import shutil
 import tempfile
-from tornado.process import Subprocess, CalledProcessError
 
 
 logger = logging.getLogger(__name__)
@@ -16,6 +16,27 @@ HTML_EXTENSIONS = ('.htm', '.html', '.xhtml')
 class ConversionError(ValueError):
     """Error converting document.
     """
+
+
+if hasattr(signal, 'SIGCHLD'):
+    from tornado.process import Subprocess, CalledProcessError
+
+    def check_call(cmd):
+        proc = Subprocess(cmd)
+        return proc.wait_for_exit()
+else:
+    import asyncio
+    import subprocess
+    from subprocess import CalledProcessError
+
+    # Windows doesn't have this, so tornado.process doesn't work
+    # Use Popen with a thread pool
+    def check_call(cmd):
+        return asyncio.get_event_loop().run_in_executor(
+            None,
+            subprocess.check_call,
+            cmd
+        )
 
 
 async def to_html(body, content_type, filename):
@@ -31,9 +52,8 @@ async def to_html(body, content_type, filename):
             output_dir = os.path.join(tmp, 'output')
             cmd = ['ebook-convert', input_filename, output_dir]
             logger.info("Running: %s", ' '.join(cmd))
-            proc = Subprocess(cmd)
             try:
-                await proc.wait_for_exit()
+                await check_call(cmd)
             except CalledProcessError as e:
                 raise ConversionError("Calibre returned %d" % e.returncode)
             logger.info("ebook-convert successful")
