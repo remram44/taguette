@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['pyinstaller_entrypoint.py'],
-             pathex=['C:\\Users\\user\\Desktop\\taguette'],
+             pathex=['/Users/vagrant/taguette'],
              binaries=[],
              datas=[('taguette/static', 'taguette/static'),
                     ('taguette/templates', 'taguette/templates')],
@@ -22,12 +22,12 @@ exe = EXE(pyz,
           a.scripts,
           [],
           exclude_binaries=True,
-          name='taguette',
+          name='taguette_exe',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
-          console=True , icon='taguette\\static\\favicon.ico')
+          console=True , icon='taguette/static/favicon.ico')
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,
@@ -35,3 +35,7 @@ coll = COLLECT(exe,
                strip=False,
                upx=True,
                name='taguette')
+app = BUNDLE(coll,
+             name='Taguette.app',
+             icon=None,
+             bundle_identifier=None)
