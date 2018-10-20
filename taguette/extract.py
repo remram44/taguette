@@ -11,11 +11,11 @@ def find_pos(node, offset, after):
             node = node.contents[0]
         else:
             if isinstance(node, NavigableString):
-                l = len(node.string.encode('utf-8'))
-                if (after and l > offset) or (not after and l >= offset):
+                nb = len(node.string.encode('utf-8'))
+                if (after and nb > offset) or (not after and nb >= offset):
                     break
                 else:
-                    offset -= l
+                    offset -= nb
             while not node.next_sibling:
                 indices.pop()
                 node = node.parent

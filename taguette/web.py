@@ -211,7 +211,7 @@ class Project(BaseHandler):
         documents_json = jinja2.Markup(json.dumps(
             {
                 str(doc.id): {'id': doc.id, 'name': doc.name,
-                 'description': doc.description}
+                              'description': doc.description}
                 for doc in project.documents
             },
             sort_keys=True,
@@ -219,8 +219,8 @@ class Project(BaseHandler):
         tags_json = jinja2.Markup(json.dumps(
             {
                 str(tag.id): {'id': tag.id,
-                             'path': tag.path,
-                             'description': tag.description}
+                              'path': tag.path,
+                              'description': tag.description}
                 for tag in project.tags
             },
             sort_keys=True,

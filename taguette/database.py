@@ -2,7 +2,6 @@ import bcrypt
 import enum
 import json
 import logging
-import os
 from sqlalchemy import Column, ForeignKey, Index, TypeDecorator, \
     create_engine, select
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
@@ -206,13 +205,16 @@ class Highlight(Base):
 
 class BaseHierarchy(object):
     id = Column(Integer, primary_key=True)
+
     @declared_attr
     def project_id(cls):
         return Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
                       nullable=False, index=True)
+
     @declared_attr
     def project(cls):
         return relationship('Project')
+
     path = Column(String, nullable=False)
     description = Column(Text, nullable=False)
 
@@ -268,9 +270,10 @@ def connect(db_url):
     if db.query(User).count() == 0:
         logger.warning("Creating user 'admin'")
         user = User(login='admin')
-        #import getpass
-        #passwd = getpass.getpass("Enter password for admin user: ")
-        #user.set_password(passwd)
+        # FIXME: Set password
+        # import getpass
+        # passwd = getpass.getpass("Enter password for admin user: ")
+        # user.set_password(passwd)
         db.add(user)
         db.commit()
 
