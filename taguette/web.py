@@ -7,11 +7,12 @@ import logging
 import jinja2
 import pkg_resources
 from sqlalchemy.orm import aliased, joinedload, undefer, make_transient
+import sys
 from tornado.concurrent import Future
 import tornado.ioloop
 from tornado.routing import URLSpec
 from tornado.web import authenticated, HTTPError, RequestHandler
-from urllib.parse import urlparse
+from urllib.parse import quote, unquote, urlparse
 import webbrowser
 
 from . import __version__
@@ -566,6 +567,29 @@ def main():
     logging.basicConfig(level=logging.INFO,
                         format="%(asctime)s %(levelname)s: %(message)s")
 
+    if sys.platform == 'win32':
+        import ctypes.wintypes
+
+
+        CSIDL_PERSONAL = 5  # My Documents
+        SHGFP_TYPE_CURRENT = 0  # Get current, not default value
+
+        buf = ctypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
+        ctypes.windll.shell32.SHGetFolderPathW(None, CSIDL_PERSONAL, None,
+                                               SHGFP_TYPE_CURRENT, buf)
+
+        default_db = os.path.join(buf.value, 'Taguette', 'taguette.sqlite3')
+        default_db_show = os.path.join(os.path.basename(buf.value),
+                                       'Taguette', 'taguette.sqlite3')
+    else:
+        data = os.environ.get('XDG_DATA_HOME')
+        if not data:
+            data = os.path.join(os.environ['HOME'], '.local', 'share')
+            default_db_show = '$HOME/.local/share/taguette/taguette.sqlite3'
+        else:
+            default_db_show = '$XDG_DATA_HOME/taguette/taguette.sqlite3'
+        default_db = os.path.join(data, 'taguette', 'taguette.sqlite3')
+
     parser = argparse.ArgumentParser(
         description="Document tagger for qualitative analysis",
     )
@@ -582,18 +606,24 @@ def main():
     parser.add_argument('--debug', action='store_true', default=False,
                         help=argparse.SUPPRESS)
     parser.add_argument('--database', action='store',
-                        default='sqlite:///db.sqlite3',
+                        default=default_db,
                         help="Database location or connection string, for "
                              "example 'project.db' or "
                              "'postgresql://me:pw@localhost/mydb' "
-                             "(default: 'sqlite:///db.sqlite3')")
+                             "(default: %r)" % default_db_show)
     args = parser.parse_args()
     address = args.bind
     port = int(args.port)
-    if urlparse(args.database).scheme:
+    url = urlparse(args.database)
+    if url.scheme:
+        # Full URL: use it, create path if sqlite
         db_url = args.database
+        if url.scheme == 'sqlite' and url.path.startswith('/'):
+            os.makedirs(unquote(url.path)[1:])
     else:
-        db_url = 'sqlite:///' + args.database
+        # Path: create it, turn into URL
+        os.makedirs(os.path.dirname(args.database), exist_ok=True)
+        db_url = 'sqlite:///' + quote(args.database)
 
     app = make_app(db_url, args.debug)
     app.listen(port, address=address)
