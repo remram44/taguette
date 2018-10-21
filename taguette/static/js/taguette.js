@@ -531,6 +531,21 @@ var tag_add_modal = document.getElementById('tag-add-modal');
 
 function createTag() {
   document.getElementById('tag-add-form').reset();
+  document.getElementById('tag-add-label-new').style.display = '';
+  document.getElementById('tag-add-label-change').style.display = 'none';
+  document.getElementById('tag-add-label-cancel').style.display = '';
+  document.getElementById('tag-add-label-delete').style.display = 'none';
+  $(tag_add_modal).modal();
+}
+
+function editTag(tag_id) {
+  document.getElementById('tag-add-form').reset();
+  document.getElementById('tag-add-id').value = '' + tag_id;
+  document.getElementById('tag-add-path').value = tags['' + tag_id].path;
+  document.getElementById('tag-add-label-new').style.display = 'none';
+  document.getElementById('tag-add-label-change').style.display = '';
+  document.getElementById('tag-add-label-cancel').style.display = 'none';
+  document.getElementById('tag-add-label-delete').style.display = '';
   $(tag_add_modal).modal();
 }
 

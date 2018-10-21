@@ -138,7 +138,8 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <form id="tag-add-form" class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Tag</h5>
+        <h5 id="tag-add-label-new" class="modal-title">New tag</h5>
+        <h5 id="tag-add-label-change" class="modal-title" style="display: none;">Change tag</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -153,7 +154,10 @@
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-primary">Save & Close</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="tag-delete">Delete tag</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="tag-delete">
+          <span id="tag-add-label-cancel">Cancel</span>
+          <span id="tag-add-label-delete" style="display: none;">Delete tag</span>
+        </button>
       </div>
     </form>
   </div>
