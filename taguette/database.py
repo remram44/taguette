@@ -289,15 +289,4 @@ def connect(db_url):
 
     DBSession = sessionmaker(bind=engine)
 
-    db = DBSession()
-    if db.query(User).count() == 0:
-        logger.warning("Creating user 'admin'")
-        user = User(login='admin')
-        # FIXME: Set password
-        # import getpass
-        # passwd = getpass.getpass("Enter password for admin user: ")
-        # user.set_password(passwd)
-        db.add(user)
-        db.commit()
-
     return DBSession

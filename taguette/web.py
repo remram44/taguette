@@ -1,4 +1,6 @@
 import asyncio
+import hashlib
+import hmac
 import os
 from datetime import datetime
 import json
@@ -69,6 +71,7 @@ class BaseHandler(RequestHandler):
         return template.render(
             handler=self,
             current_user=self.current_user,
+            multiuser=self.application.multiuser,
             **kwargs)
 
     def get_project(self, project_id):
@@ -135,11 +138,21 @@ class Index(BaseHandler):
             else:
                 self.render('index.html', user=user, projects=user.projects)
                 return
-        self.render('welcome.html')
+        elif not self.application.multiuser:
+            token = self.get_query_argument('token', None)
+            if token and token == self.application.single_user_token:
+                self.login('admin')
+                self.redirect(self.reverse_url('index'))
+            else:
+                self.render('token_needed.html')
+        else:
+            self.render('welcome.html')
 
 
 class Login(BaseHandler):
     def get(self):
+        if not self.application.multiuser:
+            raise HTTPError(404)
         self.login('admin')
         self.redirect(self.get_argument('next', self.reverse_url('index')))
         # TODO: Actual login form
@@ -147,6 +160,8 @@ class Login(BaseHandler):
 
 class Logout(BaseHandler):
     def get(self):
+        if not self.application.multiuser:
+            raise HTTPError(404)
         self.logout()
         self.redirect(self.reverse_url('index'))
 
@@ -524,11 +539,53 @@ class ProjectEvents(BaseHandler):
 
 
 class Application(tornado.web.Application):
-    def __init__(self, *args, db_url, **kwargs):
-        super(Application, self).__init__(*args, **kwargs)
+    def __init__(self, handlers, db_url, multiuser, cookie_secret, **kwargs):
+        # Don't reuse the secret
+        cookie_secret = cookie_secret + (
+            '.multi' if multiuser
+            else '.single'
+        )
+
+        super(Application, self).__init__(handlers,
+                                          cookie_secret=cookie_secret,
+                                          **kwargs)
+
+        self.multiuser = multiuser
 
         self.DBSession = database.connect(db_url)
         self.event_waiters = {}
+
+        db = self.DBSession()
+        admin = (
+            db.query(database.User)
+            .filter(database.User.login == 'admin')
+            .one_or_none()
+        )
+        if admin is None:
+            logger.warning("Creating user 'admin'")
+            admin = database.User(login='admin')
+            if self.multiuser:
+                self._set_password(admin)
+            db.add(admin)
+            db.commit()
+        elif self.multiuser and not admin.hashed_password:
+            self._set_password(admin)
+            db.commit()
+
+        if self.multiuser:
+            self.single_user_token = None
+            logging.info("Starting in multi-user mode")
+        else:
+            self.single_user_token = hmac.new(
+                cookie_secret.encode('utf-8'),
+                b'taguette_single_user',
+                digestmod=hashlib.sha256,
+            ).hexdigest()
+
+    def _set_password(self, user):
+        import getpass
+        passwd = getpass.getpass("Enter password for user %r: " % user.login)
+        user.set_password(passwd)
 
     def observe_project(self, project_id, future):
         assert isinstance(project_id, int)
@@ -545,7 +602,7 @@ class Application(tornado.web.Application):
             future.set_result(cmd)
 
 
-def make_app(db_url, debug=False):
+def make_app(db_url, multiuser, debug=False):
     if 'XDG_CACHE_HOME' in os.environ:
         cache = os.environ['XDG_CACHE_HOME']
     else:
@@ -605,6 +662,7 @@ def make_app(db_url, debug=False):
         login_url='/login',
         xsrf_cookies=True,
         debug=debug,
+        multiuser=multiuser,
         cookie_secret=secret,
         db_url=db_url,
     )

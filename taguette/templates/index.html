@@ -2,7 +2,11 @@
 {% set active_page = "index" %}
 
 {% block contents %}
+{% if multiuser %}
 <h1>Welcome {{ user.login }}</h1>
+{% else %}
+<h1>Welcome!</h1>
+{% endif %}
 <p>Here are your projects:</p>
 <ul class="list-group">
 {% for project in projects %}

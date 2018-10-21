@@ -59,6 +59,8 @@ def main():
                              "example 'project.db' or "
                              "'postgresql://me:pw@localhost/mydb' "
                              "(default: %r)" % default_db_show)
+    parser.add_argument('--multiuser', action='store_true', default=False,
+                        help="Run in multi-user mode")
     args = parser.parse_args()
     address = args.bind
     port = int(args.port)
@@ -78,11 +80,21 @@ def main():
         os.makedirs(os.path.dirname(args.database), exist_ok=True)
         db_url = 'sqlite:///' + args.database
 
-    app = make_app(db_url, args.debug)
+    app = make_app(db_url, multiuser=args.multiuser, debug=args.debug)
     app.listen(port, address=address)
     loop = tornado.ioloop.IOLoop.current()
+
+    token = app.single_user_token
+    if token:
+        url = 'http://localhost:%d/?token=%s' % (port, token)
+    else:
+        url = 'http://localhost:%d/' % port
+    print("\n    Taguette is now running. You can connect to it using this "
+          "link:\n\n    %s\n" % url)
+
     if args.browser and not args.debug:
-        loop.call_later(0.01, webbrowser.open, 'http://localhost:%d/' % port)
+        loop.call_later(0.01, webbrowser.open, url)
+
     loop.start()
 
 
