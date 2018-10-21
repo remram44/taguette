@@ -485,6 +485,7 @@ function updateTagsList() {
   var tree = {};
   var before = tags_list.firstChild;
   var entries = Object.entries(tags);
+  entries.sort();
   for(var i = 0; i < entries.length; ++i) {
     var tag = entries[i][1];
     var elem = document.createElement('li');
