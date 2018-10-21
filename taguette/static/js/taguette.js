@@ -438,7 +438,7 @@ document.getElementById('document-add-form').addEventListener('submit', function
   xhr.send(form_data);
 
   e.preventDefault();
-})
+});
 
 
 /*
@@ -548,6 +548,65 @@ function editTag(tag_id) {
   document.getElementById('tag-add-label-delete').style.display = '';
   $(tag_add_modal).modal();
 }
+
+// Save tag button
+document.getElementById('tag-add-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  var tag_id = document.getElementById('tag-add-id').value;
+  if(tag_id) {
+    tag_id = parseInt(tag_id);
+  } else {
+    tag_id = null;
+  }
+  var tag_path = document.getElementById('tag-add-path').value;
+  if(!tag_path) {
+    alert("Invalid tag name");
+    return;
+  }
+  var req;
+  if(tag_id !== null) {
+    console.log("Posting update for tag " + tag_id);
+    req = postJSON(
+      '/project/' + project_id + '/tag/' + tag_id,
+      {path: tag_path,
+       description: document.getElementById('tag-add-description').value}
+    );
+  } else {
+    console.log("Posting new tag");
+    req = postJSON(
+      '/project/' + project_id + '/tag/new',
+      {path: tag_path,
+       description: document.getElementById('tag-add-description').value}
+    );
+  }
+  req.then(function() {
+    console.log("Tag posted");
+    $(tag_add_modal).modal('hide');
+    document.getElementById('tag-add-form').reset();
+  }, function(error) {
+    console.error("Failed to create tag:", error);
+  });
+});
+
+// Delete tag button
+document.getElementById('tag-delete').addEventListener('click', function(e) {
+  var tag_id = document.getElementById('tag-add-id').value;
+  if(tag_id) {
+    tag_id = parseInt(tag_id);
+    console.log("Posting tag " + tag_id + " deletion");
+    postJSON(
+      '/project/' + project_id + '/tag/' + tag_id,
+      {}
+    )
+    .then(function() {
+      $(tag_add_modal).modal('hide');
+      document.getElementById('tag-add-form').reset();
+    }, function(error) {
+      console.error("Failed to delete tag:", error);
+    });
+  }
+});
 
 
 /*

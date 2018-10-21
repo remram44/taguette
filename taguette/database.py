@@ -177,6 +177,29 @@ class Command(Base):
                      'id': highlight_id},
         )
 
+    @classmethod
+    def tag_add(cls, user_login, tag):
+        assert isinstance(tag, Tag)
+        return cls(
+            user_login=user_login,
+            project_id=tag.project_id,
+            payload={'type': 'tag_add',
+                     'id': tag.id,
+                     'path': tag.path,
+                     'description': tag.description},
+        )
+
+    @classmethod
+    def tag_delete(cls, user_login, project_id, tag_id):
+        assert isinstance(project_id, int)
+        assert isinstance(tag_id, int)
+        return cls(
+            user_login=user_login,
+            project_id=project_id,
+            payload={'type': 'tag_delete',
+                     'id': tag_id},
+        )
+
 
 Project.last_event = column_property(
     select(
