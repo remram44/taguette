@@ -55,7 +55,7 @@ class User(Base):
             return False
         elif self.hashed_password.startswith('bcrypt:'):
             return bcrypt.checkpw(password.encode('utf-8'),
-                                  self.password.encode('utf-8'))
+                                  self.hashed_password[7:].encode('utf-8'))
         else:
             logger.warning("Password uses unknown encryption method")
             return False

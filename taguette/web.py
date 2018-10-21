@@ -153,9 +153,21 @@ class Login(BaseHandler):
     def get(self):
         if not self.application.multiuser:
             raise HTTPError(404)
-        self.login('admin')
-        self.redirect(self.get_argument('next', self.reverse_url('index')))
-        # TODO: Actual login form
+        self.render('login.html', next=self.get_argument('next', ''))
+
+    def post(self):
+        login = self.get_body_argument('login')
+        password = self.get_body_argument('password')
+        user = self.db.query(database.User).get(login)
+        if user is not None and user.check_password(password):
+            self.login(user.login)
+            next_ = self.get_argument('next')
+            if not next_:
+                next_ = self.reverse_url('index')
+            self.redirect(next_)
+        else:
+            self.render('login.html', next=self.get_argument('next', ''),
+                        error=True)
 
 
 class Logout(BaseHandler):
