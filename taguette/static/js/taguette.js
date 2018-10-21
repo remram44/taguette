@@ -63,7 +63,7 @@ function nextElement(node) {
 function getPageXY(e) {
   // from jQuery
   // Calculate pageX/Y if missing
-  if(e.pageX == null) {
+  if(e.pageX === null) {
     var doc = document.documentElement, body = document.body;
     var x = e.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc.clientLeft || 0);
     var y = e.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc.clientTop || 0);
@@ -202,7 +202,7 @@ function describeSelection() {
     if(!range.collapsed) {
       var start = describePos(range.startContainer, range.startOffset);
       var end = describePos(range.endContainer, range.endOffset);
-      if(start != null && end != null) {
+      if(start !== null && end !== null) {
         return [start, end];
       }
     }
@@ -225,9 +225,9 @@ function restoreSelection(saved) {
 }
 
 function splitAtPos(pos, after) {
-  if(pos[1] == 0) {
+  if(pos[1] === 0) {
     return pos[0];
-  } else if(pos[1] == lengthUTF8(pos[0].textContent.length)) {
+  } else if(pos[1] === lengthUTF8(pos[0].textContent.length)) {
     return nextElement(pos[0]);
   } else {
     return pos[0].splitText(pos[1]);
@@ -237,7 +237,7 @@ function splitAtPos(pos, after) {
 // Highlight a described selection
 function highlightSelection(saved, id) {
   console.log("Highlighting", saved);
-  if(saved == null) {
+  if(saved === null) {
     return;
   }
   var start = locatePos(saved[0]);
@@ -859,9 +859,9 @@ if(m) {
 // Load documents as we go through browser history
 window.onpopstate = function(e) {
   if(e.state) {
-    if(e.state.document_id != undefined) {
+    if(e.state.document_id !== undefined) {
       loadDocument(e.state.document_id);
-    } else if(e.state.tag_path != undefined) {
+    } else if(e.state.tag_path !== undefined) {
       loadtag(e.state.tag_path);
     } else {
       console.error("History state unrecognized");
