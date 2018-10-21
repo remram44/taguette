@@ -1,7 +1,7 @@
 import os
 import sys
 
-from taguette.web import main
+from taguette.main import main
 
 
 if sys.platform == 'win32':
