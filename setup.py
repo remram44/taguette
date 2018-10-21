@@ -27,7 +27,7 @@ setup(name='taguette',
       ]},
       entry_points={
           'console_scripts': [
-              'taguette = taguette.web:main']},
+              'taguette = taguette.main:main']},
       install_requires=req,
       description="Document tagger for qualitative analysis",
       author="Remi Rampin",
