@@ -133,6 +133,36 @@
   </div>
 </div>
 
+<!-- Add/change tag modal -->
+<div class="modal" id="tag-add-modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <form id="tag-add-form" class="modal-content">
+      <div class="modal-header">
+        <h5 id="tag-add-label-new" class="modal-title">New tag</h5>
+        <h5 id="tag-add-label-change" class="modal-title" style="display: none;">Change tag</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="tag-add-id" />
+        <div class="container">
+          {{ xsrf_form_html() }}
+          <input type="text" class="form-control" id="tag-add-path" name="tag-add-path" placeholder="name" />
+          <textarea class="form-control" id="tag-add-description" name="tag-add-description" placeholder="Description"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Save & Close</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="tag-delete">
+          <span id="tag-add-label-cancel">Cancel</span>
+          <span id="tag-add-label-delete" style="display: none;">Delete tag</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <!-- Avoid doing requests, this is 2018 and we are good at engineering -->
 <script type="text/javascript">
   var project_id = {{ project.id }};

@@ -438,7 +438,7 @@ document.getElementById('document-add-form').addEventListener('submit', function
   xhr.send(form_data);
 
   e.preventDefault();
-})
+});
 
 
 /*
@@ -449,13 +449,23 @@ var tags_list = document.getElementById('tags-list');
 var tags_modal_list = document.getElementById('highlight-add-tags');
 
 function linkTag(elem, tag_path) {
-  var url = '/project/' + project_id + '/tag/' + tag_path;
+  var url = '/project/' + project_id + '/highlights/' + tag_path;
   elem.setAttribute('href', url);
   elem.addEventListener('click', function(e) {
     window.history.pushState({'tag_path': tag_path}, "Tag " + tag_path, url);
     loadtag(tag_path);
     e.preventDefault();
   });
+}
+
+function addTag(tag) {
+  tags[tag.id] = tag;
+  updateTagsList();
+}
+
+function removeTag(tag_id) {
+  delete tags['' + tag_id];
+  updateTagsList();
 }
 
 function updateTagsList() {
@@ -475,6 +485,7 @@ function updateTagsList() {
   var tree = {};
   var before = tags_list.firstChild;
   var entries = Object.entries(tags);
+  entries.sort();
   for(var i = 0; i < entries.length; ++i) {
     var tag = entries[i][1];
     var elem = document.createElement('li');
@@ -485,6 +496,7 @@ function updateTagsList() {
       '    <a class="expand-marker">&nbsp;</a> ' +
       '    <a id="tag-link-' + tag.id + '">' + escapeHtml(tag.path) + '</a>' +
       '  </div>' +
+      '  <a href="javascript:editTag(' + tag.id + ');" class="badge badge-secondary badge-pill">edit</a>' +
       //'  <span href="#" class="badge badge-primary badge-pill">?</span>' + // TODO: highlight count
       '</div>' +
       '<ul class="sublist"></div>';
@@ -527,9 +539,86 @@ function updateTagsList() {
 
 updateTagsList();
 
+var tag_add_modal = document.getElementById('tag-add-modal');
+
 function createTag() {
-  // TODO
+  document.getElementById('tag-add-form').reset();
+  document.getElementById('tag-add-label-new').style.display = '';
+  document.getElementById('tag-add-label-change').style.display = 'none';
+  document.getElementById('tag-add-label-cancel').style.display = '';
+  document.getElementById('tag-add-label-delete').style.display = 'none';
+  $(tag_add_modal).modal();
 }
+
+function editTag(tag_id) {
+  document.getElementById('tag-add-form').reset();
+  document.getElementById('tag-add-id').value = '' + tag_id;
+  document.getElementById('tag-add-path').value = tags['' + tag_id].path;
+  document.getElementById('tag-add-label-new').style.display = 'none';
+  document.getElementById('tag-add-label-change').style.display = '';
+  document.getElementById('tag-add-label-cancel').style.display = 'none';
+  document.getElementById('tag-add-label-delete').style.display = '';
+  $(tag_add_modal).modal();
+}
+
+// Save tag button
+document.getElementById('tag-add-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  var tag_id = document.getElementById('tag-add-id').value;
+  if(tag_id) {
+    tag_id = parseInt(tag_id);
+  } else {
+    tag_id = null;
+  }
+  var tag_path = document.getElementById('tag-add-path').value;
+  if(!tag_path) {
+    alert("Invalid tag name");
+    return;
+  }
+  var req;
+  if(tag_id !== null) {
+    console.log("Posting update for tag " + tag_id);
+    req = postJSON(
+      '/project/' + project_id + '/tag/' + tag_id,
+      {path: tag_path,
+       description: document.getElementById('tag-add-description').value}
+    );
+  } else {
+    console.log("Posting new tag");
+    req = postJSON(
+      '/project/' + project_id + '/tag/new',
+      {path: tag_path,
+       description: document.getElementById('tag-add-description').value}
+    );
+  }
+  req.then(function() {
+    console.log("Tag posted");
+    $(tag_add_modal).modal('hide');
+    document.getElementById('tag-add-form').reset();
+  }, function(error) {
+    console.error("Failed to create tag:", error);
+  });
+});
+
+// Delete tag button
+document.getElementById('tag-delete').addEventListener('click', function(e) {
+  var tag_id = document.getElementById('tag-add-id').value;
+  if(tag_id) {
+    tag_id = parseInt(tag_id);
+    console.log("Posting tag " + tag_id + " deletion");
+    postJSON(
+      '/project/' + project_id + '/tag/' + tag_id,
+      {}
+    )
+    .then(function() {
+      $(tag_add_modal).modal('hide');
+      document.getElementById('tag-add-form').reset();
+    }, function(error) {
+      console.error("Failed to delete tag:", error);
+    });
+  }
+});
 
 
 /*
@@ -727,7 +816,7 @@ function loadDocument(document_id) {
 
 function loadtag(tag_path) {
   getJSON(
-    '/project/' + project_id + '/tag/' + tag_path + '/highlights'
+    '/project/' + project_id + '/highlights/' + tag_path + '/list'
   )
   .then(function(result) {
     console.log("Loaded highlights for tag", tag_path);
@@ -761,7 +850,7 @@ if(m) {
   loadDocument(parseInt(m[2]));
 }
 // Or a tag
-m = window.location.pathname.match(/\/project\/([0-9]+)\/tag\/([^\/]+)/);
+m = window.location.pathname.match(/\/project\/([0-9]+)\/highlights\/([^\/]+)/);
 if(m) {
   loadtag(m[2]);
 }
@@ -815,6 +904,16 @@ function longPollForEvents() {
         for(var i = 0; i < removed.length; ++i) {
           removeHighlight(removed[i]);
         }
+      }
+    }
+    if('tag_add' in result) {
+      for(var i = 0; i < result.tag_add.length; ++i) {
+        addTag(result.tag_add[i]);
+      }
+    }
+    if('tag_delete' in result) {
+      for(var i = 0; i < result.tag_delete.length; ++i) {
+        removeTag(result.tag_delete[i]);
       }
     }
     last_event = result.ts;

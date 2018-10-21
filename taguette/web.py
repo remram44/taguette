@@ -424,6 +424,59 @@ class Highlights(BaseHandler):
         })
 
 
+class TagAdd(BaseHandler):
+    @authenticated
+    def post(self, project_id):
+        obj = self.get_json()
+        project = self.get_project(project_id)
+        tag = database.Tag(project=project,
+                           path=obj['path'], description=obj['description'])
+        self.db.add(tag)
+        self.db.commit()  # Need to commit to get tag.id
+        cmd = database.Command.tag_add(
+            self.current_user,
+            tag,
+        )
+        self.db.add(cmd)
+        self.db.commit()
+        self.db.refresh(cmd)
+        self.application.notify_project(project.id, cmd)
+
+        self.send_json({'id': tag.id})
+
+
+class TagUpdate(BaseHandler):
+    @authenticated
+    def post(self, project_id, tag_id):
+        obj = self.get_json()
+        project = self.get_project(project_id)
+        tag = self.db.query(database.Tag).get(int(tag_id))
+        if tag.project_id != project.id:
+            raise HTTPError(404)
+        if not obj:
+            self.db.delete(tag)
+            cmd = database.Command.tag_delete(
+                self.current_user,
+                project.id,
+                tag.id,
+            )
+        else:
+            if 'path' in obj:
+                tag.path = obj['path']
+            if 'description' in obj:
+                tag.description = obj['description']
+            cmd = database.Command.tag_add(
+                self.current_user,
+                tag,
+            )
+        self.db.add(cmd)
+        self.db.commit()
+        self.db.refresh(cmd)
+        self.application.notify_project(project.id, cmd)
+
+        self.send_json({'id': tag.id})
+
+
 class ProjectEvents(BaseHandler):
     @authenticated
     async def get(self, project_id):
@@ -460,6 +513,14 @@ class ProjectEvents(BaseHandler):
         elif type_ == 'highlight_delete':
             result = {
                 'highlight_delete': {cmd.document_id: [payload['id']]}
+            }
+        elif type_ == 'tag_add':
+            result = {
+                'tag_add': [payload],
+            }
+        elif type_ == 'tag_delete':
+            result = {
+                'tag_delete': [payload['id']],
             }
         else:
             raise ValueError("Unknown command type %r" % type_)
@@ -535,7 +596,7 @@ def make_app(db_url, debug=False):
             URLSpec('/project/([0-9]+)', Project, name='project'),
             URLSpec('/project/([0-9]+)/document/[0-9]+', Project,
                     name='project_doc'),
-            URLSpec('/project/([0-9]+)/tag/[^/]+', Project,
+            URLSpec('/project/([0-9]+)/highlights/[^/]+', Project,
                     name='project_tag'),
             URLSpec('/project/([0-9]+)/meta', ProjectMeta),
             URLSpec('/project/([0-9]+)/document/new', DocumentAdd),
@@ -545,7 +606,9 @@ def make_app(db_url, debug=False):
                     HighlightAdd),
             URLSpec('/project/([0-9]+)/document/([0-9]+)/highlight/([0-9]+)',
                     HighlightUpdate),
-            URLSpec('/project/([0-9]+)/tag/([^/]+)/highlights', Highlights),
+            URLSpec('/project/([0-9]+)/highlights/([^/]+)/list', Highlights),
+            URLSpec('/project/([0-9]+)/tag/new', TagAdd),
+            URLSpec('/project/([0-9]+)/tag/([0-9]+)', TagUpdate),
             URLSpec('/project/([0-9]+)/events', ProjectEvents),
         ],
         static_path=pkg_resources.resource_filename('taguette', 'static'),
