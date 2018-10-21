@@ -18,7 +18,7 @@ req = [
     'bleach',
 ]
 setup(name='taguette',
-      version='0.0',
+      version='0.1',
       packages=['taguette'],
       package_data={'taguette': [
           'static/missing.png', 'static/favicon.ico',
