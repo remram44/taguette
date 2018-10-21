@@ -458,6 +458,16 @@ function linkTag(elem, tag_path) {
   });
 }
 
+function addTag(tag) {
+  tags[tag.id] = tag;
+  updateTagsList();
+}
+
+function removeTag(tag_id) {
+  delete tags['' + tag_id];
+  updateTagsList();
+}
+
 function updateTagsList() {
   // The list in the left panel
 
@@ -892,6 +902,16 @@ function longPollForEvents() {
         for(var i = 0; i < removed.length; ++i) {
           removeHighlight(removed[i]);
         }
+      }
+    }
+    if('tag_add' in result) {
+      for(var i = 0; i < result.tag_add.length; ++i) {
+        addTag(result.tag_add[i]);
+      }
+    }
+    if('tag_delete' in result) {
+      for(var i = 0; i < result.tag_delete.length; ++i) {
+        removeTag(result.tag_delete[i]);
       }
     }
     last_event = result.ts;
