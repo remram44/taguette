@@ -92,7 +92,8 @@ async def to_html(body, content_type, filename):
         body,
         tags=['p', 'a', 'img',
               'h1', 'h2', 'h3', 'h4', 'h5',
-              'strong', 'em', 'b', 'u'],
+              'strong', 'em', 'b', 'u',
+              'ul', 'ol', 'li'],
         attributes={'a': ['href'], 'img': ['src', 'width', 'height']},
         strip=True,
     )
