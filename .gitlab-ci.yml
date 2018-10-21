@@ -7,5 +7,6 @@ run_tests:
   image: python:3.6
   script:
     - pip install pipenv
-    - pipenv install
+    - pipenv install --deploy -d
     - pipenv run python tests.py
+    - pipenv run flake8 --ignore= setup.py tests.py taguette
