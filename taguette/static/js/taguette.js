@@ -527,8 +527,11 @@ function updateTagsList() {
 
 updateTagsList();
 
+var tag_add_modal = document.getElementById('tag-add-modal');
+
 function createTag() {
-  // TODO
+  document.getElementById('tag-add-form').reset();
+  $(tag_add_modal).modal();
 }
 
 
