@@ -424,6 +424,8 @@ document.getElementById('document-add-form').addEventListener('submit', function
   };
   xhr.onerror = function(e) {
     console.log("Document upload failed:", e);
+    progress.setAttribute('aria-valuenow', '0');
+    progress.style.width = '0%';
     alert("Error uploading file!");
   }
   xhr.onprogress = function(e) {
