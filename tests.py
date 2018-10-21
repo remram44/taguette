@@ -46,6 +46,12 @@ class TestMeasure(unittest.TestCase):
         snippet = extract.extract(html, 7, 14)
         self.assertEqual(snippet,
                          '<p>here <i>Wo</i></p>')
+        snippet = extract.extract(html, 1, 4)
+        self.assertEqual(snippet,
+                         '<p><u>ell</u></p>')
+        snippet = extract.extract(html, 7, 11)
+        self.assertEqual(snippet,
+                         '<p>here</p>')
 
 
 if __name__ == '__main__':
