@@ -72,6 +72,7 @@ class BaseHandler(RequestHandler):
             handler=self,
             current_user=self.current_user,
             multiuser=self.application.multiuser,
+            register_enabled=self.application.register_enabled,
             **kwargs)
 
     def get_project(self, project_id):
@@ -153,7 +154,11 @@ class Login(BaseHandler):
     def get(self):
         if not self.application.multiuser:
             raise HTTPError(404)
-        self.render('login.html', next=self.get_argument('next', ''))
+        if self.current_user:
+            self._go_to_next()
+        else:
+            self.render('login.html', register=False,
+                        next=self.get_argument('next', ''))
 
     def post(self):
         login = self.get_body_argument('login')
@@ -161,13 +166,17 @@ class Login(BaseHandler):
         user = self.db.query(database.User).get(login)
         if user is not None and user.check_password(password):
             self.login(user.login)
-            next_ = self.get_argument('next')
-            if not next_:
-                next_ = self.reverse_url('index')
-            self.redirect(next_)
+            self._go_to_next()
         else:
-            self.render('login.html', next=self.get_argument('next', ''),
-                        error=True)
+            self.render('login.html', register=False,
+                        next=self.get_argument('next', ''),
+                        login_error="Invalid login or password")
+
+    def _go_to_next(self):
+        next_ = self.get_argument('next')
+        if not next_:
+            next_ = self.reverse_url('index')
+        self.redirect(next_)
 
 
 class Logout(BaseHandler):
@@ -175,6 +184,40 @@ class Logout(BaseHandler):
         if not self.application.multiuser:
             raise HTTPError(404)
         self.logout()
+        self.redirect(self.reverse_url('index'))
+
+
+class Register(BaseHandler):
+    def get(self):
+        if not self.application.multiuser:
+            raise HTTPError(404)
+        if not self.application.register_enabled:
+            raise HTTPError(403)
+        if self.current_user:
+            self.redirect(self.reverse_url('index'))
+        else:
+            self.render('login.html', register=True)
+
+    def post(self):
+        if not self.application.register_enabled:
+            raise HTTPError(403)
+        login = self.get_body_argument('login')
+        password1 = self.get_body_argument('password1')
+        password2 = self.get_body_argument('password2')
+        if password1 != password2:
+            self.render('login.html', register=True,
+                        register_error="Passwords do not match")
+            return
+        if self.db.query(database.User).get(login) is not None:
+            self.render('login.html', register=True,
+                        register_error="Username is taken")
+            return
+        user = database.User(login=login)
+        user.set_password(password1)
+        self.db.add(user)
+        self.db.commit()
+        logger.info("User registered: %r", login)
+        self.set_secure_cookie('user', login)
         self.redirect(self.reverse_url('index'))
 
 
@@ -551,7 +594,8 @@ class ProjectEvents(BaseHandler):
 
 
 class Application(tornado.web.Application):
-    def __init__(self, handlers, db_url, multiuser, cookie_secret, **kwargs):
+    def __init__(self, handlers, db_url, multiuser, cookie_secret,
+                 register_enabled=True, **kwargs):
         # Don't reuse the secret
         cookie_secret = cookie_secret + (
             '.multi' if multiuser
@@ -563,6 +607,7 @@ class Application(tornado.web.Application):
                                           **kwargs)
 
         self.multiuser = multiuser
+        self.register_enabled = register_enabled
 
         self.DBSession = database.connect(db_url)
         self.event_waiters = {}
@@ -614,7 +659,7 @@ class Application(tornado.web.Application):
             future.set_result(cmd)
 
 
-def make_app(db_url, multiuser, debug=False):
+def make_app(db_url, multiuser, register_enabled=True, debug=False):
     if 'XDG_CACHE_HOME' in os.environ:
         cache = os.environ['XDG_CACHE_HOME']
     else:
@@ -651,6 +696,7 @@ def make_app(db_url, multiuser, debug=False):
             URLSpec('/', Index, name='index'),
             URLSpec('/login', Login, name='login'),
             URLSpec('/logout', Logout, name='logout'),
+            URLSpec('/register', Register, name='register'),
             URLSpec('/new', NewProject, name='new_project'),
             URLSpec('/project/([0-9]+)', Project, name='project'),
             URLSpec('/project/([0-9]+)/document/[0-9]+', Project,
@@ -675,6 +721,7 @@ def make_app(db_url, multiuser, debug=False):
         xsrf_cookies=True,
         debug=debug,
         multiuser=multiuser,
+        register_enabled=register_enabled,
         cookie_secret=secret,
         db_url=db_url,
     )

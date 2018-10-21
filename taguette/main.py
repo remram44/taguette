@@ -61,6 +61,12 @@ def main():
                              "(default: %r)" % default_db_show)
     parser.add_argument('--multiuser', action='store_true', default=False,
                         help="Run in multi-user mode")
+    parser.add_argument('--enable-register', dest='register',
+                        action='store_true', default=True,
+                        help=argparse.SUPPRESS)
+    parser.add_argument('--disable-register', dest='register',
+                        action='store_false', default=True,
+                        help=argparse.SUPPRESS)
     args = parser.parse_args()
     address = args.bind
     port = int(args.port)
@@ -80,7 +86,8 @@ def main():
         os.makedirs(os.path.dirname(args.database), exist_ok=True)
         db_url = 'sqlite:///' + args.database
 
-    app = make_app(db_url, multiuser=args.multiuser, debug=args.debug)
+    app = make_app(db_url, multiuser=args.multiuser,
+                   register_enabled=args.register, debug=args.debug)
     app.listen(port, address=address)
     loop = tornado.ioloop.IOLoop.current()
 
