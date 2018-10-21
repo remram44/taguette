@@ -543,6 +543,7 @@ var tag_add_modal = document.getElementById('tag-add-modal');
 
 function createTag() {
   document.getElementById('tag-add-form').reset();
+  document.getElementById('tag-add-id').value = '';
   document.getElementById('tag-add-label-new').style.display = '';
   document.getElementById('tag-add-label-change').style.display = 'none';
   document.getElementById('tag-add-label-cancel').style.display = '';
