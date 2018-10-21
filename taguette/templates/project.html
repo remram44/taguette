@@ -34,6 +34,7 @@
             <textarea class="form-control" id="project-description" name="project-description">{{ project.description }}</textarea>
           </div>
         </form>
+        <a href="{{ reverse_url('export_codebook_csv', project.id) }}" target="_blank">Export codebook</a>
       </div>
 
       <!-- List of documents -->
