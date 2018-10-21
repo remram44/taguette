@@ -180,16 +180,6 @@ class NewProject(BaseHandler):
                                  description="Further review required"))
         self.db.add(database.Tag(project=project, path='people',
                                  description="Known people"))
-        self.db.add(database.Tag(project=project, path='people.devs',
-                                 description="Software developers"))
-        self.db.add(database.Tag(project=project, path='people.family',
-                                 description="Family mentions"))
-        self.db.add(database.Tag(project=project,
-                                 path='people.family.mother',
-                                 description="Mothers"))
-        self.db.add(database.Tag(project=project,
-                                 path='people.family.father',
-                                 description="Fathers"))
 
         self.db.commit()
         self.redirect(self.reverse_url('project', project.id))
