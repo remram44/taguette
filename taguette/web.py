@@ -1,6 +1,7 @@
 import asyncio
 import hashlib
 import hmac
+import io
 import os
 from datetime import datetime
 import json
@@ -593,6 +594,45 @@ class ProjectEvents(BaseHandler):
         self.application.unobserve_project(self.project_id, self.wait_future)
 
 
+class ExportCodebookCsv(BaseHandler):
+    def get(self, project_id):
+        import csv
+
+        project = self.get_project(project_id)
+        tags = list(project.tags)
+        self.set_header('Content-Type', 'text/csv; charset=utf-8')
+        self.set_header('Content-Disposition',
+                        'attachment; filename="codebook.csv"')
+        buf = io.StringIO()
+        writer = csv.writer(buf)
+        writer.writerow(['tag', 'description'])
+        for tag in tags:
+            writer.writerow([tag.path, tag.description])
+        self.finish(buf.getvalue())
+
+
+class ExportCodebookDoc(BaseHandler):
+    def get(self, project_id):
+        from docx import Document
+
+        project = self.get_project(project_id)
+        tags = list(project.tags)
+        self.set_header(
+            'Content-Type',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml'
+            '.document; charset=utf-8')
+        self.set_header('Content-Disposition',
+                        'attachment; filename="codebook.docx"')
+        buf = io.BytesIO()
+        document = Document()
+        document.add_heading('Taguette Codebook', 0)
+        for tag in tags:
+            document.add_heading(tag.path, 1)
+            document.add_paragraph(tag.description)
+        document.save(buf)
+        self.finish(buf.getvalue())
+
+
 class Application(tornado.web.Application):
     def __init__(self, handlers, db_url, multiuser, cookie_secret,
                  register_enabled=True, **kwargs):
@@ -715,6 +755,10 @@ def make_app(db_url, multiuser, register_enabled=True, debug=False):
             URLSpec('/project/([0-9]+)/tag/new', TagAdd),
             URLSpec('/project/([0-9]+)/tag/([0-9]+)', TagUpdate),
             URLSpec('/project/([0-9]+)/events', ProjectEvents),
+            URLSpec('/project/([0-9]+)/export/codebook.csv', ExportCodebookCsv,
+                    name='export_codebook_csv'),
+            URLSpec('/project/([0-9]+)/export/codebook.docx',
+                    ExportCodebookDoc, name='export_codebook_doc'),
         ],
         static_path=pkg_resources.resource_filename('taguette', 'static'),
         login_url='/login',

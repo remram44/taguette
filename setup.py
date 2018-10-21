@@ -16,6 +16,7 @@ req = [
     'beautifulsoup4',
     'html5lib',
     'bleach',
+    'python-docx>=0.8,<0.9',
 ]
 setup(name='taguette',
       version='0.1',
