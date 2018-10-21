@@ -4,12 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-tornado = ">=5.0"
-sqlalchemy = "*"
-bcrypt = "*"
-"jinja2" = "*"
-"beautifulsoup4" = "*"
-bleach = "*"
+taguette = {editable = true, path = "."}
 
 [dev-packages]
 
