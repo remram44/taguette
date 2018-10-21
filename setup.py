@@ -14,6 +14,7 @@ req = [
     'bcrypt',
     'jinja2',
     'beautifulsoup4',
+    'html5lib',
     'bleach',
 ]
 setup(name='taguette',
