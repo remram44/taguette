@@ -5,8 +5,8 @@ A spin on the phrase "tag it!", `Taguette <http://taguette.fr/>`__ is a free and
 
 + Import PDFs, Word Docs (``.docx``), Text files (``.txt``), HTML, EPUB, MOBI, Open Documents (``.odt``), and Rich Text Files (``.rtf``).
 + Highlight words, sentences, or paragraphs and tag them with the codes *you* create.
-+ Group imported documents together (e.g. as 'Interview' or 'Lit Review').
-+ Export tagged documents, highlights for a specific tag, a list of tags with description and colors, and whole projects.
++ (not yet) Group imported documents together (e.g. as 'Interview' or 'Lit Review').
++ (not yet) Export tagged documents, highlights for a specific tag, a list of tags with description and colors, and whole projects.
 
 To learn more about how to install and get started, keep reading!
 
@@ -24,28 +24,36 @@ So, to bolster a fair and equitable entry into qualitative methods, we've made T
 Installation
 ------------
 
-**Pre-requisites**
+Grab the correct installer for your system from [our download folder](https://drive.google.com/drive/folders/1GA_Us_m4JQIiju7hOI3_AfY4JGBpBaDB). A "Taguette" entry should appear in your list of applications (Start Menu on Windows, or Launchpad/Spotlight on MacOS).
 
-To use Taguette right now, you first need to install `Python 3 <https://www.python.org/downloads/>`__ and `Calibre <https://calibre-ebook.com/>`__ , the open source e-book management software. Taguette uses a part of Calibre to convert uploaded documents into HTML, allowing you to highlight and tag parts of them. In the future, we hope to have a one-click installer for you. These instructions will work for Mac, Linux, and Windows.
+Once you start the application, you will see a terminal appear. This is normal! You can ignore the strange messages there, and use Taguette from your web browser (`localhost:8000 <http://localhost:8000/>`__ should open automatically). Simply the terminal window open until you are done.
 
-Once you've installed Calibre, you can quickly install Taguette with it's dependencies from the command line with the following::
+Installation using pip
+----------------------
+
+You first need to install `Python 3 <https://www.python.org/downloads/>`__ and `Calibre <https://calibre-ebook.com/>`__ , the open source e-book management software. Taguette uses a part of Calibre to convert documents into HTML, allowing you to highlight and tag parts of them.
+
+Once you've installed Python, you can install Taguette with its dependencies from the command line with the following::
 
     pip install taguette
 
-After which you can simply run ``taguette`` in the terminal to get it going. You'll see the command line will still be running. This is ok! Don't worry about the terminal but do leave it running. In your web browser, navigate to `localhost:8000 <http://localhost:8000/>`__ to begin working on your projects!
+After which you can simply run ``taguette`` in the terminal to get it going. You'll see the command line will still be running. This is ok! Don't worry about the terminal, but do leave it running. A browser window should appear, pointing you to `localhost:8000 <http://localhost:8000/>`__, and you can begin working on your projects!
 
-Otherwise, to install Taguette on your local computer, follow these steps:
+Installation from a local clone
+-------------------------------
+
+You can also install from a local clone of this repository, which will allow you to easily change the sources to suit your needs:
 
 1. Clone this git repository from the terminal: ``git clone https://gitlab.com/remram44/taguette.git``.
 2. Navigate on the command line to the repository you've just cloned locally, using the ``cd`` command. To get help using ``cd``, use `this tutorial <https://swcarpentry.github.io/shell-novice/02-filedir/index.html>`__.
-3. To install the dependencies of Taguette, run ``pip install .`` We recommend you run this inside of a `virtualenv or pipenv <https://docs.python-guide.org/dev/virtualenvs/>`__ if possible.
-4. Once the dependencies have been installed, run ``taguette`` and you'll see the command line will still be running. This is ok! Don't worry about the terminal but do leave it running. In your web browser, navigate to `localhost:8000 <http://localhost:8000/>`__ to begin working on your projects!
-
-Coming soon: installers for Mac and Windows!
+3. To install the dependencies of Taguette, run ``pip install -e .`` We recommend you run this inside of a `virtualenv or pipenv <https://docs.python-guide.org/dev/virtualenvs/>`__ if possible.
+4. You can start taguette in development mode using ``python -m taguette.main --debug``. This will start Tornado in debug mode, which means in particular that it will auto-restart every time you make changes.
+5. Navigate to `localhost:8000 <http://localhost:8000/>`__ to use Taguette!
 
 Getting Started
 ---------------
-After starting Taguette from the command line, navigate to `localhost:8000 <http://localhost:8000/>`__. You will see a page that greets you as the admin and has a button to **Start a new project**. Click that button and you'll be prompted to enter a **Title and Description** for your new project. This can be changed later on if you want.
+
+After starting Taguette, you can interact with it through your web browser (`localhost:8000 <http://localhost:8000/>`__ should have opened automatically). You will see a page that greets you and has a button to **Start a new project**. Click that button and you'll be prompted to enter a **Title and Description** for your new project. This can be changed later if you want.
 
 Upon creating your project, you'll be taken the Project View, which has a left and a right pane. The left pane contains the information about your project information ('Project Info'), uploaded materials ('Documents'), and tags ('Highlights') as tabs. You can go between these tabs as you like. The right pane will render documents and be the area where you'll do the highlighting and tagging.
 
@@ -60,7 +68,6 @@ Once you've checked off which tags you'd like to associate with the highlighted 
 If you've accidentally tagged a section of text you didn't want to, you can delete it by clicking on the highlighted text. This will give you the same pop-up window that you used to tag it. Next to the save button, there is a grey button called **Delete**. Click that, and the tags will be removed from the text. It should no longer by highlighted.
 
 Happy highlighting!
-
 
 License
 -------
