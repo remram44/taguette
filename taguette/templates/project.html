@@ -63,7 +63,7 @@
   <div class="col-md-9">
 
     <div class="document-view">
-      <a href="#" class="document-link badge badge-primary">???</a>
+      <a href="#" class="document-link badge badge-danger">CLEAR</a>
 
       <div id="document-contents">
         <p style="font-style: oblique; text-align: center;">Load a document on the left</p>
@@ -75,7 +75,7 @@
 
 <!-- Add document modal -->
 <div class="modal" id="document-add-modal" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <form id="document-add-form" class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Add a document</h5>
@@ -87,12 +87,12 @@
         <div class="container">
           {{ xsrf_form_html() }}
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 form-group">
               <input type="text" class="form-control" id="document-add-name" name="document-add-name" placeholder="Name" />
             </div>
-            <div class="col-md-6">
-              <input type="file" class="form-control" id="document-add-file" name="document-add-name" placeholder="Name" />
-            </div>
+            <div class="col-md-6 form-group">
+              <input type="file" class="form-control-file" id="document-add-file" name="document-add-name" placeholder="Name" />
+            </div>            
           </div>
           <textarea class="form-control" id="document-add-description" name="document-add-description" placeholder="Description"></textarea>
           <div class="progress">
@@ -101,7 +101,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Import</button>
+        <button type="submit" class="btn btn-info">Import</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </form>
@@ -130,7 +130,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Save & Close</button>
+        <button type="submit" class="btn btn-info">Save & Close</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal" id="highlight-delete">Delete highlight</button>
       </div>
     </form>
@@ -152,12 +152,12 @@
         <input type="hidden" id="tag-add-id" />
         <div class="container">
           {{ xsrf_form_html() }}
-          <input type="text" class="form-control" id="tag-add-path" name="tag-add-path" placeholder="name" />
+          <input type="text" class="form-group" id="tag-add-path" name="tag-add-path" placeholder="name" />
           <textarea class="form-control" id="tag-add-description" name="tag-add-description" placeholder="Description"></textarea>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Save & Close</button>
+        <button type="submit" class="btn btn-info">Save & Close</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal" id="tag-delete">
           <span id="tag-add-label-cancel">Cancel</span>
           <span id="tag-add-label-delete" style="display: none;">Delete tag</span>
