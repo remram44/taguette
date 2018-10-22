@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Taguette"
-#define MyAppVersion "0.1"
+#define MyAppVersion "0.0"
 #define MyAppPublisher "Remi Rampin"
 #define MyAppURL "https://taguette.fr/"
 #define MyAppExeName "taguette.exe"
@@ -23,7 +23,6 @@ DefaultDirName={pf}\taguette
 DisableProgramGroupPage=yes
 LicenseFile=C:\Users\user\Desktop\taguette\LICENSE.txt
 OutputBaseFilename=taguette-setup
-OutputDir=output
 SetupIconFile=C:\Users\user\Desktop\taguette\taguette\static\favicon.ico
 Compression=lzma
 SolidCompression=yes
