@@ -88,11 +88,11 @@
         <div class="container">
           {{ xsrf_form_html() }}
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 form-group">
               <input type="text" class="form-control" id="document-add-name" name="document-add-name" placeholder="Name" />
             </div>
-            <div class="col-md-6">
-              <input type="file" class="form-control" id="document-add-file" name="document-add-file" />
+            <div class="col-md-6 form-group">
+              <input type="file" class="form-control-file" id="document-add-file" name="document-add-file" />
             </div>
           </div>
           <textarea class="form-control" id="document-add-description" name="document-add-description" placeholder="Description"></textarea>
@@ -124,7 +124,7 @@
         <div class="container">
           {{ xsrf_form_html() }}
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 form-group">
               <input type="text" class="form-control" id="document-change-name" name="document-change-name" placeholder="Name" />
             </div>
           </div>
