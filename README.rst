@@ -21,12 +21,12 @@ However - the software options for qualitative researchers are either **far too 
 
 So, to bolster a fair and equitable entry into qualitative methods, we've made Taguette!
 
-Installation
-------------
+Installers
+----------
 
-Grab the correct installer for your system from [our download folder](https://drive.google.com/drive/folders/1GA_Us_m4JQIiju7hOI3_AfY4JGBpBaDB). A "Taguette" entry should appear in your list of applications (Start Menu on Windows, or Launchpad/Spotlight on MacOS).
+Grab the correct installer for your system from `our release page <https://gitlab.com/remram44/taguette/tags>`__. Those include Python, Taguette, and Calibre, so you don't need to install anything else. A "Taguette" entry should appear in your list of applications (Start Menu on Windows, or Launchpad/Spotlight on MacOS).
 
-Once you start the application, you will see a terminal appear. This is normal! You can ignore the strange messages there, and use Taguette from your web browser (`localhost:8000 <http://localhost:8000/>`__ should open automatically). Simply the terminal window open until you are done.
+Once you start the application, you will see a terminal appear. This is normal! You can ignore the strange messages there, and use Taguette from your web browser (`localhost:8000 <http://localhost:8000/>`__ should open automatically). Simply leave the terminal window open until you are done using Taguette, after which you can close that terminal window to stop Taguette.
 
 Installation using pip
 ----------------------
@@ -38,6 +38,13 @@ Once you've installed Python, you can install Taguette with its dependencies fro
     pip install taguette
 
 After which you can simply run ``taguette`` in the terminal to get it going. You'll see the command line will still be running. This is ok! Don't worry about the terminal, but do leave it running. A browser window should appear, pointing you to `localhost:8000 <http://localhost:8000/>`__, and you can begin working on your projects!
+
+Run with Docker
+---------------
+
+You can run this with Docker, note that it will prompt you for an 'admin' password the first time::
+
+    docker run -ti -p 8000:8000 -v /srv/taguette:/data remram/taguette
 
 Installation from a local clone
 -------------------------------

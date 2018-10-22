@@ -662,6 +662,23 @@ function removeHighlight(id) {
   }
 }
 
+// Backlight
+function setBacklight(enabled) {
+
+}
+
+var backlight_checkbox = document.getElementById('backlight');
+backlight_checkbox.addEventListener('change', function(e) {
+  var classes = document.getElementById('document-view').classList;
+  if(backlight_checkbox.checked == classes.contains('backlight')) {
+    ; // all good
+  } else if(backlight_checkbox.checked) {
+    classes.add('backlight');
+  } else {
+    classes.remove('backlight');
+  }
+});
+
 
 /*
  * Add highlight
