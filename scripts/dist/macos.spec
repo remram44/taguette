@@ -38,4 +38,4 @@ coll = COLLECT(exe,
 app = BUNDLE(coll,
              name='Taguette.app',
              icon=None,
-             bundle_identifier=None)
+             bundle_identifier='fr.taguette')
