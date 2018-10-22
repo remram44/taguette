@@ -37,7 +37,8 @@
         <ul class="list-unstyled">
           <li><a href="{{ reverse_url('export_codebook_csv', project.id) }}" target="_blank">Export codebook CSV</a></li>
           <li><a href="{{ reverse_url('export_codebook_doc', project.id) }}" target="_blank">Export codebook DOC</a></li>
-         </ul>
+        </ul>
+        <input type="checkbox" id="backlight" /> <label for="backlight">Backlight</label>
       </div>
 
       <!-- List of documents -->
@@ -62,7 +63,7 @@
   <!-- Right panel -->
   <div class="col-md-9">
 
-    <div class="document-view">
+    <div id="document-view" class="document-view">
       <a href="#" class="document-link badge badge-primary">???</a>
 
       <div id="document-contents">

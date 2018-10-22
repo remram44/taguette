@@ -39,14 +39,19 @@ textarea.form-control {
   position: relative;
 }
 
+.backlight {
+  color: #bbb;
+}
+
 .document-view .document-link {
   position: absolute;
   top: .1em;
   right: .5em;
 }
 
-.highlight {
+#document-view .highlight {
   background-color: #ff0;
+  color: black;
 }
 
 #hlinfo {
