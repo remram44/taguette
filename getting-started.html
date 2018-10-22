@@ -65,31 +65,92 @@
 
         <h3 id="start"><i class="far fa-play-circle"></i> Start it up!</h3>
 
-        <p>To start Taguette on your macOS/Windows computer, after installation you should see a Taguette icon. Double click that and Taguette will start up. To start Taguette on your Linux computer, you must run <code>taguette</code> in the terminal. No matter what operating system you use, you'll see the command line window will pop up and run. This is ok! Don't worry about the terminal but do leave it running. If you close the terminal window, Taguette will stop. In your web browser, navigate to <a href="http://localhost:8000">localhost:8000</a> to begin working on your projects!</p>
+        <p>Right now, to start Taguette on your local computer, you must run <code>taguette</code> in the terminal. You'll see the command line will still be running. This is ok! Don't worry about the terminal but do leave it running. If you exit the terminal, Taguette will stop. In your web browser, navigate to <a href="http://localhost:8000">localhost:8000</a> to begin working on your projects! It should look something like this:</p>
+        
+        <img src="imgs/01-welcome.png" style="border: 1px solid #125368;">
+        <br/><br/>
 
         <h3 id="create-proj"><i class="fas fa-folder-plus"></i> Creating a new project</h3>
 
-        <p>You will see a page that greets you in single-user mode and has a button to <strong>Start a new project</strong> on the homepage. Click that button and you'll be prompted to enter a <strong>Title</strong> and <strong>Description</strong> for your new project. This can be changed later on if you want in the Project Info tab.</p>
+        <p>You will see a page that greets you as the admin and has a button to <strong>Create a project</strong>. Click that button and you'll be prompted to enter a Title and Description for your new project. This can be changed later on if you want.</p>
+        
+        <img src="imgs/02-createProj.png" style="border: 1px solid #125368;">
+        <br/><br/>
 
-        <p>Upon clicking <strong>Create Project</strong>, you'll be taken the Project View, which has a left and a right pane. The left pane contains the information about your project information ('Project Info'), where you can view and upload materials ('Documents'), and tags/codes ('Highlights') as tabs. You can go between these tabs as you like. The right pane will render documents and quotes, and will be the area where you'll do the highlighting and tagging.</p>
+        <p>Upon clicking <strong>Create</strong>, you'll be taken the <strong>Project View</strong>, which has a left and a right pane. The left pane contains the information about your project information ('Project Info'), uploaded materials ('Documents'), and tags ('Highlights') as tabs. You can go between these tabs as you like. The right pane will render documents and will be the area where you'll do the highlighting and tagging.</p>
+        
+        <img src="imgs/03-projectInfo.png" style="border: 1px solid #125368;">
+        <br/><br/>
 
         <h3 id="upload"><i class="fas fa-upload"></i> Upload your materials</h3>
 
-        <p>To get an idea of how to work in Taguette, let's upload a document and get you tagging! In the left pane, click on the <strong>Documents</strong> tab. You should see a button that says <strong>Upload a document</strong>. Click that and pick either a `.pdf`, `.docx`, `.txt`, `.md`, or `.odt` file on your computer. Just one file to be uploaded. You'll be prompted to give the new document a <strong>Name</strong> (should be something human-readable, required) and <strong>Description</strong> (like a note about the file, optional). When you have picked a document and at least given it a name, click the <strong>Import</strong> button.</p>
+        <p>To get an idea of how to work in Taguette, let's upload a document and get you tagging! In the left pane, click on the <strong>Documents tab</strong>. You should see a button that says <strong>Add a document</strong>. Click that and pick just one document from your computer, either a: <code>.pdf</code>, <code>.docx</code>, <code>.txt</code>, <code>.odt</code>, <code>.md</code>, or <code>.html</code>.</p>
+	
+				<img src="imgs/04-viewDocs.png" style="border: 1px solid #125368;">
+        <br/><br/>
+        
+        <p>Just one file to be uploaded. You'll be prompted to give the new document a Name (should be something human-readable, required) and Description (like a note about the file, optional). When you have picked a document and at least given it a name, click the <strong>Import</strong> button.</p>
+        
+        <img src="imgs/05-uploadDoc.png" style="border: 1px solid #125368;">
+        <br/><br/>
+        
+        <p>You should then see that file immediately in the Documents tab. If not, just refresh the page and it should be shown then. If you cannot see your document, you might be uploading a file type that Taguette can not yet handle. Please let us know at <a href="users@taguette.com">users@taguette.com</a>.</p>
 
-        <h3 id="highlight"><i class="fas fa-highlighter"></i> Highlighting &amp; tagging</h3>
+				<h3 id="tag"><i class="fas fa-tags"></i> Tags</h3>
+				
+				<p>Taguette ships with two existing tags (or <em>codes</em>, if you're familiar with qualitative research): <code>interesting</code> and <code>people</code>. These are just there to get you started -- you can add and remove tags as often as you'd like! To view all your existing tags, click the <strong>Highlights</strong> tab in the leftpane.</p>
 
-        <p>Once uploaded, you should see the document in the <strong>Documents</strong> tab. Click on it and you should see the contents of your document in the right pane. Select some text by left-clicking and dragging it over the text you'd like to highlight.</p>
+				<img src="imgs/06-viewTags.png" style="border: 1px solid #125368;"> 
+        <br/><br/>
+        
+        <p>You should see a list of existing tags for the project - again, if you haven't added any yet, you will still see <code>interesting</code> and <code>people</code>. To add your own tags to this project, click <strong>Create a tag</strong>. You will get a popup asking you for the Name and Description of the tag you want to create:</p>
+        
+        <img src="imgs/07-addTag.png" style="border: 1px solid #125368;">
+        <br/><br/>
+        
+        <p>After you give the tag a good name and a bit of description about what the tag means, you should see it added to the end of the list of existing tags.</p>
+        
+        <p>You can also delete a tag by clicking the <code>edit</code> badge to the right of name of the tag in the list. This will bring you back to the same popup - you can edit the name of the tag, its description, or you can click the grey <strong>Delete</strong> button next to the blue <strong>Save &amp; Close</strong> button.
+        
+        <p>Now that you've created a tag of your own, you can move onto highlighting text!</p>
+        
+        <h3 id="highlight"><i class="fas fa-highlighter"></i> Highlighting</h3>
 
-        <p>Once you let go of your left-click, a pop-up that says <strong>new highlight</strong> will appear next to the highlighted text. Click that pop-up, and you will get a list of existing tags from which to choose. You can select one or more tags to apply to the highlight text.</p>
+        <p>Once uploaded, you should see the document in the 'Documents' tab. Click on it and you should see the contents of your document in the right pane. Once you see the text in the right pane, we can start highlighting it!</p>
+        
+        <img src="imgs/045-viewDocs.png" style="border: 1px solid #125368;"> 
+        <br/><br/>
+        
+        <p>Select some text by left-clicking and dragging it over the text you'd like to highlight. Once you let go of your left-click, a pop-up that says <strong>new highlight</strong> will appear next to the highlighted text. </p>
+        
+        <img src="imgs/08-highlightText.png" style="border: 1px solid #125368;"> 
+        <br/><br/>
 
-        <p>Once you've checked off which tags you'd like to associate with the highlighted text, click <strong>Save &amp; Close</strong>, and the text you've just tagged should now be highlighted with the color associated with the tag (e.g. bright yellow). You can't change the color of tags now, but that feature is coming soon!</p>
+        <p>Click that pop-up, and you will get a list of existing tags from which to choose. You can select one or more tags to apply to the highlight text.</p>
+        
+        <img src="imgs/09-addHighlight.png" style="border: 1px solid #125368;"> 
+        <br/><br/>
 
-        <p>If you've accidentally tagged a section of text you didn't want to, you can delete it by clicking on the highlighted text. This will give you the same pop-up window that you used to tag it. Next to the save button, there is a grey button called <strong>Delete</strong>. Click that, and the tags will be removed from the text. It should no longer by highlighted. You can also use that window to change the tag associated with that highlight.</p>
+        <p>Once you've checked off which tags you'd like to associate with the highlighted text, click <strong>Save &amp; Close</strong>, and the text you've just tagged should now be highlighted with the color associated with the tag (e.g. bright yellow).</p>
 
+        <p>If you've accidentally tagged a section of text you didn't want to, you can delete it by clicking on the highlighted text. This will give you the same pop-up window that you used to tag it. Next to the save button, there is a grey button called <strong>Delete highlight</strong>. Click that, and the tags will be removed from the text. It should no longer by highlighted.</p>
+        
+        
+        <h3 id="upload"><i class="fas fa-file-invoice"></i> View highlighted &amp; tagged text</h3>
+        
+        <p>If you want to see all the highlighted text associated with a given tag, first go to the <strong>Highlights</strong> tab in the left pane. Click a tag, and in the right pane you will see a list of quotes with a blue link to the document where they originated from:</p>
+        
+        <img src="imgs/10-viewQuotes.png" style="border: 1px solid #125368;"> 
+        <br/><br/>
+        
         <h3 id="export"><i class="fas fa-file-export"></i> Export Options</h3>
 
-        <p>Coming soon!</p>
+        <p>Right now, you can only export the codebook of your project - this is a list of all the tags that you've created alongside their description. In the <strong>Project</strong> tab in the left pane of Taguette, underneath the project description you should see two links - one to export your codebook as a <code>CSV</code> and one to export your codebook as a <code>DOCX</code>. When you click these links, the download will start.</p>
+        
+        <img src="imgs/11-exportCodebook.png" style="border: 1px solid #125368;">
+        <br/><br/> 
+        
+        <p>We are actively adding more export options right now.</p>
 
         <hr/>
       </div>
