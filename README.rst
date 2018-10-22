@@ -21,10 +21,10 @@ However - the software options for qualitative researchers are either **far too 
 
 So, to bolster a fair and equitable entry into qualitative methods, we've made Taguette!
 
-Installation
-------------
+Installers
+----------
 
-Grab the correct installer for your system from [our download folder](https://drive.google.com/drive/folders/1GA_Us_m4JQIiju7hOI3_AfY4JGBpBaDB). A "Taguette" entry should appear in your list of applications (Start Menu on Windows, or Launchpad/Spotlight on MacOS).
+Grab the correct installer for your system from `our release page <https://gitlab.com/remram44/taguette/tags>`__. Those include Python, Taguette, and Calibre, so you don't need to install anything else. A "Taguette" entry should appear in your list of applications (Start Menu on Windows, or Launchpad/Spotlight on MacOS).
 
 Once you start the application, you will see a terminal appear. This is normal! You can ignore the strange messages there, and use Taguette from your web browser (`localhost:8000 <http://localhost:8000/>`__ should open automatically). Simply leave the terminal window open until you are done using Taguette, after which you can close that terminal window to stop Taguette.
 
