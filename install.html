@@ -63,35 +63,34 @@
 
         <h2>Install <span style="font-family: BadScript;">TAGUETTE</span></h2>
 
-        <p>Taguette is released under BSD-3-Clause (<a href="https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt">read the license file here</a>), © Rémi Rampin. You can read about the team behind Taguette on our <a href="about.html#team">About</a> page.</p>
+        <p>Taguette is released under <a href="https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt">the BSD-3-Clause license</a>. You can read about the team behind Taguette on our <a href="about.html#team">About</a> page.</p>
 
         <h3 id="installers">Installers</h3>
 
-        <p>Installers are available from MacOS and Windows from <a href="https://gitlab.com/remram44/taguette/tags/v0.2">our latest release page</a>. Those include Python, Taguette, and Calibre, so you don't need to install anything else.</p>
+        <p><a href="https://gitlab.com/remram44/taguette/tags/v0.2">Installers are available from MacOS and Windows from our latest release page</a>. Those include Python, Taguette, and Calibre, so you don't need to install anything else.</p>
 
-        <h3 id="prereq">Pre-Requisites</h3>
+        <p>Once you start the application, you will see a terminal appear. This is normal! You can ignore the strange messages there, and use Taguette from your web browser <a href="http://localhost:8000/"><code>localhost:8000</code></a> should open automatically). Simply the terminal window open until you are done.</p>
 
-        <p>To use Taguette right now, you first need to install <a href="https://www.python.org/downloads">Python 3</a> and <a href="https://calibre-ebook.com">Calibre</a>, the open source e-book management software. Taguette uses a part of Calibre to convert uploaded documents into HTML, allowing you to highlight and tag parts of them.</p>
+        <h3 id="pip">Installation using pip</h3>
 
-        <h3 id="quick">Installation from terminal</h3>
+        <p>You first need to install <a href="https://www.python.org/downloads/">Python 3</a> and <a href="https://calibre-ebook.com/">Calibre</a>, the open source e-book management software. Taguette uses a part of Calibre to convert documents into HTML, allowing you to highlight and tag parts of them.</p>
 
-        <p>Once you've installed the pre-reqs, you can install Taguette! You can quickly install Taguette with the following: <code>pip install taguette</code></p>
+        <p>Once you've installed Python, you can install Taguette with its dependencies from the command line with the following:</p>
 
-        <p>After which you can simply run <code>taguette</code> in the terminal to get it going. You'll see the command line will still be running. This is ok! Don't worry about the terminal but do leave it running. If you kill the terminal window, you'll kill Taguette!</p>
+        <pre>pip install taguette</pre>
 
-        <p>In your web browser, navigate to <a href="http://localhost:8000/">localhost:8000</a> to begin working on your projects. Learn more about uploading and tagging materials at our <a href="getting-started.html">getting started</a> page!</p>
+        <p>After which you can simply run <code>taguette</code> in the terminal to get it going. You'll see the command line will still be running. This is ok! Don't worry about the terminal, but do leave it running. A browser window should appear, pointing you to <a href="http://localhost:8000/"><code>localhost:8000</code></a>, and you can begin working on your projects!</p>
 
         <h3 id="long">Development set-up</h3>
 
-        <p>You can follow these steps to use Taguette from source:</p>
+        <p>You can also install from a local clone of this repository, which will allow you to easily change the sources to suit your needs:</p>
 
         <ol>
-          <li>Clone this git repository: <code>git clone https://gitlab.com/remram44/taguette.git</code></li>
+          <li>Clone this git repository from the terminal: <code>git clone https://gitlab.com/remram44/taguette.git</code></li>
           <li>Navigate on the command line to the repository you've just cloned locally, using the <code>cd</code> command. To get help using <code>cd</code>, use <a href="https://swcarpentry.github.io/shell-novice/02-filedir/index.html">this tutorial</a>.</li>
-          <li>To install the dependencies of Taguette, enter the command <code>pip install -e .</code> in the terminal.
-            <ul><li>We recommend you run this inside of a <a href="https://docs.python-guide.org/dev/virtualenvs"> virtualenv or pipenv</a> if possible.</li></ul>
-          </li>
-          <li>Once the dependencies have been installed, enter the command <code>taguette</code> in the terminal and you'll see it will stay running. This is ok! Don't worry about the terminal but do leave it running. In your web browser, navigate to <a href="http://localhost:8000/">localhost:8000</a> to begin working on your projects!</li>
+          <li>To install the dependencies of Taguette, run <code>pip install -e .</code> We recommend you run this inside of a <a href="https://docs.python-guide.org/dev/virtualenvs/">virtualenv or pipenv</a> if possible.</li>
+          <li>You can start taguette in development mode using <code>python -m taguette.main --debug</code>. This will start Tornado in debug mode, which means in particular that it will auto-restart every time you make changes.</li>
+          <li>Navigate to <a href="http://localhost:8000/"><code>localhost:8000</code></a> to use Taguette!</li>
         </ol>
 
         <p>Learn about using Taguette at our <a href="getting-started.html">getting started</a> page!</p>
