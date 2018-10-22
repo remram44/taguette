@@ -1,0 +1,11 @@
+--- Info.plist	2018-10-22 00:04:06.000000000 +0000
++++ Info.plist	2018-10-22 00:03:55.000000000 +0000
+@@ -5,7 +5,7 @@
+ 	<key>CFBundleDisplayName</key>
+ 	<string>Taguette</string>
+ 	<key>CFBundleExecutable</key>
+-	<string>MacOS/taguette_exe</string>
++	<string>MacOS/taguette_console_wrapper</string>
+ 	<key>CFBundleIconFile</key>
+ 	<string>icon-windowed.icns</string>
+ 	<key>CFBundleIdentifier</key>
