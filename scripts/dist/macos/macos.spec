@@ -27,7 +27,7 @@ exe = EXE(pyz,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
-          console=True , icon='taguette/static/favicon.ico')
+          console=True)
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,
@@ -37,5 +37,5 @@ coll = COLLECT(exe,
                name='taguette')
 app = BUNDLE(coll,
              name='Taguette.app',
-             icon=None,
+             icon='scripts/dist/macos/taguette.icns',
              bundle_identifier='fr.taguette')
