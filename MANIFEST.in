@@ -1,3 +1,4 @@
 include README.rst
 include LICENSE.txt
 include tests.py
+include CHANGELOG.md
