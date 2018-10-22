@@ -39,6 +39,13 @@ Once you've installed Python, you can install Taguette with its dependencies fro
 
 After which you can simply run ``taguette`` in the terminal to get it going. You'll see the command line will still be running. This is ok! Don't worry about the terminal, but do leave it running. A browser window should appear, pointing you to `localhost:8000 <http://localhost:8000/>`__, and you can begin working on your projects!
 
+Run with Docker
+---------------
+
+You can run this with Docker, note that it will prompt you for an 'admin' password the first time::
+
+    docker run -ti -p 8000:8000 -v /srv/taguette:/data remram/taguette
+
 Installation from a local clone
 -------------------------------
 
