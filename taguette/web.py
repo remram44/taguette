@@ -8,6 +8,7 @@ import json
 import logging
 import jinja2
 import pkg_resources
+from sqlalchemy import or_
 from sqlalchemy.orm import aliased, joinedload, undefer, make_transient
 from tornado.concurrent import Future
 import tornado.ioloop
@@ -469,7 +470,8 @@ class Highlights(BaseHandler):
             self.db.query(database.Highlight)
             .join(hltag, hltag.highlight_id == database.Highlight.id)
             .join(tag, hltag.tag_id == tag.id)
-            .filter(tag.path.startswith(path))
+            .filter(or_(tag.path.startswith(path + '|'),
+                        tag.path == path))
             .filter(tag.project == project)
         ).all()
 

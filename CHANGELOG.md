@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.3 (???)
+---------
+
+* Tags are now considered nested only if separated with a pipe character '|' (previously any prefix would work)
+
 0.2 (2018-10-21)
 ----------------
 
