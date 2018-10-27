@@ -663,10 +663,6 @@ function removeHighlight(id) {
 }
 
 // Backlight
-function setBacklight(enabled) {
-
-}
-
 var backlight_checkbox = document.getElementById('backlight');
 backlight_checkbox.addEventListener('change', function(e) {
   var classes = document.getElementById('document-view').classList;
