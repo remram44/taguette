@@ -981,6 +981,11 @@ function longPollForEvents() {
         addDocument(result.document_add[i]);
       }
     }
+    if('document_delete' in result) {
+      for(var i = 0; i < result.document_delete.length; ++i) {
+        removeDocument(result.document_delete[i]);
+      }
+    }
     if('highlight_add' in result) {
       var added = result.highlight_add[current_document];
       if(added) {

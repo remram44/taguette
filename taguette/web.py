@@ -633,6 +633,8 @@ class ProjectEvents(BaseHandler):
         elif type_ == 'document_add':
             payload['id'] = cmd.document_id
             result = {'document_add': [payload]}
+        elif type_ == 'document_delete':
+            result = {'document_delete': [cmd.document_id]}
         elif type_ == 'highlight_add':
             result = {'highlight_add': {cmd.document_id: [payload]}}
         elif type_ == 'highlight_delete':
