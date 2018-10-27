@@ -315,8 +315,8 @@ function projectMetadataChanged() {
 }
 
 document.getElementById('project-metadata-form').addEventListener('submit', function(e) {
-  projectMetadataChanged();
   e.preventDefault();
+  projectMetadataChanged();
 });
 project_name_input.addEventListener('blur', projectMetadataChanged);
 project_description_input.addEventListener('blur', projectMetadataChanged);
@@ -334,9 +334,9 @@ function linkDocument(elem, doc_id) {
   var url = '/project/' + project_id + '/document/' + doc_id;
   elem.setAttribute('href', url);
   elem.addEventListener('click', function(e) {
+    e.preventDefault();
     window.history.pushState({'document_id': doc_id}, "Document " + doc_id, url);
     loadDocument(doc_id);
-    e.preventDefault();
   });
 }
 
@@ -398,6 +398,7 @@ function createDocument() {
 var progress = document.getElementById('document-add-progress');
 
 document.getElementById('document-add-form').addEventListener('submit', function(e) {
+  e.preventDefault();
   console.log("Uploading document...");
 
   var form_data = new FormData();
@@ -436,8 +437,6 @@ document.getElementById('document-add-form').addEventListener('submit', function
     }
   };
   xhr.send(form_data);
-
-  e.preventDefault();
 });
 
 
@@ -452,9 +451,9 @@ function linkTag(elem, tag_path) {
   var url = '/project/' + project_id + '/highlights/' + tag_path;
   elem.setAttribute('href', url);
   elem.addEventListener('click', function(e) {
+    e.preventDefault();
     window.history.pushState({'tag_path': tag_path}, "Tag " + tag_path, url);
     loadtag(tag_path);
-    e.preventDefault();
   });
 }
 
@@ -728,6 +727,7 @@ function editHighlight(e) {
 
 // Save highlight button
 document.getElementById('highlight-add-form').addEventListener('submit', function(e) {
+  e.preventDefault();
   var highlight_id = document.getElementById('highlight-add-id').value;
   var selection = [
     parseInt(document.getElementById('highlight-add-start').value),
@@ -766,8 +766,6 @@ document.getElementById('highlight-add-form').addEventListener('submit', functio
   }, function(error) {
     console.error("Failed to create highlight:", error);
   });
-
-  e.preventDefault();
 });
 
 // Delete highlight button
