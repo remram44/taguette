@@ -546,8 +546,8 @@ function createTag() {
   document.getElementById('tag-add-id').value = '';
   document.getElementById('tag-add-label-new').style.display = '';
   document.getElementById('tag-add-label-change').style.display = 'none';
-  document.getElementById('tag-add-label-cancel').style.display = '';
-  document.getElementById('tag-add-label-delete').style.display = 'none';
+  document.getElementById('tag-add-cancel').style.display = '';
+  document.getElementById('tag-add-delete').style.display = 'none';
   $(tag_add_modal).modal();
 }
 
@@ -557,8 +557,8 @@ function editTag(tag_id) {
   document.getElementById('tag-add-path').value = tags['' + tag_id].path;
   document.getElementById('tag-add-label-new').style.display = 'none';
   document.getElementById('tag-add-label-change').style.display = '';
-  document.getElementById('tag-add-label-cancel').style.display = 'none';
-  document.getElementById('tag-add-label-delete').style.display = '';
+  document.getElementById('tag-add-cancel').style.display = 'none';
+  document.getElementById('tag-add-delete').style.display = '';
   $(tag_add_modal).modal();
 }
 
@@ -603,7 +603,7 @@ document.getElementById('tag-add-form').addEventListener('submit', function(e) {
 });
 
 // Delete tag button
-document.getElementById('tag-delete').addEventListener('click', function(e) {
+document.getElementById('tag-add-delete').addEventListener('click', function(e) {
   var tag_id = document.getElementById('tag-add-id').value;
   if(tag_id) {
     tag_id = parseInt(tag_id);
