@@ -109,6 +109,36 @@
   </div>
 </div>
 
+<!-- Change document modal -->
+<div class="modal" id="document-change-modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <form id="document-change-form" class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit document</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="document-change-id" />
+        <div class="container">
+          {{ xsrf_form_html() }}
+          <div class="row">
+            <div class="col-md-6">
+              <input type="text" class="form-control" id="document-change-name" name="document-change-name" placeholder="Name" />
+            </div>
+          </div>
+          <textarea class="form-control" id="document-change-description" name="document-change-description" placeholder="Description"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Save & Close</button>
+        <button type="button" id="document-change-delete" class="btn btn-danger" data-dismiss="modal">Delete document</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <!-- Add/change highlight modal -->
 <div class="modal" id="highlight-add-modal" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-dialog-centered" role="document">
