@@ -1,6 +1,13 @@
 Changelog
 =========
 
+0.3 (???)
+---------
+
+Features:
+* Add 'backlight' mode, fading non-tagged text
+* Add modal dialog to edit and delete documents
+
 0.2 (2018-10-21)
 ----------------
 
