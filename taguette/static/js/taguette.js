@@ -235,7 +235,7 @@ function splitAtPos(pos, after) {
 }
 
 // Highlight a described selection
-function highlightSelection(saved, id) {
+function highlightSelection(saved, id, clickedCallback) {
   console.log("Highlighting", saved);
   if(saved === null) {
     return;
@@ -252,7 +252,7 @@ function highlightSelection(saved, id) {
       var span = document.createElement('a');
       span.className = 'highlight highlight-' + id;
       span.setAttribute('data-highlight-id', '' + id);
-      span.addEventListener('click', highlightClicked);
+      span.addEventListener('click', clickedCallback);
       node.parentNode.insertBefore(span, node);
       span.appendChild(node);
     }
@@ -635,7 +635,7 @@ function setHighlight(highlight) {
     removeHighlight(highlights[id]);
   }
   highlights[id] = highlight;
-  highlightSelection([highlight.start_offset, highlight.end_offset], id);
+  highlightSelection([highlight.start_offset, highlight.end_offset], id, editHighlight);
   console.log("Highlight set:", highlight);
 }
 
@@ -717,6 +717,19 @@ function createHighlight(selection) {
   $(highlight_add_modal).modal();
 }
 
+function editHighlight(e) {
+  document.getElementById('highlight-add-form').reset();
+  var id = this.getAttribute('data-highlight-id');
+  document.getElementById('highlight-add-id').value = id;
+  document.getElementById('highlight-add-start').value = highlights[id].start_offset;
+  document.getElementById('highlight-add-end').value = highlights[id].end_offset;
+  var hl_tags = highlights['' + id].tags;
+  for(var i = 0; i < hl_tags.length; ++i) {
+    document.getElementById('highlight-add-tags-' + hl_tags[i]).checked = true;
+  }
+  $(highlight_add_modal).modal();
+}
+
 // Save highlight button
 document.getElementById('highlight-add-form').addEventListener('submit', function(e) {
   var highlight_id = document.getElementById('highlight-add-id').value;
@@ -779,20 +792,6 @@ document.getElementById('highlight-delete').addEventListener('click', function(e
     });
   }
 });
-
-// When clicking on a highlight
-function highlightClicked(e) {
-  document.getElementById('highlight-add-form').reset();
-  var id = this.getAttribute('data-highlight-id');
-  document.getElementById('highlight-add-id').value = id;
-  document.getElementById('highlight-add-start').value = highlights[id].start_offset;
-  document.getElementById('highlight-add-end').value = highlights[id].end_offset;
-  var hl_tags = highlights['' + id].tags;
-  for(var i = 0; i < hl_tags.length; ++i) {
-    document.getElementById('highlight-add-tags-' + hl_tags[i]).checked = true;
-  }
-  $(highlight_add_modal).modal();
-}
 
 
 /*
