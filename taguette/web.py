@@ -420,14 +420,7 @@ class HighlightUpdate(BaseHandler):
         hl = self.db.query(database.Highlight).get(int(highlight_id))
         if hl.document_id != document.id:
             raise HTTPError(404)
-        if not obj:
-            self.db.delete(hl)
-            cmd = database.Command.highlight_delete(
-                self.current_user,
-                document,
-                hl.id,
-            )
-        else:
+        if obj:
             if 'start_offset' in obj:
                 hl.start_offset = obj['start_offset']
             if 'end_offset' in obj:
@@ -450,12 +443,32 @@ class HighlightUpdate(BaseHandler):
                 hl,
                 obj.get('tags', []),
             )
+            self.db.add(cmd)
+            self.db.commit()
+            self.db.refresh(cmd)
+            self.application.notify_project(document.project_id, cmd)
+
+        self.send_json({'id': hl.id})
+
+    @authenticated
+    def delete(self, project_id, document_id, highlight_id):
+        document = self.get_document(project_id, document_id)
+        hl = self.db.query(database.Highlight).get(int(highlight_id))
+        if hl.document_id != document.id:
+            raise HTTPError(404)
+        self.db.delete(hl)
+        cmd = database.Command.highlight_delete(
+            self.current_user,
+            document,
+            hl.id,
+        )
         self.db.add(cmd)
         self.db.commit()
         self.db.refresh(cmd)
         self.application.notify_project(document.project_id, cmd)
 
-        self.send_json({'id': hl.id})
+        self.set_status(204)
+        self.finish()
 
 
 class Highlights(BaseHandler):
@@ -514,14 +527,7 @@ class TagUpdate(BaseHandler):
         tag = self.db.query(database.Tag).get(int(tag_id))
         if tag.project_id != project.id:
             raise HTTPError(404)
-        if not obj:
-            self.db.delete(tag)
-            cmd = database.Command.tag_delete(
-                self.current_user,
-                project.id,
-                tag.id,
-            )
-        else:
+        if obj:
             if 'path' in obj:
                 tag.path = obj['path']
             if 'description' in obj:
@@ -530,12 +536,32 @@ class TagUpdate(BaseHandler):
                 self.current_user,
                 tag,
             )
+            self.db.add(cmd)
+            self.db.commit()
+            self.db.refresh(cmd)
+            self.application.notify_project(project.id, cmd)
+
+        self.send_json({'id': tag.id})
+
+    @authenticated
+    def delete(self, project_id, tag_id):
+        project = self.get_project(project_id)
+        tag = self.db.query(database.Tag).get(int(tag_id))
+        if tag.project_id != project.id:
+            raise HTTPError(404)
+        self.db.delete(tag)
+        cmd = database.Command.tag_delete(
+            self.current_user,
+            project.id,
+            tag.id,
+        )
         self.db.add(cmd)
         self.db.commit()
         self.db.refresh(cmd)
         self.application.notify_project(project.id, cmd)
 
-        self.send_json({'id': tag.id})
+        self.set_status(204)
+        self.finish()
 
 
 class ProjectEvents(BaseHandler):

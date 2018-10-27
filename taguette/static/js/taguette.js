@@ -97,6 +97,27 @@ function getJSON(url='', args) {
   });
 }
 
+function deleteURL(url='', args) {
+  if(args) {
+    args = '&' + encodeGetParams(args);
+  } else {
+    args = '';
+  }
+  return fetch(
+    url + '?_xsrf=' + encodeURIComponent(getCookie('_xsrf')) + args,
+    {
+      credentials: 'same-origin',
+      mode: 'same-origin',
+      cache: 'no-cache',
+      method: 'DELETE'
+    }
+  ).then(function(response) {
+    if(response.status != 204) {
+      throw "Status " + response.status;
+    }
+  });
+}
+
 function postJSON(url='', data={}, args) {
   if(args) {
     args = '&' + encodeGetParams(args);
@@ -607,9 +628,8 @@ document.getElementById('tag-add-delete').addEventListener('click', function(e) 
   if(tag_id) {
     tag_id = parseInt(tag_id);
     console.log("Posting tag " + tag_id + " deletion");
-    postJSON(
-      '/api/project/' + project_id + '/tag/' + tag_id,
-      {}
+    deleteURL(
+      '/api/project/' + project_id + '/tag/' + tag_id
     )
     .then(function() {
       $(tag_add_modal).modal('hide');
@@ -774,9 +794,8 @@ document.getElementById('highlight-delete').addEventListener('click', function(e
   if(highlight_id) {
     highlight_id = parseInt(highlight_id);
     console.log("Posting highlight " + highlight_id + " deletion");
-    postJSON(
-      '/api/project/' + project_id + '/document/' + current_document + '/highlight/' + highlight_id,
-      {}
+    deleteURL(
+      '/api/project/' + project_id + '/document/' + current_document + '/highlight/' + highlight_id
     )
     .then(function() {
       $(highlight_add_modal).modal('hide');
