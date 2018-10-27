@@ -377,11 +377,15 @@ function updateDocumentsList() {
   var entries = Object.entries(documents);
   for(var i = 0; i < entries.length; ++i) {
     var doc = entries[i][1];
-    var elem = document.createElement('a');
+    var elem = document.createElement('li');
     elem.className = 'list-group-item';
-    elem.textContent = doc.name;
-    linkDocument(elem, doc.id);
+    elem.innerHTML =
+      '<div class="d-flex justify-content-between align-items-center">' +
+      '  <a id="document-link-' + doc.id + '">' + escapeHtml(doc.name) + '</a>' +
+      '  <a href="javascript:editDocument(' + doc.id + ');" class="badge badge-secondary badge-pill">edit</a>' +
+      '</div>';
     documents_list.insertBefore(elem, before);
+    linkDocument(document.getElementById('document-link-' + doc.id), doc.id);
   }
   if(entries.length == 0) {
     var elem = document.createElement('div');
@@ -458,6 +462,26 @@ document.getElementById('document-add-form').addEventListener('submit', function
     }
   };
   xhr.send(form_data);
+});
+
+
+/*
+ * Change document
+ */
+
+var document_change_modal = document.getElementById('document-change-modal');
+
+function editDocument(doc_id) {
+  document.getElementById('document-change-form').reset();
+  $(document_change_modal).modal();
+}
+
+document.getElementById('document-change-form').addEventListener('submit', function(e) {
+  console.log("Changing document...");
+
+  // TODO
+
+  e.preventDefault();
 });
 
 
