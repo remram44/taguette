@@ -733,32 +733,40 @@ def make_app(db_url, multiuser, register_enabled=True, debug=False):
 
     return Application(
         [
+            # Basic pages
             URLSpec('/', Index, name='index'),
             URLSpec('/login', Login, name='login'),
             URLSpec('/logout', Logout, name='logout'),
             URLSpec('/register', Register, name='register'),
             URLSpec('/new', NewProject, name='new_project'),
+
+            # Project view
             URLSpec('/project/([0-9]+)', Project, name='project'),
             URLSpec('/project/([0-9]+)/document/[0-9]+', Project,
                     name='project_doc'),
             URLSpec('/project/([0-9]+)/highlights/[^/]+', Project,
                     name='project_tag'),
-            URLSpec('/project/([0-9]+)/meta', ProjectMeta),
-            URLSpec('/project/([0-9]+)/document/new', DocumentAdd),
-            URLSpec('/project/([0-9]+)/document/([0-9]+)/content',
-                    DocumentContents),
-            URLSpec('/project/([0-9]+)/document/([0-9]+)/highlight/new',
-                    HighlightAdd),
-            URLSpec('/project/([0-9]+)/document/([0-9]+)/highlight/([0-9]+)',
-                    HighlightUpdate),
-            URLSpec('/project/([0-9]+)/highlights/([^/]+)/list', Highlights),
-            URLSpec('/project/([0-9]+)/tag/new', TagAdd),
-            URLSpec('/project/([0-9]+)/tag/([0-9]+)', TagUpdate),
-            URLSpec('/project/([0-9]+)/events', ProjectEvents),
+
+            # Export options
             URLSpec('/project/([0-9]+)/export/codebook.csv', ExportCodebookCsv,
                     name='export_codebook_csv'),
             URLSpec('/project/([0-9]+)/export/codebook.docx',
                     ExportCodebookDoc, name='export_codebook_doc'),
+
+            # API
+            URLSpec('/api/project/([0-9]+)', ProjectMeta),
+            URLSpec('/api/project/([0-9]+)/document/new', DocumentAdd),
+            URLSpec('/api/project/([0-9]+)/document/([0-9]+)/content',
+                    DocumentContents),
+            URLSpec('/api/project/([0-9]+)/document/([0-9]+)/highlight/new',
+                    HighlightAdd),
+            URLSpec(
+                '/api/project/([0-9]+)/document/([0-9]+)/highlight/([0-9]+)',
+                HighlightUpdate),
+            URLSpec('/api/project/([0-9]+)/highlights/([^/]+)', Highlights),
+            URLSpec('/api/project/([0-9]+)/tag/new', TagAdd),
+            URLSpec('/api/project/([0-9]+)/tag/([0-9]+)', TagUpdate),
+            URLSpec('/api/project/([0-9]+)/events', ProjectEvents),
         ],
         static_path=pkg_resources.resource_filename('taguette', 'static'),
         login_url='/login',

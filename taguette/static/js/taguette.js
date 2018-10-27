@@ -301,7 +301,7 @@ function projectMetadataChanged() {
       description: project_description_input.value
     };
     postJSON(
-      '/project/' + project_id + '/meta',
+      '/api/project/' + project_id,
       meta
     )
     .then(function(result) {
@@ -411,7 +411,7 @@ document.getElementById('document-add-form').addEventListener('submit', function
 
   var xhr = new XMLHttpRequest();
   xhr.responseType = 'json';
-  xhr.open('POST', '/project/' + project_id + '/document/new');
+  xhr.open('POST', '/api/project/' + project_id + '/document/new');
   xhr.onload = function() {
     if(xhr.status == 200) {
       $(document_add_modal).modal('hide');
@@ -581,14 +581,14 @@ document.getElementById('tag-add-form').addEventListener('submit', function(e) {
   if(tag_id !== null) {
     console.log("Posting update for tag " + tag_id);
     req = postJSON(
-      '/project/' + project_id + '/tag/' + tag_id,
+      '/api/project/' + project_id + '/tag/' + tag_id,
       {path: tag_path,
        description: document.getElementById('tag-add-description').value}
     );
   } else {
     console.log("Posting new tag");
     req = postJSON(
-      '/project/' + project_id + '/tag/new',
+      '/api/project/' + project_id + '/tag/new',
       {path: tag_path,
        description: document.getElementById('tag-add-description').value}
     );
@@ -609,7 +609,7 @@ document.getElementById('tag-add-delete').addEventListener('click', function(e) 
     tag_id = parseInt(tag_id);
     console.log("Posting tag " + tag_id + " deletion");
     postJSON(
-      '/project/' + project_id + '/tag/' + tag_id,
+      '/api/project/' + project_id + '/tag/' + tag_id,
       {}
     )
     .then(function() {
@@ -745,7 +745,7 @@ document.getElementById('highlight-add-form').addEventListener('submit', functio
   if(highlight_id) {
     console.log("Posting update for highlight " + highlight_id);
     req = postJSON(
-      '/project/' + project_id + '/document/' + current_document + '/highlight/' + highlight_id,
+      '/api/project/' + project_id + '/document/' + current_document + '/highlight/' + highlight_id,
       {start_offset: selection[0],
        end_offset: selection[1],
        tags: hl_tags}
@@ -753,7 +753,7 @@ document.getElementById('highlight-add-form').addEventListener('submit', functio
   } else {
     console.log("Posting new highlight");
     req = postJSON(
-      '/project/' + project_id + '/document/' + current_document + '/highlight/new',
+      '/api/project/' + project_id + '/document/' + current_document + '/highlight/new',
       {start_offset: selection[0],
        end_offset: selection[1],
        tags: hl_tags}
@@ -777,7 +777,7 @@ document.getElementById('highlight-delete').addEventListener('click', function(e
     highlight_id = parseInt(highlight_id);
     console.log("Posting highlight " + highlight_id + " deletion");
     postJSON(
-      '/project/' + project_id + '/document/' + current_document + '/highlight/' + highlight_id,
+      '/api/project/' + project_id + '/document/' + current_document + '/highlight/' + highlight_id,
       {}
     )
     .then(function() {
@@ -802,7 +802,7 @@ function loadDocument(document_id) {
     return;
   }
   getJSON(
-    '/project/' + project_id + '/document/' + document_id + '/content'
+    '/api/project/' + project_id + '/document/' + document_id + '/content'
   )
   .then(function(result) {
     document_contents.innerHTML = '';
@@ -829,7 +829,7 @@ function loadDocument(document_id) {
 
 function loadtag(tag_path) {
   getJSON(
-    '/project/' + project_id + '/highlights/' + tag_path + '/list'
+    '/api/project/' + project_id + '/highlights/' + tag_path
   )
   .then(function(result) {
     console.log("Loaded highlights for tag", tag_path);
@@ -890,7 +890,7 @@ window.onpopstate = function(e) {
 
 function longPollForEvents() {
   getJSON(
-    '/project/' + project_id + '/events',
+    '/api/project/' + project_id + '/events',
     {from: last_event}
   )
   .then(function(result) {
