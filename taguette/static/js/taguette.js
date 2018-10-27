@@ -97,6 +97,27 @@ function getJSON(url='', args) {
   });
 }
 
+function deleteURL(url='', args) {
+  if(args) {
+    args = '&' + encodeGetParams(args);
+  } else {
+    args = '';
+  }
+  return fetch(
+    url + '?_xsrf=' + encodeURIComponent(getCookie('_xsrf')) + args,
+    {
+      credentials: 'same-origin',
+      mode: 'same-origin',
+      cache: 'no-cache',
+      method: 'DELETE'
+    }
+  ).then(function(response) {
+    if(response.status != 204) {
+      throw "Status " + response.status;
+    }
+  });
+}
+
 function postJSON(url='', data={}, args) {
   if(args) {
     args = '&' + encodeGetParams(args);
@@ -315,8 +336,8 @@ function projectMetadataChanged() {
 }
 
 document.getElementById('project-metadata-form').addEventListener('submit', function(e) {
-  projectMetadataChanged();
   e.preventDefault();
+  projectMetadataChanged();
 });
 project_name_input.addEventListener('blur', projectMetadataChanged);
 project_description_input.addEventListener('blur', projectMetadataChanged);
@@ -334,9 +355,9 @@ function linkDocument(elem, doc_id) {
   var url = '/project/' + project_id + '/document/' + doc_id;
   elem.setAttribute('href', url);
   elem.addEventListener('click', function(e) {
+    e.preventDefault();
     window.history.pushState({'document_id': doc_id}, "Document " + doc_id, url);
     loadDocument(doc_id);
-    e.preventDefault();
   });
 }
 
@@ -356,11 +377,15 @@ function updateDocumentsList() {
   var entries = Object.entries(documents);
   for(var i = 0; i < entries.length; ++i) {
     var doc = entries[i][1];
-    var elem = document.createElement('a');
+    var elem = document.createElement('li');
     elem.className = 'list-group-item';
-    elem.textContent = doc.name;
-    linkDocument(elem, doc.id);
+    elem.innerHTML =
+      '<div class="d-flex justify-content-between align-items-center">' +
+      '  <a id="document-link-' + doc.id + '">' + escapeHtml(doc.name) + '</a>' +
+      '  <a href="javascript:editDocument(' + doc.id + ');" class="badge badge-secondary badge-pill">edit</a>' +
+      '</div>';
     documents_list.insertBefore(elem, before);
+    linkDocument(document.getElementById('document-link-' + doc.id), doc.id);
   }
   if(entries.length == 0) {
     var elem = document.createElement('div');
@@ -398,6 +423,7 @@ function createDocument() {
 var progress = document.getElementById('document-add-progress');
 
 document.getElementById('document-add-form').addEventListener('submit', function(e) {
+  e.preventDefault();
   console.log("Uploading document...");
 
   var form_data = new FormData();
@@ -436,8 +462,63 @@ document.getElementById('document-add-form').addEventListener('submit', function
     }
   };
   xhr.send(form_data);
+});
 
+
+/*
+ * Change document
+ */
+
+var document_change_modal = document.getElementById('document-change-modal');
+
+function editDocument(doc_id) {
+  document.getElementById('document-change-form').reset();
+  document.getElementById('document-change-id').value = '' + doc_id;
+  document.getElementById('document-change-name').value = '' + documents['' + doc_id].name;
+  document.getElementById('document-change-description').value = '' + documents['' + doc_id].description;
+  $(document_change_modal).modal();
+}
+
+document.getElementById('document-change-form').addEventListener('submit', function(e) {
   e.preventDefault();
+  console.log("Changing document...");
+
+  var update = {
+    name: document.getElementById('document-change-name').value,
+    description: document.getElementById('document-change-description').value
+  };
+  if(!update.name || update.name.length == 0) {
+    alert("Document name cannot be empty");
+    return;
+  }
+
+  var doc_id = document.getElementById('document-change-id').value;
+  postJSON(
+    '/api/project/' + project_id + '/document/' + doc_id,
+    update
+  )
+  .then(function() {
+    console.log("Document update posted");
+    $(document_change_modal).modal('hide');
+    document.getElementById('document-change-form').reset();
+  }, function(error) {
+    console.error("Failed to update document:", error);
+  });
+});
+
+document.getElementById('document-change-delete').addEventListener('click', function(e) {
+  e.preventDefault();
+
+  console.log("Deleting document...");
+  var doc_id = document.getElementById('document-change-id').value;
+  deleteURL('/api/project/' + project_id + '/document/' + doc_id)
+  .then(function() {
+    console.log("Document deletion posted");
+    $(document_change_modal).modal('hide');
+    document.getElementById('document-change-form').reset();
+  }, function(error) {
+    console.error("Failed to delete document:", error);
+  });
 });
 
 
@@ -452,9 +533,9 @@ function linkTag(elem, tag_path) {
   var url = '/project/' + project_id + '/highlights/' + tag_path;
   elem.setAttribute('href', url);
   elem.addEventListener('click', function(e) {
+    e.preventDefault();
     window.history.pushState({'tag_path': tag_path}, "Tag " + tag_path, url);
     loadtag(tag_path);
-    e.preventDefault();
   });
 }
 
@@ -608,9 +689,8 @@ document.getElementById('tag-add-delete').addEventListener('click', function(e) 
   if(tag_id) {
     tag_id = parseInt(tag_id);
     console.log("Posting tag " + tag_id + " deletion");
-    postJSON(
-      '/api/project/' + project_id + '/tag/' + tag_id,
-      {}
+    deleteURL(
+      '/api/project/' + project_id + '/tag/' + tag_id
     )
     .then(function() {
       $(tag_add_modal).modal('hide');
@@ -728,6 +808,7 @@ function editHighlight(e) {
 
 // Save highlight button
 document.getElementById('highlight-add-form').addEventListener('submit', function(e) {
+  e.preventDefault();
   var highlight_id = document.getElementById('highlight-add-id').value;
   var selection = [
     parseInt(document.getElementById('highlight-add-start').value),
@@ -766,8 +847,6 @@ document.getElementById('highlight-add-form').addEventListener('submit', functio
   }, function(error) {
     console.error("Failed to create highlight:", error);
   });
-
-  e.preventDefault();
 });
 
 // Delete highlight button
@@ -776,9 +855,8 @@ document.getElementById('highlight-delete').addEventListener('click', function(e
   if(highlight_id) {
     highlight_id = parseInt(highlight_id);
     console.log("Posting highlight " + highlight_id + " deletion");
-    postJSON(
-      '/api/project/' + project_id + '/document/' + current_document + '/highlight/' + highlight_id,
-      {}
+    deleteURL(
+      '/api/project/' + project_id + '/document/' + current_document + '/highlight/' + highlight_id
     )
     .then(function() {
       $(highlight_add_modal).modal('hide');
@@ -901,6 +979,11 @@ function longPollForEvents() {
     if('document_add' in result) {
       for(var i = 0; i < result.document_add.length; ++i) {
         addDocument(result.document_add[i]);
+      }
+    }
+    if('document_delete' in result) {
+      for(var i = 0; i < result.document_delete.length; ++i) {
+        removeDocument(result.document_delete[i]);
       }
     }
     if('highlight_add' in result) {
