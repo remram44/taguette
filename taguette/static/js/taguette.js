@@ -473,15 +473,52 @@ var document_change_modal = document.getElementById('document-change-modal');
 
 function editDocument(doc_id) {
   document.getElementById('document-change-form').reset();
+  document.getElementById('document-change-id').value = '' + doc_id;
+  document.getElementById('document-change-name').value = '' + documents['' + doc_id].name;
+  document.getElementById('document-change-description').value = '' + documents['' + doc_id].description;
   $(document_change_modal).modal();
 }
 
 document.getElementById('document-change-form').addEventListener('submit', function(e) {
+  e.preventDefault();
   console.log("Changing document...");
 
-  // TODO
+  var update = {
+    name: document.getElementById('document-change-name').value,
+    description: document.getElementById('document-change-description').value
+  };
+  if(!update.name || update.name.length == 0) {
+    alert("Document name cannot be empty");
+    return;
+  }
 
+  var doc_id = document.getElementById('document-change-id').value;
+  postJSON(
+    '/api/project/' + project_id + '/document/' + doc_id,
+    update
+  )
+  .then(function() {
+    console.log("Document update posted");
+    $(document_change_modal).modal('hide');
+    document.getElementById('document-change-form').reset();
+  }, function(error) {
+    console.error("Failed to update document:", error);
+  });
+});
+
+document.getElementById('document-change-delete').addEventListener('click', function(e) {
   e.preventDefault();
+
+  console.log("Deleting document...");
+  var doc_id = document.getElementById('document-change-id').value;
+  deleteURL('/api/project/' + project_id + '/document/' + doc_id)
+  .then(function() {
+    console.log("Document deletion posted");
+    $(document_change_modal).modal('hide');
+    document.getElementById('document-change-form').reset();
+  }, function(error) {
+    console.error("Failed to delete document:", error);
+  });
 });
 
 

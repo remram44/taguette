@@ -360,6 +360,44 @@ class DocumentAdd(BaseHandler):
             self.send_json({'created': doc.id})
 
 
+class DocumentUpdate(BaseHandler):
+    @authenticated
+    def post(self, project_id, document_id):
+        obj = self.get_json()
+        document = self.get_document(project_id, document_id)
+        if obj:
+            if 'name' in obj:
+                document.name = obj['name']
+            if 'description' in obj:
+                document.description = obj['description']
+            cmd = database.Command.document_add(
+                self.current_user,
+                document,
+            )
+            self.db.add(cmd)
+            self.db.commit()
+            self.db.refresh(cmd)
+            self.application.notify_project(document.project_id, cmd)
+
+        self.send_json({'id': document.id})
+
+    @authenticated
+    def delete(self, project_id, document_id):
+        document = self.get_document(project_id, document_id)
+        self.db.delete(document)
+        cmd = database.Command.document_delete(
+            self.current_user,
+            document,
+        )
+        self.db.add(cmd)
+        self.db.commit()
+        self.db.refresh(cmd)
+        self.application.notify_project(document.project_id, cmd)
+
+        self.set_status(204)
+        self.finish()
+
+
 class DocumentContents(BaseHandler):
     @authenticated
     def get(self, project_id, document_id):
@@ -782,6 +820,7 @@ def make_app(db_url, multiuser, register_enabled=True, debug=False):
             # API
             URLSpec('/api/project/([0-9]+)', ProjectMeta),
             URLSpec('/api/project/([0-9]+)/document/new', DocumentAdd),
+            URLSpec('/api/project/([0-9]+)/document/([0-9]+)', DocumentUpdate),
             URLSpec('/api/project/([0-9]+)/document/([0-9]+)/content',
                     DocumentContents),
             URLSpec('/api/project/([0-9]+)/document/([0-9]+)/highlight/new',
