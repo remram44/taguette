@@ -426,7 +426,7 @@ class HighlightAdd(BaseHandler):
                                 end_offset=end,
                                 snippet=snippet)
         self.db.add(hl)
-        self.db.commit()  # Need to commit to get hl.id
+        self.db.flush()  # Need to flush to get hl.id
         self.db.bulk_insert_mappings(database.HighlightTag, [
             dict(
                 highlight_id=hl.id,
@@ -542,7 +542,7 @@ class TagAdd(BaseHandler):
         tag = database.Tag(project=project,
                            path=obj['path'], description=obj['description'])
         self.db.add(tag)
-        self.db.commit()  # Need to commit to get tag.id
+        self.db.flush()  # Need to flush to get tag.id
         cmd = database.Command.tag_add(
             self.current_user,
             tag,
