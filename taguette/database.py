@@ -70,9 +70,10 @@ class Project(Base):
     created = Column(DateTime, nullable=False,
                      server_default=functions.now())
     members = relationship('User', secondary='project_members')
-    documents = relationship('Document')
-    tags = relationship('Tag')
-    groups = relationship('Group')
+    commands = relationship('Command', cascade='all,delete')
+    documents = relationship('Document', cascade='all,delete')
+    tags = relationship('Tag', cascade='all,delete')
+    groups = relationship('Group', cascade='all,delete')
 
 
 class Privileges(enum.Enum):
@@ -108,7 +109,7 @@ class Document(Base):
     project = relationship('Project', back_populates='documents')
     contents = deferred(Column(Text, nullable=False))
     group = relationship('Group', secondary='document_groups')
-    highlights = relationship('Highlight')
+    highlights = relationship('Highlight', cascade='all,delete')
 
 
 class Command(Base):
