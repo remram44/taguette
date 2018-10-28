@@ -303,7 +303,6 @@ class ProjectMeta(BaseHandler):
         project.name = obj['name']
         project.description = obj['description']
         now = datetime.utcnow()
-        project.meta_updated = now
         logger.info("Updated project: %r %r",
                     project.name, project.description)
         cmd = database.Command.project_meta(
@@ -346,7 +345,6 @@ class DocumentAdd(BaseHandler):
                 contents=body,
             )
             self.db.add(doc)
-            project.documents_updated = datetime.utcnow()
             cmd = database.Command.document_add(
                 self.current_user,
                 doc,
