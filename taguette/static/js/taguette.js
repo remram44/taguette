@@ -406,6 +406,10 @@ function addDocument(document) {
 function removeDocument(document_id) {
   delete documents['' + document_id];
   updateDocumentsList();
+  if(current_document == document_id) {
+    window.history.pushState({}, "Project", '/project/' + project_id);
+    loadDocument(null);
+  }
 }
 
 
@@ -954,7 +958,7 @@ window.onpopstate = function(e) {
     } else if(e.state.tag_path !== undefined) {
       loadtag(e.state.tag_path);
     } else {
-      console.error("History state unrecognized");
+      loadDocument(null);
     }
   } else {
     loadDocument(null);
