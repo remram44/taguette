@@ -122,9 +122,8 @@ class Command(Base):
     project_id = Column(Integer, ForeignKey('projects.id'), nullable=False,
                         index=True)
     project = relationship('Project')
-    document_id = Column(Integer, ForeignKey('documents.id'),
-                         nullable=True)
-    document = relationship('Document')
+    document_id = Column(Integer,
+                         nullable=True)  # Not ForeignKey, document can go away
     payload = Column(JSON, nullable=False)
 
     __table_args__ = (
@@ -146,7 +145,7 @@ class Command(Base):
         return cls(
             user_login=user_login,
             project=document.project,
-            document=document,
+            document_id=document.id,
             payload={'type': 'document_add',
                      'name': document.name,
                      'description': document.description},
@@ -168,7 +167,7 @@ class Command(Base):
         return cls(
             user_login=user_login,
             project_id=document.project_id,
-            document=document,
+            document_id=document.id,
             payload={'type': 'highlight_add',
                      'id': highlight.id,
                      'start_offset': highlight.start_offset,
@@ -182,7 +181,7 @@ class Command(Base):
         return cls(
             user_login=user_login,
             project_id=document.project_id,
-            document=document,
+            document_id=document.id,
             payload={'type': 'highlight_delete',
                      'id': highlight_id},
         )

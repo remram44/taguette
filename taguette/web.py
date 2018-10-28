@@ -345,6 +345,7 @@ class DocumentAdd(BaseHandler):
                 contents=body,
             )
             self.db.add(doc)
+            self.db.flush()  # Need to flush to get doc.id
             cmd = database.Command.document_add(
                 self.current_user,
                 doc,
