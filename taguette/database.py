@@ -1,3 +1,5 @@
+import alembic.command
+import alembic.config
 import bcrypt
 import enum
 import json
@@ -293,9 +295,19 @@ def connect(db_url):
     logger.info("Connecting to SQL database %r", db_url)
     engine = create_engine(db_url, echo=False)
 
+    alembic_cfg = alembic.config.Config()
+    alembic_cfg.set_main_option('script_location', 'taguette:migrations')
+    alembic_cfg.set_main_option('sqlalchemy.url', db_url)
+
     if not engine.dialect.has_table(engine.connect(), Project.__tablename__):
         logger.warning("The tables don't seem to exist; creating")
         Base.metadata.create_all(bind=engine)
+
+        # Mark this as the most recent Alembic version
+        alembic.command.stamp(alembic_cfg, "head")
+    else:
+        # Perform Alembic migrations if needed
+        alembic.command.upgrade(alembic_cfg, "head")
 
     DBSession = sessionmaker(bind=engine)
 
