@@ -16,8 +16,14 @@ depends_on = None
 
 
 def upgrade():
-    with op.batch_alter_table('commands') as batch_op:
-        batch_op.drop_constraint(None, type_='foreignkey')
+    naming_convention = {
+        "fk":
+            "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+    }
+    with op.batch_alter_table('commands',
+                              naming_convention=naming_convention) as batch_op:
+        batch_op.drop_constraint('fk_commands_document_id_documents',
+                                 type_='foreignkey')
 
 
 def downgrade():
