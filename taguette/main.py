@@ -8,7 +8,26 @@ from urllib.parse import urlparse
 import webbrowser
 
 from . import __version__
+from .database import migrate
 from .web import make_app
+
+
+def prepare_db(database):
+    # Windows paths kinda look like URLs, but aren't
+    if sys.platform == 'win32' and re.match(r'^[a-zA-Z]:\\', database):
+        url = None
+    else:
+        url = urlparse(database)
+    if url is not None and url.scheme:
+        # Full URL: use it, create path if sqlite
+        db_url = database
+        if url.scheme == 'sqlite' and url.path.startswith('/'):
+            os.makedirs(url.path[1:])
+    else:
+        # Path: create it, turn into URL
+        os.makedirs(os.path.dirname(database), exist_ok=True)
+        db_url = 'sqlite:///' + database
+    return db_url
 
 
 def main():
@@ -67,24 +86,28 @@ def main():
     parser.add_argument('--disable-register', dest='register',
                         action='store_false', default=True,
                         help=argparse.SUPPRESS)
+    parser.set_defaults(func=None)
+
+    subparsers = parser.add_subparsers(title="additional commands", metavar='')
+
+    parser_migrate = subparsers.add_parser('migrate',
+                                           help="Manually trigger a database "
+                                                "migration")
+    parser_migrate.add_argument('revision', action='store', default='head',
+                                nargs=argparse.OPTIONAL)
+    parser_migrate.set_defaults(
+        func=lambda args: migrate(prepare_db(args.database), args.revision))
+
     args = parser.parse_args()
+
+    if args.func:
+        args.func(args)
+        sys.exit(0)
+
     address = args.bind
     port = int(args.port)
 
-    # Windows paths kinda look like URLs, but aren't
-    if sys.platform == 'win32' and re.match(r'^[a-zA-Z]:\\', args.database):
-        url = None
-    else:
-        url = urlparse(args.database)
-    if url is not None and url.scheme:
-        # Full URL: use it, create path if sqlite
-        db_url = args.database
-        if url.scheme == 'sqlite' and url.path.startswith('/'):
-            os.makedirs(url.path[1:])
-    else:
-        # Path: create it, turn into URL
-        os.makedirs(os.path.dirname(args.database), exist_ok=True)
-        db_url = 'sqlite:///' + args.database
+    db_url = prepare_db(args.database)
 
     app = make_app(db_url, multiuser=args.multiuser,
                    register_enabled=args.register, debug=args.debug)

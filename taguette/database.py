@@ -352,3 +352,12 @@ def connect(db_url):
     DBSession = sessionmaker(bind=engine)
 
     return DBSession
+
+
+def migrate(db_url, revision):
+    alembic_cfg = alembic.config.Config()
+    alembic_cfg.set_main_option('script_location', 'taguette:migrations')
+    alembic_cfg.set_main_option('sqlalchemy.url', db_url)
+
+    logger.warning("Performing database upgrade")
+    alembic.command.upgrade(alembic_cfg, revision)
