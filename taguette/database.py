@@ -1,9 +1,13 @@
 import alembic.command
 import alembic.config
+from alembic.runtime.migration import MigrationContext
+from alembic.script import ScriptDirectory
 import bcrypt
 import enum
 import json
 import logging
+import os
+import shutil
 from sqlalchemy import Column, ForeignKey, Index, TypeDecorator, \
     create_engine, select, MetaData
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
@@ -11,6 +15,7 @@ from sqlalchemy.orm import column_property, deferred, relationship, \
     sessionmaker
 from sqlalchemy.sql import functions
 from sqlalchemy.types import DateTime, Enum, Integer, String, Text
+import sys
 
 
 logger = logging.getLogger(__name__)
@@ -306,7 +311,8 @@ def connect(db_url):
     alembic_cfg.set_main_option('script_location', 'taguette:migrations')
     alembic_cfg.set_main_option('sqlalchemy.url', db_url)
 
-    if not engine.dialect.has_table(engine.connect(), Project.__tablename__):
+    conn = engine.connect()
+    if not engine.dialect.has_table(conn, Project.__tablename__):
         logger.warning("The tables don't seem to exist; creating")
         Base.metadata.create_all(bind=engine)
 
@@ -314,7 +320,34 @@ def connect(db_url):
         alembic.command.stamp(alembic_cfg, "head")
     else:
         # Perform Alembic migrations if needed
-        alembic.command.upgrade(alembic_cfg, "head")
+        context = MigrationContext.configure(conn)
+        current_rev = context.get_current_revision()
+        scripts = ScriptDirectory.from_config(alembic_cfg)
+        if [current_rev] != scripts.get_heads():
+            if db_url.startswith('sqlite:'):
+                logger.warning("The database schema used by Taguette has "
+                               "changed! We will try to update your workspace "
+                               "automatically.")
+                assert db_url.startswith('sqlite:///')
+                assert os.path.exists(db_url[10:])
+                backup = db_url[10:] + '.bak'
+                shutil.copy2(db_url[10:], backup)
+                logger.warning("A backup copy of your database file has been "
+                               "created. If the update goes horribly wrong, "
+                               "make sure to keep that file, and let us know: "
+                               "%s", backup)
+                alembic.command.upgrade(alembic_cfg, 'head')
+            else:
+                logger.critical("The database schema used by Taguette has "
+                                "changed! Because you are not using SQLite, "
+                                "we will not attempt a migration "
+                                "automatically; back up your data and use "
+                                "`taguette --database=%s migrate` if you want "
+                                "to proceed.",
+                                db_url)
+                sys.exit(3)
+        else:
+            logger.info("Database is up to date: %s", current_rev)
 
     DBSession = sessionmaker(bind=engine)
 
