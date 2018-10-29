@@ -215,7 +215,7 @@ Project.last_event = column_property(
     select(
         [Command.date]
     ).where(
-        Command.project_id == 1
+        Command.project_id == Project.id
     ).order_by(
         Command.id.desc()
     ).as_scalar()
