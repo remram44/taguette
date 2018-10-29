@@ -6,6 +6,7 @@ Changelog
 
 Bugfixes:
 * Fix having to reload for changes to appear when working on project other than 1.
+* Fix tags not being sorted by name
 
 Features:
 * Add 'backlight' mode, fading non-tagged text

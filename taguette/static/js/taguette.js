@@ -570,7 +570,15 @@ function updateTagsList() {
   var tree = {};
   var before = tags_list.firstChild;
   var entries = Object.entries(tags);
-  entries.sort();
+  entries.sort(function(a, b) {
+    if(a[1].path < b[1].path) {
+      return -1;
+    } else if(a[1].path > b[1].path) {
+      return 1
+    } else {
+      return 0;
+    }
+  });
   for(var i = 0; i < entries.length; ++i) {
     var tag = entries[i][1];
     var elem = document.createElement('li');
