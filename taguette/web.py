@@ -162,6 +162,8 @@ class Login(BaseHandler):
                         next=self.get_argument('next', ''))
 
     def post(self):
+        if not self.application.multiuser:
+            raise HTTPError(404)
         login = self.get_body_argument('login')
         password = self.get_body_argument('password')
         user = self.db.query(database.User).get(login)
@@ -200,6 +202,8 @@ class Register(BaseHandler):
             self.render('login.html', register=True)
 
     def post(self):
+        if not self.application.multiuser:
+            raise HTTPError(404)
         if not self.application.register_enabled:
             raise HTTPError(403)
         login = self.get_body_argument('login')
