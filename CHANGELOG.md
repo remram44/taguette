@@ -1,8 +1,8 @@
 Changelog
 =========
 
-0.3 (???)
----------
+0.3 (2018-10-29)
+----------------
 
 Bugfixes:
 * Fix having to reload for changes to appear when working on project other than 1.

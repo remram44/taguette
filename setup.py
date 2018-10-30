@@ -20,7 +20,7 @@ req = [
     'python-docx>=0.8,<0.9',
 ]
 setup(name='taguette',
-      version='0.2',
+      version='0.3',
       packages=['taguette'],
       package_data={'taguette': [
           'static/missing.png', 'static/favicon.ico',
