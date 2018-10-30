@@ -109,7 +109,7 @@ class TestMultiuser(MyHTTPTestCase):
             self.application = web.make_app('sqlite://', True)
             return self.application
 
-    def test_multi(self):
+    def test_login(self):
         # Fetch index, should have welcome message and register link
         response = self.get('/')
         self.assertEqual(response.code, 200)
@@ -156,6 +156,22 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(response.code, 302)
         self.assertEqual(response.headers['Location'], '/project/1')
 
+        # Log out
+        response = self.get('/logout')
+        self.assertEqual(response.code, 302)
+        self.assertEqual(response.headers['Location'], '/')
+
+        # Fetch login page
+        response = self.get('/login?' + urlencode(dict(next='/project/1')))
+        self.assertEqual(response.code, 200)
+
+        # Log in
+        response = self.post('/login',
+                             dict(next='/project/1', login='admin',
+                                  password='hackme'))
+        self.assertEqual(response.code, 302)
+        self.assertEqual(response.headers['Location'], '/project/1')
+
 
 class TestSingleuser(MyHTTPTestCase):
     def get_app(self):
@@ -164,7 +180,7 @@ class TestSingleuser(MyHTTPTestCase):
             self.application = web.make_app('sqlite://', False)
             return self.application
 
-    def test_single(self):
+    def test_login(self):
         # Fetch index, should have welcome message and no register link
         response = self.get('/')
         self.assertEqual(response.code, 200)
@@ -208,6 +224,41 @@ class TestSingleuser(MyHTTPTestCase):
             '/new', dict(name='test project', description=''))
         self.assertEqual(response.code, 302)
         self.assertEqual(response.headers['Location'], '/project/1')
+
+        # Fetch logout page
+        response = self.get('/logout')
+        self.assertEqual(response.code, 404)
+
+    def test_project(self):
+        db = self.application.DBSession()
+        projects = [
+            database.Project(name="first project", description=""),
+            database.Project(name="a test", description="Test project"),
+            database.Project(name="private P", description="admin can't see"),
+            database.Project(name="last project", description="Other"),
+        ]
+        for project in projects:
+            db.add(project)
+        db.commit()
+        for i in [1, 2, 4]:
+            db.add(database.ProjectMember(
+                project_id=i,
+                user_login='admin',
+                privileges=database.Privileges.ADMIN))
+        db.commit()
+
+        # Authenticate with token
+        response = self.get('/?token=' + self.application.single_user_token)
+        self.assertEqual(response.code, 302)
+        self.assertEqual(response.headers['Location'], '/')
+
+        # Check project list
+        response = self.get('/')
+        self.assertEqual(response.code, 200)
+        self.assertIn(b"first project", response.body)
+        self.assertIn(b"a test", response.body)
+        self.assertNotIn(b"private P", response.body)
+        self.assertIn(b"last project", response.body)
 
 
 if __name__ == '__main__':
