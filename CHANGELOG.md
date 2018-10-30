@@ -11,6 +11,7 @@ Bugfixes:
 Features:
 * Add 'backlight' mode, fading non-tagged text
 * Add modal dialog to edit and delete documents
+* Add migration system, to automatically upgrade the database to new schema version when required
 
 0.2 (2018-10-21)
 ----------------
