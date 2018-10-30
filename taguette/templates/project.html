@@ -38,7 +38,6 @@
           <li><a href="{{ reverse_url('export_codebook_csv', project.id) }}" target="_blank">Export codebook CSV</a></li>
           <li><a href="{{ reverse_url('export_codebook_doc', project.id) }}" target="_blank">Export codebook DOC</a></li>
         </ul>
-        <input type="checkbox" id="backlight" /> <label for="backlight">Backlight</label>
       </div>
 
       <!-- List of documents -->
@@ -47,6 +46,7 @@
           <li class="list-group-item disabled">Loading...</li>
           <li class="list-group-item list-group-item-primary"><a class="list-group-item-primary" href="javascript:createDocument()">Add a document</a></li>
         </ul>
+        <input type="checkbox" id="backlight" class="mt-3" /> <label for="backlight">Backlight</label>
       </div>
 
       <!-- List of tags -->
@@ -95,7 +95,7 @@
               <input type="file" class="form-control-file" id="document-add-file" name="document-add-file" />
             </div>
           </div>
-          <textarea class="form-control" id="document-add-description" name="document-add-description" placeholder="Description"></textarea>
+          <textarea class="form-control mb-3" id="document-add-description" name="document-add-description" placeholder="Description"></textarea>
           <div class="progress">
             <div class="progress-bar progress-bar-striped progress-bar-animated" id="document-add-progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
@@ -125,7 +125,7 @@
           {{ xsrf_form_html() }}
           <div class="row">
             <div class="col-md-6">
-              <input type="text" class="form-control" id="document-change-name" name="document-change-name" placeholder="Name" />
+              <input type="text" class="form-control mb-3" id="document-change-name" name="document-change-name" placeholder="Name" />
             </div>
           </div>
           <textarea class="form-control" id="document-change-description" name="document-change-description" placeholder="Description"></textarea>

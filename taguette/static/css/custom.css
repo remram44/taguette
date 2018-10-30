@@ -74,11 +74,19 @@ body {
 }
 
 /* Badges */
-.badge-danger {
+.badge-secondary {
+  color: #fff !important;
+}
+
+.badge-dark {
   color: #fff !important;
 }
 
 .badge-warning {
+  color: #fff !important;
+}
+
+.badge-danger {
   color: #fff !important;
 }
 

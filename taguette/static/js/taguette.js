@@ -589,7 +589,7 @@ function updateTagsList() {
       '    <a class="expand-marker">&nbsp;</a> ' +
       '    <a id="tag-link-' + tag.id + '">' + escapeHtml(tag.path) + '</a>' +
       '  </div>' +
-      '  <a href="javascript:editTag(' + tag.id + ');" class="badge badge-warning badge-pill">edit</a>' +
+      '  <a href="javascript:editTag(' + tag.id + ');" class="badge badge-secondary badge-pill">edit</a>' +
       //'  <span href="#" class="badge badge-primary badge-pill">?</span>' + // TODO: highlight count
       '</div>' +
       '<ul class="sublist"></div>';
@@ -933,7 +933,7 @@ function loadtag(tag_path) {
       elem.setAttribute('id', 'highlight-entry-' + hl.id);
       elem.innerHTML = result.highlights[i].content;
       var doclink = document.createElement('a');
-      doclink.className = 'badge badge-secondary';
+      doclink.className = 'badge badge-dark';
       doclink.textContent = documents[hl.document_id].name;
       linkDocument(doclink, hl.document_id);
       elem.appendChild(doclink);
