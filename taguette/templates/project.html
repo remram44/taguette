@@ -43,17 +43,17 @@
 
       <!-- List of documents -->
       <div class="tab-pane fade show active" id="documents" role="tabpanel" aria-labelledby="documents-tab">
-        <div class="list-group list-group-flush" id="documents-list">
-          <div class="list-group-item disabled">Loading...</div>
-          <a class="list-group-item list-group-item-primary" href="javascript:createDocument()">Add a document</a>
-        </div>
+        <ul class="list-group list-group-flush" id="documents-list">
+          <li class="list-group-item disabled">Loading...</li>
+          <li class="list-group-item list-group-item-primary"><a class="list-group-item-primary" href="javascript:createDocument()">Add a document</a></li>
+        </ul>
       </div>
 
       <!-- List of tags -->
       <div class="tab-pane fade" id="tags" role="tabpanel" aria-labelledby="tags-tab">
         <ul class="list-group list-group-flush" id="tags-list">
           <li class="list-group-item disabled">Loading...</li>
-          <a class="list-group-item list-group-item-primary" href="javascript:createTag()">Create a tag</a>
+          <li class="list-group-item list-group-item-primary"><a class="list-group-item-primary" href="javascript:createTag()">Create a tag</a></li>
         </ul>
       </div>
 
@@ -64,7 +64,7 @@
   <div class="col-md-9">
 
     <div id="document-view" class="document-view">
-      <a href="#" class="document-link badge badge-danger">CLEAR</a>
+      <!--<a href="#" class="document-link badge badge-primary">???</a>-->
 
       <div id="document-contents">
         <p style="font-style: oblique; text-align: center;">Load a document on the left</p>
@@ -92,8 +92,8 @@
               <input type="text" class="form-control" id="document-add-name" name="document-add-name" placeholder="Name" />
             </div>
             <div class="col-md-6 form-group">
-              <input type="file" class="form-control-file" id="document-add-file" name="document-add-name" placeholder="Name" />
-            </div>            
+              <input type="file" class="form-control-file" id="document-add-file" name="document-add-file" />
+            </div>
           </div>
           <textarea class="form-control" id="document-add-description" name="document-add-description" placeholder="Description"></textarea>
           <div class="progress">
@@ -104,6 +104,36 @@
       <div class="modal-footer">
         <button type="submit" class="btn btn-info">Import</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Change document modal -->
+<div class="modal" id="document-change-modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <form id="document-change-form" class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit document</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="document-change-id" />
+        <div class="container">
+          {{ xsrf_form_html() }}
+          <div class="row">
+            <div class="col-md-6">
+              <input type="text" class="form-control" id="document-change-name" name="document-change-name" placeholder="Name" />
+            </div>
+          </div>
+          <textarea class="form-control" id="document-change-description" name="document-change-description" placeholder="Description"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Save & Close</button>
+        <button type="button" id="document-change-delete" class="btn btn-danger" data-dismiss="modal">Delete document</button>
       </div>
     </form>
   </div>
@@ -132,7 +162,7 @@
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-info">Save & Close</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="highlight-delete">Delete highlight</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal" id="highlight-delete">Delete highlight</button>
       </div>
     </form>
   </div>
@@ -159,10 +189,8 @@
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-info">Save & Close</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="tag-delete">
-          <span id="tag-add-label-cancel">Cancel</span>
-          <span id="tag-add-label-delete" style="display: none;">Delete tag</span>
-        </button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="tag-add-cancel">Cancel</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal" id="tag-add-delete">Delete tag</button>
       </div>
     </form>
   </div>

@@ -11,6 +11,7 @@ with io.open('README.rst', encoding='utf-8') as fp:
 req = [
     'tornado>=5.0',
     'sqlalchemy',
+    'alembic',
     'bcrypt',
     'jinja2',
     'beautifulsoup4',

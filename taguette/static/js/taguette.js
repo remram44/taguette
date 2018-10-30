@@ -97,6 +97,27 @@ function getJSON(url='', args) {
   });
 }
 
+function deleteURL(url='', args) {
+  if(args) {
+    args = '&' + encodeGetParams(args);
+  } else {
+    args = '';
+  }
+  return fetch(
+    url + '?_xsrf=' + encodeURIComponent(getCookie('_xsrf')) + args,
+    {
+      credentials: 'same-origin',
+      mode: 'same-origin',
+      cache: 'no-cache',
+      method: 'DELETE'
+    }
+  ).then(function(response) {
+    if(response.status != 204) {
+      throw "Status " + response.status;
+    }
+  });
+}
+
 function postJSON(url='', data={}, args) {
   if(args) {
     args = '&' + encodeGetParams(args);
@@ -235,7 +256,7 @@ function splitAtPos(pos, after) {
 }
 
 // Highlight a described selection
-function highlightSelection(saved, id) {
+function highlightSelection(saved, id, clickedCallback) {
   console.log("Highlighting", saved);
   if(saved === null) {
     return;
@@ -252,7 +273,7 @@ function highlightSelection(saved, id) {
       var span = document.createElement('a');
       span.className = 'highlight highlight-' + id;
       span.setAttribute('data-highlight-id', '' + id);
-      span.addEventListener('click', highlightClicked);
+      span.addEventListener('click', clickedCallback);
       node.parentNode.insertBefore(span, node);
       span.appendChild(node);
     }
@@ -301,7 +322,7 @@ function projectMetadataChanged() {
       description: project_description_input.value
     };
     postJSON(
-      '/project/' + project_id + '/meta',
+      '/api/project/' + project_id,
       meta
     )
     .then(function(result) {
@@ -315,8 +336,8 @@ function projectMetadataChanged() {
 }
 
 document.getElementById('project-metadata-form').addEventListener('submit', function(e) {
-  projectMetadataChanged();
   e.preventDefault();
+  projectMetadataChanged();
 });
 project_name_input.addEventListener('blur', projectMetadataChanged);
 project_description_input.addEventListener('blur', projectMetadataChanged);
@@ -334,9 +355,9 @@ function linkDocument(elem, doc_id) {
   var url = '/project/' + project_id + '/document/' + doc_id;
   elem.setAttribute('href', url);
   elem.addEventListener('click', function(e) {
+    e.preventDefault();
     window.history.pushState({'document_id': doc_id}, "Document " + doc_id, url);
     loadDocument(doc_id);
-    e.preventDefault();
   });
 }
 
@@ -356,11 +377,15 @@ function updateDocumentsList() {
   var entries = Object.entries(documents);
   for(var i = 0; i < entries.length; ++i) {
     var doc = entries[i][1];
-    var elem = document.createElement('a');
+    var elem = document.createElement('li');
     elem.className = 'list-group-item';
-    elem.textContent = doc.name;
-    linkDocument(elem, doc.id);
+    elem.innerHTML =
+      '<div class="d-flex justify-content-between align-items-center">' +
+      '  <a id="document-link-' + doc.id + '">' + escapeHtml(doc.name) + '</a>' +
+      '  <a href="javascript:editDocument(' + doc.id + ');" class="badge badge-secondary badge-pill">edit</a>' +
+      '</div>';
     documents_list.insertBefore(elem, before);
+    linkDocument(document.getElementById('document-link-' + doc.id), doc.id);
   }
   if(entries.length == 0) {
     var elem = document.createElement('div');
@@ -381,6 +406,10 @@ function addDocument(document) {
 function removeDocument(document_id) {
   delete documents['' + document_id];
   updateDocumentsList();
+  if(current_document == document_id) {
+    window.history.pushState({}, "Project", '/project/' + project_id);
+    loadDocument(null);
+  }
 }
 
 
@@ -398,6 +427,7 @@ function createDocument() {
 var progress = document.getElementById('document-add-progress');
 
 document.getElementById('document-add-form').addEventListener('submit', function(e) {
+  e.preventDefault();
   console.log("Uploading document...");
 
   var form_data = new FormData();
@@ -411,7 +441,7 @@ document.getElementById('document-add-form').addEventListener('submit', function
 
   var xhr = new XMLHttpRequest();
   xhr.responseType = 'json';
-  xhr.open('POST', '/project/' + project_id + '/document/new');
+  xhr.open('POST', '/api/project/' + project_id + '/document/new');
   xhr.onload = function() {
     if(xhr.status == 200) {
       $(document_add_modal).modal('hide');
@@ -436,8 +466,63 @@ document.getElementById('document-add-form').addEventListener('submit', function
     }
   };
   xhr.send(form_data);
+});
 
+
+/*
+ * Change document
+ */
+
+var document_change_modal = document.getElementById('document-change-modal');
+
+function editDocument(doc_id) {
+  document.getElementById('document-change-form').reset();
+  document.getElementById('document-change-id').value = '' + doc_id;
+  document.getElementById('document-change-name').value = '' + documents['' + doc_id].name;
+  document.getElementById('document-change-description').value = '' + documents['' + doc_id].description;
+  $(document_change_modal).modal();
+}
+
+document.getElementById('document-change-form').addEventListener('submit', function(e) {
   e.preventDefault();
+  console.log("Changing document...");
+
+  var update = {
+    name: document.getElementById('document-change-name').value,
+    description: document.getElementById('document-change-description').value
+  };
+  if(!update.name || update.name.length == 0) {
+    alert("Document name cannot be empty");
+    return;
+  }
+
+  var doc_id = document.getElementById('document-change-id').value;
+  postJSON(
+    '/api/project/' + project_id + '/document/' + doc_id,
+    update
+  )
+  .then(function() {
+    console.log("Document update posted");
+    $(document_change_modal).modal('hide');
+    document.getElementById('document-change-form').reset();
+  }, function(error) {
+    console.error("Failed to update document:", error);
+  });
+});
+
+document.getElementById('document-change-delete').addEventListener('click', function(e) {
+  e.preventDefault();
+
+  console.log("Deleting document...");
+  var doc_id = document.getElementById('document-change-id').value;
+  deleteURL('/api/project/' + project_id + '/document/' + doc_id)
+  .then(function() {
+    console.log("Document deletion posted");
+    $(document_change_modal).modal('hide');
+    document.getElementById('document-change-form').reset();
+  }, function(error) {
+    console.error("Failed to delete document:", error);
+  });
 });
 
 
@@ -452,9 +537,9 @@ function linkTag(elem, tag_path) {
   var url = '/project/' + project_id + '/highlights/' + tag_path;
   elem.setAttribute('href', url);
   elem.addEventListener('click', function(e) {
+    e.preventDefault();
     window.history.pushState({'tag_path': tag_path}, "Tag " + tag_path, url);
     loadtag(tag_path);
-    e.preventDefault();
   });
 }
 
@@ -485,7 +570,15 @@ function updateTagsList() {
   var tree = {};
   var before = tags_list.firstChild;
   var entries = Object.entries(tags);
-  entries.sort();
+  entries.sort(function(a, b) {
+    if(a[1].path < b[1].path) {
+      return -1;
+    } else if(a[1].path > b[1].path) {
+      return 1
+    } else {
+      return 0;
+    }
+  });
   for(var i = 0; i < entries.length; ++i) {
     var tag = entries[i][1];
     var elem = document.createElement('li');
@@ -546,8 +639,8 @@ function createTag() {
   document.getElementById('tag-add-id').value = '';
   document.getElementById('tag-add-label-new').style.display = '';
   document.getElementById('tag-add-label-change').style.display = 'none';
-  document.getElementById('tag-add-label-cancel').style.display = '';
-  document.getElementById('tag-add-label-delete').style.display = 'none';
+  document.getElementById('tag-add-cancel').style.display = '';
+  document.getElementById('tag-add-delete').style.display = 'none';
   $(tag_add_modal).modal();
 }
 
@@ -557,8 +650,8 @@ function editTag(tag_id) {
   document.getElementById('tag-add-path').value = tags['' + tag_id].path;
   document.getElementById('tag-add-label-new').style.display = 'none';
   document.getElementById('tag-add-label-change').style.display = '';
-  document.getElementById('tag-add-label-cancel').style.display = 'none';
-  document.getElementById('tag-add-label-delete').style.display = '';
+  document.getElementById('tag-add-cancel').style.display = 'none';
+  document.getElementById('tag-add-delete').style.display = '';
   $(tag_add_modal).modal();
 }
 
@@ -581,14 +674,14 @@ document.getElementById('tag-add-form').addEventListener('submit', function(e) {
   if(tag_id !== null) {
     console.log("Posting update for tag " + tag_id);
     req = postJSON(
-      '/project/' + project_id + '/tag/' + tag_id,
+      '/api/project/' + project_id + '/tag/' + tag_id,
       {path: tag_path,
        description: document.getElementById('tag-add-description').value}
     );
   } else {
     console.log("Posting new tag");
     req = postJSON(
-      '/project/' + project_id + '/tag/new',
+      '/api/project/' + project_id + '/tag/new',
       {path: tag_path,
        description: document.getElementById('tag-add-description').value}
     );
@@ -603,14 +696,13 @@ document.getElementById('tag-add-form').addEventListener('submit', function(e) {
 });
 
 // Delete tag button
-document.getElementById('tag-delete').addEventListener('click', function(e) {
+document.getElementById('tag-add-delete').addEventListener('click', function(e) {
   var tag_id = document.getElementById('tag-add-id').value;
   if(tag_id) {
     tag_id = parseInt(tag_id);
     console.log("Posting tag " + tag_id + " deletion");
-    postJSON(
-      '/project/' + project_id + '/tag/' + tag_id,
-      {}
+    deleteURL(
+      '/api/project/' + project_id + '/tag/' + tag_id
     )
     .then(function() {
       $(tag_add_modal).modal('hide');
@@ -635,7 +727,7 @@ function setHighlight(highlight) {
     removeHighlight(highlights[id]);
   }
   highlights[id] = highlight;
-  highlightSelection([highlight.start_offset, highlight.end_offset], id);
+  highlightSelection([highlight.start_offset, highlight.end_offset], id, editHighlight);
   console.log("Highlight set:", highlight);
 }
 
@@ -663,10 +755,6 @@ function removeHighlight(id) {
 }
 
 // Backlight
-function setBacklight(enabled) {
-
-}
-
 var backlight_checkbox = document.getElementById('backlight');
 backlight_checkbox.addEventListener('change', function(e) {
   var classes = document.getElementById('document-view').classList;
@@ -717,8 +805,22 @@ function createHighlight(selection) {
   $(highlight_add_modal).modal();
 }
 
+function editHighlight(e) {
+  document.getElementById('highlight-add-form').reset();
+  var id = this.getAttribute('data-highlight-id');
+  document.getElementById('highlight-add-id').value = id;
+  document.getElementById('highlight-add-start').value = highlights[id].start_offset;
+  document.getElementById('highlight-add-end').value = highlights[id].end_offset;
+  var hl_tags = highlights['' + id].tags;
+  for(var i = 0; i < hl_tags.length; ++i) {
+    document.getElementById('highlight-add-tags-' + hl_tags[i]).checked = true;
+  }
+  $(highlight_add_modal).modal();
+}
+
 // Save highlight button
 document.getElementById('highlight-add-form').addEventListener('submit', function(e) {
+  e.preventDefault();
   var highlight_id = document.getElementById('highlight-add-id').value;
   var selection = [
     parseInt(document.getElementById('highlight-add-start').value),
@@ -736,7 +838,7 @@ document.getElementById('highlight-add-form').addEventListener('submit', functio
   if(highlight_id) {
     console.log("Posting update for highlight " + highlight_id);
     req = postJSON(
-      '/project/' + project_id + '/document/' + current_document + '/highlight/' + highlight_id,
+      '/api/project/' + project_id + '/document/' + current_document + '/highlight/' + highlight_id,
       {start_offset: selection[0],
        end_offset: selection[1],
        tags: hl_tags}
@@ -744,7 +846,7 @@ document.getElementById('highlight-add-form').addEventListener('submit', functio
   } else {
     console.log("Posting new highlight");
     req = postJSON(
-      '/project/' + project_id + '/document/' + current_document + '/highlight/new',
+      '/api/project/' + project_id + '/document/' + current_document + '/highlight/new',
       {start_offset: selection[0],
        end_offset: selection[1],
        tags: hl_tags}
@@ -757,8 +859,6 @@ document.getElementById('highlight-add-form').addEventListener('submit', functio
   }, function(error) {
     console.error("Failed to create highlight:", error);
   });
-
-  e.preventDefault();
 });
 
 // Delete highlight button
@@ -767,9 +867,8 @@ document.getElementById('highlight-delete').addEventListener('click', function(e
   if(highlight_id) {
     highlight_id = parseInt(highlight_id);
     console.log("Posting highlight " + highlight_id + " deletion");
-    postJSON(
-      '/project/' + project_id + '/document/' + current_document + '/highlight/' + highlight_id,
-      {}
+    deleteURL(
+      '/api/project/' + project_id + '/document/' + current_document + '/highlight/' + highlight_id
     )
     .then(function() {
       $(highlight_add_modal).modal('hide');
@@ -779,20 +878,6 @@ document.getElementById('highlight-delete').addEventListener('click', function(e
     });
   }
 });
-
-// When clicking on a highlight
-function highlightClicked(e) {
-  document.getElementById('highlight-add-form').reset();
-  var id = this.getAttribute('data-highlight-id');
-  document.getElementById('highlight-add-id').value = id;
-  document.getElementById('highlight-add-start').value = highlights[id].start_offset;
-  document.getElementById('highlight-add-end').value = highlights[id].end_offset;
-  var hl_tags = highlights['' + id].tags;
-  for(var i = 0; i < hl_tags.length; ++i) {
-    document.getElementById('highlight-add-tags-' + hl_tags[i]).checked = true;
-  }
-  $(highlight_add_modal).modal();
-}
 
 
 /*
@@ -807,7 +892,7 @@ function loadDocument(document_id) {
     return;
   }
   getJSON(
-    '/project/' + project_id + '/document/' + document_id + '/content'
+    '/api/project/' + project_id + '/document/' + document_id + '/content'
   )
   .then(function(result) {
     document_contents.innerHTML = '';
@@ -834,7 +919,7 @@ function loadDocument(document_id) {
 
 function loadtag(tag_path) {
   getJSON(
-    '/project/' + project_id + '/highlights/' + tag_path + '/list'
+    '/api/project/' + project_id + '/highlights/' + tag_path
   )
   .then(function(result) {
     console.log("Loaded highlights for tag", tag_path);
@@ -881,7 +966,7 @@ window.onpopstate = function(e) {
     } else if(e.state.tag_path !== undefined) {
       loadtag(e.state.tag_path);
     } else {
-      console.error("History state unrecognized");
+      loadDocument(null);
     }
   } else {
     loadDocument(null);
@@ -895,7 +980,7 @@ window.onpopstate = function(e) {
 
 function longPollForEvents() {
   getJSON(
-    '/project/' + project_id + '/events',
+    '/api/project/' + project_id + '/events',
     {from: last_event}
   )
   .then(function(result) {
@@ -906,6 +991,11 @@ function longPollForEvents() {
     if('document_add' in result) {
       for(var i = 0; i < result.document_add.length; ++i) {
         addDocument(result.document_add[i]);
+      }
+    }
+    if('document_delete' in result) {
+      for(var i = 0; i < result.document_delete.length; ++i) {
+        removeDocument(result.document_delete[i]);
       }
     }
     if('highlight_add' in result) {

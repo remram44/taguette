@@ -1,6 +1,18 @@
 Changelog
 =========
 
+0.3 (???)
+---------
+
+Bugfixes:
+* Fix having to reload for changes to appear when working on project other than 1.
+* Fix tags not being sorted by name
+
+Features:
+* Add 'backlight' mode, fading non-tagged text
+* Add modal dialog to edit and delete documents
+* Add migration system, to automatically upgrade the database to new schema version when required
+
 0.2 (2018-10-21)
 ----------------
 

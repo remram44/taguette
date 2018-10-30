@@ -1,20 +1,34 @@
+import alembic.command
+import alembic.config
+from alembic.runtime.migration import MigrationContext
+from alembic.script import ScriptDirectory
 import bcrypt
 import enum
 import json
 import logging
+import os
+import shutil
 from sqlalchemy import Column, ForeignKey, Index, TypeDecorator, \
-    create_engine, select
+    create_engine, select, MetaData
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
 from sqlalchemy.orm import column_property, deferred, relationship, \
     sessionmaker
 from sqlalchemy.sql import functions
 from sqlalchemy.types import DateTime, Enum, Integer, String, Text
+import sys
 
 
 logger = logging.getLogger(__name__)
 
 
-Base = declarative_base()
+meta = MetaData(naming_convention={
+    "ix": "ix_%(column_0_label)s",
+    "uq": "uq_%(table_name)s_%(column_0_name)s",
+    "ck": "ck_%(table_name)s_%(constraint_name)s",
+    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+    "pk": "pk_%(table_name)s",
+})
+Base = declarative_base(metadata=meta)
 
 
 class JSON(TypeDecorator):
@@ -70,9 +84,10 @@ class Project(Base):
     created = Column(DateTime, nullable=False,
                      server_default=functions.now())
     members = relationship('User', secondary='project_members')
-    documents = relationship('Document')
-    tags = relationship('Tag')
-    groups = relationship('Group')
+    commands = relationship('Command', cascade='all,delete')
+    documents = relationship('Document', cascade='all,delete')
+    tags = relationship('Tag', cascade='all,delete')
+    groups = relationship('Group', cascade='all,delete')
 
 
 class Privileges(enum.Enum):
@@ -108,7 +123,7 @@ class Document(Base):
     project = relationship('Project', back_populates='documents')
     contents = deferred(Column(Text, nullable=False))
     group = relationship('Group', secondary='document_groups')
-    highlights = relationship('Highlight')
+    highlights = relationship('Highlight', cascade='all,delete')
 
 
 class Command(Base):
@@ -122,9 +137,8 @@ class Command(Base):
     project_id = Column(Integer, ForeignKey('projects.id'), nullable=False,
                         index=True)
     project = relationship('Project')
-    document_id = Column(Integer, ForeignKey('documents.id'),
-                         nullable=True)
-    document = relationship('Document')
+    document_id = Column(Integer,
+                         nullable=True)  # Not ForeignKey, document can go away
     payload = Column(JSON, nullable=False)
 
     __table_args__ = (
@@ -146,10 +160,20 @@ class Command(Base):
         return cls(
             user_login=user_login,
             project=document.project,
-            document=document,
+            document_id=document.id,
             payload={'type': 'document_add',
                      'name': document.name,
                      'description': document.description},
+        )
+
+    @classmethod
+    def document_delete(cls, user_login, document):
+        assert isinstance(document, Document)
+        return cls(
+            user_login=user_login,
+            project_id=document.project_id,
+            document_id=document.id,
+            payload={'type': 'document_delete'},
         )
 
     @classmethod
@@ -158,7 +182,7 @@ class Command(Base):
         return cls(
             user_login=user_login,
             project_id=document.project_id,
-            document=document,
+            document_id=document.id,
             payload={'type': 'highlight_add',
                      'id': highlight.id,
                      'start_offset': highlight.start_offset,
@@ -172,7 +196,7 @@ class Command(Base):
         return cls(
             user_login=user_login,
             project_id=document.project_id,
-            document=document,
+            document_id=document.id,
             payload={'type': 'highlight_delete',
                      'id': highlight_id},
         )
@@ -205,7 +229,7 @@ Project.last_event = column_property(
     select(
         [Command.date]
     ).where(
-        Command.project_id == 1
+        Command.project_id == Project.id
     ).order_by(
         Command.id.desc()
     ).as_scalar()
@@ -283,10 +307,57 @@ def connect(db_url):
     logger.info("Connecting to SQL database %r", db_url)
     engine = create_engine(db_url, echo=False)
 
-    if not engine.dialect.has_table(engine.connect(), Project.__tablename__):
+    alembic_cfg = alembic.config.Config()
+    alembic_cfg.set_main_option('script_location', 'taguette:migrations')
+    alembic_cfg.set_main_option('sqlalchemy.url', db_url)
+
+    conn = engine.connect()
+    if not engine.dialect.has_table(conn, Project.__tablename__):
         logger.warning("The tables don't seem to exist; creating")
         Base.metadata.create_all(bind=engine)
+
+        # Mark this as the most recent Alembic version
+        alembic.command.stamp(alembic_cfg, "head")
+    else:
+        # Perform Alembic migrations if needed
+        context = MigrationContext.configure(conn)
+        current_rev = context.get_current_revision()
+        scripts = ScriptDirectory.from_config(alembic_cfg)
+        if [current_rev] != scripts.get_heads():
+            if db_url.startswith('sqlite:'):
+                logger.warning("The database schema used by Taguette has "
+                               "changed! We will try to update your workspace "
+                               "automatically.")
+                assert db_url.startswith('sqlite:///')
+                assert os.path.exists(db_url[10:])
+                backup = db_url[10:] + '.bak'
+                shutil.copy2(db_url[10:], backup)
+                logger.warning("A backup copy of your database file has been "
+                               "created. If the update goes horribly wrong, "
+                               "make sure to keep that file, and let us know: "
+                               "%s", backup)
+                alembic.command.upgrade(alembic_cfg, 'head')
+            else:
+                logger.critical("The database schema used by Taguette has "
+                                "changed! Because you are not using SQLite, "
+                                "we will not attempt a migration "
+                                "automatically; back up your data and use "
+                                "`taguette --database=%s migrate` if you want "
+                                "to proceed.",
+                                db_url)
+                sys.exit(3)
+        else:
+            logger.info("Database is up to date: %s", current_rev)
 
     DBSession = sessionmaker(bind=engine)
 
     return DBSession
+
+
+def migrate(db_url, revision):
+    alembic_cfg = alembic.config.Config()
+    alembic_cfg.set_main_option('script_location', 'taguette:migrations')
+    alembic_cfg.set_main_option('sqlalchemy.url', db_url)
+
+    logger.warning("Performing database upgrade")
+    alembic.command.upgrade(alembic_cfg, revision)
