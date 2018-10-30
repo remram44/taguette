@@ -27,6 +27,7 @@ setup(name='taguette',
           'static/css/*.css', 'static/css/*.css.map',
           'static/js/*.js', 'static/js/*.js.map',
           'templates/*.html',
+          'migrations/*', 'migrations/versions/*',
       ]},
       entry_points={
           'console_scripts': [
