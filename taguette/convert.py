@@ -61,6 +61,9 @@ async def to_html(body, content_type, filename):
                 raise ConversionError("Calibre returned %d" % e.returncode)
             logger.info("ebook-convert successful")
             output_filename = os.path.join(output_dir, 'index.html')
+            if not os.path.isfile(output_filename):
+                raise RuntimeError("index.html not found in output dir: %r",
+                                   os.listdir(output_dir))
             with open(output_filename, 'rb') as fp:
                 body = fp.read()
             # TODO: Store media files
