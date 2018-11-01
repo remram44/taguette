@@ -1,4 +1,5 @@
 import asyncio
+import bisect
 import csv
 import docx
 import hashlib
@@ -441,6 +442,48 @@ class DocumentContents(BaseHandler):
         })
 
 
+class ExportDocumentDoc(BaseHandler):
+    @authenticated
+    @export_docx
+    def get(self, project_id, document_id):
+        doc = self.get_document(project_id, document_id, True)
+
+        document = docx.Document()
+        document.add_heading(doc.name)
+
+        hls = iter(doc.highlights)
+        hl = next(hls)
+        highlights = [[hl.start_offset, hl.end_offset]]
+        for hl in hls:
+            this = [hl.start_offset, hl.end_offset]
+            left = bisect.bisect_right(highlights, this)
+            right = left + 1
+            # Merge left
+            while left >= 1 and highlights[left - 1][1] >= this[0]:
+                left -= 1
+            # Merge right
+            while right < len(highlights) and highlights[right][0] >= this[1]:
+                right += 1
+            # Insert
+            if left - right == 1:
+                highlights.insert(right, this)
+            else:
+                highlights[left:right] = [this]
+
+        # TODO: Convert from HTML
+        pos = 0
+        paragraph = document.add_paragraph()
+        for hl in highlights:
+            if hl[0] - pos > 0:
+                paragraph.add_run(extract(doc.contents, pos, hl[0]))
+            paragraph.add_run(extract(doc.contents, hl[0], hl[1])).bold = True
+            pos = hl[1]
+        if len(doc.contents) - pos > 0:
+            paragraph.add_run(extract(doc.contents, pos, None))
+
+        return '%s.docx' % doc.name, document
+
+
 class HighlightAdd(BaseHandler):
     @authenticated
     def post(self, project_id, document_id):
@@ -559,6 +602,33 @@ class Highlights(BaseHandler):
                 for hl in highlights
             ],
         })
+
+
+class ExportHighlightsDoc(BaseHandler):
+    @authenticated
+    @export_docx
+    def get(self, project_id, path):
+        project = self.get_project(project_id)
+
+        tag = aliased(database.Tag)
+        hltag = aliased(database.HighlightTag)
+        highlights = (
+            self.db.query(database.Highlight)
+            .options(joinedload(database.Highlight.document))
+            .join(hltag, hltag.highlight_id == database.Highlight.id)
+            .join(tag, hltag.tag_id == tag.id)
+            .filter(tag.path.startswith(path))
+            .filter(tag.project == project)
+        ).all()
+
+        document = docx.Document()
+        document.add_heading('Taguette highlights: %s' % path, 0)
+        for hl in highlights:
+            # TODO: Convert from HTML
+            document.add_paragraph(hl.snippet)
+            info = document.add_paragraph()
+            info.add_run("Document: %s" % hl.document.name).italic = True
+        return '%s.docx' % path, document
 
 
 class TagAdd(BaseHandler):
@@ -834,6 +904,10 @@ def make_app(db_url, multiuser, register_enabled=True, debug=False):
                     name='export_codebook_csv'),
             URLSpec('/project/([0-9]+)/export/codebook.docx',
                     ExportCodebookDoc, name='export_codebook_doc'),
+            URLSpec('/project/([0-9]+)/export/document/([^/]+).docx',
+                    ExportDocumentDoc, name='export_document_docx'),
+            URLSpec('/project/([0-9]+)/export/highlights/([^/]+).docx',
+                    ExportHighlightsDoc, name='export_highlights_docx'),
 
             # API
             URLSpec('/api/project/([0-9]+)', ProjectMeta),
