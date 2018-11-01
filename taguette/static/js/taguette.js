@@ -893,6 +893,7 @@ document.getElementById('highlight-delete').addEventListener('click', function(e
  */
 
 var document_contents = document.getElementById('document-contents');
+var export_button = document.getElementById('export-button');
 
 function loadDocument(document_id) {
   if(document_id === null) {
@@ -919,7 +920,11 @@ function loadDocument(document_id) {
     for(var i = 0; i < result.highlights.length; ++i) {
       setHighlight(result.highlights[i]);
     }
-    console.log("Loaded " + result.highlights.length + " highlights")
+    console.log("Loaded " + result.highlights.length + " highlights");
+
+    // Update export button
+    export_button.style.display = '';
+    export_button.setAttribute('href', '/project/' + project_id + '/export/document/' + document_id + '.docx');
   }, function(error) {
     console.error("Failed to load document:", error);
   });
@@ -950,6 +955,10 @@ function loadtag(tag_path) {
     if(result.highlights.length == 0) {
       document_contents.innerHTML = '<p style="font-style: oblique; text-align: center;">No highlights with this tag yet.</p>';
     }
+
+    // Update export button
+    export_button.style.display = '';
+    export_button.setAttribute('href', '/project/' + project_id + '/export/highlights/' + tag_path + '.docx');
   }, function(error) {
     console.error("Failed to load tag highlights:", error);
   });
