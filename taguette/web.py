@@ -132,6 +132,9 @@ class Index(BaseHandler):
     """
     def get(self):
         if self.current_user is not None:
+            if self.get_query_argument('token', None):
+                self.redirect(self.reverse_url('index'))
+                return
             user = self.db.query(database.User).get(self.current_user)
             if user is None:
                 logger.warning("User is logged in as non-existent user %r",
@@ -144,6 +147,8 @@ class Index(BaseHandler):
             token = self.get_query_argument('token', None)
             if token and token == self.application.single_user_token:
                 self.login('admin')
+                self.redirect(self.reverse_url('index'))
+            elif token:
                 self.redirect(self.reverse_url('index'))
             else:
                 self.render('token_needed.html')
