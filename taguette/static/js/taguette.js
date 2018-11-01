@@ -513,8 +513,11 @@ document.getElementById('document-change-form').addEventListener('submit', funct
 document.getElementById('document-change-delete').addEventListener('click', function(e) {
   e.preventDefault();
 
-  console.log("Deleting document...");
   var doc_id = document.getElementById('document-change-id').value;
+  if(!window.confirm("Are you sure you want to delete the document '" + documents[doc_id].name + "'?")) {
+    return;
+  }
+  console.log("Deleting document " + doc_id + "...");
   deleteURL('/api/project/' + project_id + '/document/' + doc_id)
   .then(function() {
     console.log("Document deletion posted");
@@ -700,6 +703,10 @@ document.getElementById('tag-add-form').addEventListener('submit', function(e) {
 document.getElementById('tag-add-delete').addEventListener('click', function(e) {
   var tag_id = document.getElementById('tag-add-id').value;
   if(tag_id) {
+    if(!window.confirm("Are you sure you want to delete the tag '" + tags[tag_id].path + "'?")) {
+      e.preventDefault();
+      return;
+    }
     tag_id = parseInt(tag_id);
     console.log("Posting tag " + tag_id + " deletion");
     deleteURL(
