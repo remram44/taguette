@@ -1,4 +1,6 @@
 import asyncio
+import csv
+import docx
 import hashlib
 import hmac
 import io
@@ -125,6 +127,21 @@ class BaseHandler(RequestHandler):
             raise ValueError("Can't encode %r to JSON" % type(obj))
         self.set_header('Content-Type', 'application/json; charset=utf-8')
         return self.finish(json.dumps(obj))
+
+
+def export_docx(wrapped):
+    def wrapper(self, *args):
+        name, document = wrapped(self, *args)
+        buf = io.BytesIO()
+        document.save(buf)
+        self.set_header(
+            'Content-Type',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml'
+            '.document; charset=utf-8')
+        self.set_header('Content-Disposition',
+                        'attachment; filename="%s"' % name)
+        self.finish(buf.getvalue())
+    return wrapper
 
 
 class Index(BaseHandler):
@@ -669,9 +686,8 @@ class ProjectEvents(BaseHandler):
 
 
 class ExportCodebookCsv(BaseHandler):
+    @authenticated
     def get(self, project_id):
-        import csv
-
         project = self.get_project(project_id)
         tags = list(project.tags)
         self.set_header('Content-Type', 'text/csv; charset=utf-8')
@@ -686,25 +702,17 @@ class ExportCodebookCsv(BaseHandler):
 
 
 class ExportCodebookDoc(BaseHandler):
+    @authenticated
+    @export_docx
     def get(self, project_id):
-        from docx import Document
-
         project = self.get_project(project_id)
         tags = list(project.tags)
-        self.set_header(
-            'Content-Type',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml'
-            '.document; charset=utf-8')
-        self.set_header('Content-Disposition',
-                        'attachment; filename="codebook.docx"')
-        buf = io.BytesIO()
-        document = Document()
+        document = docx.Document()
         document.add_heading('Taguette Codebook', 0)
         for tag in tags:
             document.add_heading(tag.path, 1)
             document.add_paragraph(tag.description)
-        document.save(buf)
-        self.finish(buf.getvalue())
+        return 'codebook.docx', document
 
 
 class Application(tornado.web.Application):
