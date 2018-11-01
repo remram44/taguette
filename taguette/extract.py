@@ -54,15 +54,17 @@ def extract(html, start, end):
     """
     soup = BeautifulSoup(html, 'html5lib')
 
-    # Trim the right side later, because that doesn't mess our start position
-    e = find_pos(soup, end, False)
-    e[0].replace_with(NavigableString(e[0].string[:e[1]]))
-    delete_right(soup, e[2])
+    # Trim the right side first, because that doesn't mess our start position
+    if end is not None:
+        e = find_pos(soup, end, False)
+        e[0].replace_with(NavigableString(e[0].string[:e[1]]))
+        delete_right(soup, e[2])
 
     # Trim the left side
-    s = find_pos(soup, start, True)
-    s[0].replace_with(NavigableString(s[0].string[s[1]:]))
-    delete_left(soup, s[2])
+    if start is not None:
+        s = find_pos(soup, start, True)
+        s[0].replace_with(NavigableString(s[0].string[s[1]:]))
+        delete_left(soup, s[2])
 
     # Remove everything but body
     body = soup.body
