@@ -648,6 +648,7 @@ function editTag(tag_id) {
   document.getElementById('tag-add-form').reset();
   document.getElementById('tag-add-id').value = '' + tag_id;
   document.getElementById('tag-add-path').value = tags['' + tag_id].path;
+  document.getElementById('tag-add-description').value = tags['' + tag_id].description;
   document.getElementById('tag-add-label-new').style.display = 'none';
   document.getElementById('tag-add-label-change').style.display = '';
   document.getElementById('tag-add-cancel').style.display = 'none';
