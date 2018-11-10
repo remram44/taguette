@@ -8,56 +8,57 @@
   <!-- Left panel -->
   <div class="col-md-3">
     <div class="sticky-top">
-    <!-- Tab selector -->
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
-      <li class="nav-item">
-        <a class="nav-link" id="project-tab" data-toggle="tab" href="#project" role="tab" aria-controls="project" aria-selected="true">Project info</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link active" id="documents-tab" data-toggle="tab" href="#documents" role="tab" aria-controls="documents" aria-selected="false">Documents</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" id="tags-tab" data-toggle="tab" href="#tags" role="tab" aria-controls="tags" aria-selected="false">Highlights</a>
-      </li>
-    </ul>
+      <!-- Tab selector -->
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link" id="project-tab" data-toggle="tab" href="#project" role="tab" aria-controls="project" aria-selected="true">Project info</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" id="documents-tab" data-toggle="tab" href="#documents" role="tab" aria-controls="documents" aria-selected="false">Documents</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="tags-tab" data-toggle="tab" href="#tags" role="tab" aria-controls="tags" aria-selected="false">Highlights</a>
+        </li>
+      </ul>
 
-    <div class="tab-content" id="myTabContent">
+      <div class="tab-content" id="myTabContent">
 
-      <!-- Project info and metadata -->
-      <div class="tab-pane fade" id="project" role="tabpanel" aria-labelledby="project-tab">
-        <form id="project-metadata-form">
-          <div class="form-group">
-            <label for="project-name" class="col-sm-2 col-form-label">Name</label>
-            <input type="text" class="form-control" id="project-name" name="project-name" value="{{ project.name }}" />
-          </div>
-          <div class="form-group">
-            <label for="project-description" class="col-sm-2 col-form-label">Description</label>
-            <textarea class="form-control" id="project-description" name="project-description">{{ project.description }}</textarea>
-          </div>
-        </form>
-        <ul class="list-unstyled">
-          <li><a href="{{ reverse_url('export_codebook_csv', project.id) }}" target="_blank">Export codebook CSV</a></li>
-          <li><a href="{{ reverse_url('export_codebook_doc', project.id) }}" target="_blank">Export codebook DOC</a></li>
-        </ul>
+        <!-- Project info and metadata -->
+        <div class="tab-pane fade" id="project" role="tabpanel" aria-labelledby="project-tab">
+          <form id="project-metadata-form">
+            <div class="form-group">
+              <label for="project-name" class="col-sm-2 col-form-label">Name</label>
+              <input type="text" class="form-control" id="project-name" name="project-name" value="{{ project.name }}" />
+            </div>
+            <div class="form-group">
+              <label for="project-description" class="col-sm-2 col-form-label">Description</label>
+              <textarea class="form-control" id="project-description" name="project-description">{{ project.description }}</textarea>
+            </div>
+          </form>
+          <ul class="list-unstyled">
+            <li><a href="{{ reverse_url('export_codebook_csv', project.id) }}" target="_blank">Export codebook CSV</a></li>
+            <li><a href="{{ reverse_url('export_codebook_doc', project.id) }}" target="_blank">Export codebook DOC</a></li>
+          </ul>
+        </div>
+
+        <!-- List of documents -->
+        <div class="tab-pane fade show active" id="documents" role="tabpanel" aria-labelledby="documents-tab">
+          <ul class="list-group list-group-flush" id="documents-list">
+            <li class="list-group-item disabled">Loading...</li>
+            <li class="list-group-item list-group-item-primary"><a class="list-group-item-primary" href="javascript:createDocument()">Add a document</a></li>
+          </ul>
+          <input type="checkbox" id="backlight" class="mt-3" /> <label for="backlight">Backlight</label>
+        </div>
+
+        <!-- List of tags -->
+        <div class="tab-pane fade" id="tags" role="tabpanel" aria-labelledby="tags-tab">
+          <ul class="list-group list-group-flush" id="tags-list">
+            <li class="list-group-item disabled">Loading...</li>
+            <li class="list-group-item list-group-item-primary"><a class="list-group-item-primary" href="javascript:createTag()">Create a tag</a></li>
+          </ul>
+        </div>
+
       </div>
-
-      <!-- List of documents -->
-      <div class="tab-pane fade show active" id="documents" role="tabpanel" aria-labelledby="documents-tab">
-        <ul class="list-group list-group-flush" id="documents-list">
-          <li class="list-group-item disabled">Loading...</li>
-          <li class="list-group-item list-group-item-primary"><a class="list-group-item-primary" href="javascript:createDocument()">Add a document</a></li>
-        </ul>
-        <input type="checkbox" id="backlight" class="mt-3" /> <label for="backlight">Backlight</label>
-      </div>
-
-      <!-- List of tags -->
-      <div class="tab-pane fade" id="tags" role="tabpanel" aria-labelledby="tags-tab">
-        <ul class="list-group list-group-flush" id="tags-list">
-          <li class="list-group-item disabled">Loading...</li>
-          <li class="list-group-item list-group-item-primary"><a class="list-group-item-primary" href="javascript:createTag()">Create a tag</a></li>
-        </ul>
-      </div>
-    </div>
     </div>
   </div>
 
@@ -133,7 +134,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Save & Close</button>
+        <button type="submit" class="btn btn-info">Save & Close</button>
         <button type="button" id="document-change-delete" class="btn btn-danger" data-dismiss="modal">Delete document</button>
       </div>
     </form>
