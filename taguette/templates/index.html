@@ -2,6 +2,9 @@
 {% set active_page = "index" %}
 
 {% block contents %}
+{% for msg in messages %}
+<div class="alert alert-secondary">{{ msg }}</div>
+{% endfor %}
 {% if multiuser %}
 <h1>Welcome {{ user.login }}</h1>
 {% else %}

@@ -1,3 +1,4 @@
+import aiohttp
 import asyncio
 import bisect
 import csv
@@ -10,6 +11,7 @@ from datetime import datetime
 import json
 import logging
 import jinja2
+from markupsafe import Markup
 import pkg_resources
 from sqlalchemy.orm import aliased, joinedload, undefer, make_transient
 from tornado.concurrent import Future
@@ -17,6 +19,7 @@ import tornado.ioloop
 from tornado.routing import URLSpec
 from tornado.web import authenticated, HTTPError, RequestHandler
 
+from . import __version__ as version
 from . import convert
 from . import database
 from .extract import extract
@@ -159,7 +162,12 @@ class Index(BaseHandler):
                                self.current_user)
                 self.logout()
             else:
-                self.render('index.html', user=user, projects=user.projects)
+                messages = []
+                if self.current_user == 'admin':
+                    messages = [Markup(msg['html'])
+                                for msg in self.application.messages]
+                self.render('index.html', user=user, projects=user.projects,
+                            messages=messages)
                 return
         elif not self.application.multiuser:
             token = self.get_query_argument('token', None)
@@ -830,6 +838,28 @@ class Application(tornado.web.Application):
                 b'taguette_single_user',
                 digestmod=hashlib.sha256,
             ).hexdigest()
+
+        # Get messages from taguette.fr
+        self.messages = []
+
+        f_msg = asyncio.get_event_loop().create_task(self._check_messages())
+
+        def f_msg_callback(future):
+            try:
+                future.result()
+            except Exception:
+                logger.exception("Error getting messages")
+        f_msg.add_done_callback(f_msg_callback)
+
+    async def _check_messages(self):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                    'https://msg.taguette.fr/%s' % version,
+                    headers={'Accept': 'application/json'}) as response:
+                obj = await response.json()
+        self.messages = obj['messages']
+        for msg in self.messages:
+            logger.warning("Taguette message: %s", msg['text'])
 
     def _set_password(self, user):
         import getpass
