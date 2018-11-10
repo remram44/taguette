@@ -366,7 +366,7 @@ function updateDocumentsList() {
   while(documents_list.firstChild) {
     var first = documents_list.firstChild;
     if(first.classList
-     && first.classList.contains('list-group-item-primary')) {
+     && first.classList.contains('add-item-button')) {
       break;
     }
     documents_list.removeChild(first);
@@ -563,7 +563,7 @@ function updateTagsList() {
   while(tags_list.firstChild) {
     var first = tags_list.firstChild;
     if(first.classList
-     && first.classList.contains('list-group-item-primary')) {
+     && first.classList.contains('add-item-button')) {
       break;
     }
     tags_list.removeChild(first);
@@ -610,11 +610,17 @@ function updateTagsList() {
 
   // Empty the list
   while(tags_modal_list.firstChild) {
-    tags_modal_list.removeChild(tags_modal_list.firstChild);
+    var first = tags_modal_list.firstChild;
+    if(first.classList
+     && first.classList.contains('add-item-button')) {
+      break;
+    }
+    tags_modal_list.removeChild(first);
   }
   // Fill up the list again
   // TODO: Show this as a tree
   var tree = {};
+  var before = tags_modal_list.firstChild;
   var entries = Object.entries(tags);
   for(var i = 0; i < entries.length; ++i) {
     var tag = entries[i][1];
@@ -622,7 +628,7 @@ function updateTagsList() {
     elem.innerHTML =
       '<input type="checkbox" value="' + tag.id + '" name="highlight-add-tags" id="highlight-add-tags-' + tag.id + '" />' +
       '<label for="highlight-add-tags-' + tag.id + '">' + tag.path + '</label>';
-    tags_modal_list.appendChild(elem);
+    tags_modal_list.insertBefore(elem, before);
   }
   if(entries.length == 0) {
     var elem = document.createElement('li');
