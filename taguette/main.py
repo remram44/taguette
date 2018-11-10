@@ -78,6 +78,9 @@ def main():
                              "example 'project.db' or "
                              "'postgresql://me:pw@localhost/mydb' "
                              "(default: %r)" % default_db_show)
+    parser.add_argument('--singleuser', action='store_false', default=False,
+                        dest='multiuser',
+                        help="Run in single-user mode (default)")
     parser.add_argument('--multiuser', action='store_true', default=False,
                         help="Run in multi-user mode")
     parser.add_argument('--enable-register', dest='register',
