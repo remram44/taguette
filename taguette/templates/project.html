@@ -37,7 +37,9 @@
           </form>
           <ul class="list-unstyled">
             <li><a href="{{ reverse_url('export_codebook_csv', project.id) }}" target="_blank">Export codebook CSV</a></li>
-            <li><a href="{{ reverse_url('export_codebook_doc', project.id) }}" target="_blank">Export codebook DOC</a></li>
+            <li><a href="{{ reverse_url('export_codebook_doc', project.id, 'html') }}" target="_blank">Export codebook HTML</a></li>
+            <li><a href="{{ reverse_url('export_codebook_doc', project.id, 'docx') }}" target="_blank">Export codebook DOC</a></li>
+            <li><a href="{{ reverse_url('export_codebook_doc', project.id, 'pdf') }}" target="_blank">Export codebook PDF</a></li>
           </ul>
         </div>
 
