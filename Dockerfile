@@ -14,5 +14,5 @@ RUN /opt/venv/bin/pip install pipenv && \
 VOLUME /data
 ENV HOME=/data
 EXPOSE 8000
-ENTRYPOINT ["taguette", "--no-browser"]
-CMD ["--multiuser", "--bind=0.0.0.0"]
+ENTRYPOINT ["taguette", "--no-browser", "--bind=0.0.0.0"]
+CMD ["--multiuser"]
