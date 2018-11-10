@@ -1,5 +1,6 @@
 FROM python:3.6
 
+RUN apt-get update && apt-get install -y calibre && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 RUN pip install virtualenv && virtualenv /opt/venv
