@@ -12,6 +12,7 @@ req = [
     'tornado>=5.0',
     'sqlalchemy',
     'alembic',
+    'aiohttp',
     'bcrypt',
     'jinja2',
     'beautifulsoup4',
