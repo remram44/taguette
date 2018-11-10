@@ -1,6 +1,19 @@
 Changelog
 =========
 
+0.4 (???)
+---------
+
+Bugfixes:
+* Make sure to hide auth token from URL bar
+* Fix tag description not showing up
+
+Features:
+* Add confirmation dialogs before deleting tags or documents
+* New theme matching website (thanks to Vicky Steeves)
+* Add button to create a tag from the highlight modal
+* Add preliminary document export options (HTML source shows up -- known issue)
+
 0.3 (2018-10-29)
 ----------------
 
