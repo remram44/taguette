@@ -841,15 +841,7 @@ class Application(tornado.web.Application):
 
         # Get messages from taguette.fr
         self.messages = []
-
-        f_msg = asyncio.get_event_loop().create_task(self._check_messages())
-
-        def f_msg_callback(future):
-            try:
-                future.result()
-            except Exception:
-                logger.exception("Error getting messages")
-        f_msg.add_done_callback(f_msg_callback)
+        self.check_messages()
 
     async def _check_messages(self):
         async with aiohttp.ClientSession() as session:
@@ -860,6 +852,19 @@ class Application(tornado.web.Application):
         self.messages = obj['messages']
         for msg in self.messages:
             logger.warning("Taguette message: %s", msg['text'])
+
+    @staticmethod
+    def _check_messages_callback(future):
+        try:
+            future.result()
+        except Exception:
+            logger.exception("Error getting messages")
+
+    def check_messages(self):
+        f_msg = asyncio.get_event_loop().create_task(self._check_messages())
+        f_msg.add_done_callback(self._check_messages_callback)
+        asyncio.get_event_loop().call_later(86400,  # 24 hours
+                                            self.check_messages)
 
     def _set_password(self, user):
         import getpass
