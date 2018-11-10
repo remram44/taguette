@@ -946,7 +946,7 @@ function loadtag(tag_path) {
       elem.setAttribute('id', 'highlight-entry-' + hl.id);
       elem.innerHTML = result.highlights[i].content;
       var doclink = document.createElement('a');
-      doclink.className = 'badge badge-secondary';
+      doclink.className = 'badge badge-dark';
       doclink.textContent = documents[hl.document_id].name;
       linkDocument(doclink, hl.document_id);
       elem.appendChild(doclink);
