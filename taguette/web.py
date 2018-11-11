@@ -12,6 +12,7 @@ import logging
 import jinja2
 from markupsafe import Markup
 import pkg_resources
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import aliased, joinedload, undefer, make_transient
 from tornado.concurrent import Future
 import tornado.ioloop
@@ -640,8 +641,13 @@ class TagAdd(BaseHandler):
         project = self.get_project(project_id)
         tag = database.Tag(project=project,
                            path=obj['path'], description=obj['description'])
-        self.db.add(tag)
-        self.db.flush()  # Need to flush to get tag.id
+        try:
+            self.db.add(tag)
+            self.db.flush()  # Need to flush to get tag.id
+        except IntegrityError:
+            self.db.rollback()
+            self.set_status(500)
+            return self.finish()
         cmd = database.Command.tag_add(
             self.current_user,
             tag,
@@ -671,8 +677,13 @@ class TagUpdate(BaseHandler):
                 self.current_user,
                 tag,
             )
-            self.db.add(cmd)
-            self.db.commit()
+            try:
+                self.db.add(cmd)
+                self.db.commit()
+            except IntegrityError:
+                self.db.rollback()
+                self.set_status(500)
+                return self.finish()
             self.db.refresh(cmd)
             self.application.notify_project(project.id, cmd)
 
