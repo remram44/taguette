@@ -103,10 +103,12 @@ def highlight(html, highlights):
                             highlighting = True
                         elif not highlighting and pos + nb > start:
                             parent = node.parent
-                            rest = node.string[start - pos:]
-                            node.string = node.string[:start - pos]
-                            node = NavigableString(rest)
-                            parent.append(node)
+                            left = node.string[:start - pos]
+                            right = node.string[start - pos:]
+                            idx = parent.index(node)
+                            node.replace_with(NavigableString(left))
+                            node = NavigableString(right)
+                            parent.insert(idx + 1, node)
                             nb -= start - pos
                             pos = start
                             # Code below will do the actual highlighting
@@ -117,11 +119,20 @@ def highlight(html, highlights):
                                 attrs={'class': 'highlight'},
                             )
                             node.replace_with(newnode)
+                            newnode.append(node)
                             node = newnode
+                            if pos + nb == end:
+                                highlighting = False
+                                start, end = next(highlights)
+                            break
                         elif highlighting:
                             parent = node.parent
+                            left = node.string[:end - pos]
                             rest = node.string[end - pos:]
-                            node.string = node.string[:end - pos]
+                            idx = parent.index(node)
+                            newnode = NavigableString(left)
+                            node.replace_with(newnode)
+                            node = newnode
                             newnode = soup.new_tag(
                                 'span',
                                 attrs={'class': 'highlight'},
@@ -129,7 +140,7 @@ def highlight(html, highlights):
                             node.replace_with(newnode)
                             newnode.append(node)
                             node = NavigableString(rest)
-                            parent.append(node)
+                            parent.insert(idx + 1, node)
                             nb -= end - pos
                             pos = end
                             highlighting = False
