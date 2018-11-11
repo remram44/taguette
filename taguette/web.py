@@ -486,7 +486,7 @@ class ExportDocument(BaseHandler):
                 yield Markup(extract(doc.contents, pos, None))
 
         html = self.render_string('export_document.html', name=doc.name,
-                                  chunks=chunks(), version=version)
+                                  chunks=chunks())
         return doc.name, html
 
 
@@ -628,7 +628,7 @@ class ExportHighlightsDoc(BaseHandler):
         ).all()
 
         html = self.render_string('export_highlights.html', path=path,
-                                  highlights=highlights, version=version)
+                                  highlights=highlights)
         return 'path', html
 
 
@@ -778,8 +778,7 @@ class ExportCodebookDoc(BaseHandler):
     def get(self, project_id):
         project = self.get_project(project_id)
         tags = list(project.tags)
-        html = self.render_string('export_codebook.html', tags=tags,
-                                  version=version)
+        html = self.render_string('export_codebook.html', tags=tags)
         return 'codebook', html
 
 
