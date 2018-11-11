@@ -604,6 +604,7 @@ class Highlights(BaseHandler):
                     'id': hl.id,
                     'document_id': hl.document_id,
                     'content': hl.snippet,
+                    'tags': [t.id for t in hl.tags],
                 }
                 for hl in highlights
             ],

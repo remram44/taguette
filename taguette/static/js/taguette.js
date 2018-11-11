@@ -960,11 +960,24 @@ function loadTag(tag_path) {
       elem.className = 'highlight-entry';
       elem.setAttribute('id', 'highlight-entry-' + hl.id);
       elem.innerHTML = result.highlights[i].content;
+
       var doclink = document.createElement('a');
-      doclink.className = 'badge badge-dark';
-      doclink.textContent = documents[hl.document_id].name;
+      doclink.className = 'badge';
+      doclink.textContent = documents['' + hl.document_id].name;
       linkDocument(doclink, hl.document_id);
       elem.appendChild(doclink);
+
+      for(var j = 0; j < hl.tags.length; ++j) {
+        if(j > 0) {
+          elem.appendChild(document.createTextNode(' '));
+        }
+        var taglink = document.createElement('a');
+        taglink.className = 'badge badge-dark';
+        taglink.textContent = tags['' + hl.tags[j]].path;
+        linkTag(taglink, taglink.textContent);
+        elem.appendChild(taglink);
+      }
+
       document_contents.appendChild(elem);
     }
     if(result.highlights.length == 0) {
@@ -981,7 +994,8 @@ function loadTag(tag_path) {
         '/project/' + project_id + '/export/highlights/' + tag_path + '.' + ext,
       );
     }
-  }, function(error) {
+  })
+  .catch(function(error) {
     console.error("Failed to load tag highlights:", error);
   });
 }
