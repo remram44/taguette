@@ -542,7 +542,7 @@ function linkTag(elem, tag_path) {
   elem.addEventListener('click', function(e) {
     e.preventDefault();
     window.history.pushState({'tag_path': tag_path}, "Tag " + tag_path, url);
-    loadtag(tag_path);
+    loadTag(tag_path);
   });
 }
 
@@ -943,7 +943,7 @@ function loadDocument(document_id) {
   });
 }
 
-function loadtag(tag_path) {
+function loadTag(tag_path) {
   getJSON(
     '/api/project/' + project_id + '/highlights/' + tag_path
   )
@@ -992,7 +992,7 @@ if(m) {
 // Or a tag
 m = window.location.pathname.match(/\/project\/([0-9]+)\/highlights\/([^\/]+)/);
 if(m) {
-  loadtag(m[2]);
+  loadTag(m[2]);
 }
 
 // Load documents as we go through browser history
@@ -1001,7 +1001,7 @@ window.onpopstate = function(e) {
     if(e.state.document_id !== undefined) {
       loadDocument(e.state.document_id);
     } else if(e.state.tag_path !== undefined) {
-      loadtag(e.state.tag_path);
+      loadTag(e.state.tag_path);
     } else {
       loadDocument(null);
     }
