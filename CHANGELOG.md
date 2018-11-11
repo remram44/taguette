@@ -13,6 +13,10 @@ Features:
 * New theme matching website (thanks to Vicky Steeves)
 * Add button to create a tag from the highlight modal
 * Add preliminary document export options (HTML source shows up -- known issue)
+* Show messages from taguette.fr, such as new version available
+* Add export options, allowing you to get your highlights as HTML, DOCX, or PDF
+* Add HTML and PDF options for codebook export as well
+* Add an option to show (or export) all highlights, rather than only a specific tag
 
 0.3 (2018-10-29)
 ----------------
