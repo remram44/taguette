@@ -920,7 +920,7 @@ def make_app(db_url, multiuser, register_enabled=True, debug=False):
             URLSpec('/project/([0-9]+)', Project, name='project'),
             URLSpec('/project/([0-9]+)/document/[0-9]+', Project,
                     name='project_doc'),
-            URLSpec('/project/([0-9]+)/highlights/[^/]+', Project,
+            URLSpec('/project/([0-9]+)/highlights/[^/]*', Project,
                     name='project_tag'),
 
             # Export options
@@ -932,7 +932,7 @@ def make_app(db_url, multiuser, register_enabled=True, debug=False):
                     '([^/]+)\\.([a-z0-9]{2,4})',
                     ExportDocument, name='export_document'),
             URLSpec('/project/([0-9]+)/export/highlights/'
-                    '([^/]+)\\.([a-z0-3]{2,4})',
+                    '([^/]*)\\.([a-z0-3]{2,4})',
                     ExportHighlightsDoc, name='export_highlights_doc'),
 
             # API
@@ -946,7 +946,7 @@ def make_app(db_url, multiuser, register_enabled=True, debug=False):
             URLSpec(
                 '/api/project/([0-9]+)/document/([0-9]+)/highlight/([0-9]+)',
                 HighlightUpdate),
-            URLSpec('/api/project/([0-9]+)/highlights/([^/]+)', Highlights),
+            URLSpec('/api/project/([0-9]+)/highlights/([^/]*)', Highlights),
             URLSpec('/api/project/([0-9]+)/tag/new', TagAdd),
             URLSpec('/api/project/([0-9]+)/tag/([0-9]+)', TagUpdate),
             URLSpec('/api/project/([0-9]+)/events', ProjectEvents),

@@ -546,6 +546,8 @@ function linkTag(elem, tag_path) {
   });
 }
 
+linkTag(document.getElementById('load-all-tags'), '');
+
 function addTag(tag) {
   tags[tag.id] = tag;
   updateTagsList();
@@ -948,7 +950,7 @@ function loadTag(tag_path) {
     '/api/project/' + project_id + '/highlights/' + tag_path
   )
   .then(function(result) {
-    console.log("Loaded highlights for tag", tag_path);
+    console.log("Loaded highlights for tag", tag_path || "''");
     current_tag = tag_path;
     current_document = null;
     document_contents.innerHTML = '';
@@ -990,7 +992,7 @@ if(m) {
   loadDocument(parseInt(m[2]));
 }
 // Or a tag
-m = window.location.pathname.match(/\/project\/([0-9]+)\/highlights\/([^\/]+)/);
+m = window.location.pathname.match(/\/project\/([0-9]+)\/highlights\/([^\/]*)/);
 if(m) {
   loadTag(m[2]);
 }
