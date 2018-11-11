@@ -35,12 +35,18 @@
               <textarea class="form-control" id="project-description" name="project-description">{{ project.description }}</textarea>
             </div>
           </form>
-          <ul class="list-unstyled">
-            <li><a href="{{ reverse_url('export_codebook_csv', project.id) }}" target="_blank">Export codebook CSV</a></li>
-            <li><a href="{{ reverse_url('export_codebook_doc', project.id, 'html') }}" target="_blank">Export codebook HTML</a></li>
-            <li><a href="{{ reverse_url('export_codebook_doc', project.id, 'docx') }}" target="_blank">Export codebook DOCX</a></li>
-            <li><a href="{{ reverse_url('export_codebook_doc', project.id, 'pdf') }}" target="_blank">Export codebook PDF</a></li>
-          </ul>
+
+          <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdown-codebook" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Export codebook
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdown-codebook">
+              <a href="{{ reverse_url('export_codebook_csv', project.id) }}" class="dropdown-item">CSV</a>
+              <a href="{{ reverse_url('export_codebook_doc', project.id, 'html') }}" class="dropdown-item">HTML</a>
+              <a href="{{ reverse_url('export_codebook_doc', project.id, 'docx') }}" class="dropdown-item">DOCX</a>
+              <a href="{{ reverse_url('export_codebook_doc', project.id, 'pdf') }}" class="dropdown-item">PDF</a>
+            </div>
+          </div>
         </div>
 
         <!-- List of documents -->
