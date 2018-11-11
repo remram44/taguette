@@ -133,7 +133,7 @@ textarea.form-control {
 
 .document-view {
   border: 2px solid #dee2e6;
-  padding: 1em 0.3em;
+  padding: 1.2em 0.3em;
   position: relative;
 }
 
@@ -141,10 +141,19 @@ textarea.form-control {
   color: #bbb;
 }
 
-.document-view .document-link {
+#export-button {
   position: absolute;
   top: .1em;
   right: .5em;
+}
+
+#export-button .dropdown-toggle {
+  padding: 0.125rem 0.25rem;
+}
+
+a.dropdown-item:hover {
+  color: white !important;
+  text-decoration: none;
 }
 
 #document-view .highlight {

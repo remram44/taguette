@@ -930,7 +930,14 @@ function loadDocument(document_id) {
 
     // Update export button
     export_button.style.display = '';
-    export_button.setAttribute('href', '/project/' + project_id + '/export/document/' + document_id + '.docx');
+    var items = export_button.getElementsByClassName('dropdown-item');
+    for(var i = 0; i < items.length; ++i) {
+      var ext = items[i].textContent.toLowerCase();
+      items[i].setAttribute(
+        'href',
+        '/project/' + project_id + '/export/document/' + document_id + '.' + ext,
+      );
+    }
   }, function(error) {
     console.error("Failed to load document:", error);
   });
@@ -964,7 +971,14 @@ function loadtag(tag_path) {
 
     // Update export button
     export_button.style.display = '';
-    export_button.setAttribute('href', '/project/' + project_id + '/export/highlights/' + tag_path + '.docx');
+    var items = export_button.getElementsByClassName('dropdown-item');
+    for(var i = 0; i < items.length; ++i) {
+      var ext = items[i].textContent.toLowerCase();
+      items[i].setAttribute(
+        'href',
+        '/project/' + project_id + '/export/highlights/' + tag_path + '.' + ext,
+      );
+    }
   }, function(error) {
     console.error("Failed to load tag highlights:", error);
   });
