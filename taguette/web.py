@@ -22,7 +22,7 @@ from tornado.web import authenticated, HTTPError, RequestHandler
 from . import __version__ as version
 from . import convert
 from . import database
-from .extract import extract
+from . import extract
 
 
 logger = logging.getLogger(__name__)
@@ -475,19 +475,11 @@ class ExportDocument(BaseHandler):
             else:
                 highlights[left:right] = [this]
 
-        def chunks():
-            pos = 0
-            for hl in highlights:
-                if hl[0] - pos > 0:
-                    yield Markup(extract(doc.contents, pos, hl[0]))
-                yield Markup('<span class="highlight">%s</span>' %
-                             extract(doc.contents, hl[0], hl[1]))
-                pos = hl[1]
-            if len(doc.contents) - pos > 0:
-                yield Markup(extract(doc.contents, pos, None))
-
-        html = self.render_string('export_document.html', name=doc.name,
-                                  chunks=chunks())
+        html = self.render_string(
+            'export_document.html',
+            name=doc.name,
+            contents=Markup(extract.highlight(doc.contents, highlights)),
+        )
         return doc.name, html
 
 
@@ -497,7 +489,7 @@ class HighlightAdd(BaseHandler):
         obj = self.get_json()
         document = self.get_document(project_id, document_id, True)
         start, end = obj['start_offset'], obj['end_offset']
-        snippet = extract(document.contents, start, end)
+        snippet = extract.extract(document.contents, start, end)
         hl = database.Highlight(document=document,
                                 start_offset=start,
                                 end_offset=end,
