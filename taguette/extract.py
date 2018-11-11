@@ -76,3 +76,92 @@ def extract(html, start, end):
 
     # Back to text
     return str(soup)
+
+
+def highlight(html, highlights):
+    """Highlight part of an HTML documents.
+
+    :param highlights: Iterable of (start, end) pairs, which are computed over
+        UTF-8 bytes and don't count HTML tags
+    """
+    highlights = iter(highlights)
+    soup = BeautifulSoup(html, 'html5lib')
+
+    pos = 0
+    node = soup
+    highlighting = False
+    try:
+        start, end = next(highlights)
+        while True:
+            if getattr(node, 'contents', None):
+                node = node.contents[0]
+            else:
+                if isinstance(node, NavigableString):
+                    nb = len(node.string.encode('utf-8'))
+                    while True:
+                        if not highlighting and start == pos:
+                            highlighting = True
+                        elif not highlighting and pos + nb > start:
+                            parent = node.parent
+                            left = node.string[:start - pos]
+                            right = node.string[start - pos:]
+                            idx = parent.index(node)
+                            node.replace_with(NavigableString(left))
+                            node = NavigableString(right)
+                            parent.insert(idx + 1, node)
+                            nb -= start - pos
+                            pos = start
+                            # Code below will do the actual highlighting
+                            highlighting = True
+                        elif highlighting and pos + nb <= end:
+                            newnode = soup.new_tag(
+                                'span',
+                                attrs={'class': 'highlight'},
+                            )
+                            node.replace_with(newnode)
+                            newnode.append(node)
+                            node = newnode
+                            if pos + nb == end:
+                                highlighting = False
+                                start, end = next(highlights)
+                            break
+                        elif highlighting:
+                            parent = node.parent
+                            left = node.string[:end - pos]
+                            rest = node.string[end - pos:]
+                            idx = parent.index(node)
+                            newnode = NavigableString(left)
+                            node.replace_with(newnode)
+                            node = newnode
+                            newnode = soup.new_tag(
+                                'span',
+                                attrs={'class': 'highlight'},
+                            )
+                            node.replace_with(newnode)
+                            newnode.append(node)
+                            node = NavigableString(rest)
+                            parent.insert(idx + 1, node)
+                            nb -= end - pos
+                            pos = end
+                            highlighting = False
+                            start, end = next(highlights)
+                        else:
+                            break
+
+                    pos += nb
+                while not node.next_sibling:
+                    if not node.parent:
+                        raise StopIteration
+                    node = node.parent
+                node = node.next_sibling
+    except StopIteration:
+        # Remove everything but body
+        body = soup.body
+        soup.clear()
+        soup.append(body)
+
+        # Remove the body tag itself to only have the contents
+        soup.body.unwrap()
+
+        # Back to text
+        return str(soup)

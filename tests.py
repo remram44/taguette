@@ -56,6 +56,17 @@ class TestMeasure(unittest.TestCase):
         self.assertEqual(snippet,
                          '<p>here</p>')
 
+    def test_highlight(self):
+        """Tests highlighting an HTML document."""
+        html = '<p><u>Hello</u> there <i>World</i></p>'
+        self.assertEqual(
+            extract.highlight(html, [(0, 1), (2, 3),
+                                     (4, 8), (10, 14), (15, 17)])
+            .replace('<span class="highlight">', '{')
+            .replace('</span>', '}'),
+            '<p><u>{H}e{l}l{o}</u>{ th}er{e }<i>{Wo}r{ld}</i></p>',
+        )
+
 
 class MyHTTPTestCase(AsyncHTTPTestCase):
     xsrf = None
