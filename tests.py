@@ -72,6 +72,7 @@ class MyHTTPTestCase(AsyncHTTPTestCase):
     xsrf = None
 
     def setUp(self):
+        web.Application.check_messages = lambda *a: None
         super(MyHTTPTestCase, self).setUp()
         self.cookie = SimpleCookie()
 
