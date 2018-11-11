@@ -7,6 +7,7 @@ Changelog
 Bugfixes:
 * Make sure to hide auth token from URL bar
 * Fix tag description not showing up
+* Don't allow two tags to have the same name
 
 Features:
 * Add confirmation dialogs before deleting tags or documents
