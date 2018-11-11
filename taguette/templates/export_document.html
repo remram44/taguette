@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <style>
+      .highlight {
+        background-color: #ff0;
+      }
+    </style>
+    <title>{{ name }}</title>
+  </head>
+  <body>
+    <h1>{{ name }}</h1>
+{% for chunk in chunks %}{{ chunk }}{% endfor %}
+  </body>
+</html>

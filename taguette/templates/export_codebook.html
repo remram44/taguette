@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <style>
+      .highlight {
+        background-color: #ff0;
+      }
+    </style>
+    <title>Taguette Codebook</title>
+  </head>
+  <body>
+    <h1>Taguete Codebook</h1>
+{% for tag in tags %}
+      <h2>{{ tag.path }}</h2>
+      <p>{{ tag.description }}</p>
+{% endfor %}
+  </body>
+</html>

@@ -35,10 +35,18 @@
               <textarea class="form-control" id="project-description" name="project-description">{{ project.description }}</textarea>
             </div>
           </form>
-          <ul class="list-unstyled">
-            <li><a href="{{ reverse_url('export_codebook_csv', project.id) }}" target="_blank">Export codebook CSV</a></li>
-            <li><a href="{{ reverse_url('export_codebook_doc', project.id) }}" target="_blank">Export codebook DOC</a></li>
-          </ul>
+
+          <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdown-codebook" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Export codebook
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdown-codebook">
+              <a href="{{ reverse_url('export_codebook_csv', project.id) }}" class="dropdown-item">CSV</a>
+              <a href="{{ reverse_url('export_codebook_doc', project.id, 'html') }}" class="dropdown-item">HTML</a>
+              <a href="{{ reverse_url('export_codebook_doc', project.id, 'docx') }}" class="dropdown-item">DOCX</a>
+              <a href="{{ reverse_url('export_codebook_doc', project.id, 'pdf') }}" class="dropdown-item">PDF</a>
+            </div>
+          </div>
         </div>
 
         <!-- List of documents -->
@@ -66,7 +74,16 @@
   <div class="col-md-9">
 
     <div id="document-view" class="document-view">
-      <a href="#" id="export-button" class="document-link badge badge-primary" style="display: none;">Export</a>
+      <div id="export-button" class="dropdown" style="display: none;">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdown-export" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Export this view
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdown-export">
+          <a href="#" class="dropdown-item">HTML</a>
+          <a href="#" class="dropdown-item">DOCX</a>
+          <a href="#" class="dropdown-item">PDF</a>
+        </div>
+      </div>
 
       <div id="document-contents">
         <p style="font-style: oblique; text-align: center;">Load a document on the left</p>

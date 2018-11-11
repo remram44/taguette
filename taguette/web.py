@@ -2,7 +2,6 @@ import aiohttp
 import asyncio
 import bisect
 import csv
-import docx
 import hashlib
 import hmac
 import io
@@ -133,18 +132,18 @@ class BaseHandler(RequestHandler):
         return self.finish(json.dumps(obj))
 
 
-def export_docx(wrapped):
-    def wrapper(self, *args):
-        name, document = wrapped(self, *args)
-        buf = io.BytesIO()
-        document.save(buf)
-        self.set_header(
-            'Content-Type',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml'
-            '.document; charset=utf-8')
+def export_doc(wrapped):
+    async def wrapper(self, *args):
+        args, ext = args[:-1], args[-1]
+        ext = ext.lower()
+        name, html = wrapped(self, *args)
+        mimetype, contents = convert.html_to(html, ext)
+        self.set_header('Content-Type', mimetype)
         self.set_header('Content-Disposition',
-                        'attachment; filename="%s"' % name)
-        self.finish(buf.getvalue())
+                        'attachment; filename="%s.%s"' % (name, ext))
+        for chunk in await contents:
+            self.write(chunk)
+        self.finish()
     return wrapper
 
 
@@ -450,14 +449,11 @@ class DocumentContents(BaseHandler):
         })
 
 
-class ExportDocumentDoc(BaseHandler):
+class ExportDocument(BaseHandler):
     @authenticated
-    @export_docx
+    @export_doc
     def get(self, project_id, document_id):
         doc = self.get_document(project_id, document_id, True)
-
-        document = docx.Document()
-        document.add_heading(doc.name)
 
         hls = iter(doc.highlights)
         hl = next(hls)
@@ -478,18 +474,20 @@ class ExportDocumentDoc(BaseHandler):
             else:
                 highlights[left:right] = [this]
 
-        # TODO: Convert from HTML
-        pos = 0
-        paragraph = document.add_paragraph()
-        for hl in highlights:
-            if hl[0] - pos > 0:
-                paragraph.add_run(extract(doc.contents, pos, hl[0]))
-            paragraph.add_run(extract(doc.contents, hl[0], hl[1])).bold = True
-            pos = hl[1]
-        if len(doc.contents) - pos > 0:
-            paragraph.add_run(extract(doc.contents, pos, None))
+        def chunks():
+            pos = 0
+            for hl in highlights:
+                if hl[0] - pos > 0:
+                    yield Markup(extract(doc.contents, pos, hl[0]))
+                yield Markup('<span class="highlight">%s</span>' %
+                             extract(doc.contents, hl[0], hl[1]))
+                pos = hl[1]
+            if len(doc.contents) - pos > 0:
+                yield Markup(extract(doc.contents, pos, None))
 
-        return '%s.docx' % doc.name, document
+        html = self.render_string('export_document.html', name=doc.name,
+                                  chunks=chunks())
+        return doc.name, html
 
 
 class HighlightAdd(BaseHandler):
@@ -614,7 +612,7 @@ class Highlights(BaseHandler):
 
 class ExportHighlightsDoc(BaseHandler):
     @authenticated
-    @export_docx
+    @export_doc
     def get(self, project_id, path):
         project = self.get_project(project_id)
 
@@ -629,14 +627,9 @@ class ExportHighlightsDoc(BaseHandler):
             .filter(tag.project == project)
         ).all()
 
-        document = docx.Document()
-        document.add_heading('Taguette highlights: %s' % path, 0)
-        for hl in highlights:
-            # TODO: Convert from HTML
-            document.add_paragraph(hl.snippet)
-            info = document.add_paragraph()
-            info.add_run("Document: %s" % hl.document.name).italic = True
-        return '%s.docx' % path, document
+        html = self.render_string('export_highlights.html', path=path,
+                                  highlights=highlights)
+        return 'path', html
 
 
 class TagAdd(BaseHandler):
@@ -781,16 +774,12 @@ class ExportCodebookCsv(BaseHandler):
 
 class ExportCodebookDoc(BaseHandler):
     @authenticated
-    @export_docx
+    @export_doc
     def get(self, project_id):
         project = self.get_project(project_id)
         tags = list(project.tags)
-        document = docx.Document()
-        document.add_heading('Taguette Codebook', 0)
-        for tag in tags:
-            document.add_heading(tag.path, 1)
-            document.add_paragraph(tag.description)
-        return 'codebook.docx', document
+        html = self.render_string('export_codebook.html', tags=tags)
+        return 'codebook', html
 
 
 class Application(tornado.web.Application):
@@ -935,14 +924,16 @@ def make_app(db_url, multiuser, register_enabled=True, debug=False):
                     name='project_tag'),
 
             # Export options
-            URLSpec('/project/([0-9]+)/export/codebook.csv', ExportCodebookCsv,
-                    name='export_codebook_csv'),
-            URLSpec('/project/([0-9]+)/export/codebook.docx',
+            URLSpec('/project/([0-9]+)/export/codebook.csv',
+                    ExportCodebookCsv, name='export_codebook_csv'),
+            URLSpec('/project/([0-9]+)/export/codebook.([a-z0-3]{2,4})',
                     ExportCodebookDoc, name='export_codebook_doc'),
-            URLSpec('/project/([0-9]+)/export/document/([^/]+).docx',
-                    ExportDocumentDoc, name='export_document_docx'),
-            URLSpec('/project/([0-9]+)/export/highlights/([^/]+).docx',
-                    ExportHighlightsDoc, name='export_highlights_docx'),
+            URLSpec('/project/([0-9]+)/export/document/'
+                    '([^/]+)\\.([a-z0-9]{2,4})',
+                    ExportDocument, name='export_document'),
+            URLSpec('/project/([0-9]+)/export/highlights/'
+                    '([^/]+)\\.([a-z0-3]{2,4})',
+                    ExportHighlightsDoc, name='export_highlights_doc'),
 
             # API
             URLSpec('/api/project/([0-9]+)', ProjectMeta),
