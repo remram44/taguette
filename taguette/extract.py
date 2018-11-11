@@ -92,16 +92,32 @@ def highlight(html, highlights):
     highlighting = False
     try:
         start, end = next(highlights)
+        print("first pair: %d, %d" % (start, end))
         while True:
+            print("  pos = %d" % pos)
             if getattr(node, 'contents', None):
+                print("  going down")
                 node = node.contents[0]
             else:
                 if isinstance(node, NavigableString):
                     nb = len(node.string.encode('utf-8'))
+                    print("  found string, len = %d" % nb)
                     while True:
+                        from copy import copy
+                        soup2 = copy(soup)
+                        body = soup2.body
+                        soup2.clear()
+                        soup2.append(body)
+                        soup2.body.unwrap()
+                        print('    ' + str(soup2)
+                              .replace('<span class="highlight">', '{')
+                              .replace('</span>', '}'))
+
                         if not highlighting and start == pos:
+                            print("    case 1")
                             highlighting = True
                         elif not highlighting and pos + nb > start:
+                            print("    case 2")
                             parent = node.parent
                             left = node.string[:start - pos]
                             right = node.string[start - pos:]
@@ -114,6 +130,7 @@ def highlight(html, highlights):
                             # Code below will do the actual highlighting
                             highlighting = True
                         elif highlighting and pos + nb <= end:
+                            print("    case 3")
                             newnode = soup.new_tag(
                                 'span',
                                 attrs={'class': 'highlight'},
@@ -122,10 +139,13 @@ def highlight(html, highlights):
                             newnode.append(node)
                             node = newnode
                             if pos + nb == end:
+                                print("    exact end")
                                 highlighting = False
                                 start, end = next(highlights)
+                                print("    next pair: %d, %d" % (start, end))
                             break
                         elif highlighting:
+                            print("    case 4")
                             parent = node.parent
                             left = node.string[:end - pos]
                             rest = node.string[end - pos:]
@@ -145,16 +165,30 @@ def highlight(html, highlights):
                             pos = end
                             highlighting = False
                             start, end = next(highlights)
+                            print("    next pair: %d, %d" % (start, end))
                         else:
                             break
+                    from copy import copy
+                    soup2 = copy(soup)
+                    body = soup2.body
+                    soup2.clear()
+                    soup2.append(body)
+                    soup2.body.unwrap()
+                    print('    ' + str(soup2)
+                          .replace('<span class="highlight">', '{')
+                          .replace('</span>', '}'))
+                    print("  end loop")
 
                     pos += nb
                 while not node.next_sibling:
                     if not node.parent:
                         raise StopIteration
+                    print("  going up")
                     node = node.parent
+                print("  going right")
                 node = node.next_sibling
     except StopIteration:
+        print("done")
         # Remove everything but body
         body = soup.body
         soup.clear()
