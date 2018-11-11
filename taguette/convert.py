@@ -123,7 +123,8 @@ async def calibre_from_html(html, extension):
         convert = 'ebook-convert'
         if os.environ.get('CALIBRE'):
             convert = os.path.join(os.environ['CALIBRE'], convert)
-        cmd = [convert, input_filename, output_filename]
+        cmd = [convert, input_filename, output_filename,
+               '--page-breaks-before=/']
         logger.info("Running: %s", ' '.join(cmd))
         try:
             await check_call(cmd)

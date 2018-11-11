@@ -3,13 +3,25 @@
   <head>
     <meta charset="UTF-8">
     <title>{{ name }}</title>
+    <style>
+      h1 {
+        margin-bottom: 1em;
+      }
+    </style>
   </head>
   <body>
     <h1>Taguette highlights: {{ path }}</h1>
 {% for hl in highlights %}
     {{ hl.snippet |safe }}
-    <p>Document: {{ hl.document.name }}</p>
-    <hr>
+    <p>
+      <strong>Document:</strong> {{ hl.document.name }}
+      <strong>Tags:</strong>
+      {% for tag in hl.tags -%}
+        {{ tag.path }}
+        {%- if not loop.last %}, {% endif %}
+      {% endfor %}
+    </p>
+    {% if not loop.last %}<hr>{% endif %}
 {% endfor %}
   </body>
 </html>
