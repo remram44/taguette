@@ -4,30 +4,33 @@
   <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{{ static_url('css/custom.css') }}">
+    <link rel="stylesheet" href="{{ static_url('css/all.min.css') }}">
     <link rel="stylesheet" href="{{ static_url('css/bootstrap.min.css') }}">
     <title>{% block title %}Taguette{% endblock %}</title>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary" id="special-nav">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
       <div class="container">
         <a class="navbar-brand special-brand" href="{{ reverse_url('index') }}"><span style="font-family:BadScript;">TAGUETTE</span></a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarColor01">
+        <div class="collapse navbar-collapse">
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item {{ 'active' if active_page == 'index' else '' }}">
-              <a class="nav-link" href="{{ reverse_url('index') }}">Home</a>
+            <li class="nav-item">
+              <a class="nav-link {{ 'active' if active_page == 'index' else '' }}" href="{{ reverse_url('index') }}">Home</a>
             </li>
             {% if project %}
-            <li class="nav-item {{ 'active' if active_page == 'project' else '' }}">
-              <a class="nav-link project-name" href="{{ reverse_url('project', project.id) }}">{{ project.name }}</a>
+            <li class="nav-item">
+              <a class="nav-link {{ 'active' if active_page == 'project' else '' }} project-name" href="{{ reverse_url('project', project.id) }}">{{ project.name }}</a>
             </li>
             {% endif %}
           </ul>
           <ul class="navbar-nav ml-auto">
             {% if not multiuser %}
-            <li class="nav-item">Single-user mode</li>
+            <li class="nav-item">
+              <a class="nav-link disabled">Single-user mode</a>
+            </li>
             {% elif current_user %}
             <li class="nav-item">
               <a class="nav-link" href="{{ reverse_url('logout') }}">Logout</a>

@@ -382,7 +382,7 @@ function updateDocumentsList() {
     elem.innerHTML =
       '<div class="d-flex justify-content-between align-items-center">' +
       '  <a id="document-link-' + doc.id + '">' + escapeHtml(doc.name) + '</a>' +
-      '  <a href="javascript:editDocument(' + doc.id + ');" class="badge badge-secondary badge-pill">edit</a>' +
+      '  <a href="javascript:editDocument(' + doc.id + ');" class="badge badge-primary badge-pill">edit</a>' +
       '</div>';
     documents_list.insertBefore(elem, before);
     linkDocument(document.getElementById('document-link-' + doc.id), doc.id);
@@ -594,7 +594,7 @@ function updateTagsList() {
       '    <a class="expand-marker">&nbsp;</a> ' +
       '    <a id="tag-link-' + tag.id + '">' + escapeHtml(tag.path) + '</a>' +
       '  </div>' +
-      '  <a href="javascript:editTag(' + tag.id + ');" class="badge badge-secondary badge-pill">edit</a>' +
+      '  <a href="javascript:editTag(' + tag.id + ');" class="badge badge-primary badge-pill">edit</a>' +
       //'  <span href="#" class="badge badge-primary badge-pill">?</span>' + // TODO: highlight count
       '</div>' +
       '<ul class="sublist"></div>';
@@ -962,10 +962,11 @@ function loadTag(tag_path) {
       elem.innerHTML = result.highlights[i].content;
 
       var doclink = document.createElement('a');
-      doclink.className = 'badge';
+      doclink.className = 'badge badge-light';
       doclink.textContent = documents['' + hl.document_id].name;
       linkDocument(doclink, hl.document_id);
       elem.appendChild(doclink);
+      elem.appendChild(document.createTextNode(' '));
 
       for(var j = 0; j < hl.tags.length; ++j) {
         if(j > 0) {
