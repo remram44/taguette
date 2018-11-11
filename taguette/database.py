@@ -262,7 +262,7 @@ class BaseHierarchy(object):
     def project(cls):
         return relationship('Project')
 
-    path = Column(String, nullable=False)
+    path = Column(String, nullable=False, index=True, unique=True)
     description = Column(Text, nullable=False)
 
 
