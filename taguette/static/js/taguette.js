@@ -366,7 +366,7 @@ function updateDocumentsList() {
   while(documents_list.firstChild) {
     var first = documents_list.firstChild;
     if(first.classList
-     && first.classList.contains('add-item-button')) {
+     && first.classList.contains('special-item-button')) {
       break;
     }
     documents_list.removeChild(first);
@@ -565,7 +565,7 @@ function updateTagsList() {
   while(tags_list.firstChild) {
     var first = tags_list.firstChild;
     if(first.classList
-     && first.classList.contains('add-item-button')) {
+     && first.classList.contains('special-item-button')) {
       break;
     }
     tags_list.removeChild(first);
@@ -614,7 +614,7 @@ function updateTagsList() {
   while(tags_modal_list.firstChild) {
     var first = tags_modal_list.firstChild;
     if(first.classList
-     && first.classList.contains('add-item-button')) {
+     && first.classList.contains('special-item-button')) {
       break;
     }
     tags_modal_list.removeChild(first);

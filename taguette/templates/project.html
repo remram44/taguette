@@ -53,7 +53,7 @@
         <div class="tab-pane fade show active" id="documents" role="tabpanel" aria-labelledby="documents-tab">
           <ul class="list-group list-group-flush" id="documents-list">
             <li class="list-group-item disabled">Loading...</li>
-            <li class="list-group-item list-group-item-primary add-item-button"><a class="list-group-item-primary" href="javascript:createDocument()">Add a document</a></li>
+            <li class="list-group-item list-group-item-primary special-item-button"><a class="list-group-item-primary" href="javascript:createDocument()">Add a document</a></li>
           </ul>
           <input type="checkbox" id="backlight" class="mt-3" /> <label for="backlight">Backlight</label>
         </div>
@@ -62,8 +62,8 @@
         <div class="tab-pane fade" id="tags" role="tabpanel" aria-labelledby="tags-tab">
           <ul class="list-group list-group-flush" id="tags-list">
             <li class="list-group-item disabled">Loading...</li>
-            <li id="load-all-tags" class="list-group-item list-group-item-secondary add-item-button"><a class="list-group-item-secondary" href="/project/{{ project.id }}/highlights/">See all highlights</a></li>
-            <li class="list-group-item list-group-item-primary add-item-button"><a class="list-group-item-primary" href="javascript:createTag()">Create a tag</a></li>
+            <li id="load-all-tags" class="list-group-item list-group-item-secondary special-item-button"><a class="list-group-item-secondary" href="/project/{{ project.id }}/highlights/">See all highlights</a></li>
+            <li class="list-group-item list-group-item-primary special-item-button"><a class="list-group-item-primary" href="javascript:createTag()">Create a tag</a></li>
           </ul>
         </div>
 
@@ -177,7 +177,7 @@
           {{ xsrf_form_html() }}
           <ul class="list-unstyled" id="highlight-add-tags">
             <li>Loading...</li>
-            <li class="add-item-button"><a href="javascript:createTag()">Create a tag</a></li>
+            <li class="special-item-button"><a href="javascript:createTag()">Create a tag</a></li>
           </ul>
         </div>
       </div>
