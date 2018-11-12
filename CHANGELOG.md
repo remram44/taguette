@@ -11,6 +11,7 @@ Bugfixes:
 
 Features:
 * Add confirmation dialogs before deleting tags or documents
+* Create tag from the highlight window
 * New theme matching website (thanks to Vicky Steeves)
 * Add button to create a tag from the highlight modal
 * Show messages from taguette.fr, such as new version available
