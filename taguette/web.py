@@ -460,18 +460,21 @@ def merge_overlapping_ranges(ranges):
         return []
 
     for rg in ranges:
-        left = bisect.bisect_right(merged, rg)
-        right = left + 1
+        left = right = bisect.bisect_right(merged, rg)
         # Merge left
-        while left >= 1 and merged[left - 1][1] >= rg[0]:
+        while left >= 1 and rg[0] <= merged[left - 1][1]:
+            rg = (min(rg[0], merged[left - 1][0]),
+                  max(rg[1], merged[left - 1][1]))
             left -= 1
         # Merge right
         while (right < len(merged) and
-               merged[right][0] >= rg[1]):
+               merged[right][0] <= rg[1]):
+            rg = (min(rg[0], merged[right][0]),
+                  max(rg[1], merged[right][1]))
             right += 1
         # Insert
-        if left - right == 1:
-            merged.insert(right, rg)
+        if left == right:
+            merged.insert(left, rg)
         else:
             merged[left:right] = [rg]
 
