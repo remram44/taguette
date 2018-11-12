@@ -250,17 +250,13 @@ class Highlight(Base):
     tags = relationship('Tag', secondary='highlight_tags')
 
 
-class BaseHierarchy(object):
+class Group(Base):
+    __tablename__ = 'groups'
+
     id = Column(Integer, primary_key=True)
-
-    @declared_attr
-    def project_id(cls):
-        return Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
-                      nullable=False, index=True)
-
-    @declared_attr
-    def project(cls):
-        return relationship('Project')
+    project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
+                        nullable=False, index=True)
+    project = relationship('Project')
 
     path = Column(String, nullable=False, index=True)
     description = Column(Text, nullable=False)
@@ -268,10 +264,6 @@ class BaseHierarchy(object):
     __table_args__ = (
         UniqueConstraint('project_id', 'path'),
     )
-
-
-class Group(Base, BaseHierarchy):
-    __tablename__ = 'groups'
 
     documents = relationship('Document', secondary='document_groups')
 
@@ -286,8 +278,20 @@ class DocumentGroup(Base):
                       primary_key=True)
 
 
-class Tag(Base, BaseHierarchy):
+class Tag(Base):
     __tablename__ = 'tags'
+
+    id = Column(Integer, primary_key=True)
+    project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
+                        nullable=False, index=True)
+    project = relationship('Project')
+
+    path = Column(String, nullable=False, index=True)
+    description = Column(Text, nullable=False)
+
+    __table_args__ = (
+        UniqueConstraint('project_id', 'path'),
+    )
 
     documents = relationship('Highlight', secondary='highlight_tags')
 
