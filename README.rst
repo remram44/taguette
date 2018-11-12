@@ -6,7 +6,7 @@ A spin on the phrase "tag it!", `Taguette <http://taguette.fr/>`__ is a free and
 + Import PDFs, Word Docs (``.docx``), Text files (``.txt``), HTML, EPUB, MOBI, Open Documents (``.odt``), and Rich Text Files (``.rtf``).
 + Highlight words, sentences, or paragraphs and tag them with the codes *you* create.
 + (not yet) Group imported documents together (e.g. as 'Interview' or 'Lit Review').
-+ (not yet) Export tagged documents, highlights for a specific tag, a list of tags with description and colors, and whole projects.
++ Export tagged documents, highlights for a specific tag, a list of tags with description and colors, and whole projects.
 
 To learn more about how to install and get started, keep reading!
 
