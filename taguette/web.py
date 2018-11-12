@@ -450,34 +450,42 @@ class DocumentContents(BaseHandler):
         })
 
 
+def merge_overlapping_ranges(ranges):
+    """Merge overlapping ranges in a sequence.
+    """
+    ranges = iter(ranges)
+    try:
+        merged = [next(ranges)]
+    except StopIteration:
+        return []
+
+    for rg in ranges:
+        left = bisect.bisect_right(merged, rg)
+        right = left + 1
+        # Merge left
+        while left >= 1 and merged[left - 1][1] >= rg[0]:
+            left -= 1
+        # Merge right
+        while (right < len(merged) and
+               merged[right][0] >= rg[1]):
+            right += 1
+        # Insert
+        if left - right == 1:
+            merged.insert(right, rg)
+        else:
+            merged[left:right] = [rg]
+
+    return merged
+
+
 class ExportDocument(BaseHandler):
     @authenticated
     @export_doc
     def get(self, project_id, document_id):
         doc = self.get_document(project_id, document_id, True)
 
-        if doc.highlights:
-            hls = iter(doc.highlights)
-            hl = next(hls)
-            highlights = [[hl.start_offset, hl.end_offset]]
-            for hl in hls:
-                this = [hl.start_offset, hl.end_offset]
-                left = bisect.bisect_right(highlights, this)
-                right = left + 1
-                # Merge left
-                while left >= 1 and highlights[left - 1][1] >= this[0]:
-                    left -= 1
-                # Merge right
-                while (right < len(highlights) and
-                        highlights[right][0] >= this[1]):
-                    right += 1
-                # Insert
-                if left - right == 1:
-                    highlights.insert(right, this)
-                else:
-                    highlights[left:right] = [this]
-        else:
-            highlights = []
+        highlights = merge_overlapping_ranges((hl.start_offset, hl.end_offset)
+                                              for hl in doc.highlights)
 
         html = self.render_string(
             'export_document.html',
