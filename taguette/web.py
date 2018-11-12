@@ -638,7 +638,7 @@ class TagAdd(BaseHandler):
             self.db.flush()  # Need to flush to get tag.id
         except IntegrityError:
             self.db.rollback()
-            self.set_status(500)
+            self.set_status(409)
             return self.finish()
         cmd = database.Command.tag_add(
             self.current_user,
@@ -674,7 +674,7 @@ class TagUpdate(BaseHandler):
                 self.db.commit()
             except IntegrityError:
                 self.db.rollback()
-                self.set_status(500)
+                self.set_status(409)
                 return self.finish()
             self.db.refresh(cmd)
             self.application.notify_project(project.id, cmd)
