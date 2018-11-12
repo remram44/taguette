@@ -1,8 +1,8 @@
 Changelog
 =========
 
-0.4 (???)
----------
+0.4 (2018-11-11)
+----------------
 
 Bugfixes:
 * Make sure to hide auth token from URL bar
