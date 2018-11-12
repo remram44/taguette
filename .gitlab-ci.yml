@@ -9,4 +9,4 @@ run_tests:
     - pip install pipenv
     - pipenv install --deploy -d
     - pipenv run python tests.py
-    - pipenv run flake8 --ignore= setup.py tests.py taguette
+    - pipenv run flake8 --ignore=W504 setup.py tests.py taguette

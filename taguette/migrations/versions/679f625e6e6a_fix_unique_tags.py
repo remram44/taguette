@@ -27,7 +27,8 @@ def upgrade():
         batch_op.create_unique_constraint(batch_op.f('uq_groups_project_id'),
                                           ['project_id', 'path'])
         batch_op.drop_index('ix_groups_path')
-        batch_op.create_index(batch_op.f('ix_groups_path'), ['path'], unique=False)
+        batch_op.create_index(batch_op.f('ix_groups_path'), ['path'],
+                              unique=False)
 
 
 def downgrade():

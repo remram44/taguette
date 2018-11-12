@@ -10,7 +10,7 @@ import os
 import shutil
 from sqlalchemy import Column, ForeignKey, Index, TypeDecorator, MetaData, \
     UniqueConstraint, create_engine, select
-from sqlalchemy.ext.declarative import declarative_base, declared_attr
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import column_property, deferred, relationship, \
     sessionmaker
 from sqlalchemy.sql import functions
