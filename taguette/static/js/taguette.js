@@ -246,9 +246,12 @@ function restoreSelection(saved) {
 }
 
 function splitAtPos(pos, after) {
+  // TODO: Find correct split position by counting bytes
+  // (splitText() takes a *character* index)
   if(pos[1] === 0) {
     return pos[0];
-  } else if(pos[1] === lengthUTF8(pos[0].textContent.length)) {
+  // This condition should be on bytes, using character length avoids error
+  } else if(pos[1] >= pos[0].textContent.length) {
     return nextElement(pos[0]);
   } else {
     return pos[0].splitText(pos[1]);
