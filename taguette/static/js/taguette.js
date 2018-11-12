@@ -748,8 +748,15 @@ function setHighlight(highlight) {
     removeHighlight(highlights[id]);
   }
   highlights[id] = highlight;
-  highlightSelection([highlight.start_offset, highlight.end_offset], id, editHighlight);
-  console.log("Highlight set:", highlight);
+  try {
+    highlightSelection([highlight.start_offset, highlight.end_offset], id, editHighlight);
+    console.log("Highlight set:", highlight);
+  } catch(error) {
+    console.error(
+      "Error setting highlight ", highlight.id, " ", [highlight.start_offset, highlight.end_offset],
+      ": ", error, "\n", error.stack,
+    );
+  }
 }
 
 // Remove a highlight
