@@ -10,7 +10,7 @@
     </style>
   </head>
   <body>
-    <h1>Taguette highlights: {{ path }}</h1>
+    <h1>Taguette highlights{% if path %}: {{ path }}{% endif %}</h1>
 {% for hl in highlights %}
     {{ hl.snippet |safe }}
     <p>
