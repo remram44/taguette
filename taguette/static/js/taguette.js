@@ -327,7 +327,8 @@ function projectMetadataChanged() {
     )
     .then(function(result) {
       setProjectMetadata(meta, false);
-    }, function(error) {
+    })
+    .catch(function(error) {
       console.error("Failed to update project metadata:", error);
       project_name_input.value = project_name;
       project_description_input.value = project_description;
@@ -505,7 +506,8 @@ document.getElementById('document-change-form').addEventListener('submit', funct
     console.log("Document update posted");
     $(document_change_modal).modal('hide');
     document.getElementById('document-change-form').reset();
-  }, function(error) {
+  })
+  .catch(function(error) {
     console.error("Failed to update document:", error);
   });
 });
@@ -523,7 +525,8 @@ document.getElementById('document-change-delete').addEventListener('click', func
     console.log("Document deletion posted");
     $(document_change_modal).modal('hide');
     document.getElementById('document-change-form').reset();
-  }, function(error) {
+  })
+  .catch(function(error) {
     console.error("Failed to delete document:", error);
   });
 });
@@ -702,7 +705,8 @@ document.getElementById('tag-add-form').addEventListener('submit', function(e) {
     console.log("Tag posted");
     $(tag_add_modal).modal('hide');
     document.getElementById('tag-add-form').reset();
-  }, function(error) {
+  })
+  .catch(function(error) {
     console.error("Failed to create tag:", error);
   });
 });
@@ -723,7 +727,8 @@ document.getElementById('tag-add-delete').addEventListener('click', function(e) 
     .then(function() {
       $(tag_add_modal).modal('hide');
       document.getElementById('tag-add-form').reset();
-    }, function(error) {
+    })
+    .catch(function(error) {
       console.error("Failed to delete tag:", error);
     });
   }
@@ -872,7 +877,8 @@ document.getElementById('highlight-add-form').addEventListener('submit', functio
     console.log("Highlight posted");
     $(highlight_add_modal).modal('hide');
     document.getElementById('highlight-add-form').reset();
-  }, function(error) {
+  })
+  .catch(function(error) {
     console.error("Failed to create highlight:", error);
   });
 });
@@ -889,7 +895,8 @@ document.getElementById('highlight-delete').addEventListener('click', function(e
     .then(function() {
       $(highlight_add_modal).modal('hide');
       document.getElementById('highlight-add-form').reset();
-    }, function(error) {
+    })
+    .catch(function(error) {
       console.error("Failed to delete highlight:", error);
     });
   }
@@ -940,7 +947,8 @@ function loadDocument(document_id) {
         '/project/' + project_id + '/export/document/' + document_id + '.' + ext,
       );
     }
-  }, function(error) {
+  })
+  .catch(function(error) {
     console.error("Failed to load document:", error);
   });
 }
@@ -1084,6 +1092,9 @@ function longPollForEvents() {
     setTimeout(longPollForEvents, 1000);
   }, function(error) {
     setTimeout(longPollForEvents, 5000);
+  })
+  .catch(function(error) {
+    console.error("Polling failed:", error);
   });
 }
 longPollForEvents();
