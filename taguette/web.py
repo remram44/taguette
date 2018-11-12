@@ -456,24 +456,28 @@ class ExportDocument(BaseHandler):
     def get(self, project_id, document_id):
         doc = self.get_document(project_id, document_id, True)
 
-        hls = iter(doc.highlights)
-        hl = next(hls)
-        highlights = [[hl.start_offset, hl.end_offset]]
-        for hl in hls:
-            this = [hl.start_offset, hl.end_offset]
-            left = bisect.bisect_right(highlights, this)
-            right = left + 1
-            # Merge left
-            while left >= 1 and highlights[left - 1][1] >= this[0]:
-                left -= 1
-            # Merge right
-            while right < len(highlights) and highlights[right][0] >= this[1]:
-                right += 1
-            # Insert
-            if left - right == 1:
-                highlights.insert(right, this)
-            else:
-                highlights[left:right] = [this]
+        if doc.highlights:
+            hls = iter(doc.highlights)
+            hl = next(hls)
+            highlights = [[hl.start_offset, hl.end_offset]]
+            for hl in hls:
+                this = [hl.start_offset, hl.end_offset]
+                left = bisect.bisect_right(highlights, this)
+                right = left + 1
+                # Merge left
+                while left >= 1 and highlights[left - 1][1] >= this[0]:
+                    left -= 1
+                # Merge right
+                while (right < len(highlights) and
+                        highlights[right][0] >= this[1]):
+                    right += 1
+                # Insert
+                if left - right == 1:
+                    highlights.insert(right, this)
+                else:
+                    highlights[left:right] = [this]
+        else:
+            highlights = []
 
         html = self.render_string(
             'export_document.html',
