@@ -8,8 +8,8 @@ import json
 import logging
 import os
 import shutil
-from sqlalchemy import Column, ForeignKey, Index, TypeDecorator, \
-    create_engine, select, MetaData
+from sqlalchemy import Column, ForeignKey, Index, TypeDecorator, MetaData, \
+    UniqueConstraint, create_engine, select
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
 from sqlalchemy.orm import column_property, deferred, relationship, \
     sessionmaker
@@ -262,8 +262,12 @@ class BaseHierarchy(object):
     def project(cls):
         return relationship('Project')
 
-    path = Column(String, nullable=False, index=True, unique=True)
+    path = Column(String, nullable=False, index=True)
     description = Column(Text, nullable=False)
+
+    __table_args__ = (
+        UniqueConstraint('project_id', 'path'),
+    )
 
 
 class Group(Base, BaseHierarchy):
