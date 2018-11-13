@@ -1,6 +1,17 @@
 Changelog
 =========
 
+0.4.1 (???)
+-----------
+
+Bugfixes:
+* Log errors from async handlers to the console instead of hiding them
+* Work around a problem computing highlight positions in documents when unicode is present (won't crash anymore, but positions might still be off, fix to come)
+* Fix not being able to create tags with names that collide with tags in other projects, and error creating a project if another project still uses default tags
+* Fix exporting a document that has 0 highlights
+* Fix document export missing highlights
+* Fix navbar expand button (shown on smaller screen sizes) not working
+
 0.4 (2018-11-11)
 ----------------
 
