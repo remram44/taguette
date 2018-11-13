@@ -227,7 +227,7 @@ class Command(Base):
 
 Project.last_event = column_property(
     select(
-        [Command.date]
+        [Command.id]
     ).where(
         Command.project_id == Project.id
     ).order_by(

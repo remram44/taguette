@@ -6,7 +6,6 @@ import hashlib
 import hmac
 import io
 import os
-from datetime import datetime
 import json
 import logging
 import jinja2
@@ -319,15 +318,9 @@ class Project(BaseHandler):
         ))
         self.render('project.html',
                     project=project,
-                    last_event=js_timestamp(project.last_event),
+                    last_event=project.last_event,
                     documents=documents_json,
                     tags=tags_json)
-
-
-def js_timestamp(dt=None):
-    if dt is None:
-        dt = datetime.utcnow()
-    return int(dt.timestamp())
 
 
 class ProjectMeta(BaseHandler):
@@ -337,7 +330,6 @@ class ProjectMeta(BaseHandler):
         project = self.get_project(project_id)
         project.name = obj['name']
         project.description = obj['description']
-        now = datetime.utcnow()
         logger.info("Updated project: %r %r",
                     project.name, project.description)
         cmd = database.Command.project_meta(
@@ -350,7 +342,7 @@ class ProjectMeta(BaseHandler):
         self.db.commit()
         self.db.refresh(cmd)
         self.application.notify_project(project.id, cmd)
-        return self.send_json({'ts': js_timestamp(now)})
+        return self.send_json({})
 
 
 class DocumentAdd(BaseHandler):
@@ -720,15 +712,15 @@ class TagUpdate(BaseHandler):
 class ProjectEvents(BaseHandler):
     @authenticated
     async def get(self, project_id):
-        from_ts = int(self.get_query_argument('from'))
-        from_dt = datetime.utcfromtimestamp(from_ts)
+        from_id = int(self.get_query_argument('from'))
         project = self.get_project(project_id)
         self.project_id = int(project_id)
 
         # Check for immediate update
         cmd = (
             self.db.query(database.Command)
-            .filter(database.Command.date > from_dt)
+            .filter(database.Command.id > from_id)
+            .limit(1)
         ).one_or_none()
 
         # Wait for an event
@@ -767,7 +759,7 @@ class ProjectEvents(BaseHandler):
         else:
             raise ValueError("Unknown command type %r" % type_)
 
-        result['ts'] = js_timestamp(cmd.date)
+        result['id'] = cmd.id
         self.send_json(result)
 
     def on_connection_close(self):

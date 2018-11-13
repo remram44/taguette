@@ -1113,7 +1113,7 @@ function longPollForEvents() {
         removeTag(result.tag_delete[i]);
       }
     }
-    last_event = result.ts;
+    last_event = result.id;
 
     // Re-open connection
     setTimeout(longPollForEvents, 1000);
