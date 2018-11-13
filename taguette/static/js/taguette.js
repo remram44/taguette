@@ -246,15 +246,30 @@ function restoreSelection(saved) {
 }
 
 function splitAtPos(pos, after) {
-  // TODO: Find correct split position by counting bytes
-  // (splitText() takes a *character* index)
-  if(pos[1] === 0) {
-    return pos[0];
-  // This condition should be on bytes, using character length avoids error
-  } else if(pos[1] >= pos[0].textContent.length) {
-    return nextElement(pos[0]);
+  var node = pos[0], idx = pos[1];
+  if(idx === 0) {
+    // Leftmost index: return current node
+    return node;
+  } else if(idx >= lengthUTF8(node.textContent)) {
+    // Rightmost index: return next node
+    return nextElement(node);
   } else {
-    return pos[0].splitText(pos[1]);
+    // Find the character index from the byte index
+    var idx_char = 0;
+    while(idx > 0) {
+      var code = node.textContent.charCodeAt(idx_char);
+      if(code <= 0x7f) idx -= 1;
+      else if(code <= 0x7ff) idx -= 2;
+      else if(code <= 0xffff) idx -= 3;
+      else idx -= 4;
+      idx_char += 1;
+    }
+    if(idx_char >= node.textContent.length) {
+      console.error("Error computing character position!");
+      idx_char = node.textContent.length - 1;
+    }
+    // Split, return right node
+    return node.splitText(idx_char);
   }
 }
 
