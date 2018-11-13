@@ -26,11 +26,11 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
       <div class="container">
         <a class="navbar-brand" href="index.html" style="font-family: BadScript;">TAGUETTE</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <div class="collapse navbar-collapse" id="navbar">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
               <a class="nav-link" href="index.html">Home</a>
@@ -69,7 +69,7 @@
           <li>Import PDFs, Word Docs (.docx), Text files (.txt), HTML, EPUB, MOBI, Open Documents (.odt), and Rich Text Files (.rtf).</li>
           <li>Highlight words, sentences, or paragraphs and tag them with the codes *you* create.</li>
           <li>Group imported documents together (e.g. as 'Interview' or 'Lit Review').</li>
-          <li>Export tagged documents, highlights for a specific tag, a list of tags with description and colors, and whole projects.</li>
+          <li>Export tagged documents, highlights for a specific tag, highlights for all tags, and a list of tags with their descriptions.</li>
         </ul>
 
         <p>...and much more! You can view our development queue on GitLab here: <a href="https://gitlab.com/remram44/taguette/issues">https://gitlab.com/remram44/taguette/issues</a>. You can always add feature requests, bug reports, or general feedback via GitLab issues. If you are not sure how to do that, feel free to email us your feedback at <a href="mailto:hi@taguette.fr">hi@taguette.fr</a>.</p>
@@ -88,7 +88,8 @@
 
         <p>Taguette was developed by Rémi Rampin. Vicky Steeves and Sarah DeMott provided the functional requirements, user needs, and testing in order to influence the development process.</p>
 
-        <table style="height: 100%; width:100%;">
+        <div class="table-responsive-lg">
+        <table class="table table-borderless">
           <tbody>
             <tr>
               <td><a href="https://remirampin.com"><img src="imgs/remi.jpg" alt="Remi Rampin"/><br/>Rémi Rampin</a><br/>Main Dev</td>
@@ -97,20 +98,21 @@
             </tr>
           </tbody>
         </table>
-
-        <hr/>
+        </div>
       </div>
     </main>
 
     <footer class="container">
-      <p>Last Updated: 2018-11-11 | Email: <a href="mailto:hi@taguette.fr">hi@taguette.fr</a> | Tweet us: <a href="https://twitter.com/TaguetteProject">@TaguetteProject</a> | Any issues using Taguette? Tell us on <a href="https://gitlab.com/remram44/taguette">GitLab</a>!</p>
+      <hr/>
+      <p>Last Updated: 2018-11-12 | Email: <a href="mailto:hi@taguette.fr">hi@taguette.fr</a> | Tweet us: <a href="https://twitter.com/TaguetteProject">@TaguetteProject</a> | Any issues using Taguette? Tell us on <a href="https://gitlab.com/remram44/taguette">GitLab</a>!</p>
     </footer>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="/js/popper.min.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
-    <script src="/js/jquery-slim.min.js"></script>
+    <script src="js/jquery-slim.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
   </body>
 </html>
