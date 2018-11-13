@@ -1,8 +1,8 @@
 Changelog
 =========
 
-0.4.1 (???)
------------
+0.4.1 (2018-11-12)
+------------------
 
 Bugfixes:
 * Log errors from async handlers to the console instead of hiding them
