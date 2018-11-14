@@ -930,6 +930,7 @@ function loadDocument(document_id) {
   )
   .then(function(result) {
     document_contents.innerHTML = '';
+    highlights = {};
     chunk_offsets = [];
     for(var i = 0; i < result.contents.length; ++i) {
       var chunk = result.contents[i];
@@ -972,6 +973,7 @@ function loadTag(tag_path) {
     current_tag = tag_path;
     current_document = null;
     document_contents.innerHTML = '';
+    highlights = {};
     for(var i = 0; i < result.highlights.length; ++i) {
       var hl = result.highlights[i];
       var elem = document.createElement('div');
