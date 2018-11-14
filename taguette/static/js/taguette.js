@@ -172,6 +172,8 @@ var chunk_offsets = [];
 
 // Get the document offset from a position
 function describePos(node, offset) {
+  // Convert current offset from character to bytes
+  offset = lengthUTF8(node.textContent.substring(0, offset));
   while(!node.id) {
     if(node.previousSibling) {
       node = node.previousSibling;

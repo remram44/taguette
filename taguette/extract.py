@@ -1,6 +1,13 @@
 from bs4 import BeautifulSoup, NavigableString
 
 
+def split_utf8(s, pos):
+    s = s.encode('utf-8')
+    while 0x80 <= s[pos] <= 0xBF:
+        pos += 1
+    return s[:pos].decode('utf-8'), s[pos:].decode('utf-8')
+
+
 def find_pos(node, offset, after):
     """Find a position in an HTML document.
     """
@@ -57,13 +64,13 @@ def extract(html, start, end):
     # Trim the right side first, because that doesn't mess our start position
     if end is not None:
         e = find_pos(soup, end, False)
-        e[0].replace_with(NavigableString(e[0].string[:e[1]]))
+        e[0].replace_with(NavigableString(split_utf8(e[0].string, e[1])[0]))
         delete_right(soup, e[2])
 
     # Trim the left side
     if start is not None:
         s = find_pos(soup, start, True)
-        s[0].replace_with(NavigableString(s[0].string[s[1]:]))
+        s[0].replace_with(NavigableString(split_utf8(s[0].string, s[1])[1]))
         delete_left(soup, s[2])
 
     # Remove everything but body
