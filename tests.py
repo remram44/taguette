@@ -71,16 +71,16 @@ class TestMergeOverlapping(unittest.TestCase):
 class TestMeasure(unittest.TestCase):
     def test_extract_highlight(self):
         """Tests extracting a highlight from an HTML document."""
-        html = '<p><u>Hello</u> there <i>World</i></p>'
-        snippet = extract.extract(html, 7, 14)
+        html = '<p><u>H\xE9llo</u> R\xE9mi <i>what is</i> up ?</p>'
+        snippet = extract.extract(html, 7, 15)
         self.assertEqual(snippet,
-                         '<p>here <i>Wo</i></p>')
-        snippet = extract.extract(html, 1, 4)
+                         '<p>R\xE9mi <i>wh</i></p>')
+        snippet = extract.extract(html, 1, 5)
         self.assertEqual(snippet,
-                         '<p><u>ell</u></p>')
-        snippet = extract.extract(html, 7, 11)
+                         '<p><u>\xE9ll</u></p>')
+        snippet = extract.extract(html, 7, 12)
         self.assertEqual(snippet,
-                         '<p>here</p>')
+                         '<p>R\xE9mi</p>')
 
     def test_highlight(self):
         """Tests highlighting an HTML document."""
