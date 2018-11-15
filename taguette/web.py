@@ -354,7 +354,7 @@ _not_ascii_re = re.compile(r'[^A-Za-z0-9_.-]')
 
 def secure_filename(name):
     """Sanitize a filename.
-    
+
     This takes a filename, for example provided by a browser with a file
     upload, and turn it into something that is safe for opening.
 
