@@ -11,8 +11,10 @@ import logging
 import jinja2
 from markupsafe import Markup
 import pkg_resources
+import re
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import aliased, joinedload, undefer, make_transient
+import sys
 from tornado.concurrent import Future
 import tornado.ioloop
 from tornado.routing import URLSpec
@@ -345,12 +347,41 @@ class ProjectMeta(BaseHandler):
         return self.send_json({})
 
 
+_windows_device_files = ('CON', 'AUX', 'COM1', 'COM2', 'COM3', 'COM4', 'LPT1',
+                         'LPT2', 'LPT3', 'PRN', 'NUL')
+_not_ascii_re = re.compile(r'[^A-Za-z0-9_.-]')
+
+
+def secure_filename(name):
+    """Sanitize a filename.
+    
+    This takes a filename, for example provided by a browser with a file
+    upload, and turn it into something that is safe for opening.
+
+    Adapted from werkzeug's secure_filename(), copyright 2007 the Pallets team.
+    https://palletsprojects.com/p/werkzeug/
+    """
+    if '/' in name:
+        name = name[name.rindex('/') + 1:]
+    if sys.platform == 'win32' and '\\' in name:
+        # It seems that IE gets that wrong, at least when the file is from
+        # a network share
+        name = name[name.rindex('\\') + 1:]
+    name = _not_ascii_re.sub('', name).strip('._')
+    if not name:
+        return '_'
+    if os.name == 'nt' and name.split('.')[0].upper() in _windows_device_files:
+        name = '_' + name
+    return name
+
+
 class DocumentAdd(BaseHandler):
     @authenticated
     async def post(self, project_id):
         project = self.get_project(project_id)
 
         name = self.get_body_argument('name')
+        name = secure_filename(name)
         description = self.get_body_argument('description')
         file = self.request.files['file'][0]
         content_type = file.content_type

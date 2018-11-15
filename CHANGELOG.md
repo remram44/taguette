@@ -9,6 +9,7 @@ Bugfixes:
 * Handle non-ascii text better
 * Fix real-time updates pausing if two changes happen in the same second
 * Add messages boxes to signal when something goes wrong
+* Sanitize name of uploaded files
 
 0.4.1 (2018-11-12)
 ------------------
