@@ -350,6 +350,7 @@ function projectMetadataChanged() {
     })
     .catch(function(error) {
       console.error("Failed to update project metadata:", error);
+      alert("Couldn't update project metadata!");
       project_name_input.value = project_name;
       project_description_input.value = project_description;
     });
@@ -529,6 +530,7 @@ document.getElementById('document-change-form').addEventListener('submit', funct
   })
   .catch(function(error) {
     console.error("Failed to update document:", error);
+    alert("Couldn't update document!");
   });
 });
 
@@ -548,6 +550,7 @@ document.getElementById('document-change-delete').addEventListener('click', func
   })
   .catch(function(error) {
     console.error("Failed to delete document:", error);
+    alert("Couldn't delete document!");
   });
 });
 
@@ -728,6 +731,7 @@ document.getElementById('tag-add-form').addEventListener('submit', function(e) {
   })
   .catch(function(error) {
     console.error("Failed to create tag:", error);
+    alert("Couldn't create tag!");
   });
 });
 
@@ -750,6 +754,7 @@ document.getElementById('tag-add-delete').addEventListener('click', function(e) 
     })
     .catch(function(error) {
       console.error("Failed to delete tag:", error);
+      alert("Couldn't delete tag!");
     });
   }
 });
@@ -907,6 +912,7 @@ document.getElementById('highlight-add-form').addEventListener('submit', functio
   })
   .catch(function(error) {
     console.error("Failed to create highlight:", error);
+    alert("Couldn't create highlight!");
   });
 });
 
@@ -925,6 +931,7 @@ document.getElementById('highlight-delete').addEventListener('click', function(e
     })
     .catch(function(error) {
       console.error("Failed to delete highlight:", error);
+      alert("Couldn't delete highlight!");
     });
   }
 });
@@ -978,6 +985,7 @@ function loadDocument(document_id) {
   })
   .catch(function(error) {
     console.error("Failed to load document:", error);
+    alert("Error loading document!");
   });
 }
 
@@ -1035,6 +1043,7 @@ function loadTag(tag_path) {
   })
   .catch(function(error) {
     console.error("Failed to load tag highlights:", error);
+    alert("Error loading tag highlights!");
   });
 }
 
