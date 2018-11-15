@@ -1,8 +1,8 @@
 Changelog
 =========
 
-0.4.2 (???)
------------
+0.4.2 (2018-11-15)
+------------------
 
 Bugfixes:
 * Don't show highlights from a different document
