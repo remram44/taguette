@@ -89,6 +89,9 @@ def main():
     parser.add_argument('--disable-register', dest='register',
                         action='store_false', default=True,
                         help=argparse.SUPPRESS)
+    parser.add_argument('--xheaders', action='store_true', default=False,
+                        help="Read X-Forwarded-For header (if using a reverse "
+                             "proxy)")
     parser.set_defaults(func=None)
 
     subparsers = parser.add_subparsers(title="additional commands", metavar='')
@@ -114,7 +117,7 @@ def main():
 
     app = make_app(db_url, multiuser=args.multiuser,
                    register_enabled=args.register, debug=args.debug)
-    app.listen(port, address=address)
+    app.listen(port, address=address, xheaders=args.xheaders)
     loop = tornado.ioloop.IOLoop.current()
 
     token = app.single_user_token
