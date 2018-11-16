@@ -320,7 +320,9 @@ class Project(BaseHandler):
         ))
         self.render('project.html',
                     project=project,
-                    last_event=project.last_event,
+                    last_event=(project.last_event
+                                if project.last_event is not None
+                                else -1),
                     documents=documents_json,
                     tags=tags_json)
 
