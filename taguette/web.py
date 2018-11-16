@@ -753,6 +753,7 @@ class ProjectEvents(BaseHandler):
         cmd = (
             self.db.query(database.Command)
             .filter(database.Command.id > from_id)
+            .filter(database.Command.project_id == project.id)
             .limit(1)
         ).one_or_none()
 
