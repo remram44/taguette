@@ -11,6 +11,8 @@ import prometheus_client
 import shutil
 from sqlalchemy import Column, ForeignKey, Index, TypeDecorator, MetaData, \
     UniqueConstraint, create_engine, select
+import sqlalchemy.engine
+import sqlalchemy.event
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import column_property, deferred, relationship, \
     sessionmaker
@@ -94,10 +96,14 @@ class Project(Base):
     created = Column(DateTime, nullable=False,
                      server_default=functions.now())
     members = relationship('User', secondary='project_members')
-    commands = relationship('Command', cascade='all,delete')
-    documents = relationship('Document', cascade='all,delete')
-    tags = relationship('Tag', cascade='all,delete')
-    groups = relationship('Group', cascade='all,delete')
+    commands = relationship('Command', cascade='all,delete-orphan',
+                            passive_deletes=True)
+    documents = relationship('Document', cascade='all,delete-orphan',
+                             passive_deletes=True)
+    tags = relationship('Tag', cascade='all,delete-orphan',
+                        passive_deletes=True)
+    groups = relationship('Group', cascade='all,delete-orphan',
+                          passive_deletes=True)
 
 
 class Privileges(enum.Enum):
@@ -133,7 +139,8 @@ class Document(Base):
     project = relationship('Project', back_populates='documents')
     contents = deferred(Column(Text, nullable=False))
     group = relationship('Group', secondary='document_groups')
-    highlights = relationship('Highlight', cascade='all,delete')
+    highlights = relationship('Highlight', cascade='all,delete-orphan',
+                              passive_deletes=True)
 
 
 class Command(Base):
@@ -144,8 +151,8 @@ class Command(Base):
                   server_default=functions.now(), index=True)
     user_login = Column(String, ForeignKey('users.login'), nullable=False)
     user = relationship('User')
-    project_id = Column(Integer, ForeignKey('projects.id'), nullable=False,
-                        index=True)
+    project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
+                        nullable=False, index=True)
     project = relationship('Project')
     document_id = Column(Integer,
                          nullable=True)  # Not ForeignKey, document can go away
@@ -328,7 +335,15 @@ def connect(db_url):
     """Connect to the database using an environment variable.
     """
     logger.info("Connecting to SQL database %r", db_url)
-    engine = create_engine(db_url, echo=False)
+    engine = create_engine(db_url)
+    # logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+
+    if db_url.startswith('sqlite:'):
+        @sqlalchemy.event.listens_for(sqlalchemy.engine.Engine, "connect")
+        def set_sqlite_pragma(dbapi_connection, connection_record):
+            cursor = dbapi_connection.cursor()
+            cursor.execute("PRAGMA foreign_keys=ON")
+            cursor.close()
 
     alembic_cfg = alembic.config.Config()
     alembic_cfg.set_main_option('script_location', 'taguette:migrations')
