@@ -403,11 +403,12 @@ function updateDocumentsList() {
     elem.className = 'list-group-item';
     elem.innerHTML =
       '<div class="d-flex justify-content-between align-items-center">' +
-      '  <a id="document-link-' + doc.id + '">' + escapeHtml(doc.name) + '</a>' +
+      '  <a>' + escapeHtml(doc.name) + '</a>' +
       '  <a href="javascript:editDocument(' + doc.id + ');" class="badge badge-primary badge-pill">edit</a>' +
       '</div>';
     documents_list.insertBefore(elem, before);
-    linkDocument(document.getElementById('document-link-' + doc.id), doc.id);
+    var links = elem.getElementsByTagName('a');
+    linkDocument(links[0], doc.id);
   }
   if(entries.length == 0) {
     var elem = document.createElement('div');
