@@ -136,7 +136,7 @@ class MyHTTPTestCase(AsyncHTTPTestCase):
         self.update(response)
         return response
 
-    async def apost(self, url, args, fmt='form'):
+    async def apost(self, url, args, fmt='form', files={}):
         if fmt == 'form':
             headers = {'Content-Type': 'application/x-www-form-urlencoded',
                        'Cookie': self.get_cookie()}
@@ -148,6 +148,22 @@ class MyHTTPTestCase(AsyncHTTPTestCase):
                        'Accept': 'application/json',
                        'Cookie': self.get_cookie()}
             body = json.dumps(args)
+        elif fmt == 'multipart':
+            headers = {'Content-Type': 'multipart/form-data; charset=utf-8; '
+                                       'boundary=-sep',
+                       'Cookie': self.get_cookie()}
+            body = []
+            for k, v in dict(args, _xsrf=self.xsrf).items():
+                body.append(('---sep\r\nContent-Disposition: form-data; '
+                             'name="%s"\r\n' % k).encode('utf-8'))
+                body.append(v.encode('utf-8'))
+            for k, v in files.items():
+                body.append(('---sep\r\nContent-Disposition: form-data; name='
+                             '"%s"; filename="%s"\r\nContent-Type: %s\r\n' % (
+                                 k, v[0], v[1])).encode('utf-8'))
+                body.append(v[2])
+            body.append(b'---sep--\r\n')
+            body = b'\r\n'.join(body)
         else:
             raise ValueError
         response = self._fetch(url, method='POST', follow_redirects=False,
@@ -317,6 +333,16 @@ class TestMultiuser(MyHTTPTestCase):
         poll_proj2 = self.poll_event(2, 2)
 
         # Create document 1 in project 1
+        response = await self.apost(
+            '/api/project/1/document/new',
+            dict(name='\u03A9\u2248\xE7\u221A\u222B\u02DC\xB5\u2264\u2265\xF7',
+                 description=''),
+            fmt='multipart',
+            files=dict(file=('doc.txt', 'text/plain', b'content here')),
+        )
+        self.assertEqual(response.code, 200)
+        self.assertEqual(response.body, b'{"created": 1}')
+
         # Create document 2 in project 2
         # Create highlight 1 in document 1
         # Change project 2 metadata
