@@ -229,6 +229,24 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(response.code, 302)
         self.assertEqual(response.headers['Location'], '/project/1')
 
+    @gen_test
+    async def test_projects(self):
+        # Log in
+        # Create project 1
+        # Check project page
+        # Start polling
+        # Create project 2
+        # Start polling
+        # Create tags in project 2
+        # Create document 1 in project 1
+        # Create document 2 in project 2
+        # Create highlight 1 in document 1
+        # Change project 2 metadata
+        # Create document 3 in project 2
+        # Create highlight 2 in document 2
+        # Create highlight 3 in document 2
+        # List highlights in project 2
+
 
 class TestSingleuser(MyHTTPTestCase):
     def get_app(self):
