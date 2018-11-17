@@ -383,14 +383,14 @@ class DocumentAdd(BaseHandler):
         project = self.get_project(project_id)
 
         name = self.get_body_argument('name')
-        name = secure_filename(name)
         description = self.get_body_argument('description')
         file = self.request.files['file'][0]
         content_type = file.content_type
+        filename = secure_filename(file.filename)
 
         try:
             body = await convert.to_html_chunks(file.body, content_type,
-                                                file.filename)
+                                                filename)
         except convert.ConversionError as err:
             self.set_status(400)
             self.send_json({
@@ -400,7 +400,7 @@ class DocumentAdd(BaseHandler):
             doc = database.Document(
                 name=name,
                 description=description,
-                filename=file.filename or None,
+                filename=filename,
                 project=project,
                 contents=body,
             )
