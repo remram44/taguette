@@ -1,6 +1,7 @@
 from http.cookies import SimpleCookie
 import re
-from tornado.testing import AsyncTestCase, gen_test, AsyncHTTPTestCase
+from tornado.testing import AsyncTestCase, gen_test, AsyncHTTPTestCase, \
+    get_async_test_timeout
 import unittest
 from unittest import mock
 from urllib.parse import urlencode
@@ -120,22 +121,40 @@ class MyHTTPTestCase(AsyncHTTPTestCase):
         return '; '.join('%s=%s' % (k, v.value)
                          for k, v in self.cookie.items())
 
-    def get(self, url):
+    def _fetch(self, url, **kwargs):
+        # Copied from tornado.testing.AsyncHTTPTestCase.fetch()
+        if not url.lower().startswith(('http://', 'https://')):
+            url = self.get_url(url)
+        return self.http_client.fetch(url, raise_error=False, **kwargs)
+
+    async def aget(self, url):
         headers = {}
         headers['Cookie'] = self.get_cookie()
-        response = self.fetch(url, follow_redirects=False,
-                              headers=headers)
+        response = self._fetch(url, follow_redirects=False,
+                               headers=headers)
+        response = await response
         self.update(response)
         return response
 
-    def post(self, url, args):
+    async def apost(self, url, args):
         headers = {'Content-Type': 'application/x-www-form-urlencoded'}
         headers['Cookie'] = self.get_cookie()
-        response = self.fetch(url, method='POST', follow_redirects=False,
-                              headers=headers,
-                              body=urlencode(dict(args, _xsrf=self.xsrf)))
+        response = self._fetch(url, method='POST', follow_redirects=False,
+                               headers=headers,
+                               body=urlencode(dict(args, _xsrf=self.xsrf)))
+        response = await response
         self.update(response)
         return response
+
+    def get(self, url):
+        return self.io_loop.run_sync(
+            lambda: self.aget(url),
+            timeout=get_async_test_timeout())
+
+    def post(self, url, args):
+        return self.io_loop.run_sync(
+            lambda: self.apost(url, args),
+            timeout=get_async_test_timeout())
 
 
 def set_dumb_password(self, user):
