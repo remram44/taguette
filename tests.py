@@ -111,7 +111,7 @@ class MyHTTPTestCase(AsyncHTTPTestCase):
         if response.code < 400:
             m = self._re_xsrf.search(response.body)
             if m is not None:
-                self.xsrf = m.group(1)
+                self.xsrf = m.group(1).decode('utf-8')
             if 'Set-Cookie' in response.headers:
                 self.cookie.load(response.headers['Set-Cookie'])
 
