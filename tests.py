@@ -137,12 +137,22 @@ class MyHTTPTestCase(AsyncHTTPTestCase):
         self.update(response)
         return response
 
-    async def apost(self, url, args):
-        headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-        headers['Cookie'] = self.get_cookie()
+    async def apost(self, url, args, fmt='form'):
+        if fmt == 'form':
+            headers = {'Content-Type': 'application/x-www-form-urlencoded',
+                       'Cookie': self.get_cookie()}
+            body = urlencode(dict(args, _xsrf=self.xsrf))
+        elif fmt == 'json':
+            url = '%s%s%s' % (url, '&' if '?' in url else '?',
+                              urlencode(dict(_xsrf=self.xsrf)))
+            headers = {'Content-Type': 'application/json',
+                       'Accept': 'application/json',
+                       'Cookie': self.get_cookie()}
+            body = json.dumps(args)
+        else:
+            raise ValueError
         response = self._fetch(url, method='POST', follow_redirects=False,
-                               headers=headers,
-                               body=urlencode(dict(args, _xsrf=self.xsrf)))
+                               headers=headers, body=body)
         response = await response
         self.update(response)
         return response
@@ -294,6 +304,30 @@ class TestMultiuser(MyHTTPTestCase):
         poll_proj2 = self.poll_event(2, -1)
 
         # Create tags in project 2
+        response = await self.apost('/api/project/2/tag/new',
+                                    dict(path='people.dev',
+                                         description="Developers"),
+                                    fmt='json')
+        self.assertEqual(response.code, 200)
+        self.assertEqual(
+            await poll_proj2,
+            {'tag_add': [{'description': "Developers", 'id': 5,
+                          'path': 'people.dev'}],
+             'id': 1})
+        poll_proj2 = self.poll_event(2, 1)
+
+        response = await self.apost('/api/project/2/tag/new',
+                                    dict(path='people.female',
+                                         description=''),
+                                    fmt='json')
+        self.assertEqual(response.code, 200)
+        self.assertEqual(
+            await poll_proj2,
+            {'tag_add': [{'description': '', 'id': 6,
+                          'path': 'people.female'}],
+             'id': 2})
+        poll_proj2 = self.poll_event(2, 2)
+
         # Create document 1 in project 1
         # Create document 2 in project 2
         # Create highlight 1 in document 1
