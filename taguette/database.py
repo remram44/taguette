@@ -62,6 +62,8 @@ class User(Base):
     created = Column(DateTime, nullable=False,
                      server_default=functions.now())
     hashed_password = Column(String, nullable=True)
+    email = Column(String, nullable=True, index=True, unique=True)
+    email_sent = Column(DateTime, nullable=True)
     projects = relationship('Project', secondary='project_members')
 
     def set_password(self, password, method='bcrypt'):
