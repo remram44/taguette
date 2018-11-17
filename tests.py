@@ -263,7 +263,7 @@ class TestMultiuser(MyHTTPTestCase):
         response = await self.aget('/login')
         self.assertEqual(response.code, 200)
         response = await self.apost('/login', dict(next='/', login='admin',
-                                            password='hackme'))
+                                                   password='hackme'))
         self.assertEqual(response.code, 302)
         self.assertEqual(response.headers['Location'], '/')
 
