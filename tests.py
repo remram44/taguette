@@ -350,7 +350,7 @@ class TestMultiuser(MyHTTPTestCase):
         response = await self.apost('/api/project/1/document/new',
                                     dict(name=name, description=''),
                                     fmt='multipart',
-                                    files=dict(file=('../NUL.txt',
+                                    files=dict(file=('../NUL.html',
                                                      'text/plain',
                                                      b'content here')))
         self.assertEqual(response.code, 200)
@@ -359,7 +359,7 @@ class TestMultiuser(MyHTTPTestCase):
         doc = db.query(database.Document).get(1)
         self.assertEqual(doc.name, name)
         self.assertEqual(doc.description, '')
-        self.assertEqual(doc.filename, '_NUL.txt')
+        self.assertEqual(doc.filename, '_NUL.html')
         self.assertEqual(
             await poll_proj1,
             {'document_add': [{'description': '', 'id': 1, 'name': name}],
@@ -371,7 +371,7 @@ class TestMultiuser(MyHTTPTestCase):
                                     dict(name='otherdoc',
                                          description='Other one'),
                                     fmt='multipart',
-                                    files=dict(file=('../otherdoc.txt',
+                                    files=dict(file=('../otherdoc.html',
                                                      'text/plain',
                                                      b'different content')))
         self.assertEqual(response.code, 200)
@@ -380,7 +380,7 @@ class TestMultiuser(MyHTTPTestCase):
         doc = db.query(database.Document).get(2)
         self.assertEqual(doc.name, 'otherdoc')
         self.assertEqual(doc.description, 'Other one')
-        self.assertEqual(doc.filename, 'otherdoc.txt')
+        self.assertEqual(doc.filename, 'otherdoc.html')
         self.assertEqual(
             await poll_proj2,
             {'document_add': [{'description': 'Other one', 'id': 2,
