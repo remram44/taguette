@@ -2,6 +2,7 @@ import json
 import logging
 import jinja2
 from markupsafe import Markup
+from sqlalchemy.orm import aliased
 from tornado.web import authenticated, HTTPError
 
 from .. import database
@@ -166,6 +167,28 @@ class ProjectAdd(BaseHandler):
         for name in ('name', 'description', 'error'):
             kwargs.setdefault(name, '')
         super(ProjectAdd, self).render(template_name, **kwargs)
+
+
+class ProjectDelete(BaseHandler):
+    def get(self, project_id):
+        project = self.get_project(project_id)
+        doc = aliased(database.Document)
+        highlights = (
+            self.db.query(database.Highlight)
+            .join(doc, database.Highlight.document_id == doc.id)
+            .filter(doc.project_id == project.id)
+        ).count()
+        self.render('project_delete.html', project=project,
+                    documents=len(project.documents), tags=len(project.tags),
+                    highlights=highlights)
+
+    def post(self, project_id):
+        project = self.get_project(project_id)
+        logger.warning("Deleting project %d %r user=%r",
+                       project.id, project.name, self.current_user)
+        self.db.delete(project)
+        self.db.commit()
+        self.redirect(self.reverse_url('index'))
 
 
 class Project(BaseHandler):

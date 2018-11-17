@@ -36,6 +36,8 @@
             </div>
           </form>
 
+          <p><a href="{{ reverse_url('delete_project', project.id) }}" class="btn btn-outline-danger">Delete project</a></p>
+
           <div class="dropdown">
             <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdown-codebook" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Export codebook

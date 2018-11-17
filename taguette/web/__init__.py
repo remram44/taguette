@@ -51,6 +51,8 @@ def make_app(config, debug=False):
             URLSpec('/logout', views.Logout, name='logout'),
             URLSpec('/register', views.Register, name='register'),
             URLSpec('/project/new', views.ProjectAdd, name='new_project'),
+            URLSpec('/project/([0-9]+)/delete', views.ProjectDelete,
+                    name='delete_project'),
 
             # Project view
             URLSpec('/project/([0-9]+)', views.Project, name='project'),
