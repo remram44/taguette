@@ -475,52 +475,80 @@ class DocumentContents(BaseHandler):
         })
 
 
-def merge_overlapping_ranges(ranges):
-    """Merge overlapping ranges in a sequence.
-    """
-    ranges = iter(ranges)
-    try:
-        merged = [next(ranges)]
-    except StopIteration:
-        return []
-
-    for rg in ranges:
-        left = right = bisect.bisect_right(merged, rg)
-        # Merge left
-        while left >= 1 and rg[0] <= merged[left - 1][1]:
-            rg = (min(rg[0], merged[left - 1][0]),
-                  max(rg[1], merged[left - 1][1]))
-            left -= 1
-        # Merge right
-        while (right < len(merged) and
-               merged[right][0] <= rg[1]):
-            rg = (min(rg[0], merged[right][0]),
-                  max(rg[1], merged[right][1]))
-            right += 1
-        # Insert
-        if left == right:
-            merged.insert(left, rg)
-        else:
-            merged[left:right] = [rg]
-
-    return merged
-
-
-class ExportDocument(BaseHandler):
+class TagAdd(BaseHandler):
     @authenticated
-    @export_doc
-    def get(self, project_id, document_id):
-        doc = self.get_document(project_id, document_id, True)
-
-        highlights = merge_overlapping_ranges((hl.start_offset, hl.end_offset)
-                                              for hl in doc.highlights)
-
-        html = self.render_string(
-            'export_document.html',
-            name=doc.name,
-            contents=Markup(extract.highlight(doc.contents, highlights)),
+    def post(self, project_id):
+        obj = self.get_json()
+        project = self.get_project(project_id)
+        tag = database.Tag(project=project,
+                           path=obj['path'], description=obj['description'])
+        try:
+            self.db.add(tag)
+            self.db.flush()  # Need to flush to get tag.id
+        except IntegrityError:
+            self.db.rollback()
+            self.set_status(409)
+            return self.finish()
+        cmd = database.Command.tag_add(
+            self.current_user,
+            tag,
         )
-        return doc.name, html
+        self.db.add(cmd)
+        self.db.commit()
+        self.db.refresh(cmd)
+        self.application.notify_project(project.id, cmd)
+
+        self.send_json({'id': tag.id})
+
+
+class TagUpdate(BaseHandler):
+    @authenticated
+    def post(self, project_id, tag_id):
+        obj = self.get_json()
+        project = self.get_project(project_id)
+        tag = self.db.query(database.Tag).get(int(tag_id))
+        if tag.project_id != project.id:
+            raise HTTPError(404)
+        if obj:
+            if 'path' in obj:
+                tag.path = obj['path']
+            if 'description' in obj:
+                tag.description = obj['description']
+            cmd = database.Command.tag_add(
+                self.current_user,
+                tag,
+            )
+            try:
+                self.db.add(cmd)
+                self.db.commit()
+            except IntegrityError:
+                self.db.rollback()
+                self.set_status(409)
+                return self.finish()
+            self.db.refresh(cmd)
+            self.application.notify_project(project.id, cmd)
+
+        self.send_json({'id': tag.id})
+
+    @authenticated
+    def delete(self, project_id, tag_id):
+        project = self.get_project(project_id)
+        tag = self.db.query(database.Tag).get(int(tag_id))
+        if tag.project_id != project.id:
+            raise HTTPError(404)
+        self.db.delete(tag)
+        cmd = database.Command.tag_delete(
+            self.current_user,
+            project.id,
+            tag.id,
+        )
+        self.db.add(cmd)
+        self.db.commit()
+        self.db.refresh(cmd)
+        self.application.notify_project(project.id, cmd)
+
+        self.set_status(204)
+        self.finish()
 
 
 class HighlightAdd(BaseHandler):
@@ -666,80 +694,78 @@ class ExportHighlightsDoc(BaseHandler):
         return 'path', html
 
 
-class TagAdd(BaseHandler):
+def merge_overlapping_ranges(ranges):
+    """Merge overlapping ranges in a sequence.
+    """
+    ranges = iter(ranges)
+    try:
+        merged = [next(ranges)]
+    except StopIteration:
+        return []
+
+    for rg in ranges:
+        left = right = bisect.bisect_right(merged, rg)
+        # Merge left
+        while left >= 1 and rg[0] <= merged[left - 1][1]:
+            rg = (min(rg[0], merged[left - 1][0]),
+                  max(rg[1], merged[left - 1][1]))
+            left -= 1
+        # Merge right
+        while (right < len(merged) and
+               merged[right][0] <= rg[1]):
+            rg = (min(rg[0], merged[right][0]),
+                  max(rg[1], merged[right][1]))
+            right += 1
+        # Insert
+        if left == right:
+            merged.insert(left, rg)
+        else:
+            merged[left:right] = [rg]
+
+    return merged
+
+
+class ExportDocument(BaseHandler):
     @authenticated
-    def post(self, project_id):
-        obj = self.get_json()
-        project = self.get_project(project_id)
-        tag = database.Tag(project=project,
-                           path=obj['path'], description=obj['description'])
-        try:
-            self.db.add(tag)
-            self.db.flush()  # Need to flush to get tag.id
-        except IntegrityError:
-            self.db.rollback()
-            self.set_status(409)
-            return self.finish()
-        cmd = database.Command.tag_add(
-            self.current_user,
-            tag,
+    @export_doc
+    def get(self, project_id, document_id):
+        doc = self.get_document(project_id, document_id, True)
+
+        highlights = merge_overlapping_ranges((hl.start_offset, hl.end_offset)
+                                              for hl in doc.highlights)
+
+        html = self.render_string(
+            'export_document.html',
+            name=doc.name,
+            contents=Markup(extract.highlight(doc.contents, highlights)),
         )
-        self.db.add(cmd)
-        self.db.commit()
-        self.db.refresh(cmd)
-        self.application.notify_project(project.id, cmd)
-
-        self.send_json({'id': tag.id})
+        return doc.name, html
 
 
-class TagUpdate(BaseHandler):
+class ExportCodebookCsv(BaseHandler):
     @authenticated
-    def post(self, project_id, tag_id):
-        obj = self.get_json()
+    def get(self, project_id):
         project = self.get_project(project_id)
-        tag = self.db.query(database.Tag).get(int(tag_id))
-        if tag.project_id != project.id:
-            raise HTTPError(404)
-        if obj:
-            if 'path' in obj:
-                tag.path = obj['path']
-            if 'description' in obj:
-                tag.description = obj['description']
-            cmd = database.Command.tag_add(
-                self.current_user,
-                tag,
-            )
-            try:
-                self.db.add(cmd)
-                self.db.commit()
-            except IntegrityError:
-                self.db.rollback()
-                self.set_status(409)
-                return self.finish()
-            self.db.refresh(cmd)
-            self.application.notify_project(project.id, cmd)
+        tags = list(project.tags)
+        self.set_header('Content-Type', 'text/csv; charset=utf-8')
+        self.set_header('Content-Disposition',
+                        'attachment; filename="codebook.csv"')
+        buf = io.StringIO()
+        writer = csv.writer(buf)
+        writer.writerow(['tag', 'description'])
+        for tag in tags:
+            writer.writerow([tag.path, tag.description])
+        self.finish(buf.getvalue())
 
-        self.send_json({'id': tag.id})
 
+class ExportCodebookDoc(BaseHandler):
     @authenticated
-    def delete(self, project_id, tag_id):
+    @export_doc
+    def get(self, project_id):
         project = self.get_project(project_id)
-        tag = self.db.query(database.Tag).get(int(tag_id))
-        if tag.project_id != project.id:
-            raise HTTPError(404)
-        self.db.delete(tag)
-        cmd = database.Command.tag_delete(
-            self.current_user,
-            project.id,
-            tag.id,
-        )
-        self.db.add(cmd)
-        self.db.commit()
-        self.db.refresh(cmd)
-        self.application.notify_project(project.id, cmd)
-
-        self.set_status(204)
-        self.finish()
+        tags = list(project.tags)
+        html = self.render_string('export_codebook.html', tags=tags)
+        return 'codebook', html
 
 
 class ProjectEvents(BaseHandler):
@@ -799,32 +825,6 @@ class ProjectEvents(BaseHandler):
     def on_connection_close(self):
         self.wait_future.cancel()
         self.application.unobserve_project(self.project_id, self.wait_future)
-
-
-class ExportCodebookCsv(BaseHandler):
-    @authenticated
-    def get(self, project_id):
-        project = self.get_project(project_id)
-        tags = list(project.tags)
-        self.set_header('Content-Type', 'text/csv; charset=utf-8')
-        self.set_header('Content-Disposition',
-                        'attachment; filename="codebook.csv"')
-        buf = io.StringIO()
-        writer = csv.writer(buf)
-        writer.writerow(['tag', 'description'])
-        for tag in tags:
-            writer.writerow([tag.path, tag.description])
-        self.finish(buf.getvalue())
-
-
-class ExportCodebookDoc(BaseHandler):
-    @authenticated
-    @export_doc
-    def get(self, project_id):
-        project = self.get_project(project_id)
-        tags = list(project.tags)
-        html = self.render_string('export_codebook.html', tags=tags)
-        return 'codebook', html
 
 
 class Application(tornado.web.Application):
