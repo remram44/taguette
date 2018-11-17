@@ -1,7 +1,6 @@
 from http.cookies import SimpleCookie
 import json
 import re
-from tornado.gen import sleep
 from tornado.testing import AsyncTestCase, gen_test, AsyncHTTPTestCase, \
     get_async_test_timeout
 import unittest
