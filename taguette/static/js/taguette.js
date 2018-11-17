@@ -400,10 +400,11 @@ function updateDocumentsList() {
   for(var i = 0; i < entries.length; ++i) {
     var doc = entries[i][1];
     var elem = document.createElement('li');
-    elem.className = 'list-group-item';
+    elem.setAttribute('id', 'document-link-' + doc.id);
+    elem.className = 'list-group-item document-link';
     elem.innerHTML =
       '<div class="d-flex justify-content-between align-items-center">' +
-      '  <a>' + escapeHtml(doc.name) + '</a>' +
+      '  <a class="document-link-a">' + escapeHtml(doc.name) + '</a>' +
       '  <a href="javascript:editDocument(' + doc.id + ');" class="badge badge-primary badge-pill">edit</a>' +
       '</div>';
     documents_list.insertBefore(elem, before);
@@ -966,6 +967,11 @@ function loadDocument(document_id) {
       chunk_offsets.push(chunk.offset);
     }
     current_document = document_id;
+    var document_links = document.getElementsByClassName('document-link');
+    for(var i = 0; i < document_links.length; ++i) {
+      document_links[i].classList.remove('document-link-current');
+    }
+    document.getElementById('document-link-' + current_document).classList.add('document-link-current');
     current_tag = null;
     console.log("Loaded document", document_id);
     for(var i = 0; i < result.highlights.length; ++i) {
@@ -998,6 +1004,10 @@ function loadTag(tag_path) {
     console.log("Loaded highlights for tag", tag_path || "''");
     current_tag = tag_path;
     current_document = null;
+    var document_links = document.getElementsByClassName('document-link');
+    for(var i = 0; i < document_links.length; ++i) {
+      document_links[i].classList.remove('document-link-current');
+    }
     document_contents.innerHTML = '';
     highlights = {};
     for(var i = 0; i < result.highlights.length; ++i) {
@@ -1100,7 +1110,7 @@ function longPollForEvents() {
       }
     }
     if('highlight_add' in result) {
-      var added = result.highlight_add[current_document];
+      var added = result.highlight_add['' + current_document];
       if(added) {
         for(var i = 0; i < added.length; ++i) {
           setHighlight(added[i]);
@@ -1108,7 +1118,7 @@ function longPollForEvents() {
       }
     }
     if('highlight_delete' in result) {
-      var removed = result.highlight_delete[current_document];
+      var removed = result.highlight_delete['' + current_document];
       if(removed) {
         for(var i = 0; i < removed.length; ++i) {
           removeHighlight(removed[i]);

@@ -205,6 +205,14 @@ textarea.form-control {
   pointer-events: all;
 }
 
+li.document-link-current {
+  background-color: #e7f2ff;
+}
+
+li.document-link-current a.document-link-a {
+  font-weight: bold;
+}
+
 .document-view {
   border: 2px solid #dee2e6;
   padding: 1.2em 0.3em;
