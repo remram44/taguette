@@ -11,11 +11,11 @@
 }
 
 /* Change link colors */
-.container-body a {
+.container-body a:not(.btn) {
   color: #3498DB;
 }
 
-.container-body a:hover {
+.container-body a:not(.btn):hover {
   color: #0f2d41 !important;
   text-decoration: underline;
 }
