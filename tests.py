@@ -185,12 +185,12 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertIn(b'Here are your projects', response.body)
 
         # Fetch project creation page
-        response = self.get('/new')
+        response = self.get('/project/new')
         self.assertEqual(response.code, 200)
 
         # Create a project
         response = self.post(
-            '/new', dict(name='test project', description=''))
+            '/project/new', dict(name='test project', description=''))
         self.assertEqual(response.code, 302)
         self.assertEqual(response.headers['Location'], '/project/1')
 
@@ -254,12 +254,12 @@ class TestSingleuser(MyHTTPTestCase):
         self.assertIn(b'Here are your projects', response.body)
 
         # Fetch project creation page
-        response = self.get('/new')
+        response = self.get('/project/new')
         self.assertEqual(response.code, 200)
 
         # Create a project
         response = self.post(
-            '/new', dict(name='test project', description=''))
+            '/project/new', dict(name='test project', description=''))
         self.assertEqual(response.code, 302)
         self.assertEqual(response.headers['Location'], '/project/1')
 

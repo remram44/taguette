@@ -258,7 +258,7 @@ class Register(BaseHandler):
         self.redirect(self.reverse_url('index'))
 
 
-class NewProject(BaseHandler):
+class ProjectAdd(BaseHandler):
     @authenticated
     def get(self):
         self.render('project_new.html')
@@ -294,7 +294,7 @@ class NewProject(BaseHandler):
     def render(self, template_name, **kwargs):
         for name in ('name', 'description', 'error'):
             kwargs.setdefault(name, '')
-        super(NewProject, self).render(template_name, **kwargs)
+        super(ProjectAdd, self).render(template_name, **kwargs)
 
 
 class Project(BaseHandler):
@@ -959,7 +959,7 @@ def make_app(db_url, multiuser, register_enabled=True, debug=False):
             URLSpec('/login', Login, name='login'),
             URLSpec('/logout', Logout, name='logout'),
             URLSpec('/register', Register, name='register'),
-            URLSpec('/new', NewProject, name='new_project'),
+            URLSpec('/project/new', ProjectAdd, name='new_project'),
 
             # Project view
             URLSpec('/project/([0-9]+)', Project, name='project'),
