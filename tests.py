@@ -1,4 +1,5 @@
 from http.cookies import SimpleCookie
+import json
 import re
 from tornado.testing import AsyncTestCase, gen_test, AsyncHTTPTestCase, \
     get_async_test_timeout
@@ -240,11 +241,58 @@ class TestMultiuser(MyHTTPTestCase):
     @gen_test
     async def test_projects(self):
         # Log in
+        response = await self.aget('/login')
+        self.assertEqual(response.code, 200)
+        response = await self.apost('/login', dict(next='/', login='admin',
+                                                   password='hackme'))
+        self.assertEqual(response.code, 302)
+        self.assertEqual(response.headers['Location'], '/')
+
         # Create project 1
+        response = await self.aget('/project/new')
+        self.assertEqual(response.code, 200)
+        response = await self.apost('/project/new', dict(
+            name='\uFF9F\uFF65\u273F\u30FE\u2572\x28\uFF61\u25D5\u203F\u25D5'
+                 '\uFF61\x29\u2571\u273F\uFF65\uFF9F',
+            description="R\xE9mi's project"))
+        self.assertEqual(response.code, 302)
+        self.assertEqual(response.headers['Location'], '/project/1')
+
         # Check project page
+        response = await self.aget('/project/1')
+        self.assertEqual(response.code, 200)
+        body = response.body.decode('utf-8')
+        self.assertIn('we are good at engineering', body)
+        idx = body.index('we are good at engineering')
+        init_js = '\n'.join(body[idx:].splitlines()[1:9])
+        self.assertEqual(
+            init_js,
+            '<script type="text/javascript">\n'
+            '  var user_login = "admin";\n'
+            '  var project_id = 1;\n'
+            '  var last_event = -1;\n'
+            '  var documents = {};\n'
+            '  var tags = {"1": {"description": "Further review required", '
+            '"id": 1, "path": "interesting"}, "2": '
+            '{"description": "Known people", "id": 2, "path": "people"}};\n'
+            '  var members = {"admin": {"privileges": "ADMIN"}};\n'
+            '</script>',
+        )
+
         # Start polling
+        poll_proj1 = self.poll_event(1, -1)
+
         # Create project 2
+        response = await self.aget('/project/new')
+        self.assertEqual(response.code, 200)
+        response = await self.apost('/project/new', dict(name='other project',
+                                                         description=''))
+        self.assertEqual(response.code, 302)
+        self.assertEqual(response.headers['Location'], '/project/2')
+
         # Start polling
+        poll_proj2 = self.poll_event(2, -1)
+
         # Create tags in project 2
         # Create document 1 in project 1
         # Create document 2 in project 2
@@ -254,6 +302,12 @@ class TestMultiuser(MyHTTPTestCase):
         # Create highlight 2 in document 2
         # Create highlight 3 in document 2
         # List highlights in project 2
+
+    async def poll_event(self, proj, from_id):
+        response = await self.aget('/api/project/%d/events?from=%d' % (
+                                   proj, from_id))
+        self.assertEqual(response.code, 200)
+        return json.loads(response.body.decode('utf-8'))
 
 
 class TestSingleuser(MyHTTPTestCase):
