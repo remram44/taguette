@@ -102,6 +102,7 @@ class MyHTTPTestCase(AsyncHTTPTestCase):
 
     def setUp(self):
         web.Application.check_messages = lambda *a: None
+        web.secure_filename.windows = True  # escape device names
         super(MyHTTPTestCase, self).setUp()
         self.cookie = SimpleCookie()
 
@@ -333,17 +334,47 @@ class TestMultiuser(MyHTTPTestCase):
         poll_proj2 = self.poll_event(2, 2)
 
         # Create document 1 in project 1
-        response = await self.apost(
-            '/api/project/1/document/new',
-            dict(name='\u03A9\u2248\xE7\u221A\u222B\u02DC\xB5\u2264\u2265\xF7',
-                 description=''),
-            fmt='multipart',
-            files=dict(file=('doc.txt', 'text/plain', b'content here')),
-        )
+        name = '\u03A9\u2248\xE7\u221A\u222B\u02DC\xB5\u2264\u2265\xF7'
+        response = await self.apost('/api/project/1/document/new',
+                                    dict(name=name, description=''),
+                                    fmt='multipart',
+                                    files=dict(file=('../NUL.txt',
+                                                     'text/plain',
+                                                     b'content here')))
         self.assertEqual(response.code, 200)
         self.assertEqual(response.body, b'{"created": 1}')
+        db = self.application.DBSession()
+        doc = db.query(database.Document).get(1)
+        self.assertEqual(doc.name, name)
+        self.assertEqual(doc.description, '')
+        self.assertEqual(doc.filename, '_NUL.txt')
+        self.assertEqual(
+            await poll_proj1,
+            {'document_add': [{'description': '', 'id': 1, 'name': name}],
+             'id': 3})
+        poll_proj1 = self.poll_event(1, 3)
 
         # Create document 2 in project 2
+        response = await self.apost('/api/project/2/document/new',
+                                    dict(name='otherdoc',
+                                         description='Other one'),
+                                    fmt='multipart',
+                                    files=dict(file=('../otherdoc.txt',
+                                                     'text/plain',
+                                                     b'different content')))
+        self.assertEqual(response.code, 200)
+        self.assertEqual(response.body, b'{"created": 2}')
+        db = self.application.DBSession()
+        doc = db.query(database.Document).get(2)
+        self.assertEqual(doc.name, 'otherdoc')
+        self.assertEqual(doc.description, 'Other one')
+        self.assertEqual(doc.filename, 'otherdoc.txt')
+        self.assertEqual(
+            await poll_proj2,
+            {'document_add': [{'description': 'Other one', 'id': 2,
+                               'name': 'otherdoc'}], 'id': 4})
+        poll_proj2 = self.poll_event(2, 4)
+
         # Create highlight 1 in document 1
         # Change project 2 metadata
         # Create document 3 in project 2
