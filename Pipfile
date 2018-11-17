@@ -7,6 +7,7 @@ name = "pypi"
 taguette = {editable = true, path = "."}
 
 [dev-packages]
+coverage = "*"
 flake8 = "*"
 
 [requires]

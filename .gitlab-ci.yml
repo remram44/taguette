@@ -8,5 +8,9 @@ run_tests:
   script:
     - pip install pipenv
     - pipenv install --deploy -d
-    - pipenv run python tests.py
+    - pipenv run coverage run --source=taguette tests.py
+    - pipenv run coverage html
     - pipenv run flake8 --ignore=W504 setup.py tests.py taguette
+  artifacts:
+    paths:
+      - htmlcov
