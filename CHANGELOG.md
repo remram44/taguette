@@ -1,6 +1,16 @@
 Changelog
 =========
 
+0.4.3 (???)
+-----------
+
+Bugfixes:
+* Fix JavaScript error on a brand new project (no recorded Command)
+* Fix Commands being sent to the wrong project
+
+Features:
+* Add `--xheaders` option for the hosted setup, showing correct IPs in the log
+
 0.4.2 (2018-11-15)
 ------------------
 
