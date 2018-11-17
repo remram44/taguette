@@ -56,6 +56,7 @@ prometheus-async = "*"
 sentry-sdk = "*"
 
 [tool.poetry.dev-dependencies]
+coverage = "*"
 flake8 = "*"
 readme_renderer = "*"
 
