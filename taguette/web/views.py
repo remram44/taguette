@@ -103,6 +103,7 @@ class Register(BaseHandler):
         login = self.get_body_argument('login')
         password1 = self.get_body_argument('password1')
         password2 = self.get_body_argument('password2')
+        email = self.get_body_argument('email', '')
         if password1 != password2:
             self.render('login.html', register=True,
                         register_error="Passwords do not match")
@@ -111,8 +112,16 @@ class Register(BaseHandler):
             self.render('login.html', register=True,
                         register_error="Username is taken")
             return
+        if (email and
+                self.db.query(database.User)
+                .filter(database.User.email == email).count() > 0):
+            self.render('login.html', register=True,
+                        register_error="Email is already used")
+            return
         user = database.User(login=login)
         user.set_password(password1)
+        if email:
+            user.email = email
         self.db.add(user)
         self.db.commit()
         logger.info("User registered: %r", login)
