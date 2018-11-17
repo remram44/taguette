@@ -30,6 +30,58 @@ def prepare_db(database):
     return db_url
 
 
+def default_config(output):
+    if output is None:
+        out = sys.stdout
+    else:
+        out = open(output, 'w')
+    out.write('''\
+# This is the configuration file for Taguette
+# It is a Python file, so you can use the full Python syntax
+
+# Name of this server
+NAME = "Misconfigured Taguette Server"
+
+# Address and port to listen on
+BIND_ADDRESS = "0.0.0.0"
+PORT = 8000
+
+# Database to use
+# This is a SQLAlchemy connection URL; refer to their documentation for info
+# https://docs.sqlalchemy.org/en/latest/core/engines.html
+# If using SQLite3 on Unix, note the 4 slashes for an absolute path
+DATABASE = "sqlite:////non/existent/taguette/database.sqlite3"
+
+# Address to send system emails from
+EMAIL = "Misconfigured Taguette Server <taguette@example.com>"
+
+# SMTP server to use to send emails
+MAIL_SERVER = {
+    "host": "localhost",
+    "port": 25,
+}
+
+# Whether new users can create an account
+REGISTRATION_ENABLED = True
+
+# Set this to true if you are behind a reverse proxy that sets the
+# X-Forwarded-For header.
+# Leave this at False if users are connecting to Taguette directly
+X_HEADERS = False
+''')
+    if output is not None:
+        out.close()
+
+
+DEFAULT_CONFIG = {
+    'MULTIUSER': True,
+    'BIND_ADDRESS': '0.0.0.0',
+    'REGISTRATION_ENABLED': True,
+    'X_HEADERS': False,
+}
+
+REQUIRED_CONFIG = ['NAME', 'PORT', 'DATABASE', 'EMAIL', 'MAIL_SERVER']
+
 def main():
     logging.root.handlers.clear()
     logging.basicConfig(level=logging.INFO,
@@ -78,23 +130,10 @@ def main():
                              "example 'project.db' or "
                              "'postgresql://me:pw@localhost/mydb' "
                              "(default: %r)" % default_db_show)
-    parser.add_argument('--singleuser', action='store_false', default=False,
-                        dest='multiuser',
-                        help="Run in single-user mode (default)")
-    parser.add_argument('--multiuser', action='store_true', default=False,
-                        help="Run in multi-user mode")
-    parser.add_argument('--enable-register', dest='register',
-                        action='store_true', default=True,
-                        help=argparse.SUPPRESS)
-    parser.add_argument('--disable-register', dest='register',
-                        action='store_false', default=True,
-                        help=argparse.SUPPRESS)
-    parser.add_argument('--xheaders', action='store_true', default=False,
-                        help="Read X-Forwarded-For header (if using a reverse "
-                             "proxy)")
     parser.set_defaults(func=None)
 
-    subparsers = parser.add_subparsers(title="additional commands", metavar='')
+    subparsers = parser.add_subparsers(title="additional commands",
+                                       metavar='', dest='cmd')
 
     parser_migrate = subparsers.add_parser('migrate',
                                            help="Manually trigger a database "
@@ -104,27 +143,63 @@ def main():
     parser_migrate.set_defaults(
         func=lambda args: migrate(prepare_db(args.database), args.revision))
 
+    parser_config = subparsers.add_parser(
+        'default-config',
+        help="Print the default server configuration")
+    parser_config.add_argument('--output', '-o', action='store', nargs=1,
+                               help="Output to this file rather than stdout")
+    parser_config.set_defaults(func=lambda args: default_config(args.output))
+
+    parser_server = subparsers.add_parser(
+        'server',
+        help="Run in server mode, suitable for a multi-user deployment")
+    parser_server.add_argument('config_file',
+                               help="Configuration file for the server. The "
+                                    "default configuration can be generated "
+                                    "using the `default-config` command")
+
     args = parser.parse_args()
 
     if args.func:
         args.func(args)
         sys.exit(0)
 
-    address = args.bind
-    port = int(args.port)
+    if args.cmd == 'server':
+        # Set configuration from config file
+        config = {}
+        with open(args.config_file) as fp:
+            exec(fp.read(), config)
+        config = dict(
+            DEFAULT_CONFIG,
+            **config
+        )
+        missing = False
+        for key in REQUIRED_CONFIG:
+            if key not in config:
+                print("Missing required configuration variable %s" % key,
+                      file=sys.stderr)
+                missing = True
+        if missing:
+            sys.exit(2)
+    else:
+        # Set configuration from command-line
+        config = dict(
+            MULTIUSER=False,
+            BIND_ADDRESS=args.bind,
+            PORT=int(args.port),
+            DATABASE=prepare_db(args.database),
+        )
 
-    db_url = prepare_db(args.database)
-
-    app = make_app(db_url, multiuser=args.multiuser,
-                   register_enabled=args.register, debug=args.debug)
-    app.listen(port, address=address, xheaders=args.xheaders)
+    app = make_app(config, debug=args.debug)
+    app.listen(config['PORT'], address=config['BIND_ADDRESS'],
+               xheaders=config.get('X_HEADERS', False))
     loop = tornado.ioloop.IOLoop.current()
 
     token = app.single_user_token
     if token:
-        url = 'http://localhost:%d/?token=%s' % (port, token)
+        url = 'http://localhost:%d/?token=%s' % (config['PORT'], token)
     else:
-        url = 'http://localhost:%d/' % port
+        url = 'http://localhost:%d/' % config['PORT']
     print("\n    Taguette is now running. You can connect to it using this "
           "link:\n\n    %s\n" % url)
 

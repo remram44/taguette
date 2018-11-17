@@ -5,7 +5,7 @@ import unittest
 from unittest import mock
 from urllib.parse import urlencode
 
-from taguette import convert, database, extract, web
+from taguette import convert, database, extract, main, web
 
 
 class TestConvert(AsyncTestCase):
@@ -144,7 +144,13 @@ class TestMultiuser(MyHTTPTestCase):
     def get_app(self):
         with mock.patch.object(web.Application, '_set_password',
                                new=set_dumb_password):
-            self.application = web.make_app('sqlite://', True)
+            self.application = web.make_app(dict(
+                main.DEFAULT_CONFIG,
+                NAME="Test Taguette instance", PORT=8000, DATABASE='sqlite://',
+                EMAIL='test@example.com',
+                MAIL_SERVER={'host': 'localhost', 'port': 25},
+                MULTIUSER=True,
+            ))
             return self.application
 
     def test_login(self):
@@ -215,7 +221,13 @@ class TestSingleuser(MyHTTPTestCase):
     def get_app(self):
         with mock.patch.object(web.Application, '_set_password',
                                new=set_dumb_password):
-            self.application = web.make_app('sqlite://', False)
+            self.application = web.make_app(dict(
+                main.DEFAULT_CONFIG,
+                NAME="Test Taguette instance", PORT=8000, DATABASE='sqlite://',
+                EMAIL='test@example.com',
+                MAIL_SERVER={'host': 'localhost', 'port': 25},
+                MULTIUSER=False,
+            ))
             return self.application
 
     def test_login(self):

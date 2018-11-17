@@ -79,8 +79,8 @@ class BaseHandler(RequestHandler):
         return template.render(
             handler=self,
             current_user=self.current_user,
-            multiuser=self.application.multiuser,
-            register_enabled=self.application.register_enabled,
+            multiuser=self.application.config['MULTIUSER'],
+            register_enabled=self.application.config['REGISTRATION_ENABLED'],
             **kwargs)
 
     def get_project(self, project_id):
@@ -170,7 +170,7 @@ class Index(BaseHandler):
                 self.render('index.html', user=user, projects=user.projects,
                             messages=messages)
                 return
-        elif not self.application.multiuser:
+        elif not self.application.config['MULTIUSER']:
             token = self.get_query_argument('token', None)
             if token and token == self.application.single_user_token:
                 self.login('admin')
@@ -185,7 +185,7 @@ class Index(BaseHandler):
 
 class Login(BaseHandler):
     def get(self):
-        if not self.application.multiuser:
+        if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         if self.current_user:
             self._go_to_next()
@@ -194,7 +194,7 @@ class Login(BaseHandler):
                         next=self.get_argument('next', ''))
 
     def post(self):
-        if not self.application.multiuser:
+        if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         login = self.get_body_argument('login')
         password = self.get_body_argument('password')
@@ -216,7 +216,7 @@ class Login(BaseHandler):
 
 class Logout(BaseHandler):
     def get(self):
-        if not self.application.multiuser:
+        if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         self.logout()
         self.redirect(self.reverse_url('index'))
@@ -224,9 +224,9 @@ class Logout(BaseHandler):
 
 class Register(BaseHandler):
     def get(self):
-        if not self.application.multiuser:
+        if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
-        if not self.application.register_enabled:
+        if not self.application.config['REGISTRATION_ENABLED']:
             raise HTTPError(403)
         if self.current_user:
             self.redirect(self.reverse_url('index'))
@@ -234,9 +234,9 @@ class Register(BaseHandler):
             self.render('login.html', register=True)
 
     def post(self):
-        if not self.application.multiuser:
+        if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
-        if not self.application.register_enabled:
+        if not self.application.config['REGISTRATION_ENABLED']:
             raise HTTPError(403)
         login = self.get_body_argument('login')
         password1 = self.get_body_argument('password1')
@@ -828,11 +828,13 @@ class ProjectEvents(BaseHandler):
 
 
 class Application(tornado.web.Application):
-    def __init__(self, handlers, db_url, multiuser, cookie_secret,
-                 register_enabled=True, **kwargs):
+    def __init__(self, handlers, cookie_secret,
+                 config, **kwargs):
+        self.config = config
+
         # Don't reuse the secret
         cookie_secret = cookie_secret + (
-            '.multi' if multiuser
+            '.multi' if config['MULTIUSER']
             else '.single'
         )
 
@@ -840,10 +842,7 @@ class Application(tornado.web.Application):
                                           cookie_secret=cookie_secret,
                                           **kwargs)
 
-        self.multiuser = multiuser
-        self.register_enabled = register_enabled
-
-        self.DBSession = database.connect(db_url)
+        self.DBSession = database.connect(config['DATABASE'])
         self.event_waiters = {}
 
         db = self.DBSession()
@@ -855,15 +854,15 @@ class Application(tornado.web.Application):
         if admin is None:
             logger.warning("Creating user 'admin'")
             admin = database.User(login='admin')
-            if self.multiuser:
+            if config['MULTIUSER']:
                 self._set_password(admin)
             db.add(admin)
             db.commit()
-        elif self.multiuser and not admin.hashed_password:
+        elif config['MULTIUSER'] and not admin.hashed_password:
             self._set_password(admin)
             db.commit()
 
-        if self.multiuser:
+        if config['MULTIUSER']:
             self.single_user_token = None
             logging.info("Starting in multi-user mode")
         else:
@@ -920,7 +919,7 @@ class Application(tornado.web.Application):
             future.set_result(cmd)
 
 
-def make_app(db_url, multiuser, register_enabled=True, debug=False):
+def make_app(config, debug=False):
     if 'XDG_CACHE_HOME' in os.environ:
         cache = os.environ['XDG_CACHE_HOME']
     else:
@@ -1000,8 +999,6 @@ def make_app(db_url, multiuser, register_enabled=True, debug=False):
         login_url='/login',
         xsrf_cookies=True,
         debug=debug,
-        multiuser=multiuser,
-        register_enabled=register_enabled,
+        config=config,
         cookie_secret=secret,
-        db_url=db_url,
     )
