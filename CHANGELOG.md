@@ -1,8 +1,8 @@
 Changelog
 =========
 
-0.4.3 (???)
------------
+0.4.3 (2018-11-17)
+------------------
 
 Bugfixes:
 * Fix JavaScript error on a brand new project (no recorded Command)
