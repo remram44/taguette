@@ -185,6 +185,7 @@ def main():
     else:
         # Set configuration from command-line
         config = dict(
+            DEFAULT_CONFIG,
             MULTIUSER=False,
             BIND_ADDRESS=args.bind,
             PORT=int(args.port),
