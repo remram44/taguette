@@ -10,6 +10,7 @@ Bugfixes:
 
 Features:
 * Add `--xheaders` option for the hosted setup, showing correct IPs in the log
+* Show which document in the list is the current one
 
 0.4.2 (2018-11-15)
 ------------------
