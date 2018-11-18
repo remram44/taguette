@@ -82,6 +82,7 @@ DEFAULT_CONFIG = {
 
 REQUIRED_CONFIG = ['NAME', 'PORT', 'DATABASE', 'EMAIL', 'MAIL_SERVER']
 
+
 def main():
     logging.root.handlers.clear()
     logging.basicConfig(level=logging.INFO,
