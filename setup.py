@@ -51,7 +51,7 @@ setup(name='taguette',
       keywords=['qualitative', 'document', 'text', 'tagging', 'tags',
                 'highlights', 'notes'],
       classifiers=[
-          'Development Status :: 2 - Pre-Alpha',
+          'Development Status :: 3 - Alpha',
           'Environment :: Web Environment',
           'Intended Audience :: End Users/Desktop',
           'Intended Audience :: Science/Research',
