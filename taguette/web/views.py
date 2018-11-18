@@ -105,6 +105,14 @@ class Register(BaseHandler):
         password1 = self.get_body_argument('password1')
         password2 = self.get_body_argument('password2')
         email = self.get_body_argument('email', '')
+        if len(password1) < 5:
+            self.render('login.html', register=True,
+                        register_error="Please use a longer password")
+            return
+        if len(password1) > 5120:
+            self.render('login.html', register=True,
+                        register_error="Please use a shorter password")
+            return
         if password1 != password2:
             self.render('login.html', register=True,
                         register_error="Passwords do not match")
@@ -128,6 +136,43 @@ class Register(BaseHandler):
         logger.info("User registered: %r", login)
         self.set_secure_cookie('user', login)
         self.redirect(self.reverse_url('index'))
+
+
+class Account(BaseHandler):
+    @authenticated
+    def get(self):
+        if not self.application.config['MULTIUSER']:
+            raise HTTPError(404)
+        user = self.db.query(database.User).get(self.current_user)
+        self.render('account.html', user=user)
+
+    @authenticated
+    def post(self):
+        if not self.application.config['MULTIUSER']:
+            raise HTTPError(404)
+        user = self.db.query(database.User).get(self.current_user)
+
+        email = self.get_body_argument('email', None)
+        password1 = self.get_body_argument('password1', None)
+        password2 = self.get_body_argument('password2', None)
+        if email is not None:
+            user.email = email
+        if password1 is not None or password2 is not None:
+            if len(password1) < 5:
+                self.render('account.html', user=user,
+                            error="Please use a longer password")
+                return
+            if len(password1) > 5120:
+                self.render('account.html', user=user,
+                            error="Please use a shorter password")
+                return
+            if password1 != password2:
+                self.render('account.html', user=user,
+                            error="Passwords do not match")
+                return
+            user.set_password(password1)
+        self.db.commit()
+        self.redirect(self.reverse_url('account'))
 
 
 class ProjectAdd(BaseHandler):
@@ -170,6 +215,7 @@ class ProjectAdd(BaseHandler):
 
 
 class ProjectDelete(BaseHandler):
+    @authenticated
     def get(self, project_id):
         project = self.get_project(project_id)
         doc = aliased(database.Document)
@@ -182,6 +228,7 @@ class ProjectDelete(BaseHandler):
                     documents=len(project.documents), tags=len(project.tags),
                     highlights=highlights)
 
+    @authenticated
     def post(self, project_id):
         project = self.get_project(project_id)
         logger.warning("Deleting project %d %r user=%r",
