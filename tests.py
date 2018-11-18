@@ -45,12 +45,14 @@ class TestConvert(AsyncTestCase):
 class TestMergeOverlapping(unittest.TestCase):
     def test_merge_overlapping_ranges(self):
         """Tests merging overlapping ranges."""
-        self.assertEqual(web.merge_overlapping_ranges([]), [])
-        self.assertEqual(web.merge_overlapping_ranges([(1, 3)]), [(1, 3)])
-        self.assertEqual(web.merge_overlapping_ranges([(1, 2), (3, 4)]),
+        self.assertEqual(web.export.merge_overlapping_ranges([]),
+                         [])
+        self.assertEqual(web.export.merge_overlapping_ranges([(1, 3)]),
+                         [(1, 3)])
+        self.assertEqual(web.export.merge_overlapping_ranges([(1, 2), (3, 4)]),
                          [(1, 2), (3, 4)])
         self.assertEqual(
-            web.merge_overlapping_ranges([
+            web.export.merge_overlapping_ranges([
                 (1, 3),
                 (12, 14),
                 (5, 7),
