@@ -6,6 +6,7 @@ from sqlalchemy.orm import aliased
 from tornado.web import authenticated, HTTPError
 
 from .. import database
+from .. import validate
 from .base import BaseHandler
 
 
@@ -101,41 +102,35 @@ class Register(BaseHandler):
             raise HTTPError(404)
         if not self.application.config['REGISTRATION_ENABLED']:
             raise HTTPError(403)
-        login = self.get_body_argument('login')
-        password1 = self.get_body_argument('password1')
-        password2 = self.get_body_argument('password2')
-        email = self.get_body_argument('email', '')
-        if len(password1) < 5:
+        try:
+            login = self.get_body_argument('login')
+            password1 = self.get_body_argument('password1')
+            password2 = self.get_body_argument('password2')
+            validate.user_login(login)
+            validate.user_password(password1)
+            email = self.get_body_argument('email', '')
+            if email:
+                validate.user_email(email)
+            if password1 != password2:
+                raise validate.InvalidFormat("Passwords do not match")
+            if self.db.query(database.User).get(login) is not None:
+                raise validate.InvalidFormat("Username is taken")
+            if (email and
+                    self.db.query(database.User)
+                    .filter(database.User.email == email).count() > 0):
+                raise validate.InvalidFormat("Email is already used")
+            user = database.User(login=login)
+            user.set_password(password1)
+            if email:
+                user.email = email
+            self.db.add(user)
+            self.db.commit()
+            logger.info("User registered: %r", login)
+            self.set_secure_cookie('user', login)
+            self.redirect(self.reverse_url('index'))
+        except validate.InvalidFormat as e:
             self.render('login.html', register=True,
-                        register_error="Please use a longer password")
-            return
-        if len(password1) > 5120:
-            self.render('login.html', register=True,
-                        register_error="Please use a shorter password")
-            return
-        if password1 != password2:
-            self.render('login.html', register=True,
-                        register_error="Passwords do not match")
-            return
-        if self.db.query(database.User).get(login) is not None:
-            self.render('login.html', register=True,
-                        register_error="Username is taken")
-            return
-        if (email and
-                self.db.query(database.User)
-                .filter(database.User.email == email).count() > 0):
-            self.render('login.html', register=True,
-                        register_error="Email is already used")
-            return
-        user = database.User(login=login)
-        user.set_password(password1)
-        if email:
-            user.email = email
-        self.db.add(user)
-        self.db.commit()
-        logger.info("User registered: %r", login)
-        self.set_secure_cookie('user', login)
-        self.redirect(self.reverse_url('index'))
+                        register_error=e.message)
 
 
 class Account(BaseHandler):
@@ -151,28 +146,23 @@ class Account(BaseHandler):
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         user = self.db.query(database.User).get(self.current_user)
-
-        email = self.get_body_argument('email', None)
-        password1 = self.get_body_argument('password1', None)
-        password2 = self.get_body_argument('password2', None)
-        if email is not None:
-            user.email = email
-        if password1 is not None or password2 is not None:
-            if len(password1) < 5:
-                self.render('account.html', user=user,
-                            error="Please use a longer password")
-                return
-            if len(password1) > 5120:
-                self.render('account.html', user=user,
-                            error="Please use a shorter password")
-                return
-            if password1 != password2:
-                self.render('account.html', user=user,
-                            error="Passwords do not match")
-                return
-            user.set_password(password1)
-        self.db.commit()
-        self.redirect(self.reverse_url('account'))
+        try:
+            email = self.get_body_argument('email', None)
+            password1 = self.get_body_argument('password1', None)
+            password2 = self.get_body_argument('password2', None)
+            if email is not None:
+                validate.user_email(email)
+                user.email = email
+            if password1 is not None or password2 is not None:
+                validate.user_password(password1)
+                if password1 != password2:
+                    raise validate.InvalidFormat("Passwords do not match")
+                user.set_password(password1)
+            self.db.commit()
+            self.redirect(self.reverse_url('account'))
+        except validate.InvalidFormat as e:
+            self.render('account.html', user=user,
+                        error=e.message)
 
 
 class ProjectAdd(BaseHandler):
@@ -184,29 +174,32 @@ class ProjectAdd(BaseHandler):
     def post(self):
         name = self.get_body_argument('name', '')
         description = self.get_body_argument('description', '')
-        if not name:
-            return self.render('project_new.html',
-                               name=name, description=description,
-                               error="Please enter a name")
+        try:
+            validate.project_name(name)
+            validate.project_description(description)
 
-        # Create project
-        project = database.Project(name=name, description=description)
-        self.db.add(project)
-        # Add user as admin
-        membership = database.ProjectMember(
-            project=project,
-            user_login=self.current_user,
-            privileges=database.Privileges.ADMIN
-        )
-        self.db.add(membership)
-        # Add default set of tags
-        self.db.add(database.Tag(project=project, path='interesting',
-                                 description="Further review required"))
-        self.db.add(database.Tag(project=project, path='people',
-                                 description="Known people"))
+            # Create project
+            project = database.Project(name=name, description=description)
+            self.db.add(project)
+            # Add user as admin
+            membership = database.ProjectMember(
+                project=project,
+                user_login=self.current_user,
+                privileges=database.Privileges.ADMIN
+            )
+            self.db.add(membership)
+            # Add default set of tags
+            self.db.add(database.Tag(project=project, path='interesting',
+                                     description="Further review required"))
+            self.db.add(database.Tag(project=project, path='people',
+                                     description="Known people"))
 
-        self.db.commit()
-        self.redirect(self.reverse_url('project', project.id))
+            self.db.commit()
+            self.redirect(self.reverse_url('project', project.id))
+        except validate.InvalidFormat as e:
+            self.render('project_new.html',
+                        name=name, description=description,
+                        error=e.message)
 
     def render(self, template_name, **kwargs):
         for name in ('name', 'description', 'error'):
