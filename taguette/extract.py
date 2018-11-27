@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup, NavigableString
 
 def split_utf8(s, pos):
     s = s.encode('utf-8')
-    while 0x80 <= s[pos] <= 0xBF:
+    while pos < len(s) and 0x80 <= s[pos] <= 0xBF:
         pos += 1
     return s[:pos].decode('utf-8'), s[pos:].decode('utf-8')
 
