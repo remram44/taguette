@@ -1,6 +1,14 @@
 Changelog
 =========
 
+0.4.4 (???)
+-----------
+
+Bugfixes:
+* Fix error creating a highlight when a paragraph is selected to the end
+* Correctly handle Calibre sometimes writing a `.xhtml` file instead of `.html`
+* Also show highlights with no tags when selecting "See all highlights"
+
 0.4.3 (2018-11-17)
 ------------------
 
