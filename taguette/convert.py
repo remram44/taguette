@@ -39,6 +39,9 @@ else:
         )
 
 
+POSSIBLE_OUTPUT_NAMES = ['index.html', 'index.xhtml', 'index.htm']
+
+
 async def to_html(body, content_type, filename):
     logger.info("Converting file %r, type %r", filename, content_type)
 
@@ -60,8 +63,11 @@ async def to_html(body, content_type, filename):
             except CalledProcessError as e:
                 raise ConversionError("Calibre returned %d" % e.returncode)
             logger.info("ebook-convert successful")
-            output_filename = os.path.join(output_dir, 'index.html')
-            if not os.path.isfile(output_filename):
+            for output_name in POSSIBLE_OUTPUT_NAMES:
+                output_filename = os.path.join(output_dir, output_name)
+                if os.path.isfile(output_filename):
+                    break
+            else:
                 raise RuntimeError("index.html not found in output dir: %r" %
                                    (os.listdir(output_dir),))
             with open(output_filename, 'rb') as fp:
