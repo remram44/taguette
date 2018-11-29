@@ -649,15 +649,25 @@ class Highlights(BaseHandler):
     def get(self, project_id, path):
         project = self.get_project(project_id)
 
-        tag = aliased(database.Tag)
-        hltag = aliased(database.HighlightTag)
-        highlights = (
-            self.db.query(database.Highlight)
-            .join(hltag, hltag.highlight_id == database.Highlight.id)
-            .join(tag, hltag.tag_id == tag.id)
-            .filter(tag.path.startswith(path))
-            .filter(tag.project == project)
-        ).all()
+        if path:
+            tag = aliased(database.Tag)
+            hltag = aliased(database.HighlightTag)
+            highlights = (
+                self.db.query(database.Highlight)
+                .join(hltag, hltag.highlight_id == database.Highlight.id)
+                .join(tag, hltag.tag_id == tag.id)
+                .filter(tag.path.startswith(path))
+                .filter(tag.project == project)
+            ).all()
+        else:
+            # Special case to select all highlights: we also need to select
+            # highlights that have no tag at all
+            document = aliased(database.Document)
+            highlights = (
+                self.db.query(database.Highlight)
+                .join(document, document.id == database.Highlight.document_id)
+                .filter(document.project == project)
+            ).all()
 
         self.send_json({
             'highlights': [
