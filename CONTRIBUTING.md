@@ -7,7 +7,7 @@
 
 # Notes
 
-Any contributions received are assumed to be covered by the [BSD 3-Clause license](https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt). We might ask you to sign a Contributor License Agreement before accepting a large contribution. To learn more about Taguette, see the [Taguette Website](https://taguette.fr) and the [README](https://gitlab.com/remram44/taguette/blob/master/README.rst) in this repository.
+Any contributions received are assumed to be covered by the [BSD 3-Clause license](https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt). We might ask you to sign a Contributor License Agreement before accepting a large contribution. To learn more about Taguette, see the [Taguette Website](https://taguette.fr/) and the [README](https://gitlab.com/remram44/taguette/blob/master/README.rst) in this repository.
 
 # Contributing
 
@@ -15,24 +15,24 @@ Please follow the [Contributor Covenant](CODE_OF_CONDUCT.md) in all your interac
 
 1. Fork the project.
 2. Clone your fork to your computer.
- * From the command line: `git clone https://gitlab.com/<USERNAME>/taguette.git`
+    * From the command line: `git clone https://gitlab.com/<USERNAME>/taguette.git`
 3. Change into your new project folder.
- * From the command line: `cd taguette`
+    * From the command line: `cd taguette`
 4. [optional]  Add the upstream repository to your list of remotes.
- * From the command line: `git remote add upstream https://gitlab.com/remram44/taguette.git`
+    * From the command line: `git remote add upstream https://gitlab.com/remram44/taguette.git`
 5. Create a branch for your new feature.
- * From the command line: `git checkout -b my-feature-branch-name`
+    * From the command line: `git checkout -b my-feature-branch-name`
 6. Make your changes.
- * Avoid making changes to more files than necessary for your feature (i.e. refrain from combining your "real" merge request with incidental bug fixes). This will simplify the merging process and make your changes clearer.
+    * Avoid making changes to more files than necessary for your feature (i.e. refrain from combining your "real" merge request with incidental bug fixes). This will simplify the merging process and make your changes clearer.
 7. Commit your changes. From the command line:
- * `git add <FILE-NAMES>`
- * `git commit -m "A descriptive commit message"`
+    * `git add <FILE-NAMES>`
+    * `git commit -m "A descriptive commit message"`
 8. While you were working some other changes might have gone in and break your stuff or vice versa. This can be a *merge conflict* but also conflicting behavior or code. Before you test, merge with master.
- * `git fetch upstream`
- * `git merge upstream/master`
+    * `git fetch upstream`
+    * `git merge upstream/master`
 9. Test. Run the program and do something related to your feature/fix.
 10. Push the branch, uploading it to GitLab.
-  * `git push origin my-feature-branch-name`
+    * `git push origin my-feature-branch-name`
 11. Make a "merge request" from your branch here on GitLab.
 
 # Resolving Merge Conflicts
@@ -82,7 +82,7 @@ That's it! Following these guidelines will ensure that your additions are approv
 
 # Attribution
 
-This CONTRIBUTING.md was adapted from [ProjectPorcupine's](https://github.com/TeamPorcupine/ProjectPorcupine)'s [CONTRIBUTING.md](https://github.com/TeamPorcupine/ProjectPorcupine/blob/master/CONTRIBUTING.md)
+This CONTRIBUTING.md was adapted from [ProjectPorcupine](https://github.com/TeamPorcupine/ProjectPorcupine)'s [CONTRIBUTING.md](https://github.com/TeamPorcupine/ProjectPorcupine/blob/master/CONTRIBUTING.md)
 
 # Contact info
 
