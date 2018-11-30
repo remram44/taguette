@@ -1,0 +1,8 @@
+* Update CHANGELOG and version numbers
+* Create a signed tag (git tag -s)
+* Build sdist / bdist_wheel, upload to PyPI (with Twine)
+* Buid MacOS installer (using macos.sh)
+* Build Windows installer (using pyinstaller_entrypoint.py and windows.spec, then windows-installer.iss)
+* Build Docker image remram/taguette (version tag + latest tag), push to docker.io
+* Update message files on msg.taguette.fr, so users get the notification
+* Update download link on website's install.html
