@@ -1,8 +1,8 @@
 Changelog
 =========
 
-0.4.4 (???)
------------
+0.4.4 (2018-11-29)
+------------------
 
 Bugfixes:
 * Fix error creating a highlight when a paragraph is selected to the end

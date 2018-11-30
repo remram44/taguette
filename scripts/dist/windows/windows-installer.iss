@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Taguette"
-#define MyAppVersion "0.4.3"
+#define MyAppVersion "0.4.4"
 #define MyAppPublisher "Remi Rampin"
 #define MyAppURL "https://taguette.fr/"
 #define MyAppExeName "taguette.exe"
