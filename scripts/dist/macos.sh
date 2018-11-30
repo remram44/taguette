@@ -14,5 +14,6 @@ cp -a /Applications/calibre.app dist/Taguette.app/Contents/Resources/
 codesign --deep -s Taguette dist/Taguette.app
 rm -f taguette.dmg
 cp scripts/dist/LICENSE.txt dist/LICENSE.txt
+ln -s /Applications dist/Applications
 sleep 1
-hdiutil create taguette.dmg -srcfolder dist
+hdiutil create taguette.dmg -srcfolder dist -volname Taguette
