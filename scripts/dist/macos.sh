@@ -15,4 +15,4 @@ codesign --deep -s Taguette dist/Taguette.app
 rm -f taguette.dmg
 cp scripts/dist/LICENSE.txt dist/LICENSE.txt
 sleep 1
-hdiutil create taguette.dmg -srcfolder dist
+hdiutil create taguette.dmg -srcfolder dist -volname Taguette
