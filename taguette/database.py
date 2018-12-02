@@ -326,6 +326,10 @@ def connect(db_url):
 
         # Mark this as the most recent Alembic version
         alembic.command.stamp(alembic_cfg, "head")
+
+        # Set SQLite's "application ID"
+        if db_url.startswith('sqlite:'):
+            conn.execute("PRAGMA application_id=0x54677474;")  # 'Tgtt'
     else:
         # Perform Alembic migrations if needed
         context = MigrationContext.configure(conn)
