@@ -618,7 +618,7 @@ function updateTagsList() {
     elem.className = 'list-group-item';
     elem.innerHTML =
       '<div class="d-flex justify-content-between align-items-center">' +
-      '  <div>' +
+      '  <div class="tag-name">' +
       '    <a class="expand-marker">&nbsp;</a> ' +
       '    <a id="tag-link-' + tag.id + '">' + escapeHtml(tag.path) + '</a>' +
       '  </div>' +
@@ -655,6 +655,7 @@ function updateTagsList() {
   for(var i = 0; i < entries.length; ++i) {
     var tag = entries[i][1];
     var elem = document.createElement('li');
+    elem.className = 'tag-name';
     elem.innerHTML =
       '<input type="checkbox" value="' + tag.id + '" name="highlight-add-tags" id="highlight-add-tags-' + tag.id + '" />' +
       '<label for="highlight-add-tags-' + tag.id + '">' + tag.path + '</label>';

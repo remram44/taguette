@@ -185,6 +185,10 @@ textarea.form-control {
   resize: none;
 }
 
+.tag-name {
+  word-break: break-all;
+}
+
 /* Work-around to make a whole element clickable while it contains links */
 .overlay-outer {
   position: relative;
