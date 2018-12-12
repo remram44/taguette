@@ -1,6 +1,16 @@
 Changelog
 =========
 
+0.5 (???)
+---------
+
+Bugfixes:
+* Improve reading of OPF output from Calibre, which might fix compatibility with some combinations of Calibre versions and input formats
+* Long tag names no longer stick out of the left pane
+
+Features:
+* Use a configuration file in server mode, rather than a growing list of command-line options
+
 0.4.4 (2018-11-29)
 ------------------
 
