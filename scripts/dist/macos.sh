@@ -2,6 +2,12 @@
 
 set -eux
 
+if [ "x${1:-}" = x ]; then
+    echo "Missing version number" >&2
+    exit 1
+fi
+VERSION="$1"
+
 cd "$(dirname "$0")/../.."
 cp scripts/dist/pyinstaller_entrypoint.py scripts/dist/macos/macos.spec .
 pip install -e .
@@ -16,4 +22,4 @@ rm -f taguette.dmg
 cp scripts/dist/LICENSE.txt dist/LICENSE.txt
 ln -s /Applications dist/Applications
 sleep 1
-hdiutil create taguette.dmg -srcfolder dist -volname Taguette
+hdiutil create taguette.dmg -srcfolder dist -volname "Taguette $VERSION"
