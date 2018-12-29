@@ -6,7 +6,7 @@ run_tests:
   stage: test
   image: python:3.6
   script:
-    - pip install pipenv
-    - pipenv install --deploy -d
-    - pipenv run python tests.py
-    - pipenv run flake8 --ignore=W504 setup.py tests.py taguette
+    - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python && /root/.poetry/bin/poetry config settings.virtualenvs.create false
+    - $HOME/.poetry/bin/poetry install --no-interaction
+    - python tests.py
+    - flake8 --ignore=W504 setup.py tests.py taguette
