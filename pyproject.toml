@@ -42,7 +42,7 @@ include = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.5.3"
 tornado = ">=5.0"
 sqlalchemy = "*"
 alembic = "*"
