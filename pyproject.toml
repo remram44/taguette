@@ -1,0 +1,64 @@
+[tool.poetry]
+name = "taguette"
+version = "0.4.4"
+description = "Document tagger for qualitative analysis"
+
+license = "BSD-3-Clause"
+
+authors = [
+    "Remi Rampin <remirampin@gmail.com>"
+]
+
+readme = "README.rst"
+
+repository = "https://gitlab.com/remram44/taguette"
+homepage = "https://taguette.fr/"
+
+keywords = ["qualitative", "document", "text", "tagging", "tags", "highlights", "notes"]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Web Environment",
+    "Intended Audience :: End Users/Desktop",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: JavaScript",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Topic :: Text Processing",
+]
+
+include = [
+    "CHANGELOG.md", "tests.py", # LICENSE.txt README.rst
+    "taguette/static/missing.png", "taguette/static/favicon.png",
+    "taguette/static/css/*.css", "taguette/static/*.css.map",
+    "taguette/static/js/*.js", "taguette/static/js/*.js.map",
+    "taguette/static/webfonts/*", "taguette/templates/*.html",
+    "taguette/migrations/env.py", "taguette/migrations/script.py.mako",
+    "taguette/migrations/versions/*.py",
+]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+tornado = ">=5.0"
+sqlalchemy = "*"
+alembic = "*"
+aiohttp = "*"
+bcrypt = "*"
+jinja2 = "*"
+beautifulsoup4 = "*"
+html5lib = "*"
+bleach = "*"
+
+[tool.poetry.dev-dependencies]
+flake8 = "*"
+
+[tool.poetry.scripts]
+taguette = "taguette.main:main"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
