@@ -1,0 +1,57 @@
+# Git
+**/.git
+**/.gitignore
+
+# Python
+**/*.py[co]
+**/.ipynb_checkpoints
+
+# Packages
+**/*.egg
+**/*.egg-info
+dist
+**/build
+**/eggs
+**/parts
+**/bin
+**/var
+**/sdist
+**/develop-eggs
+**/.installed.cfg
+**/lib
+**/lib64
+
+# Installer logs
+**/pip-log.txt
+
+# Unit test / coverage reports
+**/.coverage
+**/.tox
+**/nosetests.xml
+
+# Eclipse PyDev
+**/.project
+**/.pydevproject
+
+# PyCharm
+**/.idea
+
+# Vi
+**/.*.swp
+
+# Emacs
+**/#*#
+
+# OS files
+**/.DS_Store
+**/desktop.ini
+
+# Archives
+**/*.tar
+**/*.tar.gz
+**/*.tar.bz2
+**/*.zip
+**/*.whl
+
+# Vagrant
+**/.vagrant
