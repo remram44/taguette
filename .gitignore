@@ -1,5 +1,6 @@
+# Python
 *.py[co]
-.DS_Store
+.ipynb_checkpoints
 
 # Packages
 *.egg
@@ -31,15 +32,22 @@ nosetests.xml
 # PyCharm
 .idea
 
-# Qt Creator
-*.config
-*.creator
-*.creator.user
-*.files
-*.includes
-
 # Vi
 .*.swp
+
+# Emacs
+\#*#
+
+# OS files
+.DS_Store
+desktop.ini
+
+# Archives
+*.tar
+*.tar.gz
+*.tar.bz2
+*.zip
+*.whl
 
 # Vagrant
 .vagrant
