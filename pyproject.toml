@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "taguette"
-version = "0.4.4"
+version = "0.5-alpha.0"
 description = "Document tagger for qualitative analysis"
 
 license = "BSD-3-Clause"
