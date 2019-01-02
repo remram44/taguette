@@ -55,6 +55,7 @@ bleach = "*"
 
 [tool.poetry.dev-dependencies]
 flake8 = "*"
+readme_renderer = "*"
 
 [tool.poetry.scripts]
 taguette = "taguette.main:main"
