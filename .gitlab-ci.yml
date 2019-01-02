@@ -10,4 +10,4 @@ run_tests:
     - $HOME/.poetry/bin/poetry install --no-interaction
     - python -m readme_renderer README.rst >/dev/null
     - python tests.py
-    - flake8 --ignore=W504 setup.py tests.py taguette
+    - flake8 --ignore=W504 tests.py taguette
