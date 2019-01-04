@@ -587,6 +587,17 @@ function removeTag(tag_id) {
 }
 
 function updateTagsList() {
+  var entries = Object.entries(tags);
+  entries.sort(function(a, b) {
+    if(a[1].path < b[1].path) {
+      return -1;
+    } else if(a[1].path > b[1].path) {
+      return 1
+    } else {
+      return 0;
+    }
+  });
+
   // The list in the left panel
 
   // Empty the list
@@ -602,16 +613,6 @@ function updateTagsList() {
   // TODO: Show this as a tree
   var tree = {};
   var before = tags_list.firstChild;
-  var entries = Object.entries(tags);
-  entries.sort(function(a, b) {
-    if(a[1].path < b[1].path) {
-      return -1;
-    } else if(a[1].path > b[1].path) {
-      return 1
-    } else {
-      return 0;
-    }
-  });
   for(var i = 0; i < entries.length; ++i) {
     var tag = entries[i][1];
     var elem = document.createElement('li');
@@ -651,7 +652,6 @@ function updateTagsList() {
   // TODO: Show this as a tree
   var tree = {};
   var before = tags_modal_list.firstChild;
-  var entries = Object.entries(tags);
   for(var i = 0; i < entries.length; ++i) {
     var tag = entries[i][1];
     var elem = document.createElement('li');
