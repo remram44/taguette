@@ -17,7 +17,7 @@ homepage = "https://taguette.fr/"
 keywords = ["qualitative", "document", "text", "tagging", "tags", "highlights", "notes"]
 
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Environment :: Web Environment",
     "Intended Audience :: End Users/Desktop",
     "Intended Audience :: Science/Research",
