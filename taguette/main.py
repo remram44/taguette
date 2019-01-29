@@ -25,6 +25,7 @@ def prepare_db(database):
             os.makedirs(url.path[1:])
     else:
         # Path: create it, turn into URL
+        database = os.path.expanduser(database)
         os.makedirs(os.path.dirname(database), exist_ok=True)
         db_url = 'sqlite:///' + database
     return db_url
