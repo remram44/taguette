@@ -7,6 +7,7 @@ import enum
 import json
 import logging
 import os
+import prometheus_client
 import shutil
 from sqlalchemy import Column, ForeignKey, Index, TypeDecorator, MetaData, \
     UniqueConstraint, create_engine, select
@@ -19,6 +20,13 @@ import sys
 
 
 logger = logging.getLogger(__name__)
+
+
+PROM_DATABASE_VERSION = prometheus_client.Info('database_version',
+                                               "Database version")
+PROM_COMMAND = prometheus_client.Counter('commands_total',
+                                         "Number of commands",
+                                         ['type'])
 
 
 meta = MetaData(naming_convention={
@@ -144,6 +152,11 @@ class Command(Base):
     __table_args__ = (
         Index('idx_project_document', 'project_id', 'document_id'),
     )
+
+    def __init__(self, **kwargs):
+        if 'payload' in kwargs:
+            PROM_COMMAND.labels(kwargs['payload']['type']).inc()
+        super(Command, self).__init__(**kwargs)
 
     @classmethod
     def project_meta(cls, user_login, project_id, name, description):
@@ -327,6 +340,10 @@ def connect(db_url):
         # Mark this as the most recent Alembic version
         alembic.command.stamp(alembic_cfg, "head")
 
+        # Record to Prometheus
+        revision = MigrationContext.configure(conn).get_current_revision()
+        PROM_DATABASE_VERSION.info({'revision': revision})
+
         # Set SQLite's "application ID"
         if db_url.startswith('sqlite:'):
             conn.execute("PRAGMA application_id=0x54677474;")  # 'Tgtt'
@@ -334,6 +351,7 @@ def connect(db_url):
         # Perform Alembic migrations if needed
         context = MigrationContext.configure(conn)
         current_rev = context.get_current_revision()
+        PROM_DATABASE_VERSION.info({'revision': current_rev})
         scripts = ScriptDirectory.from_config(alembic_cfg)
         if [current_rev] != scripts.get_heads():
             if db_url.startswith('sqlite:'):

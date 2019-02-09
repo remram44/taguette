@@ -3,6 +3,8 @@ import bleach
 import bs4
 import logging
 import os
+import prometheus_client
+from prometheus_async.aio import time as prom_async_time
 import signal
 import shutil
 import tempfile
@@ -10,6 +12,26 @@ from xml.etree import ElementTree
 
 
 logger = logging.getLogger(__name__)
+
+
+PROM_CALIBRE_TOHTML = prometheus_client.Counter(
+    'convert_calibre_tohtml_total',
+    "Conversions to HTML using Calibre (calibre_to_html())",
+    ['extension'],
+)
+PROM_CALIBRE_TOHTML_TIME = prometheus_client.Histogram(
+    'convert_calibre_tohtml_seconds',
+    "Time to convert to HTML using Calibre (calibre_to_html())",
+)
+PROM_CALIBRE_FROMHTML = prometheus_client.Counter(
+    'convert_calibre_fromhtml_total',
+    "Conversions from HTML using Calibre (calibre_from_html())",
+    ['extension'],
+)
+PROM_CALIBRE_FROMHTML_TIME = prometheus_client.Histogram(
+    'convert_calibre_fromhtml_seconds',
+    "Time to convert from HTML using Calibre (calibre_from_html())",
+)
 
 
 HTML_EXTENSIONS = ('.htm', '.html', '.xhtml')
@@ -80,7 +102,11 @@ def get_html_body(body):
     return body
 
 
+@prom_async_time(PROM_CALIBRE_TOHTML_TIME)
 async def calibre_to_html(input_filename, output_dir):
+    ext = os.path.splitext(input_filename)[1].lower()[1:]
+    PROM_CALIBRE_TOHTML.labels(ext).inc()
+
     output = []
     convert = 'ebook-convert'
     if os.environ.get('CALIBRE'):
@@ -223,7 +249,10 @@ async def to_html_chunks(body, content_type, filename):
 # HTML to something
 
 
+@prom_async_time(PROM_CALIBRE_FROMHTML_TIME)
 async def calibre_from_html(html, extension):
+    PROM_CALIBRE_FROMHTML.labels(extension).inc()
+
     # Convert file using Calibre
     tmp = tempfile.mkdtemp(prefix='taguette_calibre_')
     try:

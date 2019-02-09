@@ -1,4 +1,15 @@
 from bs4 import BeautifulSoup, NavigableString
+import prometheus_client
+
+
+PROM_EXTRACT_TIME = prometheus_client.Histogram(
+    'html_extract_seconds',
+    "Time to extract part of an HTML document (extract.extract())",
+)
+PROM_HIGHLIGHT_TIME = prometheus_client.Histogram(
+    'html_highlight_seconds',
+    "Time to add highlight tags to an HTML document (extract.highlight())",
+)
 
 
 def split_utf8(s, pos):
@@ -47,6 +58,7 @@ def delete_right(node, indices):
         node = node.contents[idx]
 
 
+@PROM_EXTRACT_TIME.time()
 def extract(html, start, end):
     """Extract a snippet out of an HTML document.
 
@@ -85,6 +97,7 @@ def extract(html, start, end):
     return str(soup)
 
 
+@PROM_HIGHLIGHT_TIME.time()
 def highlight(html, highlights):
     """Highlight part of an HTML documents.
 
