@@ -3,6 +3,8 @@ import logging
 import os
 import re
 import sys
+
+import prometheus_client
 import tornado.ioloop
 from urllib.parse import urlparse
 import webbrowser
@@ -12,9 +14,13 @@ from .database import migrate
 from .web import make_app
 
 
+logger = logging.getLogger(__name__)
+
+
 def prepare_db(database):
     # Windows paths kinda look like URLs, but aren't
     if sys.platform == 'win32' and re.match(r'^[a-zA-Z]:\\', database):
+        logger.info("Database URL recognized as Windows path")
         url = None
     else:
         url = urlparse(database)
@@ -28,6 +34,7 @@ def prepare_db(database):
         database = os.path.expanduser(database)
         os.makedirs(os.path.dirname(database), exist_ok=True)
         db_url = 'sqlite:///' + database
+        logger.info("Turning database path into URL: %s", db_url)
     return db_url
 
 
@@ -69,6 +76,9 @@ REGISTRATION_ENABLED = True
 # X-Forwarded-For header.
 # Leave this at False if users are connecting to Taguette directly
 X_HEADERS = False
+
+# If you want to export metrics using Prometheus, set a port number here
+#PROMETHEUS_LISTEN = "0.0.0.0:9101"
 ''')
     if output is not None:
         out.close()
@@ -192,6 +202,17 @@ def main():
             PORT=int(args.port),
             DATABASE=prepare_db(args.database),
         )
+
+    if 'PROMETHEUS_LISTEN' in config:
+        p_addr = None
+        p_port = config['PROMETHEUS_LISTEN']
+        if isinstance(p_port, str):
+            if ':' in p_port:
+                p_addr, p_port = p_port.split(':')
+                p_addr = p_addr or None
+            p_port = int(p_port)
+        logger.info("Starting Prometheus exporter on port %d", p_port)
+        prometheus_client.start_http_server(p_port, p_addr)
 
     app = make_app(config, debug=args.debug)
     app.listen(config['PORT'], address=config['BIND_ADDRESS'],

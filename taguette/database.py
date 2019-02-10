@@ -7,6 +7,7 @@ import enum
 import json
 import logging
 import os
+import prometheus_client
 import shutil
 from sqlalchemy import Column, ForeignKey, Index, TypeDecorator, MetaData, \
     UniqueConstraint, create_engine, select
@@ -19,6 +20,13 @@ import sys
 
 
 logger = logging.getLogger(__name__)
+
+
+PROM_DATABASE_VERSION = prometheus_client.Info('database_version',
+                                               "Database version")
+PROM_COMMAND = prometheus_client.Counter('commands_total',
+                                         "Number of commands",
+                                         ['type'])
 
 
 meta = MetaData(naming_convention={
@@ -144,6 +152,11 @@ class Command(Base):
     __table_args__ = (
         Index('idx_project_document', 'project_id', 'document_id'),
     )
+
+    def __init__(self, **kwargs):
+        if 'payload' in kwargs:
+            PROM_COMMAND.labels(kwargs['payload']['type']).inc()
+        super(Command, self).__init__(**kwargs)
 
     @classmethod
     def project_meta(cls, user_login, project_id, name, description):
@@ -360,6 +373,11 @@ def connect(db_url):
                 sys.exit(3)
         else:
             logger.info("Database is up to date: %s", current_rev)
+
+    # Record to Prometheus
+    conn.invalidate()
+    revision = MigrationContext.configure(conn).get_current_revision()
+    PROM_DATABASE_VERSION.info({'revision': revision})
 
     DBSession = sessionmaker(bind=engine)
 

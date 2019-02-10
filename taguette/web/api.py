@@ -1,6 +1,8 @@
 import asyncio
-import os
 import logging
+import os
+from prometheus_async.aio import track_inprogress as prom_async_inprogress
+import prometheus_client
 import re
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import aliased
@@ -15,6 +17,12 @@ from .base import BaseHandler
 
 
 logger = logging.getLogger(__name__)
+
+
+PROM_POLLING_CLIENTS = prometheus_client.Gauge(
+    'polling_clients',
+    "Number of current polling clients",
+)
 
 
 class ProjectMeta(BaseHandler):
@@ -373,6 +381,7 @@ class Highlights(BaseHandler):
 
 
 class ProjectEvents(BaseHandler):
+    @prom_async_inprogress(PROM_POLLING_CLIENTS)
     @authenticated
     async def get(self, project_id):
         from_id = int(self.get_query_argument('from'))

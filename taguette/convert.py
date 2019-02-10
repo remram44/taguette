@@ -3,6 +3,8 @@ import bleach
 import bs4
 import logging
 import os
+import prometheus_client
+from prometheus_async.aio import time as prom_async_time
 import signal
 import shutil
 import tempfile
@@ -10,6 +12,26 @@ from xml.etree import ElementTree
 
 
 logger = logging.getLogger(__name__)
+
+
+PROM_CALIBRE_TOHTML = prometheus_client.Counter(
+    'convert_calibre_tohtml_total',
+    "Conversions to HTML using Calibre (calibre_to_html())",
+    ['extension'],
+)
+PROM_CALIBRE_TOHTML_TIME = prometheus_client.Histogram(
+    'convert_calibre_tohtml_seconds',
+    "Time to convert to HTML using Calibre (calibre_to_html())",
+)
+PROM_CALIBRE_FROMHTML = prometheus_client.Counter(
+    'convert_calibre_fromhtml_total',
+    "Conversions from HTML using Calibre (calibre_from_html())",
+    ['extension'],
+)
+PROM_CALIBRE_FROMHTML_TIME = prometheus_client.Histogram(
+    'convert_calibre_fromhtml_seconds',
+    "Time to convert from HTML using Calibre (calibre_from_html())",
+)
 
 
 HTML_EXTENSIONS = ('.htm', '.html', '.xhtml')
@@ -38,6 +60,9 @@ else:
             subprocess.check_call,
             cmd
         )
+
+
+# Something to HTML
 
 
 def get_html_body(body):
@@ -77,6 +102,120 @@ def get_html_body(body):
     return body
 
 
+@prom_async_time(PROM_CALIBRE_TOHTML_TIME)
+async def calibre_to_html(input_filename, output_dir):
+    ext = os.path.splitext(input_filename)[1].lower()[1:]
+    PROM_CALIBRE_TOHTML.labels(ext).inc()
+
+    output = []
+    convert = 'ebook-convert'
+    if os.environ.get('CALIBRE'):
+        convert = os.path.join(os.environ['CALIBRE'], convert)
+    cmd = [convert, input_filename, output_dir, '--enable-heuristics']
+    logger.info("Running: %s", ' '.join(cmd))
+    try:
+        await check_call(cmd)
+    except CalledProcessError as e:
+        raise ConversionError("Calibre returned %d" % e.returncode)
+    logger.info("ebook-convert successful")
+
+    # Locate OEB manifest
+    manifests = [e.lower() for e in os.listdir(output_dir)]
+    manifests = [e for e in manifests if e.endswith('.opf')]
+    if not manifests:
+        logger.error("No OPF manifest in Calibre's output")
+        raise ConversionError("Invalid output from Calibre")
+    elif manifests == ['content.opf']:
+        manifest = 'content.opf'  # All good
+    elif len(manifests) > 1 and 'content.opf' in manifests:
+        logger.warning("Calibre's output contains multiple OPF "
+                       "manifests! Using content.opf")
+        manifest = 'content.opf'
+    elif len(manifests) == 1 and manifests[0] != 'content.opf':
+        manifest, = manifests
+        logger.warning("Unusual name for OPF manifest in Calibre's "
+                       "output: %r", manifest)
+    else:
+        logger.error("Multiple OPF manifests in Calibre's output: "
+                     "%r" % manifests)
+        raise ConversionError("Invalid output from Calibre")
+
+    # Open OEB manifest
+    logger.info("Parsing OPF manifest %s", manifest)
+    tree = ElementTree.parse(os.path.join(output_dir, manifest))
+    root = tree.getroot()
+    ns = '{http://www.idpf.org/2007/opf}'
+    if root.tag not in ('package', ns + 'package'):
+        logger.error("Invalid root tag in OPF manifest: %r", root.tag)
+        raise ConversionError("Invalid output from Calibre")
+    manifests = [tag for tag in root
+                 if tag.tag in ('manifest', ns + 'manifest')]
+    if len(manifests) != 1:
+        logger.error("OPF has %d <manifest> nodes", len(manifests))
+        raise ConversionError("Invalid output from Calibre")
+    manifest, = manifests
+    spines = [tag for tag in root
+              if tag.tag in ('spine', ns + 'spine')]
+    if len(spines) != 1:
+        logger.error("OPF has %d <spine> nodes", len(spines))
+        raise ConversionError("Invalid output from Calibre")
+    spine, = spines
+
+    # Read <manifest>
+    items = {}
+    for item in manifest:
+        if item.tag not in ('item', ns + 'item'):
+            continue
+        try:
+            name = item.attrib['href']
+            mimetype = item.attrib['media-type']
+            id_ = item.attrib['id']
+        except KeyError:
+            logger.error("Missing attributes from <item> in OPF "
+                         "manifest. Present: %s",
+                         ', '.join(item.attrib))
+            raise ConversionError("Invalid output from Calibre")
+        else:
+            items[id_] = name, mimetype
+    logger.info("Read %d items", len(items))
+
+    # Read <spine>
+    for item in spine:
+        if item.tag not in ('itemref', ns + 'itemref'):
+            continue
+        try:
+            idref = item.attrib['idref']
+        except KeyError:
+            logger.error("Missing attribute 'idref' from <itemref> in "
+                         "OPF manifest. Present: %s",
+                         ', '.join(item.attrib))
+            raise ConversionError("Invalid output from Calibre")
+        try:
+            output_name, output_mimetype = items[idref]
+        except KeyError:
+            logger.error("Spine entry references missing item %r",
+                         idref)
+            raise ConversionError("Invalid output from Calibre")
+        if output_mimetype not in HTML_MIMETYPES:
+            logger.warning("Ignoring item %r, mimetype=%r",
+                           idref, output_mimetype)
+            continue
+        output_filename = os.path.join(output_dir, output_name)
+        if not os.path.isfile(output_filename):
+            logger.error("Missing file from output dir: %r",
+                         output_name)
+            raise ConversionError("Invalid output from Calibre")
+
+        # Read output
+        logger.info("Reading in %r", output_name)
+        with open(output_filename, 'rb') as fp:
+            output.append(get_html_body(fp.read()))
+    # TODO: Store media files
+
+    # Assemble output
+    return '\n'.join(output)
+
+
 HTML_MIMETYPES = {'text/html', 'application/xhtml+xml'}
 
 
@@ -88,7 +227,6 @@ async def to_html(body, content_type, filename):
     else:
         # Convert file to HTML using Calibre
         tmp = tempfile.mkdtemp(prefix='taguette_calibre_')
-        output = []
         try:
             # Write file to temporary directory
             input_filename = os.path.join(tmp, filename)
@@ -96,113 +234,8 @@ async def to_html(body, content_type, filename):
                 fp.write(body)
 
             # Run Calibre
-            output_dir = os.path.join(tmp, 'output')
-            convert = 'ebook-convert'
-            if os.environ.get('CALIBRE'):
-                convert = os.path.join(os.environ['CALIBRE'], convert)
-            cmd = [convert, input_filename, output_dir, '--enable-heuristics']
-            logger.info("Running: %s", ' '.join(cmd))
-            try:
-                await check_call(cmd)
-            except CalledProcessError as e:
-                raise ConversionError("Calibre returned %d" % e.returncode)
-            logger.info("ebook-convert successful")
-
-            # Locate OEB manifest
-            manifests = [e.lower() for e in os.listdir(output_dir)]
-            manifests = [e for e in manifests if e.endswith('.opf')]
-            if not manifests:
-                logger.error("No OPF manifest in Calibre's output")
-                raise ConversionError("Invalid output from Calibre")
-            elif manifests == ['content.opf']:
-                manifest = 'content.opf'  # All good
-            elif len(manifests) > 1 and 'content.opf' in manifests:
-                logger.warning("Calibre's output contains multiple OPF "
-                               "manifests! Using content.opf")
-                manifest = 'content.opf'
-            elif len(manifests) == 1 and manifests[0] != 'content.opf':
-                manifest, = manifests
-                logger.warning("Unusual name for OPF manifest in Calibre's "
-                               "output: %r", manifest)
-            else:
-                logger.error("Multiple OPF manifests in Calibre's output: "
-                             "%r" % manifests)
-                raise ConversionError("Invalid output from Calibre")
-
-            # Open OEB manifest
-            logger.info("Parsing OPF manifest %s", manifest)
-            tree = ElementTree.parse(os.path.join(output_dir, manifest))
-            root = tree.getroot()
-            ns = '{http://www.idpf.org/2007/opf}'
-            if root.tag not in ('package', ns + 'package'):
-                logger.error("Invalid root tag in OPF manifest: %r", root.tag)
-                raise ConversionError("Invalid output from Calibre")
-            manifests = [tag for tag in root
-                         if tag.tag in ('manifest', ns + 'manifest')]
-            if len(manifests) != 1:
-                logger.error("OPF has %d <manifest> nodes", len(manifests))
-                raise ConversionError("Invalid output from Calibre")
-            manifest, = manifests
-            spines = [tag for tag in root
-                      if tag.tag in ('spine', ns + 'spine')]
-            if len(spines) != 1:
-                logger.error("OPF has %d <spine> nodes", len(spines))
-                raise ConversionError("Invalid output from Calibre")
-            spine, = spines
-
-            # Read <manifest>
-            items = {}
-            for item in manifest:
-                if item.tag not in ('item', ns + 'item'):
-                    continue
-                try:
-                    name = item.attrib['href']
-                    mimetype = item.attrib['media-type']
-                    id_ = item.attrib['id']
-                except KeyError:
-                    logger.error("Missing attributes from <item> in OPF "
-                                 "manifest. Present: %s",
-                                 ', '.join(item.attrib))
-                    raise ConversionError("Invalid output from Calibre")
-                else:
-                    items[id_] = name, mimetype
-            logger.info("Read %d items", len(items))
-
-            # Read <spine>
-            for item in spine:
-                if item.tag not in ('itemref', ns + 'itemref'):
-                    continue
-                try:
-                    idref = item.attrib['idref']
-                except KeyError:
-                    logger.error("Missing attribute 'idref' from <itemref> in "
-                                 "OPF manifest. Present: %s",
-                                 ', '.join(item.attrib))
-                    raise ConversionError("Invalid output from Calibre")
-                try:
-                    output_name, output_mimetype = items[idref]
-                except KeyError:
-                    logger.error("Spine entry references missing item %r",
-                                 idref)
-                    raise ConversionError("Invalid output from Calibre")
-                if output_mimetype not in HTML_MIMETYPES:
-                    logger.warning("Ignoring item %r, mimetype=%r",
-                                   idref, output_mimetype)
-                    continue
-                output_filename = os.path.join(output_dir, output_name)
-                if not os.path.isfile(output_filename):
-                    logger.error("Missing file from output dir: %r",
-                                 output_name)
-                    raise ConversionError("Invalid output from Calibre")
-
-                # Read output
-                logger.info("Reading in %r", output_name)
-                with open(output_filename, 'rb') as fp:
-                    output.append(get_html_body(fp.read()))
-            # TODO: Store media files
-
-            # Assemble output
-            return '\n'.join(output)
+            return await calibre_to_html(input_filename,
+                                         os.path.join(tmp, 'output'))
         finally:
             shutil.rmtree(tmp)
 
@@ -213,7 +246,13 @@ async def to_html_chunks(body, content_type, filename):
     return html
 
 
+# HTML to something
+
+
+@prom_async_time(PROM_CALIBRE_FROMHTML_TIME)
 async def calibre_from_html(html, extension):
+    PROM_CALIBRE_FROMHTML.labels(extension).inc()
+
     # Convert file using Calibre
     tmp = tempfile.mkdtemp(prefix='taguette_calibre_')
     try:
