@@ -1098,7 +1098,7 @@ function longPollForEvents() {
   .then(function(result) {
     console.log("Polling: ", result);
     if('project_meta' in result) {
-      setProjectMetadata(result.project);
+      setProjectMetadata(result.project_meta);
     }
     if('document_add' in result) {
       for(var i = 0; i < result.document_add.length; ++i) {
