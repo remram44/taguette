@@ -340,10 +340,6 @@ def connect(db_url):
         # Mark this as the most recent Alembic version
         alembic.command.stamp(alembic_cfg, "head")
 
-        # Record to Prometheus
-        revision = MigrationContext.configure(conn).get_current_revision()
-        PROM_DATABASE_VERSION.info({'revision': revision})
-
         # Set SQLite's "application ID"
         if db_url.startswith('sqlite:'):
             conn.execute("PRAGMA application_id=0x54677474;")  # 'Tgtt'
@@ -351,7 +347,6 @@ def connect(db_url):
         # Perform Alembic migrations if needed
         context = MigrationContext.configure(conn)
         current_rev = context.get_current_revision()
-        PROM_DATABASE_VERSION.info({'revision': current_rev})
         scripts = ScriptDirectory.from_config(alembic_cfg)
         if [current_rev] != scripts.get_heads():
             if db_url.startswith('sqlite:'):
@@ -378,6 +373,11 @@ def connect(db_url):
                 sys.exit(3)
         else:
             logger.info("Database is up to date: %s", current_rev)
+
+    # Record to Prometheus
+    conn.invalidate()
+    revision = MigrationContext.configure(conn).get_current_revision()
+    PROM_DATABASE_VERSION.info({'revision': revision})
 
     DBSession = sessionmaker(bind=engine)
 
