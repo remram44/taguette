@@ -375,7 +375,8 @@ def connect(db_url):
             logger.info("Database is up to date: %s", current_rev)
 
     # Record to Prometheus
-    conn.invalidate()
+    conn.close()
+    conn = engine.connect()
     revision = MigrationContext.configure(conn).get_current_revision()
     PROM_DATABASE_VERSION.info({'revision': revision})
 
