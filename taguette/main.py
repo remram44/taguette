@@ -65,6 +65,7 @@ EMAIL = "Misconfigured Taguette Server <taguette@example.com>"
 
 # SMTP server to use to send emails
 MAIL_SERVER = {
+    "ssl": False,
     "host": "localhost",
     "port": 25,
 }

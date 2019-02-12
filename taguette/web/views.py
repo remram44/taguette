@@ -1,13 +1,16 @@
+from datetime import timedelta, datetime
+from email.message import EmailMessage
 import json
 import logging
 import jinja2
 from markupsafe import Markup
 from sqlalchemy.orm import aliased
 from tornado.web import authenticated, HTTPError
+from urllib.parse import urlunparse
 
 from .. import database
 from .. import validate
-from .base import BaseHandler
+from .base import BaseHandler, send_mail
 
 
 logger = logging.getLogger(__name__)
@@ -163,6 +166,96 @@ class Account(BaseHandler):
         except validate.InvalidFormat as e:
             self.render('account.html', user=user,
                         error=e.message)
+
+
+class AskResetPassword(BaseHandler):
+    def get(self):
+        if not self.application.config['MULTIUSER']:
+            raise HTTPError(404)
+        self.render('reset_password.html')
+
+    def post(self):
+        if not self.application.config['MULTIUSER']:
+            raise HTTPError(404)
+        email = self.get_body_argument('email')
+        user = (
+            self.db.query(database.User).filter(database.User.email == email)
+        ).one_or_none()
+        if user is None:
+            return self.render(
+                'reset_password.html',
+                error="This email is not associated with any user",
+            )
+        elif (user.email_sent is None or
+                user.email_sent + timedelta(days=1) < datetime.utcnow()):
+            # Generate a signed token
+            reset_token = self.create_signed_value('reset_token', user.email)
+            reset_token = reset_token.decode('utf-8')
+
+            # Reset link
+            path = self.request.path
+            if path.endswith('/reset_password'):
+                path = path[:-15]
+            path = path + '/new_password'
+            reset_link = urlunparse([self.request.protocol,
+                                     self.request.host,
+                                     path,
+                                     '',
+                                     'reset_token=' + reset_token,
+                                     ''])
+
+            msg = EmailMessage()
+            msg['Subject'] = "Password reset for Taguette"
+            msg['From'] = self.application.config['EMAIL']
+            msg['To'] = "{} <{}>".format(user.login, user.email)
+            msg.set_content(self.render_string('email_reset_password.txt',
+                                               link=reset_link))
+            msg.add_alternative(self.render_string('email_reset_password.html',
+                                                   link=reset_link),
+                                subtype='html')
+
+            send_mail(msg, self.application.config['MAIL_SERVER'])
+            user.email_sent = datetime.utcnow()
+            self.db.commit()
+        self.render('reset_password.html', message="Email sent!")
+
+
+class SetNewPassword(BaseHandler):
+    def get(self):
+        if not self.application.config['MULTIUSER']:
+            raise HTTPError(404)
+        reset_token = self.get_query_argument('reset_token')
+        self.get_secure_cookie('reset_token', reset_token,
+                               max_age_days=2).decode('utf-8')
+        self.render('new_password.html', reset_token=reset_token)
+
+    def post(self):
+        if not self.application.config['MULTIUSER']:
+            raise HTTPError(404)
+        reset_token = self.get_body_argument('reset_token')
+        email = self.get_secure_cookie(
+            'reset_token',
+            reset_token,
+            min_version=2,
+            max_age_days=1,
+        ).decode('utf-8')
+        user = (
+            self.db.query(database.User).filter(database.User.email == email)
+        ).one_or_none()
+        if not user:
+            raise HTTPError(403)
+        try:
+            password1 = self.get_body_argument('password1')
+            password2 = self.get_body_argument('password2')
+            validate.user_password(password1)
+            if password1 != password2:
+                raise validate.InvalidFormat("Passwords do not match")
+            user.set_password(password1)
+            self.db.commit()
+            return self.redirect(self.reverse_url('index'))
+        except validate.InvalidFormat as e:
+            return self.render('new_password.html', email=email,
+                               error=e.message)
 
 
 class ProjectAdd(BaseHandler):
