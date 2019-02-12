@@ -3,12 +3,20 @@ import json
 import logging
 import pkg_resources
 from tornado.routing import URLSpec
+from tornado.web import HTTPError
 
-from .base import Application
+from .base import Application, BaseHandler
 from . import api, export, views
 
 
 logger = logging.getLogger(__name__)
+
+
+class RedirectAccount(BaseHandler):
+    def get(self):
+        if not self.application.config['MULTIUSER']:
+            raise HTTPError(404)
+        self.redirect(self.reverse_url('account'), True)
 
 
 def make_app(config, debug=False):
@@ -50,7 +58,14 @@ def make_app(config, debug=False):
             URLSpec('/login', views.Login, name='login'),
             URLSpec('/logout', views.Logout, name='logout'),
             URLSpec('/register', views.Register, name='register'),
+            URLSpec('/account', views.Account, name='account'),
+            URLSpec('/reset_password', views.AskResetPassword,
+                    name='reset_password'),
+            URLSpec('/new_password', views.SetNewPassword,
+                    name='new_password'),
             URLSpec('/project/new', views.ProjectAdd, name='new_project'),
+            URLSpec('/project/([0-9]+)/delete', views.ProjectDelete,
+                    name='delete_project'),
 
             # Project view
             URLSpec('/project/([0-9]+)', views.Project, name='project'),
@@ -88,6 +103,9 @@ def make_app(config, debug=False):
             URLSpec('/api/project/([0-9]+)/tag/new', api.TagAdd),
             URLSpec('/api/project/([0-9]+)/tag/([0-9]+)', api.TagUpdate),
             URLSpec('/api/project/([0-9]+)/events', api.ProjectEvents),
+
+            # Well-known URLs
+            URLSpec('/.well-known/change-password', RedirectAccount),
         ],
         static_path=pkg_resources.resource_filename('taguette', 'static'),
         login_url='/login',

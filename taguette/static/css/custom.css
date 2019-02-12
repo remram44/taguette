@@ -15,7 +15,7 @@
   color: #3498DB;
 }
 
-.container-body a:not(.btn):hover {
+.container-body a:not(.btn, .dropdown, .badge):hover {
   color: #0f2d41 !important;
   text-decoration: underline;
 }
@@ -71,6 +71,11 @@ body {
   color: #85c1e9 !important;
 }
 
+.navbar-dark .navbar-nav .dropdown-item.active {
+  color: #fff !important;
+  background-color: #6c757d !important;
+}
+
 /* Tab navs for project*/
 
 .nav-link {
@@ -101,6 +106,10 @@ body {
 }
 
 .btn.btn-outline-primary:not(:disabled):not(.disabled).active:focus, .btn-outline-primary:not(:disabled):not(.disabled):active:focus, .show > .btn-outline-primary.dropdown-toggle:focus {
+  box-shadow: none !important;
+}
+
+.btn.btn-outline-secondary:not(:disabled):not(.disabled).active:focus, .btn-outline-secondary:not(:disabled):not(.disabled):active:focus, .show > .btn-outline-secondary.dropdown-toggle:focus {
   box-shadow: none !important;
 }
 

@@ -36,7 +36,13 @@
             </div>
           </form>
 
-          <div class="dropdown">
+          {% if multiuser %}
+
+          <p><a href="#" class="btn btn-outline-secondary disabled" role="button" aria-disabled="true">Add collaborators</a></p>
+
+          {% endif %}
+
+          <div class="dropdown mb-3">
             <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdown-codebook" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Export codebook
             </button>
@@ -47,6 +53,9 @@
               <a href="{{ reverse_url('export_codebook_doc', project.id, 'pdf') }}" class="dropdown-item">PDF</a>
             </div>
           </div>
+
+          <p><a href="{{ reverse_url('delete_project', project.id) }}" class="btn btn-outline-danger">Delete project</a></p>
+
         </div>
 
         <!-- List of documents -->

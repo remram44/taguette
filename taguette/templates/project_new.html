@@ -3,7 +3,7 @@
 {% block contents %}
 <p>New project</p>
 {% if error %}
-<p style="color: red;">{{ error }}</p>
+<div class="alert alert-danger">{{ error }}</div>
 {% endif %}
 <form action="{{ reverse_url('new_project') }}" method="post">
   {{ xsrf_form_html() }}

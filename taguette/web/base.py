@@ -6,6 +6,7 @@ import json
 import logging
 import jinja2
 import pkg_resources
+import smtplib
 from sqlalchemy.orm import joinedload, undefer, make_transient
 import tornado.ioloop
 from tornado.web import HTTPError, RequestHandler
@@ -212,3 +213,14 @@ class BaseHandler(RequestHandler):
             raise ValueError("Can't encode %r to JSON" % type(obj))
         self.set_header('Content-Type', 'application/json; charset=utf-8')
         return self.finish(json.dumps(obj))
+
+
+def send_mail(msg, config):
+    if config.get('ssl', False):
+        cls = smtplib.SMTP_SSL
+    else:
+        cls = smtplib.SMTP
+    with cls(config['host'], config.get('port', 25)) as smtp:
+        if 'user' in config or 'password' in config:
+            smtp.login(config['user'], config['password'])
+        smtp.send_message(msg)
