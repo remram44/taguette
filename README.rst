@@ -55,7 +55,7 @@ You can also install from a local clone of this repository, which will allow you
 2. Navigate on the command line to the repository you've just cloned locally, using the ``cd`` command. To get help using ``cd``, use `this tutorial <https://swcarpentry.github.io/shell-novice/02-filedir/index.html>`__.
 3. Taguette uses `Poetry <https://poetry.eustace.io/>`__ for its packaging and dependency management. You will need to `install Poetry <https://poetry.eustace.io/docs/#installation>`__
 4. Install Taguette and its dependencies by running ``poetry install``. We recommend you run this inside of a `virtualenv or pipenv <https://docs.python-guide.org/dev/virtualenvs/>`__ if possible.
-5. You can start taguette in development mode using ``taguette --debug``. This will start Tornado in debug mode, which means in particular that it will auto-restart every time you make changes.
+5. You can start taguette in development mode using ``taguette --debug`` (or ``taguette --debug server <config_file>``). This will start Tornado in debug mode, which means in particular that it will auto-restart every time you make changes.
 6. Navigate to `localhost:8000 <http://localhost:8000/>`__ to use Taguette!
 
 Getting Started
