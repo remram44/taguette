@@ -436,6 +436,33 @@ function removeDocument(document_id) {
   }
 }
 
+/*
+ * Add collaborator -- search by username only, give permissions (admin, read/write, read), and add to project
+ */
+
+var collab_mgmt_modal = document.getElementById('collab-mgmt-modal');
+
+function addCollab() {
+  document.getElementById('collab-add-form').reset();
+  $(collab_mgmt_modal).modal();
+}
+
+/*
+ * Manage collaborators -- remove someone from the project or update their permissions (dropdown should auto select current permission level for clarity)
+ */
+
+/*
+ * Extra window to confirm when someone wants to remove a person from their project
+ */
+document.getElementById('collab-mgmt-delete').addEventListener('click', function(e) {
+  e.preventDefault();
+
+  if(!window.confirm("Are you sure you want to remove <insert username here> from the project?")) {
+    return;
+  }
+  console.log("Deleting <username> from your project ...");
+  /* add some stuff to remove the user as a collaborator from the project*/
+});
 
 /*
  * Add document
