@@ -381,8 +381,8 @@ class Highlights(BaseHandler):
 
 
 class ProjectEvents(BaseHandler):
-    @prom_async_inprogress(PROM_POLLING_CLIENTS)
     @authenticated
+    @prom_async_inprogress(PROM_POLLING_CLIENTS)
     async def get(self, project_id):
         from_id = int(self.get_query_argument('from'))
         project = self.get_project(project_id)
