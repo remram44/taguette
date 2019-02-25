@@ -835,23 +835,15 @@ function selectionChanged() {
   current_selection = describeSelection();
   if(current_selection === null) {
     document.getElementById('hlinfo').style.display = 'none';
+  } else {
+    var rect = window.getSelection().getRangeAt(0).getClientRects().item(0);
+    var doc = document.documentElement, body = document.body;
+    hlinfo.style.left = (rect.x + rect.width) + 'px';
+    hlinfo.style.top = (rect.y + rect.height + document.documentElement.scrollTop + 20) + 'px';
+    hlinfo.style.display = 'block';
   }
 }
 document.addEventListener('selectionchange', selectionChanged);
-
-// Update controls position
-function mouseIsUp(e) {
-  var coords = getPageXY(e);
-  var hlinfo = document.getElementById('hlinfo');
-  setTimeout(function() {
-    hlinfo.style.top = (coords.y + 20) + 'px';
-    hlinfo.style.left = coords.x + 'px';
-    if(current_selection !== null) {
-      hlinfo.style.display = 'block';
-    }
-  }, 1);
-}
-document.addEventListener('mouseup', mouseIsUp);
 
 function createHighlight(selection) {
   document.getElementById('highlight-add-id').value = '';
