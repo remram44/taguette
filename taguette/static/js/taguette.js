@@ -836,7 +836,11 @@ function selectionChanged() {
   if(current_selection === null) {
     document.getElementById('hlinfo').style.display = 'none';
   } else {
-    var rect = window.getSelection().getRangeAt(0).getClientRects().item(0);
+    var current_range = window.getSelection().getRangeAt(0);
+    var last_char_range = document.createRange();
+    last_char_range.setStart(current_range.endContainer, current_range.endOffset - 1);
+    last_char_range.setEnd(current_range.endContainer, current_range.endOffset);
+    var rect = last_char_range.getClientRects().item(0);
     var doc = document.documentElement, body = document.body;
     hlinfo.style.left = (rect.x + rect.width) + 'px';
     hlinfo.style.top = (rect.y + rect.height + document.documentElement.scrollTop + 20) + 'px';
