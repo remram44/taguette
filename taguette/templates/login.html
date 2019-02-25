@@ -4,10 +4,10 @@
 <!-- Tab selector -->
 <ul class="nav nav-tabs" id="myTab" role="tablist">
   <li class="nav-item">
-    <a class="nav-link{% if not register %} show active{% endif %}" id="log-in-tab" data-toggle="tab" href="#log-in" role="tab" aria-controls="log-in" aria-selected="true">Log in</a>
+    <a class="nav-link{% if not register %} show active{% endif %}" id="log-in-tab" data-toggle="tab" href="#log-in" role="tab" aria-controls="log-in" aria-selected="{% if not register %}true{% else %}false{% endif %}">Log in</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link{% if not register_enabled %} disabled{% endif %}{% if register %} show active{% endif %}" id="register-tab" data-toggle="tab" href="#register" role="tab" aria-controls="register-tab" aria-selected="false">Register</a>
+    <a class="nav-link{% if not register_enabled %} disabled{% endif %}{% if register %} show active{% endif %}" id="register-tab" data-toggle="tab" href="#register" role="tab" aria-controls="register-tab" aria-selected="{% if register %} true{% else %}false{% endif %}">Register</a>
   </li>
 </ul>
 
