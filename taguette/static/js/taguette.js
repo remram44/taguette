@@ -835,23 +835,19 @@ function selectionChanged() {
   current_selection = describeSelection();
   if(current_selection === null) {
     document.getElementById('hlinfo').style.display = 'none';
+  } else {
+    var current_range = window.getSelection().getRangeAt(0);
+    var last_char_range = document.createRange();
+    last_char_range.setStart(current_range.endContainer, current_range.endOffset - 1);
+    last_char_range.setEnd(current_range.endContainer, current_range.endOffset);
+    var rect = last_char_range.getClientRects().item(0);
+    var doc = document.documentElement, body = document.body;
+    hlinfo.style.left = (rect.x + rect.width) + 'px';
+    hlinfo.style.top = (rect.y + rect.height + document.documentElement.scrollTop + 20) + 'px';
+    hlinfo.style.display = 'block';
   }
 }
 document.addEventListener('selectionchange', selectionChanged);
-
-// Update controls position
-function mouseIsUp(e) {
-  var coords = getPageXY(e);
-  var hlinfo = document.getElementById('hlinfo');
-  setTimeout(function() {
-    hlinfo.style.top = (coords.y + 20) + 'px';
-    hlinfo.style.left = coords.x + 'px';
-    if(current_selection !== null) {
-      hlinfo.style.display = 'block';
-    }
-  }, 1);
-}
-document.addEventListener('mouseup', mouseIsUp);
 
 function createHighlight(selection) {
   document.getElementById('highlight-add-id').value = '';
