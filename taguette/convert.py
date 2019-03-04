@@ -23,6 +23,15 @@ PROM_CALIBRE_TOHTML_TIME = prometheus_client.Histogram(
     'convert_calibre_tohtml_seconds',
     "Time to convert to HTML using Calibre (calibre_to_html())",
 )
+PROM_WVWARE_TOHTML = prometheus_client.Counter(
+    'convert_wvware_tohtml_total',
+    "Conversions to HTML using wvHtml (wvware_to_html())",
+    ['extension'],
+)
+PROM_WVWARE_TOHTML_TIME = prometheus_client.Histogram(
+    'convert_wvware_tohtml_seconds',
+    "Time to convert to HTML using wvHtml (wvware_to_html())",
+)
 PROM_CALIBRE_FROMHTML = prometheus_client.Counter(
     'convert_calibre_fromhtml_total',
     "Conversions from HTML using Calibre (calibre_from_html())",
@@ -216,14 +225,49 @@ async def calibre_to_html(input_filename, output_dir):
     return '\n'.join(output)
 
 
+@prom_async_time(PROM_WVWARE_TOHTML_TIME)
+async def wvware_to_html(input_filename, tmp):
+    output_filename = os.path.join(tmp, 'output.html')
+
+    # Run WV
+    convert = 'wvHtml'
+    if os.environ.get('WVHTML'):
+        convert = os.environ['WVHTML']
+    cmd = [convert, input_filename, output_filename]
+    logger.info("Running: %s", ' '.join(cmd))
+    try:
+        await check_call(cmd)
+    except CalledProcessError as e:
+        raise ConversionError("wvHtml returned %d" % e.returncode)
+    logger.info("wvHtml successful")
+
+    # Read output
+    with open(output_filename, 'rb') as fp:
+        return get_html_body(fp.read())
+
+
 HTML_MIMETYPES = {'text/html', 'application/xhtml+xml'}
 
 
 async def to_html(body, content_type, filename):
     logger.info("Converting file %r, type %r", filename, content_type)
 
-    if os.path.splitext(filename)[1].lower() in HTML_EXTENSIONS:
+    ext = os.path.splitext(filename)[1].lower()
+    if ext in HTML_EXTENSIONS:
         return get_html_body(body)
+    elif ext == '.doc':
+        # Convert file to HTML using WV
+        tmp = tempfile.mkdtemp(prefix='taguette_wv_')
+        try:
+            # Write file to temporary directory
+            input_filename = os.path.join(tmp, filename)
+            with open(input_filename, 'wb') as fp:
+                fp.write(body)
+
+            # Run wvHtml
+            return await wvware_to_html(input_filename, tmp)
+        finally:
+            shutil.rmtree(tmp)
     else:
         # Convert file to HTML using Calibre
         tmp = tempfile.mkdtemp(prefix='taguette_calibre_')

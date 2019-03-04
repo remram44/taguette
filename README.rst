@@ -31,7 +31,7 @@ Once you start the application, you will see a terminal appear. This is normal! 
 Installation using pip
 ----------------------
 
-You first need to install `Python 3 <https://www.python.org/downloads/>`__ and `Calibre <https://calibre-ebook.com/>`__ , the open source e-book management software. Taguette uses a part of Calibre to convert documents into HTML, allowing you to highlight and tag parts of them.
+You first need to install `Python 3 <https://www.python.org/downloads/>`__ and `Calibre <https://calibre-ebook.com/>`__ , the open source e-book management software. Taguette uses a part of Calibre to convert documents into HTML (and wv for old ``.doc`` files), allowing you to highlight and tag parts of them.
 
 Once you've installed Python, you can install Taguette with its dependencies from the command line with the following::
 
