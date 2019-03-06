@@ -1,7 +1,7 @@
 Taguette
 ========
 
-A spin on the phrase "tag it!", `Taguette <https://taguette.fr/>`__ is a free and open source qualitative research tool that allows users to:
+A spin on the phrase "tag it!", `Taguette <https://www.taguette.org/>`__ is a free and open source qualitative research tool that allows users to:
 
 + Import PDFs, Word Docs (``.docx``), Text files (``.txt``), HTML, EPUB, MOBI, Open Documents (``.odt``), and Rich Text Files (``.rtf``).
 + Highlight words, sentences, or paragraphs and tag them with the codes *you* create.

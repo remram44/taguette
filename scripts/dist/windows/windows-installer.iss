@@ -4,7 +4,7 @@
 #define MyAppName "Taguette"
 #define MyAppVersion "0.5-alpha.0"
 #define MyAppPublisher "Remi Rampin"
-#define MyAppURL "https://taguette.fr/"
+#define MyAppURL "https://www.taguette.org/"
 #define MyAppExeName "taguette.exe"
 
 [Setup]

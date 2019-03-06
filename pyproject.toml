@@ -12,7 +12,7 @@ authors = [
 readme = "README.rst"
 
 repository = "https://gitlab.com/remram44/taguette"
-homepage = "https://taguette.fr/"
+homepage = "https://www.taguette.org/"
 
 keywords = ["qualitative", "document", "text", "tagging", "tags", "highlights", "notes"]
 

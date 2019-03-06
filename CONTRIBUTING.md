@@ -7,7 +7,7 @@
 
 # Notes
 
-Any contributions received are assumed to be covered by the [BSD 3-Clause license](https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt). We might ask you to sign a Contributor License Agreement before accepting a large contribution. To learn more about Taguette, see the [Taguette Website](https://taguette.fr/) and the [README](https://gitlab.com/remram44/taguette/blob/master/README.rst) in this repository.
+Any contributions received are assumed to be covered by the [BSD 3-Clause license](https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt). We might ask you to sign a Contributor License Agreement before accepting a large contribution. To learn more about Taguette, see the [Taguette Website](https://www.taguette.org/) and the [README](https://gitlab.com/remram44/taguette/blob/master/README.rst) in this repository.
 
 # Contributing
 
@@ -86,4 +86,4 @@ This CONTRIBUTING.md was adapted from [ProjectPorcupine](https://github.com/Team
 
 # Contact info
 
-You are welcome to chat with us on our [Riot channel](https://riot.im/app/#/room/#taguette:matrix.org) or contact the maintainers directly at [hi@taguette.fr](mailto:hi@taguette.fr).
+You are welcome to chat with us on our [Riot channel](https://riot.im/app/#/room/#taguette:matrix.org) or contact the maintainers directly at [hi@taguette.org](mailto:hi@taguette.org).

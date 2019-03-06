@@ -63,14 +63,14 @@ class Application(tornado.web.Application):
                 digestmod=hashlib.sha256,
             ).hexdigest()
 
-        # Get messages from taguette.fr
+        # Get messages from taguette.org
         self.messages = []
         self.check_messages()
 
     async def _check_messages(self):
         async with aiohttp.ClientSession() as session:
             async with session.get(
-                    'https://msg.taguette.fr/%s' % version,
+                    'https://msg.taguette.org/%s' % version,
                     headers={'Accept': 'application/json'}) as response:
                 obj = await response.json()
         self.messages = obj['messages']
