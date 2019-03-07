@@ -1,4 +1,3 @@
-import aiohttp
 import asyncio
 import hashlib
 import hmac
@@ -9,6 +8,7 @@ import pkg_resources
 import smtplib
 from sqlalchemy.orm import joinedload, undefer, make_transient
 import tornado.ioloop
+from tornado.httpclient import AsyncHTTPClient
 from tornado.web import HTTPError, RequestHandler
 
 from .. import __version__ as version
@@ -68,11 +68,11 @@ class Application(tornado.web.Application):
         self.check_messages()
 
     async def _check_messages(self):
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
-                    'https://msg.taguette.org/%s' % version,
-                    headers={'Accept': 'application/json'}) as response:
-                obj = await response.json()
+        http_client = AsyncHTTPClient()
+        response = await http_client.fetch(
+            'https://msg.taguette.org/%s' % version,
+            headers={'Accept': 'application/json'})
+        obj = json.loads(response.body, encoding='utf-8')
         self.messages = obj['messages']
         for msg in self.messages:
             logger.warning("Taguette message: %s", msg['text'])
