@@ -121,51 +121,56 @@
             <div class="col-md-4 form-group">
               <input type="text" class="form-control" id="collab-add-email" name="collab-add-name" placeholder="Username" />
             </div>
-            <div class="col-md-2 form-group">
-              <div class="dropdown">
-                  <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Role</button>
-                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="#">Full permissions</a>
-                    <a class="dropdown-item" href="#">View & make changes</a>
-                    <a class="dropdown-item" href="#">View only</a>
-                  </div>
-                </div>
-            </div>
             <div class="col-md-4 form-group">
-              <button type="submit" class="btn btn-info">Add to project</button>
+              <select name="add-role" class="form-control">
+                <option value="ADMIN">Full permissions</option>
+                <option value="MANAGE_DOCS">Can't change collaborators</option>
+                <option value="TAG">View & mane changes</option>
+                <option value="READ">View only</option>
+              </select>
             </div>
+            <button type="submit" class="btn btn-info col-md-4 form-group">Add to project</button>
           </div>
-        <h5>Current Collaborators</h5>
+          <h5>Current Collaborators</h5>
             <!-- if there are collabs, list them with their permissions and an X to delete them from project -->
             <!-- if someone adds a collab in this modal, they also should dynamically show up in this list -->
-            <div class="row">
+          <div class="row">
             <div class="col-md-4">
               <p>Someone's name</p>
             </div>
-            <div class="col-md-2 form-group">
-              <div class="dropdown">
-                  <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Role</button>
-                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="#">Full permission</a>
-                    <a class="dropdown-item" href="#">View & make change</a>
-                    <a class="dropdown-item" href="#">View only</a>
-                  </div>
-                </div>
+            <div class="col-md-4 form-group">
+              <select name="add-role" class="form-control">
+                <option value="ADMIN">Full permissions</option>
+                <option value="MANAGE_DOCS">Can't change collaborators</option>
+                <option value="TAG">View & mane changes</option>
+                <option value="READ" selected>View only</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-danger col-md-4 form-group">Delete collaborator</button>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <p>Someone else</p>
             </div>
             <div class="col-md-4 form-group">
-              <button type="submit" class="btn btn-danger">Delete collaborator</button>
+              <select name="add-role" class="form-control">
+                <option value="ADMIN">Full permissions</option>
+                <option value="MANAGE_DOCS" selected>Can't change collaborators</option>
+                <option value="TAG">View & mane changes</option>
+                <option value="READ">View only</option>
+              </select>
             </div>
+            <button type="submit" class="btn btn-danger col-md-4 form-group">Delete collaborator</button>
           </div>
-      </div>
+        </div>
       </div>
       <div class="modal-footer">
-         <button type="submit" class="btn btn-primary">Save & Close</button>
+        <button type="submit" class="btn btn-primary">Save & Close</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
       </div>
     </form>
   </div>
 </div>
-
 
 <!-- Add document modal -->
 <div class="modal" id="document-add-modal" tabindex="-1" role="dialog">
