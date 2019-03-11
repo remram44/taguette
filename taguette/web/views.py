@@ -303,7 +303,9 @@ class ProjectAdd(BaseHandler):
 class ProjectDelete(BaseHandler):
     @authenticated
     def get(self, project_id):
-        project = self.get_project(project_id)
+        project, privileges = self.get_project(project_id)
+        if not privileges.can_delete_project():
+            raise HTTPError(403)
         doc = aliased(database.Document)
         highlights = (
             self.db.query(database.Highlight)
@@ -316,7 +318,9 @@ class ProjectDelete(BaseHandler):
 
     @authenticated
     def post(self, project_id):
-        project = self.get_project(project_id)
+        project, privileges = self.get_project(project_id)
+        if not privileges.can_delete_project():
+            raise HTTPError(403)
         logger.warning("Deleting project %d %r user=%r",
                        project.id, project.name, self.current_user)
         self.db.delete(project)
@@ -327,7 +331,7 @@ class ProjectDelete(BaseHandler):
 class Project(BaseHandler):
     @authenticated
     def get(self, project_id):
-        project = self.get_project(project_id)
+        project, _ = self.get_project(project_id)
         documents_json = jinja2.Markup(json.dumps(
             {
                 str(doc.id): {'id': doc.id, 'name': doc.name,

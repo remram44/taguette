@@ -112,6 +112,33 @@ class Privileges(enum.Enum):
     TAG = 2
     READ = 0
 
+    # Admin operations
+    def can_edit_project_meta(self):
+        return self == Privileges.ADMIN
+
+    def can_delete_project(self):
+        return self == Privileges.ADMIN
+
+    def can_edit_members(self):
+        return self == Privileges.ADMIN
+
+    # Document operations
+    def can_edit_document(self):
+        return self in (Privileges.ADMIN, Privileges.MANAGE_DOCS)
+    can_delete_document = can_edit_document
+    can_add_document = can_edit_document
+
+    # Tagging operations
+    def can_update_tag(self):
+        return self in (Privileges.ADMIN, Privileges.MANAGE_DOCS,
+                        Privileges.TAG)
+    can_add_tag = can_update_tag
+    can_delete_tag = can_update_tag
+
+    def can_add_highlight(self):
+        return self in (Privileges.ADMIN, Privileges.MANAGE_DOCS,
+                        Privileges.TAG)
+
 
 class ProjectMember(Base):
     __tablename__ = 'project_members'
