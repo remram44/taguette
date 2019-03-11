@@ -246,6 +246,28 @@ class Command(Base):
                      'id': tag_id},
         )
 
+    @classmethod
+    def member_add(cls, user_login, project_id, member_login, privileges):
+        assert isinstance(project_id, int)
+        assert isinstance(privileges, Privileges)
+        return cls(
+            user_login=user_login,
+            project_id=project_id,
+            payload={'type': 'member_add',
+                     'member': member_login,
+                     'privileges': privileges.name}
+        )
+
+    @classmethod
+    def member_remove(cls, user_login, project_id, member_login):
+        assert isinstance(project_id, int)
+        return cls(
+            user_login=user_login,
+            project_id=project_id,
+            payload={'type': 'member_remove',
+                     'member': member_login}
+        )
+
 
 Project.last_event = column_property(
     select(

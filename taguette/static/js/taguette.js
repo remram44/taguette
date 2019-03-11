@@ -941,6 +941,28 @@ document.getElementById('highlight-delete').addEventListener('click', function(e
  * Members
  */
 
+var members = {};
+
+function addMember(login, privileges) {
+  members[login] = {privileges: privileges};
+  updateMembers();
+}
+
+function removeMember(login) {
+  delete members[login];
+  updateMembers();
+}
+
+function updateMembers() {
+  // TODO: Update UI
+  var entries = Object.entries(members);
+  console.log(
+    "Members:",
+    entries.map(function(e) { return e[0] + " (" + e[1] + ")"; })
+    .join(", ")
+  );
+}
+
 var members_modal = document.getElementById('members-modal');
 
 function showMembers() {
@@ -1143,6 +1165,17 @@ function longPollForEvents() {
     if('tag_delete' in result) {
       for(var i = 0; i < result.tag_delete.length; ++i) {
         removeTag(result.tag_delete[i]);
+      }
+    }
+    if('member_add' in result) {
+      for(var i = 0; i < result.member_add.length; ++i) {
+        addMember(result.member_add[i]['member'],
+                  result.member_add[i]['privileges']);
+      }
+    }
+    if('member_remove' in result) {
+      for(var i = 0; i < result.member_remove.length; ++i) {
+        removeMember(result.member_remove[i]);
       }
     }
     last_event = result.id;

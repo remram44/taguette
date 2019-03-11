@@ -429,6 +429,15 @@ class ProjectEvents(BaseHandler):
             result = {
                 'tag_delete': [payload['id']],
             }
+        elif type_ == 'member_add':
+            result = {
+                'member_add': [{'member': payload['member'],
+                                'privileges': payload['privileges']}]
+            }
+        elif type_ == 'member_remove':
+            result = {
+                'member_remove': [payload['member']]
+            }
         else:
             raise ValueError("Unknown command type %r" % type_)
 
