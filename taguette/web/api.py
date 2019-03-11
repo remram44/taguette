@@ -410,6 +410,67 @@ class Highlights(BaseHandler):
         })
 
 
+class MembersUpdate(BaseHandler):
+    @authenticated
+    def patch(self, project_id):
+        project, privileges = self.get_project(project_id)
+        if not privileges.can_edit_members():
+            self.set_status(403)
+            return self.send_json({'error': "Unauthorized"})
+
+        # Get all members
+        members = (
+            self.db.query(database.ProjectMember)
+            .filter(database.ProjectMember.project_id == project.id)
+        ).all()
+        members = {member.user_login: member for member in members}
+
+        # Go over the JSON patch and update
+        obj = self.get_json()
+        commands = []
+        for login, user in obj.items():
+            if login == self.current_user:
+                logger.warning("User tried to change own privileges")
+                continue
+            if not user and login in members:
+                self.db.delete(members[login])
+                cmd = database.Command.member_remove(
+                    self.current_user, project.id,
+                    login,
+                )
+                self.db.add(cmd)
+                commands.append(cmd)
+            else:
+                try:
+                    privileges = database.Privileges[user['privileges']]
+                except KeyError:
+                    self.set_status(400)
+                    return self.send_json({'error': "Invalid privileges %r" %
+                                                    user.get('privileges')})
+                if login in members:
+                    members[login].privileges = privileges
+                else:
+                    self.db.add(
+                        database.ProjectMember(project=project,
+                                               user_login=login,
+                                               privileges=privileges)
+                    )
+                cmd = database.Command.member_add(
+                    self.current_user, project.id,
+                    login, privileges,
+                )
+                self.db.add(cmd)
+                commands.append(cmd)
+
+        self.db.commit()
+        for cmd in commands:
+            self.db.refresh(cmd)
+            self.application.notify_project(project.id, cmd)
+
+        self.set_status(204)
+        self.finish()
+
+
 class ProjectEvents(BaseHandler):
     @authenticated
     @prom_async_inprogress(PROM_POLLING_CLIENTS)
