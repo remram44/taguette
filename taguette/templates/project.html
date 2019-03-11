@@ -38,7 +38,7 @@
 
           {% if multiuser %}
 
-             <p><a href="javascript:addCollab()" class="btn btn-outline-secondary" role="button" aria-disabled="true">Manage collaborators</a></p>
+          <p><a href="javascript:showMembers()" class="btn btn-outline-secondary" role="button">Manage collaborators</a></p>
 
           {% endif %}
 
@@ -104,9 +104,9 @@
 </div>
 
 <!-- Manage collaborators modal -->
-<div class="modal" id="collab-mgmt-modal" tabindex="-1" role="dialog">
+<div class="modal" id="members-modal" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-    <form id="collab-add-form" class="modal-content">
+    <form id="members-form" class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Manage Collaborators</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -119,21 +119,19 @@
           <h5>Add Collaborators</h5>
           <div class="row">
             <div class="col-md-4 form-group">
-              <input type="text" class="form-control" id="collab-add-email" name="collab-add-name" placeholder="Username" />
+              <input type="text" class="form-control" id="member-add-name" name="member-add-name" placeholder="Username" />
             </div>
             <div class="col-md-4 form-group">
               <select name="add-role" class="form-control">
                 <option value="ADMIN">Full permissions</option>
-                <option value="MANAGE_DOCS">Can't change collaborators</option>
-                <option value="TAG">View & mane changes</option>
+                <option value="MANAGE_DOCS">Can't change collaborators / delete project</option>
+                <option value="TAG">View & make changes</option>
                 <option value="READ">View only</option>
               </select>
             </div>
             <button type="submit" class="btn btn-info col-md-4 form-group">Add to project</button>
           </div>
           <h5>Current Collaborators</h5>
-            <!-- if there are collabs, list them with their permissions and an X to delete them from project -->
-            <!-- if someone adds a collab in this modal, they also should dynamically show up in this list -->
           <div class="row">
             <div class="col-md-4">
               <p>Someone's name</p>
@@ -141,12 +139,12 @@
             <div class="col-md-4 form-group">
               <select name="add-role" class="form-control">
                 <option value="ADMIN">Full permissions</option>
-                <option value="MANAGE_DOCS">Can't change collaborators</option>
-                <option value="TAG">View & mane changes</option>
+                <option value="MANAGE_DOCS">Can't change collaborators / delete project</option>
+                <option value="TAG">View & make changes</option>
                 <option value="READ" selected>View only</option>
               </select>
             </div>
-            <button type="submit" class="btn btn-danger col-md-4 form-group">Delete collaborator</button>
+            <button type="submit" class="btn btn-danger col-md-4 form-group">Remove collaborator</button>
           </div>
           <div class="row">
             <div class="col-md-4">
@@ -155,12 +153,12 @@
             <div class="col-md-4 form-group">
               <select name="add-role" class="form-control">
                 <option value="ADMIN">Full permissions</option>
-                <option value="MANAGE_DOCS" selected>Can't change collaborators</option>
-                <option value="TAG">View & mane changes</option>
+                <option value="MANAGE_DOCS" selected>Can't change collaborators / delete project</option>
+                <option value="TAG">View & make changes</option>
                 <option value="READ">View only</option>
               </select>
             </div>
-            <button type="submit" class="btn btn-danger col-md-4 form-group">Delete collaborator</button>
+            <button type="submit" class="btn btn-danger col-md-4 form-group">Remove collaborator</button>
           </div>
         </div>
       </div>
