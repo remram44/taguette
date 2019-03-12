@@ -72,7 +72,7 @@ class Application(tornado.web.Application):
         response = await http_client.fetch(
             'https://msg.taguette.org/%s' % version,
             headers={'Accept': 'application/json'})
-        obj = json.loads(response.body, encoding='utf-8')
+        obj = json.loads(response.body.decode('utf-8'))
         self.messages = obj['messages']
         for msg in self.messages:
             logger.warning("Taguette message: %s", msg['text'])
