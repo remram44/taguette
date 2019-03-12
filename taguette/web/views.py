@@ -357,6 +357,7 @@ class Project(BaseHandler):
             {member.user_login: {'privileges': member.privileges.name}
              for member in members}
         ))
+        _ = self.xsrf_token  # Make sure XSRF cookie is set
         self.render('project.html',
                     project=project,
                     last_event=(project.last_event
