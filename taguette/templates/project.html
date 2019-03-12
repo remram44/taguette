@@ -106,7 +106,7 @@
 <!-- Manage collaborators modal -->
 <div class="modal" id="members-modal" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-    <form id="members-form" class="modal-content">
+    <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Manage Collaborators</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -115,58 +115,33 @@
       </div>
       <div class="modal-body">
         <div class="container">
-          {{ xsrf_form_html() }}
           <h5>Add Collaborators</h5>
-          <div class="row">
-            <div class="col-md-4 form-group">
-              <input type="text" class="form-control" id="member-add-name" name="member-add-name" placeholder="Username" />
+          <form id="members-add">
+            <div class="row">
+              <div class="col-md-4 form-group">
+                <input type="text" class="form-control" id="member-add-name" placeholder="Username" />
+              </div>
+              <div class="col-md-4 form-group">
+                <select id="member-add-privileges" class="form-control">
+                  <option value="ADMIN">Full permissions</option>
+                  <option value="MANAGE_DOCS">Can't change collaborators / delete project</option>
+                  <option value="TAG" selected>View &amp; make changes</option>
+                  <option value="READ">View only</option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-info col-md-4 form-group">Add to project</button>
             </div>
-            <div class="col-md-4 form-group">
-              <select name="add-role" class="form-control">
-                <option value="ADMIN">Full permissions</option>
-                <option value="MANAGE_DOCS">Can't change collaborators / delete project</option>
-                <option value="TAG">View &amp; make changes</option>
-                <option value="READ">View only</option>
-              </select>
-            </div>
-            <button type="submit" class="btn btn-info col-md-4 form-group">Add to project</button>
-          </div>
+          </form>
           <h5>Current Collaborators</h5>
-          <div class="row">
-            <div class="col-md-4">
-              <p>Someone's name</p>
-            </div>
-            <div class="col-md-4 form-group">
-              <select name="add-role" class="form-control">
-                <option value="ADMIN">Full permissions</option>
-                <option value="MANAGE_DOCS">Can't change collaborators / delete project</option>
-                <option value="TAG">View &amp; make changes</option>
-                <option value="READ" selected>View only</option>
-              </select>
-            </div>
-            <button type="submit" class="btn btn-danger col-md-4 form-group">Remove collaborator</button>
-          </div>
-          <div class="row">
-            <div class="col-md-4">
-              <p>Someone else</p>
-            </div>
-            <div class="col-md-4 form-group">
-              <select name="add-role" class="form-control">
-                <option value="ADMIN">Full permissions</option>
-                <option value="MANAGE_DOCS" selected>Can't change collaborators / delete project</option>
-                <option value="TAG">View &amp; make changes</option>
-                <option value="READ">View only</option>
-              </select>
-            </div>
-            <button type="submit" class="btn btn-danger col-md-4 form-group">Remove collaborator</button>
-          </div>
+          <form id="members-current">
+          </form>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Save & Close</button>
+        <button type="button" id="members-submit" class="btn btn-primary">Save & Close</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
       </div>
-    </form>
+    </div>
   </div>
 </div>
 
@@ -182,7 +157,6 @@
       </div>
       <div class="modal-body">
         <div class="container">
-          {{ xsrf_form_html() }}
           <div class="row">
             <div class="col-md-6 form-group">
               <input type="text" class="form-control" id="document-add-name" name="document-add-name" placeholder="Name" />
@@ -218,7 +192,6 @@
       <div class="modal-body">
         <input type="hidden" id="document-change-id" />
         <div class="container">
-          {{ xsrf_form_html() }}
           <div class="row">
             <div class="col-md-6 form-group">
               <input type="text" class="form-control mb-3" id="document-change-name" name="document-change-name" placeholder="Name" />
@@ -250,7 +223,6 @@
         <input type="hidden" id="highlight-add-start" />
         <input type="hidden" id="highlight-add-end" />
         <div class="container">
-          {{ xsrf_form_html() }}
           <ul class="list-unstyled" id="highlight-add-tags">
             <li>Loading...</li>
             <li class="special-item-button"><a href="javascript:createTag()">Create a tag</a></li>
@@ -279,7 +251,6 @@
       <div class="modal-body">
         <input type="hidden" id="tag-add-id" />
         <div class="container">
-          {{ xsrf_form_html() }}
           <input type="text" class="form-group" id="tag-add-path" name="tag-add-path" placeholder="name" />
           <textarea class="form-control" id="tag-add-description" name="tag-add-description" placeholder="Description"></textarea>
         </div>
@@ -295,10 +266,12 @@
 
 <!-- Avoid doing requests, this is 2018 and we are good at engineering -->
 <script type="text/javascript">
+  var user_login = {{ user_login }};
   var project_id = {{ project.id }};
   var last_event = {{ last_event }};
   var documents = {{ documents }};
   var tags = {{ tags }};
+  var members = {{ members }};
 </script>
 
 <!-- Should minify this but I hate NPM -->

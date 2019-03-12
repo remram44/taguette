@@ -349,10 +349,20 @@ class Project(BaseHandler):
             },
             sort_keys=True,
         ))
+        members = (
+            self.db.query(database.ProjectMember)
+            .filter(database.ProjectMember.project_id == project_id)
+        ).all()
+        members_json = jinja2.Markup(json.dumps(
+            {member.user_login: {'privileges': member.privileges.name}
+             for member in members}
+        ))
         self.render('project.html',
                     project=project,
                     last_event=(project.last_event
                                 if project.last_event is not None
                                 else -1),
                     documents=documents_json,
-                    tags=tags_json)
+                    user_login=jinja2.Markup(json.dumps(self.current_user)),
+                    tags=tags_json,
+                    members=members_json)
