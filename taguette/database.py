@@ -138,6 +138,7 @@ class Privileges(enum.Enum):
     def can_add_highlight(self):
         return self in (Privileges.ADMIN, Privileges.MANAGE_DOCS,
                         Privileges.TAG)
+    can_delete_highlight = can_add_highlight
 
 
 class ProjectMember(Base):
