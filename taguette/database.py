@@ -112,6 +112,33 @@ class Privileges(enum.Enum):
     TAG = 2
     READ = 0
 
+    # Admin operations
+    def can_edit_project_meta(self):
+        return self == Privileges.ADMIN
+
+    def can_delete_project(self):
+        return self == Privileges.ADMIN
+
+    def can_edit_members(self):
+        return self == Privileges.ADMIN
+
+    # Document operations
+    def can_edit_document(self):
+        return self in (Privileges.ADMIN, Privileges.MANAGE_DOCS)
+    can_delete_document = can_edit_document
+    can_add_document = can_edit_document
+
+    # Tagging operations
+    def can_update_tag(self):
+        return self in (Privileges.ADMIN, Privileges.MANAGE_DOCS,
+                        Privileges.TAG)
+    can_add_tag = can_update_tag
+    can_delete_tag = can_update_tag
+
+    def can_add_highlight(self):
+        return self in (Privileges.ADMIN, Privileges.MANAGE_DOCS,
+                        Privileges.TAG)
+
 
 class ProjectMember(Base):
     __tablename__ = 'project_members'
@@ -244,6 +271,28 @@ class Command(Base):
             project_id=project_id,
             payload={'type': 'tag_delete',
                      'id': tag_id},
+        )
+
+    @classmethod
+    def member_add(cls, user_login, project_id, member_login, privileges):
+        assert isinstance(project_id, int)
+        assert isinstance(privileges, Privileges)
+        return cls(
+            user_login=user_login,
+            project_id=project_id,
+            payload={'type': 'member_add',
+                     'member': member_login,
+                     'privileges': privileges.name}
+        )
+
+    @classmethod
+    def member_remove(cls, user_login, project_id, member_login):
+        assert isinstance(project_id, int)
+        return cls(
+            user_login=user_login,
+            project_id=project_id,
+            payload={'type': 'member_remove',
+                     'member': member_login}
         )
 
 

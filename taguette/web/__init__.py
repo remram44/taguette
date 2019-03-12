@@ -102,6 +102,7 @@ def make_app(config, debug=False):
                     api.Highlights),
             URLSpec('/api/project/([0-9]+)/tag/new', api.TagAdd),
             URLSpec('/api/project/([0-9]+)/tag/([0-9]+)', api.TagUpdate),
+            URLSpec('/api/project/([0-9]+)/members', api.MembersUpdate),
             URLSpec('/api/project/([0-9]+)/events', api.ProjectEvents),
 
             # Well-known URLs

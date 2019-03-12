@@ -9,6 +9,7 @@
  * - Tags list
  * - Highlights
  * - Add highlight
+ * - Members
  * - Load contents
  * - Long polling
 
@@ -28,6 +29,18 @@ if(!Object.entries) {
 
     return resArray;
   };
+}
+
+function sortByKey(array, key) {
+  array.sort(function(a, b) {
+    if(key(a) < key(b)) {
+      return -1;
+    } else if(key(a) > key(b)) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
 }
 
 function encodeGetParams(params) {
@@ -141,6 +154,31 @@ function postJSON(url='', data={}, args) {
       throw "Status " + response.status;
     }
     return response.json();
+  });
+}
+
+function patchJSON(url='', data={}, args) {
+  if(args) {
+    args = '&' + encodeGetParams(args);
+  } else {
+    args = '';
+  }
+  return fetch(
+    url + '?_xsrf=' + encodeURIComponent(getCookie('_xsrf')) + args,
+    {
+      credentials: 'same-origin',
+      mode: 'same-origin',
+      cache: 'no-cache',
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8'
+      },
+      body: JSON.stringify(data)
+    }
+  ).then(function(response) {
+    if(response.status != 204) {
+      throw "Status " + response.status;
+    }
   });
 }
 
@@ -378,7 +416,7 @@ function linkDocument(elem, doc_id) {
   elem.setAttribute('href', url);
   elem.addEventListener('click', function(e) {
     e.preventDefault();
-    window.history.pushState({'document_id': doc_id}, "Document " + doc_id, url);
+    window.history.pushState({document_id: doc_id}, "Document " + doc_id, url);
     loadDocument(doc_id);
   });
 }
@@ -569,7 +607,7 @@ function linkTag(elem, tag_path) {
   elem.setAttribute('href', url);
   elem.addEventListener('click', function(e) {
     e.preventDefault();
-    window.history.pushState({'tag_path': tag_path}, "Tag " + tag_path, url);
+    window.history.pushState({tag_path: tag_path}, "Tag " + tag_path, url);
     loadTag(tag_path);
   });
 }
@@ -588,15 +626,7 @@ function removeTag(tag_id) {
 
 function updateTagsList() {
   var entries = Object.entries(tags);
-  entries.sort(function(a, b) {
-    if(a[1].path < b[1].path) {
-      return -1;
-    } else if(a[1].path > b[1].path) {
-      return 1
-    } else {
-      return 0;
-    }
-  });
+  sortByKey(entries, function(e) { return e[1].path; });
 
   // The list in the left panel
 
@@ -937,6 +967,159 @@ document.getElementById('highlight-delete').addEventListener('click', function(e
 
 
 /*
+ * Members
+ */
+
+function addMember(login, privileges) {
+  members[login] = {privileges: privileges};
+}
+
+function removeMember(login) {
+  delete members[login];
+}
+
+var members_modal = document.getElementById('members-modal');
+var members_initial = {};
+
+function _memberRow(login, user) {
+  var elem = document.createElement('div');
+  elem.className = 'row members-item';
+  elem.innerHTML =
+    '<div class="col-md-4">' +
+    '  <p class="members-item-login">' + login + '</p>' +
+    '</div>' +
+    '<div class="col-md-4 form-group">' +
+    '  <select class="form-control">' +
+    '    <option value="ADMIN">Full permissions</option>' +
+    '    <option value="MANAGE_DOCS">Can\'t change collaborators / delete project</option>' +
+    '    <option value="TAG">View &amp; make changes</option>' +
+    '    <option value="READ">View only</option>' +
+    '  </select>' +
+    '</div>' +
+    '<button type="button" class="btn btn-danger col-md-4 form-group">Remove collaborator</button>';
+
+  [].forEach.call(elem.querySelectorAll('option'), function(e) {
+    if(e.value == user.privileges) {
+      e.selected = true;
+    }
+  });
+
+  elem.querySelector('button').addEventListener('click', function(e) {
+    elem.parentNode.removeChild(elem);
+  });
+
+  return elem;
+}
+
+function showMembers() {
+  document.getElementById('members-add').reset();
+
+  var entries = Object.entries(members);
+  sortByKey(entries, function(e) { return e[0]; });
+  console.log(
+    "Members:",
+    entries.map(function(e) { return e[0] + " (" + e[1].privileges + ")"; })
+    .join(", ")
+  );
+
+  // Empty the list
+  var current_members = document.getElementById('members-current');
+  current_members.innerHTML = '';
+
+  // Fill it back up
+  for(var i = 0; i < entries.length; ++i) {
+    var login = entries[i][0];
+    var user = entries[i][1];
+    var elem = _memberRow(login, user);
+
+    if(login == user_login) {
+      var to_disable = elem.querySelectorAll('select, button');
+      [].forEach.call(to_disable, function(e) {
+        e.disabled = true;
+      });
+    }
+
+    current_members.appendChild(elem);
+  }
+
+  // Store current state so that we can compare later
+  members_initial = Object.assign({}, members);
+
+  $(members_modal).modal();
+}
+
+document.getElementById('members-add').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  var login = document.getElementById('member-add-name').value;
+  if(!login) { return; }
+  var privileges = document.getElementById('member-add-privileges').value;
+
+  // Add it at the top
+  var elem = _memberRow(login, {privileges: privileges});
+  var current_members = document.getElementById('members-current');
+  current_members.insertBefore(elem, current_members.firstChild);
+
+  document.getElementById('members-add').reset();
+});
+
+function sendMembersPatch() {
+  var patch = {};
+
+  var members_before = Object.assign({}, members_initial);
+
+  var rows = document.getElementById('members-current').querySelectorAll('.members-item');
+  for(var i = 0; i < rows.length; ++i) {
+    var row = rows[i];
+    var login = row.querySelector('.members-item-login').textContent;
+    if(login == user_login) continue; // Ignore self
+    var privileges = row.querySelector('select').value;
+
+    // Add to patch, if different from stored version
+    if(!members_before[login] || members_before[login].privileges != privileges) {
+      patch[login] = {privileges: privileges};
+    }
+
+    // Remove from object, so what's left are the removed members
+    delete members_before[login];
+  }
+
+  // Remove the members that are left
+  var entries = Object.entries(members_before);
+  for(var i = 0; i < entries.length; ++i) {
+    if(entries[i][0] == user_login) continue; // Ignore self
+    patch[entries[i][0]] = null;
+  }
+
+  console.log("Patching members list");
+  patchJSON(
+    '/api/project/' + project_id + '/members',
+    patch
+  )
+  .then(function() {
+    console.log("Members list patched");
+    $(members_modal).modal('hide');
+  })
+  .catch(function(error) {
+    console.error("Failed to patch members list:", error);
+    alert("Couldn't update collaborators");
+  });
+
+  members_initial = {};
+}
+
+document.getElementById('members-submit').addEventListener('click', function(e) {
+  e.preventDefault();
+  sendMembersPatch();
+});
+
+document.getElementById('members-current').addEventListener('submit', function(e) {
+  e.preventDefault();
+  sendMembersPatch();
+});
+
+
+/*
  * Load contents
  */
 
@@ -1130,6 +1313,17 @@ function longPollForEvents() {
     if('tag_delete' in result) {
       for(var i = 0; i < result.tag_delete.length; ++i) {
         removeTag(result.tag_delete[i]);
+      }
+    }
+    if('member_add' in result) {
+      for(var i = 0; i < result.member_add.length; ++i) {
+        addMember(result.member_add[i]['member'],
+                  result.member_add[i]['privileges']);
+      }
+    }
+    if('member_remove' in result) {
+      for(var i = 0; i < result.member_remove.length; ++i) {
+        removeMember(result.member_remove[i]);
       }
     }
     last_event = result.id;

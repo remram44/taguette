@@ -26,9 +26,12 @@ PROM_POLLING_CLIENTS = prometheus_client.Gauge(
 class ProjectMeta(BaseHandler):
     @authenticated
     def post(self, project_id):
+        project, privileges = self.get_project(project_id)
+        if not privileges.can_edit_project_meta():
+            self.set_status(403)
+            return self.send_json({'error': "Unauthorized"})
         try:
             obj = self.get_json()
-            project = self.get_project(project_id)
             validate.project_name(obj['name'])
             project.name = obj['name']
             validate.project_description(obj['description'])
@@ -54,8 +57,11 @@ class ProjectMeta(BaseHandler):
 class DocumentAdd(BaseHandler):
     @authenticated
     async def post(self, project_id):
+        project, privileges = self.get_project(project_id)
+        if not privileges.can_add_document():
+            self.set_status(403)
+            return self.send_json({'error': "Unauthorized"})
         try:
-            project = self.get_project(project_id)
             name = self.get_body_argument('name')
             validate.document_name(name)
             description = self.get_body_argument('description')
@@ -101,9 +107,12 @@ class DocumentAdd(BaseHandler):
 class DocumentUpdate(BaseHandler):
     @authenticated
     def post(self, project_id, document_id):
+        document, privileges = self.get_document(project_id, document_id)
+        if not privileges.can_edit_document():
+            self.set_status(403)
+            return self.send_json({'error': "Unauthorized"})
         try:
             obj = self.get_json()
-            document = self.get_document(project_id, document_id)
             if obj:
                 if 'name' in obj:
                     validate.document_name(obj['name'])
@@ -127,7 +136,10 @@ class DocumentUpdate(BaseHandler):
 
     @authenticated
     def delete(self, project_id, document_id):
-        document = self.get_document(project_id, document_id)
+        document, privileges = self.get_document(project_id, document_id)
+        if not privileges.can_delete_document():
+            self.set_status(403)
+            return self.send_json({'error': "Unauthorized"})
         self.db.delete(document)
         cmd = database.Command.document_delete(
             self.current_user,
@@ -145,7 +157,7 @@ class DocumentUpdate(BaseHandler):
 class DocumentContents(BaseHandler):
     @authenticated
     def get(self, project_id, document_id):
-        document = self.get_document(project_id, document_id, True)
+        document, _ = self.get_document(project_id, document_id, True)
         self.send_json({
             'contents': [
                 {'offset': 0, 'contents': document.contents},
@@ -163,9 +175,12 @@ class DocumentContents(BaseHandler):
 class TagAdd(BaseHandler):
     @authenticated
     def post(self, project_id):
+        project, privileges = self.get_project(project_id)
+        if not privileges.can_add_tag():
+            self.set_status(403)
+            return self.send_json({'error': "Unauthorized"})
         try:
             obj = self.get_json()
-            project = self.get_project(project_id)
             validate.tag_path(obj['path'])
             validate.tag_description(obj['description'])
             tag = database.Tag(project=project,
@@ -196,9 +211,12 @@ class TagAdd(BaseHandler):
 class TagUpdate(BaseHandler):
     @authenticated
     def post(self, project_id, tag_id):
+        project, privileges = self.get_project(project_id)
+        if not privileges.can_update_tag():
+            self.set_status(403)
+            return self.send_json({'error': "Unauthorized"})
         try:
             obj = self.get_json()
-            project = self.get_project(project_id)
             tag = self.db.query(database.Tag).get(int(tag_id))
             if tag.project_id != project.id:
                 raise HTTPError(404)
@@ -230,7 +248,10 @@ class TagUpdate(BaseHandler):
 
     @authenticated
     def delete(self, project_id, tag_id):
-        project = self.get_project(project_id)
+        project, privileges = self.get_project(project_id)
+        if not privileges.can_delete_tag():
+            self.set_status(403)
+            return self.send_json({'error': "Unauthorized"})
         tag = self.db.query(database.Tag).get(int(tag_id))
         if tag.project_id != project.id:
             raise HTTPError(404)
@@ -252,8 +273,11 @@ class TagUpdate(BaseHandler):
 class HighlightAdd(BaseHandler):
     @authenticated
     def post(self, project_id, document_id):
+        document, privileges = self.get_document(project_id, document_id, True)
+        if not privileges.can_add_highlight():
+            self.set_status(403)
+            return self.send_json({'error': "Unauthorized"})
         obj = self.get_json()
-        document = self.get_document(project_id, document_id, True)
         start, end = obj['start_offset'], obj['end_offset']
         snippet = extract.extract(document.contents, start, end)
         hl = database.Highlight(document=document,
@@ -286,8 +310,11 @@ class HighlightAdd(BaseHandler):
 class HighlightUpdate(BaseHandler):
     @authenticated
     def post(self, project_id, document_id, highlight_id):
+        document, privileges = self.get_document(project_id, document_id)
+        if not privileges.can_add_highlight():
+            self.set_status(403)
+            return self.send_json({'error': "Unauthorized"})
         obj = self.get_json()
-        document = self.get_document(project_id, document_id)
         hl = self.db.query(database.Highlight).get(int(highlight_id))
         if hl.document_id != document.id:
             raise HTTPError(404)
@@ -323,7 +350,10 @@ class HighlightUpdate(BaseHandler):
 
     @authenticated
     def delete(self, project_id, document_id, highlight_id):
-        document = self.get_document(project_id, document_id)
+        document, privileges = self.get_document(project_id, document_id)
+        if not privileges.can_delete_highlight():
+            self.set_status(403)
+            return self.send_json({'error': "Unauthorized"})
         hl = self.db.query(database.Highlight).get(int(highlight_id))
         if hl.document_id != document.id:
             raise HTTPError(404)
@@ -345,7 +375,7 @@ class HighlightUpdate(BaseHandler):
 class Highlights(BaseHandler):
     @authenticated
     def get(self, project_id, path):
-        project = self.get_project(project_id)
+        project, _ = self.get_project(project_id)
 
         if path:
             tag = aliased(database.Tag)
@@ -380,12 +410,73 @@ class Highlights(BaseHandler):
         })
 
 
+class MembersUpdate(BaseHandler):
+    @authenticated
+    def patch(self, project_id):
+        project, privileges = self.get_project(project_id)
+        if not privileges.can_edit_members():
+            self.set_status(403)
+            return self.send_json({'error': "Unauthorized"})
+
+        # Get all members
+        members = (
+            self.db.query(database.ProjectMember)
+            .filter(database.ProjectMember.project_id == project.id)
+        ).all()
+        members = {member.user_login: member for member in members}
+
+        # Go over the JSON patch and update
+        obj = self.get_json()
+        commands = []
+        for login, user in obj.items():
+            if login == self.current_user:
+                logger.warning("User tried to change own privileges")
+                continue
+            if not user and login in members:
+                self.db.delete(members[login])
+                cmd = database.Command.member_remove(
+                    self.current_user, project.id,
+                    login,
+                )
+                self.db.add(cmd)
+                commands.append(cmd)
+            else:
+                try:
+                    privileges = database.Privileges[user['privileges']]
+                except KeyError:
+                    self.set_status(400)
+                    return self.send_json({'error': "Invalid privileges %r" %
+                                                    user.get('privileges')})
+                if login in members:
+                    members[login].privileges = privileges
+                else:
+                    self.db.add(
+                        database.ProjectMember(project=project,
+                                               user_login=login,
+                                               privileges=privileges)
+                    )
+                cmd = database.Command.member_add(
+                    self.current_user, project.id,
+                    login, privileges,
+                )
+                self.db.add(cmd)
+                commands.append(cmd)
+
+        self.db.commit()
+        for cmd in commands:
+            self.db.refresh(cmd)
+            self.application.notify_project(project.id, cmd)
+
+        self.set_status(204)
+        self.finish()
+
+
 class ProjectEvents(BaseHandler):
     @authenticated
     @prom_async_inprogress(PROM_POLLING_CLIENTS)
     async def get(self, project_id):
         from_id = int(self.get_query_argument('from'))
-        project = self.get_project(project_id)
+        project, _ = self.get_project(project_id)
         self.project_id = int(project_id)
 
         # Check for immediate update
@@ -428,6 +519,15 @@ class ProjectEvents(BaseHandler):
         elif type_ == 'tag_delete':
             result = {
                 'tag_delete': [payload['id']],
+            }
+        elif type_ == 'member_add':
+            result = {
+                'member_add': [{'member': payload['member'],
+                                'privileges': payload['privileges']}]
+            }
+        elif type_ == 'member_remove':
+            result = {
+                'member_remove': [payload['member']]
             }
         else:
             raise ValueError("Unknown command type %r" % type_)

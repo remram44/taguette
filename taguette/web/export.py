@@ -34,7 +34,7 @@ class ExportHighlightsDoc(BaseHandler):
     @authenticated
     @export_doc
     def get(self, project_id, path):
-        project = self.get_project(project_id)
+        project, _ = self.get_project(project_id)
 
         if path:
             tag = aliased(database.Tag)
@@ -97,7 +97,7 @@ class ExportDocument(BaseHandler):
     @authenticated
     @export_doc
     def get(self, project_id, document_id):
-        doc = self.get_document(project_id, document_id, True)
+        doc, _ = self.get_document(project_id, document_id, True)
 
         highlights = merge_overlapping_ranges((hl.start_offset, hl.end_offset)
                                               for hl in doc.highlights)
@@ -113,7 +113,7 @@ class ExportDocument(BaseHandler):
 class ExportCodebookCsv(BaseHandler):
     @authenticated
     def get(self, project_id):
-        project = self.get_project(project_id)
+        project, _ = self.get_project(project_id)
         tags = list(project.tags)
         self.set_header('Content-Type', 'text/csv; charset=utf-8')
         self.set_header('Content-Disposition',
@@ -130,7 +130,7 @@ class ExportCodebookDoc(BaseHandler):
     @authenticated
     @export_doc
     def get(self, project_id):
-        project = self.get_project(project_id)
+        project, _ = self.get_project(project_id)
         tags = list(project.tags)
         html = self.render_string('export_codebook.html', tags=tags)
         return 'codebook', html

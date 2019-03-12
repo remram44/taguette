@@ -176,7 +176,7 @@ class BaseHandler(RequestHandler):
         )
         if project_member is None:
             raise HTTPError(404)
-        return project_member.project
+        return project_member.project, project_member.privileges
 
     def get_document(self, project_id, document_id, contents=False):
         try:
@@ -186,25 +186,28 @@ class BaseHandler(RequestHandler):
             raise HTTPError(404)
 
         q = (
-            self.db.query(database.Document)
-            .options(joinedload(database.Document.project)
-                     .joinedload(database.Project.members))
-            .filter(database.Project.id == project_id)
-            .filter(database.ProjectMember.user_login == self.current_user)
+            self.db.query(database.ProjectMember, database.Document)
+            .filter(database.Document.project_id == project_id)
             .filter(database.Document.id == document_id)
+            .filter(database.ProjectMember.user_login == self.current_user)
+            .filter(database.ProjectMember.project_id == project_id)
         )
         if contents:
             q = q.options(undefer(database.Document.contents))
-        document = q.one_or_none()
-        if document is None:
+        res = q.one_or_none()
+        if res is None:
             raise HTTPError(404)
-        return document
+        member, document = res
+        return document, member.privileges
 
     def get_json(self):
         type_ = self.request.headers.get('Content-Type', '')
         if not type_.startswith('application/json'):
             raise HTTPError(400, "Expected JSON")
-        return json.loads(self.request.body.decode('utf-8'))
+        try:
+            return json.loads(self.request.body.decode('utf-8'))
+        except json.JSONDecodeError:
+            raise HTTPError(400, "Invalid JSON")
 
     def send_json(self, obj):
         if isinstance(obj, list):
