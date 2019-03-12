@@ -15,6 +15,9 @@ Features:
 * Add 'delete project' button
 * Add account management page, to update email/password
 * Add password recovery feature (if you have an email set)
+* "New highlight" button shows up next to selected text rather than mouse, making it work with touch screens (mobile) and screen readers (hopefully)
+* Convert old .DOC files (Word 97) using WV if available
+* Add collaborator management modal, to add more members to a project
 
 0.4.4 (2018-11-29)
 ------------------
