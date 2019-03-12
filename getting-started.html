@@ -44,9 +44,9 @@
             <li class="nav-item active">
               <a class="nav-link" href="#">Getting Started <span class="sr-only">(current)</span></a>
             </li>
-            <!--<li class="nav-item">
-              <a class="nav-link" href="https://docs.taguette.org/">Technical Docs <i class="fas fa-external-link-alt"></i></a>
-            </li>-->
+            <li class="nav-item">
+              <a class="nav-link" href="https://app.taguette.org/">Try it online <i class="fas fa-external-link-alt"></i></a>
+            </li>
             <li class="nav-item">
               <a class="nav-link" href="https://gitlab.com/remram44/taguette"><i class="fab fa-gitlab"></i></a>
             </li>
@@ -65,7 +65,9 @@
 
         <h3 id="start"><i class="far fa-play-circle"></i> Start it up!</h3>
 
-        <p>Once you've downloaded and installed Taguette on your computer, you should be able to double-click on the Taguette icon and start it up! You'll see the command line will pop up and be running. This is ok! Don't worry about the terminal but do leave it running. If you exit the terminal, Taguette will stop. Taguette should automatically pop up in your web browser, but if for some reason it doesn't, navigate to <a href="http://localhost:8000"><code>localhost:8000</code></a> to begin working on your projects! It should look something like this:</p>
+        <p>If you are working on <a href="https://app.taguette.org">https://app.taguette.org</a>, after you log-in you should see a welcome page where you can create a new project similar to the screenshot below (just 'account' where you see 'single-user mode').</p>
+        
+        <p>If you've downloaded and installed Taguette on your computer, you should be able to double-click on the Taguette icon and start it up! You'll see the command line will pop up and be running. This is ok! Don't worry about the terminal but do leave it running. If you exit the terminal, Taguette will stop. Taguette should automatically pop up in your web browser, but if for some reason it doesn't, navigate to <a href="http://localhost:8000"><code>localhost:8000</code></a> to begin working on your projects! It should look something like this:</p>
 
         <img src="imgs/01-welcome.png" class="img-fluid border border-dark">
         <br/><br/>
@@ -95,6 +97,75 @@
         <br/><br/>
 
         <p>You should then see that file immediately in the Documents tab. If not, just refresh the page and it should be shown then. If you cannot see your document, you might be uploading a file type that Taguette can not yet handle. Please let us know at <a href="mailto:hi@taguette.org">hi@taguette.org</a>.</p>
+        
+         <h3 id="collabs"><i class="fas fa-users"></i> Adding collaborators (server only)</h3>
+        
+         <p>If you are working on <a href="https://app.taguette.org">https://app.taguette.org</a> or hosting Taguette on your own server, you have the option to work with others! In the <strong>Project Info tab</strong> of your Taguette project, you should see a grey button labeled <strong>Manage Collaborators</strong>:</p>
+        
+        <img src="imgs/projectCollab.png" class="img-fluid border border-dark"><br/>
+        &nbsp;
+        
+        <p>Click that and you should get a modal with the option to add and remove collaborators, as well as change their permissions on the project. You must add their Taguette username and pick from the list of permissions, click <strong>Add to project</strong>, and to make sure that you've fully added your collaborator, next click <strong>Save & Close</strong>.</p>
+        
+        <img src="imgs/addCollabs.png" class="img-fluid border border-dark"><br/><br/>
+        
+        <p>You can add collaborators with the following permissions:</p>
+        
+        <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th>Permission level</th>
+              <th>View project</th>
+              <th>Add/change/delete collaborators</th>
+              <th>Add/change/delete documents</th>
+              <th>Add/change/delete highlights</th>
+              <th>Add/change/delete tags</th>
+              <th>Delete project</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Full permission</td>
+              <td>X</td>
+              <td>X</td>
+              <td>X</td>
+              <td>X</td>
+              <td>X</td>
+              <td>X</td>
+            </tr>
+            <tr>
+              <td>Can't change collaborators/delete project</td>
+              <td>X</td>
+              <td></td>
+              <td>X</td>
+              <td>X</td>
+              <td>X</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>View and make changes</td>
+              <td>X</td>
+              <td></td>
+              <td></td>
+              <td>X</td>
+              <td>X</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>View Only</td>
+              <td>X</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+        
+        <br/>
 
 				<h3 id="tag"><i class="fas fa-tags"></i> Tags</h3>
 

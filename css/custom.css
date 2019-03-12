@@ -263,6 +263,34 @@ footer p {
   background-color: #6a1a1a;
 }
 
+
+/**************INFO*******************/
+.bg-info {
+  background-color: #246a99 !important;
+}
+
+.border-info {
+  border-color: #246a99 !important;
+}
+
+.text-info {
+  color: #246a99 !important;
+}
+
+.text-info {
+  color: #246a99 !important;
+}
+
+.alert-info {
+  background-color: #246a99;
+}
+
+.btn-info {
+  color: #fff;
+  background-color: #246a99;
+  border-color: #246a99;
+}
+
 /**************MISC*******************/
 
 .page-link {
