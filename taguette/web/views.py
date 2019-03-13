@@ -4,6 +4,7 @@ import json
 import logging
 import jinja2
 from markupsafe import Markup
+import prometheus_client
 from sqlalchemy.orm import aliased
 from tornado.web import authenticated, HTTPError
 from urllib.parse import urlunparse
@@ -16,16 +17,25 @@ from .base import BaseHandler, send_mail
 logger = logging.getLogger(__name__)
 
 
+PROM_PAGE = prometheus_client.Counter(
+    'pages_total',
+    "Page requests",
+    ['name'],
+)
+
+
 class Index(BaseHandler):
     """Index page, shows welcome message and user's projects.
     """
     def get(self):
         if self.current_user is not None:
             if self.get_query_argument('token', None):
+                PROM_PAGE.labels('token').inc()
                 self.redirect(self.reverse_url('index'))
                 return
             user = self.db.query(database.User).get(self.current_user)
             if user is None:
+                PROM_PAGE.labels('index').inc()
                 logger.warning("User is logged in as non-existent user %r",
                                self.current_user)
                 self.logout()
@@ -34,24 +44,30 @@ class Index(BaseHandler):
                 if self.current_user == 'admin':
                     messages = [Markup(msg['html'])
                                 for msg in self.application.messages]
+                PROM_PAGE.labels('index').inc()
                 self.render('index.html', user=user, projects=user.projects,
                             messages=messages)
                 return
         elif not self.application.config['MULTIUSER']:
             token = self.get_query_argument('token', None)
             if token and token == self.application.single_user_token:
+                PROM_PAGE.labels('token').inc()
                 self.login('admin')
                 self.redirect(self.reverse_url('index'))
             elif token:
+                PROM_PAGE.labels('token_needed').inc()
                 self.redirect(self.reverse_url('index'))
             else:
+                PROM_PAGE.labels('token_needed').inc()
                 self.render('token_needed.html')
         else:
+            PROM_PAGE.labels('welcome').inc()
             self.render('welcome.html')
 
 
 class Login(BaseHandler):
     def get(self):
+        PROM_PAGE.labels('login').inc()
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         if self.current_user:
@@ -61,6 +77,7 @@ class Login(BaseHandler):
                         next=self.get_argument('next', ''))
 
     def post(self):
+        PROM_PAGE.labels('login').inc()
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         login = self.get_body_argument('login')
@@ -83,6 +100,7 @@ class Login(BaseHandler):
 
 class Logout(BaseHandler):
     def get(self):
+        PROM_PAGE.labels('logout').inc()
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         self.logout()
@@ -91,6 +109,7 @@ class Logout(BaseHandler):
 
 class Register(BaseHandler):
     def get(self):
+        PROM_PAGE.labels('register').inc()
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         if not self.application.config['REGISTRATION_ENABLED']:
@@ -101,6 +120,7 @@ class Register(BaseHandler):
             self.render('login.html', register=True)
 
     def post(self):
+        PROM_PAGE.labels('register').inc()
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         if not self.application.config['REGISTRATION_ENABLED']:
@@ -139,6 +159,7 @@ class Register(BaseHandler):
 class Account(BaseHandler):
     @authenticated
     def get(self):
+        PROM_PAGE.labels('account').inc()
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         user = self.db.query(database.User).get(self.current_user)
@@ -146,6 +167,7 @@ class Account(BaseHandler):
 
     @authenticated
     def post(self):
+        PROM_PAGE.labels('account').inc()
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         user = self.db.query(database.User).get(self.current_user)
@@ -170,11 +192,13 @@ class Account(BaseHandler):
 
 class AskResetPassword(BaseHandler):
     def get(self):
+        PROM_PAGE.labels('reset_password').inc()
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         self.render('reset_password.html')
 
     def post(self):
+        PROM_PAGE.labels('reset_password').inc()
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         email = self.get_body_argument('email')
@@ -222,6 +246,7 @@ class AskResetPassword(BaseHandler):
 
 class SetNewPassword(BaseHandler):
     def get(self):
+        PROM_PAGE.labels('new_password').inc()
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         reset_token = self.get_query_argument('reset_token')
@@ -230,6 +255,7 @@ class SetNewPassword(BaseHandler):
         self.render('new_password.html', reset_token=reset_token)
 
     def post(self):
+        PROM_PAGE.labels('new_password').inc()
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         reset_token = self.get_body_argument('reset_token')
@@ -261,10 +287,12 @@ class SetNewPassword(BaseHandler):
 class ProjectAdd(BaseHandler):
     @authenticated
     def get(self):
+        PROM_PAGE.labels('new_project').inc()
         self.render('project_new.html')
 
     @authenticated
     def post(self):
+        PROM_PAGE.labels('new_project').inc()
         name = self.get_body_argument('name', '')
         description = self.get_body_argument('description', '')
         try:
@@ -303,6 +331,7 @@ class ProjectAdd(BaseHandler):
 class ProjectDelete(BaseHandler):
     @authenticated
     def get(self, project_id):
+        PROM_PAGE.labels('delete_project').inc()
         project, privileges = self.get_project(project_id)
         if not privileges.can_delete_project():
             raise HTTPError(403)
@@ -318,6 +347,7 @@ class ProjectDelete(BaseHandler):
 
     @authenticated
     def post(self, project_id):
+        PROM_PAGE.labels('delete_project').inc()
         project, privileges = self.get_project(project_id)
         if not privileges.can_delete_project():
             raise HTTPError(403)
@@ -331,6 +361,7 @@ class ProjectDelete(BaseHandler):
 class Project(BaseHandler):
     @authenticated
     def get(self, project_id):
+        PROM_PAGE.labels('project').inc()
         project, _ = self.get_project(project_id)
         documents_json = jinja2.Markup(json.dumps(
             {
