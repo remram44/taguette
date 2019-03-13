@@ -21,11 +21,17 @@ PROM_POLLING_CLIENTS = prometheus_client.Gauge(
     'polling_clients',
     "Number of current polling clients",
 )
+PROM_API = prometheus_client.Counter(
+    'api_total',
+    "API requests",
+    ['name'],
+)
 
 
 class ProjectMeta(BaseHandler):
     @authenticated
     def post(self, project_id):
+        PROM_API.labels('project_meta').inc()
         project, privileges = self.get_project(project_id)
         if not privileges.can_edit_project_meta():
             self.set_status(403)
@@ -57,6 +63,7 @@ class ProjectMeta(BaseHandler):
 class DocumentAdd(BaseHandler):
     @authenticated
     async def post(self, project_id):
+        PROM_API.labels('document_add').inc()
         project, privileges = self.get_project(project_id)
         if not privileges.can_add_document():
             self.set_status(403)
@@ -107,6 +114,7 @@ class DocumentAdd(BaseHandler):
 class DocumentUpdate(BaseHandler):
     @authenticated
     def post(self, project_id, document_id):
+        PROM_API.labels('document_update').inc()
         document, privileges = self.get_document(project_id, document_id)
         if not privileges.can_edit_document():
             self.set_status(403)
@@ -136,6 +144,7 @@ class DocumentUpdate(BaseHandler):
 
     @authenticated
     def delete(self, project_id, document_id):
+        PROM_API.labels('document_delete').inc()
         document, privileges = self.get_document(project_id, document_id)
         if not privileges.can_delete_document():
             self.set_status(403)
@@ -157,6 +166,7 @@ class DocumentUpdate(BaseHandler):
 class DocumentContents(BaseHandler):
     @authenticated
     def get(self, project_id, document_id):
+        PROM_API.labels('document_contents').inc()
         document, _ = self.get_document(project_id, document_id, True)
         self.send_json({
             'contents': [
@@ -175,6 +185,7 @@ class DocumentContents(BaseHandler):
 class TagAdd(BaseHandler):
     @authenticated
     def post(self, project_id):
+        PROM_API.labels('tag_add').inc()
         project, privileges = self.get_project(project_id)
         if not privileges.can_add_tag():
             self.set_status(403)
@@ -211,6 +222,7 @@ class TagAdd(BaseHandler):
 class TagUpdate(BaseHandler):
     @authenticated
     def post(self, project_id, tag_id):
+        PROM_API.labels('tag_update').inc()
         project, privileges = self.get_project(project_id)
         if not privileges.can_update_tag():
             self.set_status(403)
@@ -248,6 +260,7 @@ class TagUpdate(BaseHandler):
 
     @authenticated
     def delete(self, project_id, tag_id):
+        PROM_API.labels('tag_delete').inc()
         project, privileges = self.get_project(project_id)
         if not privileges.can_delete_tag():
             self.set_status(403)
@@ -273,6 +286,7 @@ class TagUpdate(BaseHandler):
 class HighlightAdd(BaseHandler):
     @authenticated
     def post(self, project_id, document_id):
+        PROM_API.labels('highlight_add').inc()
         document, privileges = self.get_document(project_id, document_id, True)
         if not privileges.can_add_highlight():
             self.set_status(403)
@@ -310,6 +324,7 @@ class HighlightAdd(BaseHandler):
 class HighlightUpdate(BaseHandler):
     @authenticated
     def post(self, project_id, document_id, highlight_id):
+        PROM_API.labels('highlight_update').inc()
         document, privileges = self.get_document(project_id, document_id)
         if not privileges.can_add_highlight():
             self.set_status(403)
@@ -350,6 +365,7 @@ class HighlightUpdate(BaseHandler):
 
     @authenticated
     def delete(self, project_id, document_id, highlight_id):
+        PROM_API.labels('highlight_delete').inc()
         document, privileges = self.get_document(project_id, document_id)
         if not privileges.can_delete_highlight():
             self.set_status(403)
@@ -375,6 +391,7 @@ class HighlightUpdate(BaseHandler):
 class Highlights(BaseHandler):
     @authenticated
     def get(self, project_id, path):
+        PROM_API.labels('highlights').inc()
         project, _ = self.get_project(project_id)
 
         if path:
@@ -413,6 +430,7 @@ class Highlights(BaseHandler):
 class MembersUpdate(BaseHandler):
     @authenticated
     def patch(self, project_id):
+        PROM_API.labels('members_update').inc()
         project, privileges = self.get_project(project_id)
         if not privileges.can_edit_members():
             self.set_status(403)
@@ -475,6 +493,7 @@ class ProjectEvents(BaseHandler):
     @authenticated
     @prom_async_inprogress(PROM_POLLING_CLIENTS)
     async def get(self, project_id):
+        PROM_API.labels('events').inc()
         from_id = int(self.get_query_argument('from'))
         project, _ = self.get_project(project_id)
         self.project_id = int(project_id)
