@@ -2,13 +2,19 @@ from bs4 import BeautifulSoup, NavigableString
 import prometheus_client
 
 
+BUCKETS = [0.001, 0.002, 0.003, 0.004,
+           0.006, 0.008, 0.010,
+           0.015, 0.020, 0.025, 0.030, 0.035, 0.04, 0.045, 0.05,
+           0.06, 0.07, 0.08, 0.09, 0.10, 0.15, 0.20, 0.5, 1.0]
 PROM_EXTRACT_TIME = prometheus_client.Histogram(
     'html_extract_seconds',
     "Time to extract part of an HTML document (extract.extract())",
+    buckets=BUCKETS,
 )
 PROM_HIGHLIGHT_TIME = prometheus_client.Histogram(
     'html_highlight_seconds',
     "Time to add highlight tags to an HTML document (extract.highlight())",
+    buckets=BUCKETS,
 )
 
 

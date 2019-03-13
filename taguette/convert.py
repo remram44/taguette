@@ -14,6 +14,9 @@ from xml.etree import ElementTree
 logger = logging.getLogger(__name__)
 
 
+BUCKETS = [1.0, 2.0, 3.0, 4.0, 5.0,
+           6.0, 8.0, 10.0, 12.0, 15.0, 18.0,
+           22.0, 26.0, 30.0, 36.0, 42.0, 48.0, 60.0, 90.0]
 PROM_CALIBRE_TOHTML = prometheus_client.Counter(
     'convert_calibre_tohtml_total',
     "Conversions to HTML using Calibre (calibre_to_html())",
@@ -22,6 +25,7 @@ PROM_CALIBRE_TOHTML = prometheus_client.Counter(
 PROM_CALIBRE_TOHTML_TIME = prometheus_client.Histogram(
     'convert_calibre_tohtml_seconds',
     "Time to convert to HTML using Calibre (calibre_to_html())",
+    buckets=BUCKETS,
 )
 PROM_WVWARE_TOHTML = prometheus_client.Counter(
     'convert_wvware_tohtml_total',
@@ -40,6 +44,7 @@ PROM_CALIBRE_FROMHTML = prometheus_client.Counter(
 PROM_CALIBRE_FROMHTML_TIME = prometheus_client.Histogram(
     'convert_calibre_fromhtml_seconds',
     "Time to convert from HTML using Calibre (calibre_from_html())",
+    buckets=BUCKETS,
 )
 
 
