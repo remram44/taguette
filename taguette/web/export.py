@@ -16,7 +16,7 @@ from .base import BaseHandler
 logger = logging.getLogger(__name__)
 
 
-PROM_PAGE = prometheus_client.Counter(
+PROM_EXPORT = prometheus_client.Counter(
     'export_total',
     "Export",
     ['what', 'extension'],
@@ -42,7 +42,7 @@ class ExportHighlightsDoc(BaseHandler):
     @authenticated
     @export_doc
     def get(self, project_id, path, ext):
-        PROM_PAGE.labels('highlights_doc', ext.lower()).inc()
+        PROM_EXPORT.labels('highlights_doc', ext.lower()).inc()
         project, _ = self.get_project(project_id)
 
         if path:
@@ -106,7 +106,7 @@ class ExportDocument(BaseHandler):
     @authenticated
     @export_doc
     def get(self, project_id, document_id, ext):
-        PROM_PAGE.labels('document', ext.lower()).inc()
+        PROM_EXPORT.labels('document', ext.lower()).inc()
         doc, _ = self.get_document(project_id, document_id, True)
 
         highlights = merge_overlapping_ranges((hl.start_offset, hl.end_offset)
@@ -123,7 +123,7 @@ class ExportDocument(BaseHandler):
 class ExportCodebookCsv(BaseHandler):
     @authenticated
     def get(self, project_id):
-        PROM_PAGE.labels('codebook', 'csv').inc()
+        PROM_EXPORT.labels('codebook', 'csv').inc()
         project, _ = self.get_project(project_id)
         tags = list(project.tags)
         self.set_header('Content-Type', 'text/csv; charset=utf-8')
@@ -141,7 +141,7 @@ class ExportCodebookDoc(BaseHandler):
     @authenticated
     @export_doc
     def get(self, project_id, ext):
-        PROM_PAGE.labels('codebook', ext.lower()).inc()
+        PROM_EXPORT.labels('codebook', ext.lower()).inc()
         project, _ = self.get_project(project_id)
         tags = list(project.tags)
         html = self.render_string('export_codebook.html', tags=tags)
