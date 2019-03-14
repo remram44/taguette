@@ -21,6 +21,8 @@ PROM_EXPORT = prometheus_client.Counter(
     "Export",
     ['what', 'extension'],
 )
+
+
 def init_PROM_EXPORT(w):
     for e in convert.html_to_extensions:
         PROM_EXPORT.labels(w, e).inc(0)

@@ -116,7 +116,6 @@ def get_html_body(body):
 
 @prom_async_time(PROM_CALIBRE_TOHTML_TIME)
 async def calibre_to_html(input_filename, output_dir):
-    ext = os.path.splitext(input_filename)[1].lower()[1:]
     PROM_CALIBRE_TOHTML.inc()
 
     output = []
