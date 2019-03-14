@@ -33,6 +33,7 @@ class Index(BaseHandler):
     PROM_PAGE.labels('token_needed').inc(0)
 
     def get(self):
+        database.threads()
         if self.current_user is not None:
             if self.get_query_argument('token', None):
                 PROM_PAGE.labels('token').inc()

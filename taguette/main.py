@@ -10,7 +10,7 @@ from urllib.parse import urlparse
 import webbrowser
 
 from . import __version__
-from .database import migrate
+from .database import migrate, threads
 from .web import make_app
 
 
@@ -125,12 +125,14 @@ def main():
             default_db_show = '$XDG_DATA_HOME/taguette/taguette.sqlite3'
         default_db = os.path.join(data, 'taguette', 'taguette.sqlite3')
 
+    threads()
+
     parser = argparse.ArgumentParser(
         description="Document tagger for qualitative analysis",
     )
     parser.add_argument('--version', action='version',
                         version='taguette version %s' % __version__)
-    parser.add_argument('-p', '--port', default='8000',
+    parser.add_argument('-p', '--port', default='8300',
                         help="Port number on which to listen")
     parser.add_argument('-b', '--bind', default='127.0.0.1',
                         help="Address to bind on")
@@ -207,6 +209,8 @@ def main():
             DATABASE=prepare_db(args.database),
         )
 
+    threads()
+
     if 'PROMETHEUS_LISTEN' in config:
         p_addr = None
         p_port = config['PROMETHEUS_LISTEN']
@@ -216,7 +220,12 @@ def main():
                 p_addr = p_addr or None
             p_port = int(p_port)
         logger.info("Starting Prometheus exporter on port %d", p_port)
+        print("Starting prometheus server...")
         prometheus_client.start_http_server(p_port, p_addr)
+        import time; time.sleep(2)
+        print("Prometheus server started")
+
+        threads()
 
     if 'SENTRY_DSN' in config:
         import sentry_sdk
@@ -229,9 +238,12 @@ def main():
         )
 
     app = make_app(config, debug=args.debug)
+    threads()
     app.listen(config['PORT'], address=config['BIND_ADDRESS'],
                xheaders=config.get('X_HEADERS', False))
+    threads()
     loop = tornado.ioloop.IOLoop.current()
+    threads()
 
     token = app.single_user_token
     if token:
@@ -244,7 +256,9 @@ def main():
     if args.browser and not args.debug:
         loop.call_later(0.01, webbrowser.open, url)
 
+    threads()
     loop.start()
+    threads()
 
 
 if __name__ == '__main__':

@@ -24,6 +24,32 @@ import sys
 logger = logging.getLogger(__name__)
 
 
+import inspect, threading
+def _t():
+    f = inspect.currentframe().f_back.f_back
+    while f.f_back:
+        f = f.f_back
+        fi = inspect.getframeinfo(f)
+        print("    %s:%s" % (fi.filename, fi.lineno))
+_s = threading.Thread.start
+def _r(self):
+    fi = inspect.getframeinfo(inspect.currentframe().f_back)
+    print("THREAD CREATED %s:%s" % (fi.filename, fi.lineno))
+    _t()
+    _s(self)
+threading.Thread.start = _r
+def threads():
+    if threading.current_thread() == threading.main_thread():
+        c = "this is main thread"
+    else:
+        c = "THIS IS NOT main thread"
+        _t()
+        print()
+    fi = inspect.getframeinfo(inspect.currentframe().f_back)
+    print("%s:%s" % (fi.filename, fi.lineno))
+    print("%d threads, %s" % (len(threading.enumerate()), c))
+
+
 PROM_DATABASE_VERSION = prometheus_client.Info('database_version',
                                                "Database version")
 PROM_COMMAND = prometheus_client.Counter('commands_total',

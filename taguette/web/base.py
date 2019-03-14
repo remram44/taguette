@@ -138,7 +138,12 @@ class BaseHandler(RequestHandler):
 
     def __init__(self, application, request, **kwargs):
         super(BaseHandler, self).__init__(application, request, **kwargs)
-        self.db = application.DBSession()
+        self._db = application.DBSession()
+
+    @property
+    def db(self):
+        database.threads()
+        return self._db
 
     def get_current_user(self):
         user = self.get_secure_cookie('user')
