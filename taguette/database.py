@@ -42,7 +42,7 @@ def threads():
     if threading.current_thread() == threading.main_thread():
         c = "this is main thread"
     else:
-        c = "THIS IS NOT main thread"
+        c = "THIS IS NOT main thread: %s" % threading.current_thread().ident
         _t()
         print()
     fi = inspect.getframeinfo(inspect.currentframe().f_back)
