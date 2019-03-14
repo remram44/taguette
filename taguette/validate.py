@@ -10,6 +10,9 @@ class InvalidFormat(HTTPError):
         HTTPError.__init__(self, status_code, message)
         self.message = message
 
+    def __repr__(self):
+        return "InvalidFormat(%r, %d)" % (self.message, self.status_code)
+
 
 def project_name(name):
     if not name:
