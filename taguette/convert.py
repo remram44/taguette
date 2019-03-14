@@ -20,7 +20,6 @@ BUCKETS = [1.0, 2.0, 3.0, 4.0, 5.0,
 PROM_CALIBRE_TOHTML = prometheus_client.Counter(
     'convert_calibre_tohtml_total',
     "Conversions to HTML using Calibre (calibre_to_html())",
-    ['extension'],
 )
 PROM_CALIBRE_TOHTML_TIME = prometheus_client.Histogram(
     'convert_calibre_tohtml_seconds',
@@ -30,7 +29,6 @@ PROM_CALIBRE_TOHTML_TIME = prometheus_client.Histogram(
 PROM_WVWARE_TOHTML = prometheus_client.Counter(
     'convert_wvware_tohtml_total',
     "Conversions to HTML using wvHtml (wvware_to_html())",
-    ['extension'],
 )
 PROM_WVWARE_TOHTML_TIME = prometheus_client.Histogram(
     'convert_wvware_tohtml_seconds',
@@ -119,7 +117,7 @@ def get_html_body(body):
 @prom_async_time(PROM_CALIBRE_TOHTML_TIME)
 async def calibre_to_html(input_filename, output_dir):
     ext = os.path.splitext(input_filename)[1].lower()[1:]
-    PROM_CALIBRE_TOHTML.labels(ext).inc()
+    PROM_CALIBRE_TOHTML.inc()
 
     output = []
     convert = 'ebook-convert'
@@ -232,6 +230,7 @@ async def calibre_to_html(input_filename, output_dir):
 
 @prom_async_time(PROM_WVWARE_TOHTML_TIME)
 async def wvware_to_html(input_filename, tmp):
+    PROM_WVWARE_TOHTML.inc()
     output_filename = os.path.join(tmp, 'output.html')
 
     # Run WV
