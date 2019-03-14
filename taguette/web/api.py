@@ -29,6 +29,8 @@ PROM_API = prometheus_client.Counter(
 
 
 class ProjectMeta(BaseHandler):
+    PROM_API.labels('project_meta').inc(0)
+
     @authenticated
     def post(self, project_id):
         PROM_API.labels('project_meta').inc()
@@ -61,6 +63,8 @@ class ProjectMeta(BaseHandler):
 
 
 class DocumentAdd(BaseHandler):
+    PROM_API.labels('document_add').inc(0)
+
     @authenticated
     async def post(self, project_id):
         PROM_API.labels('document_add').inc()
@@ -112,6 +116,9 @@ class DocumentAdd(BaseHandler):
 
 
 class DocumentUpdate(BaseHandler):
+    PROM_API.labels('document_update').inc(0)
+    PROM_API.labels('document_delete').inc(0)
+
     @authenticated
     def post(self, project_id, document_id):
         PROM_API.labels('document_update').inc()
@@ -164,6 +171,8 @@ class DocumentUpdate(BaseHandler):
 
 
 class DocumentContents(BaseHandler):
+    PROM_API.labels('document_contents').inc(0)
+
     @authenticated
     def get(self, project_id, document_id):
         PROM_API.labels('document_contents').inc()
@@ -183,6 +192,8 @@ class DocumentContents(BaseHandler):
 
 
 class TagAdd(BaseHandler):
+    PROM_API.labels('tag_add').inc(0)
+
     @authenticated
     def post(self, project_id):
         PROM_API.labels('tag_add').inc()
@@ -220,6 +231,9 @@ class TagAdd(BaseHandler):
 
 
 class TagUpdate(BaseHandler):
+    PROM_API.labels('tag_update').inc(0)
+    PROM_API.labels('tag_delete').inc(0)
+
     @authenticated
     def post(self, project_id, tag_id):
         PROM_API.labels('tag_update').inc()
@@ -284,6 +298,8 @@ class TagUpdate(BaseHandler):
 
 
 class HighlightAdd(BaseHandler):
+    PROM_API.labels('highlight_add').inc(0)
+
     @authenticated
     def post(self, project_id, document_id):
         PROM_API.labels('highlight_add').inc()
@@ -322,6 +338,9 @@ class HighlightAdd(BaseHandler):
 
 
 class HighlightUpdate(BaseHandler):
+    PROM_API.labels('highlight_update').inc(0)
+    PROM_API.labels('highlight_delete').inc(0)
+
     @authenticated
     def post(self, project_id, document_id, highlight_id):
         PROM_API.labels('highlight_update').inc()
@@ -389,6 +408,8 @@ class HighlightUpdate(BaseHandler):
 
 
 class Highlights(BaseHandler):
+    PROM_API.labels('highlights').inc(0)
+
     @authenticated
     def get(self, project_id, path):
         PROM_API.labels('highlights').inc()
@@ -428,6 +449,8 @@ class Highlights(BaseHandler):
 
 
 class MembersUpdate(BaseHandler):
+    PROM_API.labels('members_update').inc(0)
+
     @authenticated
     def patch(self, project_id):
         PROM_API.labels('members_update').inc()
@@ -490,6 +513,8 @@ class MembersUpdate(BaseHandler):
 
 
 class ProjectEvents(BaseHandler):
+    PROM_API.labels('events').inc(0)
+
     @authenticated
     @prom_async_inprogress(PROM_POLLING_CLIENTS)
     async def get(self, project_id):

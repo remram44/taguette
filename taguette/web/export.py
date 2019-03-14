@@ -21,6 +21,9 @@ PROM_EXPORT = prometheus_client.Counter(
     "Export",
     ['what', 'extension'],
 )
+def init_PROM_EXPORT(w):
+    for e in convert.html_to_extensions:
+        PROM_EXPORT.labels(w, e).inc(0)
 
 
 def export_doc(wrapped):
@@ -39,6 +42,8 @@ def export_doc(wrapped):
 
 
 class ExportHighlightsDoc(BaseHandler):
+    init_PROM_EXPORT('highlights_doc')
+
     @authenticated
     @export_doc
     def get(self, project_id, path, ext):
@@ -103,6 +108,8 @@ def merge_overlapping_ranges(ranges):
 
 
 class ExportDocument(BaseHandler):
+    init_PROM_EXPORT('document')
+
     @authenticated
     @export_doc
     def get(self, project_id, document_id, ext):
@@ -121,6 +128,8 @@ class ExportDocument(BaseHandler):
 
 
 class ExportCodebookCsv(BaseHandler):
+    PROM_EXPORT.labels('codebook', 'csv').inc(0)
+
     @authenticated
     def get(self, project_id):
         PROM_EXPORT.labels('codebook', 'csv').inc()
@@ -138,6 +147,8 @@ class ExportCodebookCsv(BaseHandler):
 
 
 class ExportCodebookDoc(BaseHandler):
+    init_PROM_EXPORT('codebook')
+
     @authenticated
     @export_doc
     def get(self, project_id, ext):

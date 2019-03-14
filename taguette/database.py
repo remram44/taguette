@@ -195,12 +195,17 @@ class Command(Base):
             PROM_COMMAND.labels(kwargs['payload']['type']).inc()
         super(Command, self).__init__(**kwargs)
 
+    for n in ['project_meta', 'document_add', 'document_delete',
+              'highlight_add', 'highlight_delete', 'tag_add', 'tag_delete',
+              'member_add', 'member_remove']:
+        PROM_COMMAND.labels(n).inc(0)
+
     @classmethod
     def project_meta(cls, user_login, project_id, name, description):
         return cls(
             user_login=user_login,
             project_id=project_id,
-            payload={'type': 'project_meta',
+            payload={'type': 'project_meta',  # keep in sync above
                      'name': name,
                      'description': description},
         )
@@ -211,7 +216,7 @@ class Command(Base):
             user_login=user_login,
             project=document.project,
             document_id=document.id,
-            payload={'type': 'document_add',
+            payload={'type': 'document_add',  # keep in sync above
                      'name': document.name,
                      'description': document.description},
         )
@@ -223,7 +228,7 @@ class Command(Base):
             user_login=user_login,
             project_id=document.project_id,
             document_id=document.id,
-            payload={'type': 'document_delete'},
+            payload={'type': 'document_delete'},  # keep in sync above
         )
 
     @classmethod
@@ -233,7 +238,7 @@ class Command(Base):
             user_login=user_login,
             project_id=document.project_id,
             document_id=document.id,
-            payload={'type': 'highlight_add',
+            payload={'type': 'highlight_add',  # keep in sync above
                      'id': highlight.id,
                      'start_offset': highlight.start_offset,
                      'end_offset': highlight.end_offset,
@@ -247,7 +252,7 @@ class Command(Base):
             user_login=user_login,
             project_id=document.project_id,
             document_id=document.id,
-            payload={'type': 'highlight_delete',
+            payload={'type': 'highlight_delete',  # keep in sync above
                      'id': highlight_id},
         )
 
@@ -257,7 +262,7 @@ class Command(Base):
         return cls(
             user_login=user_login,
             project_id=tag.project_id,
-            payload={'type': 'tag_add',
+            payload={'type': 'tag_add',  # keep in sync above
                      'id': tag.id,
                      'path': tag.path,
                      'description': tag.description},
@@ -270,7 +275,7 @@ class Command(Base):
         return cls(
             user_login=user_login,
             project_id=project_id,
-            payload={'type': 'tag_delete',
+            payload={'type': 'tag_delete',  # keep in sync above
                      'id': tag_id},
         )
 
@@ -281,7 +286,7 @@ class Command(Base):
         return cls(
             user_login=user_login,
             project_id=project_id,
-            payload={'type': 'member_add',
+            payload={'type': 'member_add',  # keep in sync above
                      'member': member_login,
                      'privileges': privileges.name}
         )
@@ -292,7 +297,7 @@ class Command(Base):
         return cls(
             user_login=user_login,
             project_id=project_id,
-            payload={'type': 'member_remove',
+            payload={'type': 'member_remove',  # keep in sync above
                      'member': member_login}
         )
 

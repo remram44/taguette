@@ -346,7 +346,7 @@ def html_to_html(html):
     return future
 
 
-_extensions = {
+html_to_extensions = {
     'html': (html_to_html,
              'text/html; charset=utf-8'),
     'doc': (lambda html: calibre_from_html(html, 'docx'),
@@ -358,8 +358,10 @@ _extensions = {
     'pdf': (lambda html: calibre_from_html(html, 'pdf'),
             'application/pdf'),
 }
+for n in html_to_extensions:
+    PROM_CALIBRE_FROMHTML.labels(n).inc(0)
 
 
 def html_to(html, extension):
-    func, mimetype = _extensions[extension]
+    func, mimetype = html_to_extensions[extension]
     return mimetype, asyncio.ensure_future(func(html))

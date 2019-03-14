@@ -27,6 +27,11 @@ PROM_PAGE = prometheus_client.Counter(
 class Index(BaseHandler):
     """Index page, shows welcome message and user's projects.
     """
+    PROM_PAGE.labels('index').inc(0)
+    PROM_PAGE.labels('welcome').inc(0)
+    PROM_PAGE.labels('token').inc(0)
+    PROM_PAGE.labels('token_needed').inc(0)
+
     def get(self):
         if self.current_user is not None:
             if self.get_query_argument('token', None):
@@ -66,6 +71,8 @@ class Index(BaseHandler):
 
 
 class Login(BaseHandler):
+    PROM_PAGE.labels('login').inc(0)
+
     def get(self):
         PROM_PAGE.labels('login').inc()
         if not self.application.config['MULTIUSER']:
@@ -99,6 +106,8 @@ class Login(BaseHandler):
 
 
 class Logout(BaseHandler):
+    PROM_PAGE.labels('logout').inc(0)
+
     def get(self):
         PROM_PAGE.labels('logout').inc()
         if not self.application.config['MULTIUSER']:
@@ -108,6 +117,8 @@ class Logout(BaseHandler):
 
 
 class Register(BaseHandler):
+    PROM_PAGE.labels('register').inc(0)
+
     def get(self):
         PROM_PAGE.labels('register').inc()
         if not self.application.config['MULTIUSER']:
@@ -157,6 +168,8 @@ class Register(BaseHandler):
 
 
 class Account(BaseHandler):
+    PROM_PAGE.labels('account').inc(0)
+
     @authenticated
     def get(self):
         PROM_PAGE.labels('account').inc()
@@ -191,6 +204,8 @@ class Account(BaseHandler):
 
 
 class AskResetPassword(BaseHandler):
+    PROM_PAGE.labels('reset_password').inc(0)
+
     def get(self):
         PROM_PAGE.labels('reset_password').inc()
         if not self.application.config['MULTIUSER']:
@@ -245,6 +260,8 @@ class AskResetPassword(BaseHandler):
 
 
 class SetNewPassword(BaseHandler):
+    PROM_PAGE.labels('new_password').inc(0)
+
     def get(self):
         PROM_PAGE.labels('new_password').inc()
         if not self.application.config['MULTIUSER']:
@@ -285,6 +302,8 @@ class SetNewPassword(BaseHandler):
 
 
 class ProjectAdd(BaseHandler):
+    PROM_PAGE.labels('new_project').inc(0)
+
     @authenticated
     def get(self):
         PROM_PAGE.labels('new_project').inc()
@@ -329,6 +348,8 @@ class ProjectAdd(BaseHandler):
 
 
 class ProjectDelete(BaseHandler):
+    PROM_PAGE.labels('delete_project').inc(0)
+
     @authenticated
     def get(self, project_id):
         PROM_PAGE.labels('delete_project').inc()
@@ -359,6 +380,8 @@ class ProjectDelete(BaseHandler):
 
 
 class Project(BaseHandler):
+    PROM_PAGE.labels('project').inc(0)
+
     @authenticated
     def get(self, project_id):
         PROM_PAGE.labels('project').inc()
