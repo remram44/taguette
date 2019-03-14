@@ -52,7 +52,7 @@ NAME = "Misconfigured Taguette Server"
 
 # Address and port to listen on
 BIND_ADDRESS = "0.0.0.0"
-PORT = 8000
+PORT = 7465
 
 # Database to use
 # This is a SQLAlchemy connection URL; refer to their documentation for info
@@ -130,7 +130,7 @@ def main():
     )
     parser.add_argument('--version', action='version',
                         version='taguette version %s' % __version__)
-    parser.add_argument('-p', '--port', default='8000',
+    parser.add_argument('-p', '--port', default='7465',
                         help="Port number on which to listen")
     parser.add_argument('-b', '--bind', default='127.0.0.1',
                         help="Address to bind on")
