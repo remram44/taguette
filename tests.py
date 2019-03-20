@@ -148,7 +148,7 @@ class TestMultiuser(MyHTTPTestCase):
                                new=set_dumb_password):
             self.application = web.make_app(dict(
                 main.DEFAULT_CONFIG,
-                NAME="Test Taguette instance", PORT=8000, DATABASE='sqlite://',
+                NAME="Test Taguette instance", PORT=7465, DATABASE='sqlite://',
                 EMAIL='test@example.com',
                 MAIL_SERVER={'host': 'localhost', 'port': 25},
                 MULTIUSER=True,
@@ -225,7 +225,7 @@ class TestSingleuser(MyHTTPTestCase):
                                new=set_dumb_password):
             self.application = web.make_app(dict(
                 main.DEFAULT_CONFIG,
-                NAME="Test Taguette instance", PORT=8000, DATABASE='sqlite://',
+                NAME="Test Taguette instance", PORT=7465, DATABASE='sqlite://',
                 EMAIL='test@example.com',
                 MAIL_SERVER={'host': 'localhost', 'port': 25},
                 MULTIUSER=False,
@@ -251,6 +251,7 @@ class TestSingleuser(MyHTTPTestCase):
         self.assertEqual(response.code, 404)
 
         # Register: fails
+        # FIXME: This actually fails because of missing XSRF cookie
         response = self.post(
             '/register', dict(login='tester',
                               password1='hacktoo', password2='hacktoo'))

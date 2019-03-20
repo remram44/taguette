@@ -26,7 +26,7 @@ Installers
 
 Grab the correct installer for your system from `our release page <https://gitlab.com/remram44/taguette/tags>`__. Those include Python, Taguette, and Calibre, so you don't need to install anything else. A "Taguette" entry should appear in your list of applications (Start Menu on Windows, or Launchpad/Spotlight on MacOS).
 
-Once you start the application, you will see a terminal appear. This is normal! You can ignore the strange messages there, and use Taguette from your web browser (`localhost:8000 <http://localhost:8000/>`__ should open automatically). Simply leave the terminal window open until you are done using Taguette, after which you can close that terminal window to stop Taguette.
+Once you start the application, you will see a terminal appear. This is normal! You can ignore the strange messages there, and use Taguette from your web browser (`localhost:7465 <http://localhost:7465/>`__ should open automatically). Simply leave the terminal window open until you are done using Taguette, after which you can close that terminal window to stop Taguette.
 
 Installation using pip
 ----------------------
@@ -37,14 +37,14 @@ Once you've installed Python, you can install Taguette with its dependencies fro
 
     pip install taguette
 
-After which you can simply run ``taguette`` in the terminal to get it going. You'll see the command line will still be running. This is ok! Don't worry about the terminal, but do leave it running. A browser window should appear, pointing you to `localhost:8000 <http://localhost:8000/>`__, and you can begin working on your projects!
+After which you can simply run ``taguette`` in the terminal to get it going. You'll see the command line will still be running. This is ok! Don't worry about the terminal, but do leave it running. A browser window should appear, pointing you to `localhost:7465 <http://localhost:7465/>`__, and you can begin working on your projects!
 
 Run with Docker
 ---------------
 
 You can run this with Docker, note that it will prompt you for an 'admin' password the first time::
 
-    docker run -ti -p 8000:8000 -v /srv/taguette:/data remram/taguette
+    docker run -ti -p 7465:7465 -v /srv/taguette:/data remram/taguette
 
 Installation from a local clone
 -------------------------------
@@ -56,12 +56,12 @@ You can also install from a local clone of this repository, which will allow you
 3. Taguette uses `Poetry <https://poetry.eustace.io/>`__ for its packaging and dependency management. You will need to `install Poetry <https://poetry.eustace.io/docs/#installation>`__
 4. Install Taguette and its dependencies by running ``poetry install``. We recommend you run this inside of a `virtualenv or pipenv <https://docs.python-guide.org/dev/virtualenvs/>`__ if possible.
 5. You can start taguette in development mode using ``taguette --debug`` (or ``taguette --debug server <config_file>``). This will start Tornado in debug mode, which means in particular that it will auto-restart every time you make changes.
-6. Navigate to `localhost:8000 <http://localhost:8000/>`__ to use Taguette!
+6. Navigate to `localhost:7465 <http://localhost:7465/>`__ to use Taguette!
 
 Getting Started
 ---------------
 
-After starting Taguette, you can interact with it through your web browser (`localhost:8000 <http://localhost:8000/>`__ should have opened automatically). You will see a page that greets you and has a button to **Start a new project**. Click that button and you'll be prompted to enter a **Title and Description** for your new project. This can be changed later if you want.
+After starting Taguette, you can interact with it through your web browser (`localhost:7465 <http://localhost:7465/>`__ should have opened automatically). You will see a page that greets you and has a button to **Start a new project**. Click that button and you'll be prompted to enter a **Title and Description** for your new project. This can be changed later if you want.
 
 Upon creating your project, you'll be taken the Project View, which has a left and a right pane. The left pane contains the information about your project information ('Project Info'), uploaded materials ('Documents'), and tags ('Highlights') as tabs. You can go between these tabs as you like. The right pane will render documents and be the area where you'll do the highlighting and tagging.
 
