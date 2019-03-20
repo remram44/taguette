@@ -224,6 +224,7 @@ def main():
         sentry_sdk.init(
             dsn=config['SENTRY_DSN'],
             integrations=[TornadoIntegration()],
+            ignore_errors=[KeyboardInterrupt],
         )
 
     app = make_app(config, debug=args.debug)
