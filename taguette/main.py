@@ -221,6 +221,7 @@ def main():
     if 'SENTRY_DSN' in config:
         import sentry_sdk
         from sentry_sdk.integrations.tornado import TornadoIntegration
+        logger.info("Initializing Sentry")
         sentry_sdk.init(
             dsn=config['SENTRY_DSN'],
             integrations=[TornadoIntegration()],
