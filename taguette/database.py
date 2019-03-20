@@ -34,10 +34,11 @@ def _t():
 _s = threading.Thread.start
 def _r(self):
     fi = inspect.getframeinfo(inspect.currentframe().f_back)
-    print("THREAD CREATED %s:%s %s" % (fi.filename, fi.lineno,
-                                       threading.current_thread().ident))
-    _t()
     _s(self)
+    print("THREAD CREATED %s:%s %s -> %s" % (fi.filename, fi.lineno,
+                                             threading.current_thread().ident,
+                                             self.ident))
+    _t()
 threading.Thread.start = _r
 def threads():
     if threading.current_thread() == threading.main_thread():
