@@ -103,6 +103,12 @@ def main():
     logging.basicConfig(level=logging.INFO,
                         format="%(asctime)s %(levelname)s: %(message)s")
 
+    import gc
+    import threading
+    def _gc(phase, info):
+        print("gc(%r) thread=%s" % (phase, threading.current_thread().ident))
+    gc.callbacks.append(_gc)
+
     if sys.platform == 'win32':
         import ctypes.wintypes
 
