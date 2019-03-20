@@ -53,6 +53,7 @@ html5lib = "*"
 bleach = "*"
 prometheus_client = "*"
 prometheus-async = "*"
+sentry-sdk = "*"
 
 [tool.poetry.dev-dependencies]
 flake8 = "*"

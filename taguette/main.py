@@ -80,6 +80,9 @@ X_HEADERS = False
 
 # If you want to export metrics using Prometheus, set a port number here
 #PROMETHEUS_LISTEN = "0.0.0.0:9101"
+
+# If you want to report errors to Sentry, set your DSN here
+#SENTRY_DSN = "https://<key>@sentry.io/<project>"
 ''')
     if output is not None:
         out.close()
@@ -214,6 +217,16 @@ def main():
             p_port = int(p_port)
         logger.info("Starting Prometheus exporter on port %d", p_port)
         prometheus_client.start_http_server(p_port, p_addr)
+
+    if 'SENTRY_DSN' in config:
+        import sentry_sdk
+        from sentry_sdk.integrations.tornado import TornadoIntegration
+        logger.info("Initializing Sentry")
+        sentry_sdk.init(
+            dsn=config['SENTRY_DSN'],
+            integrations=[TornadoIntegration()],
+            ignore_errors=[KeyboardInterrupt],
+        )
 
     app = make_app(config, debug=args.debug)
     app.listen(config['PORT'], address=config['BIND_ADDRESS'],
