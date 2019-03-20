@@ -390,7 +390,10 @@ def connect(db_url):
     """Connect to the database using an environment variable.
     """
     logger.info("Connecting to SQL database %r", db_url)
-    engine = create_engine(db_url)
+    kwargs = {}
+    if db_url.startswith('sqlite:'):
+        kwargs['connect_args'] = {'check_same_thread': False}
+    engine = create_engine(db_url, **kwargs)
     # logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
     if db_url.startswith('sqlite:'):
