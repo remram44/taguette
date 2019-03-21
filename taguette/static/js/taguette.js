@@ -92,12 +92,12 @@ function getCookie(name) {
 
 function getJSON(url='', args) {
   if(args) {
-    args = '&' + encodeGetParams(args);
+    args = '?' + encodeGetParams(args);
   } else {
     args = '';
   }
   return fetch(
-    url + '?_xsrf=' + encodeURIComponent(getCookie('_xsrf')) + args,
+    url + args,
     {
       credentials: 'same-origin',
       mode: 'same-origin'
