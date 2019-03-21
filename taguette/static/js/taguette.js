@@ -1269,7 +1269,10 @@ window.onpopstate = function(e) {
  * Long polling
  */
 
+var lastPoll = null;
+
 function longPollForEvents() {
+  lastPoll = Date.now();
   getJSON(
     '/api/project/' + project_id + '/events',
     {from: last_event}
@@ -1329,9 +1332,9 @@ function longPollForEvents() {
     last_event = result.id;
 
     // Re-open connection
-    setTimeout(longPollForEvents, 1000);
+    setTimeout(longPollForEvents, 1);
   }, function(error) {
-    setTimeout(longPollForEvents, 5000);
+    setTimeout(longPollForEvents, Math.max(1, 5000 + lastPoll - Date.now()));
   })
   .catch(function(error) {
     console.error("Polling failed:", error);
