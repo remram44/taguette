@@ -1,10 +1,10 @@
 import argparse
 import logging
 import os
-import re
-import sys
-
 import prometheus_client
+import re
+import subprocess
+import sys
 import tornado.ioloop
 from urllib.parse import urlparse
 import webbrowser
@@ -221,11 +221,24 @@ def main():
     if 'SENTRY_DSN' in config:
         import sentry_sdk
         from sentry_sdk.integrations.tornado import TornadoIntegration
+        try:
+            version = subprocess.check_output(
+                ['git', '--git-dir=.git', 'describe'],
+                cwd=os.path.dirname(os.path.dirname(__file__)),
+                stderr=subprocess.PIPE,
+            ).decode('utf-8').strip()
+        except (OSError, subprocess.CalledProcessError):
+            from . import __version__ as version
+            logger.info("Not a Git repository, using version=%s", version)
+        else:
+            logger.info("Running from Git repository, using version=%s",
+                        version)
         logger.info("Initializing Sentry")
         sentry_sdk.init(
             dsn=config['SENTRY_DSN'],
             integrations=[TornadoIntegration()],
             ignore_errors=[KeyboardInterrupt],
+            release='taguette@%s' % version,
         )
 
     app = make_app(config, debug=args.debug)
