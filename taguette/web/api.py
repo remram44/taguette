@@ -5,6 +5,7 @@ import prometheus_client
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import aliased
 from tornado.concurrent import Future
+import tornado.log
 from tornado.web import authenticated, HTTPError
 
 from .. import convert
@@ -544,7 +545,8 @@ class ProjectEvents(BaseHandler):
             try:
                 cmd = await self.wait_future
             except asyncio.CancelledError:
-                return
+                self.set_status(504, "Client closed connection")
+                return self.finish()
 
         payload = dict(cmd.payload)
         type_ = payload.pop('type', None)
@@ -587,3 +589,15 @@ class ProjectEvents(BaseHandler):
     def on_connection_close(self):
         self.wait_future.cancel()
         self.application.unobserve_project(self.project_id, self.wait_future)
+
+    def _log(self):
+        if self.get_status() != 504:
+            self.application.log_request(self)
+        else:
+            tornado.log.access_log.info(
+                "aborted %s %s (%s) %.2fms",
+                self.request.method,
+                self.request.uri,
+                self.request.remote_ip,
+                1000.0 * self.request.request_time(),
+            )
