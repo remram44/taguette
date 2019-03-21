@@ -521,6 +521,8 @@ class MembersUpdate(BaseHandler):
 class ProjectEvents(BaseHandler):
     PROM_API.labels('events').inc(0)
 
+    response_cancelled = False
+
     @authenticated
     @prom_async_inprogress(PROM_POLLING_CLIENTS)
     async def get(self, project_id):
@@ -545,8 +547,7 @@ class ProjectEvents(BaseHandler):
             try:
                 cmd = await self.wait_future
             except asyncio.CancelledError:
-                self.set_status(504, "Client closed connection")
-                return self.finish()
+                return
 
         payload = dict(cmd.payload)
         type_ = payload.pop('type', None)
@@ -587,11 +588,12 @@ class ProjectEvents(BaseHandler):
         self.send_json(result)
 
     def on_connection_close(self):
+        self.response_cancelled = True
         self.wait_future.cancel()
         self.application.unobserve_project(self.project_id, self.wait_future)
 
     def _log(self):
-        if self.get_status() != 504:
+        if not self.response_cancelled:
             self.application.log_request(self)
         else:
             tornado.log.access_log.info(
