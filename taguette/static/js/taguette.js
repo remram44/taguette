@@ -201,6 +201,16 @@ if(window.TextEncoder) {
   }
 }
 
+function showSpinner() {
+  console.log("show");
+  $('#spinner-modal').modal('show');
+}
+
+function hideSpinner() {
+  console.log("hide");
+  $('#spinner-modal').modal('hide');
+}
+
 
 /*
  * Selection stuff
@@ -503,6 +513,7 @@ document.getElementById('document-add-form').addEventListener('submit', function
   var xhr = new XMLHttpRequest();
   xhr.responseType = 'json';
   xhr.open('POST', '/api/project/' + project_id + '/document/new');
+  showSpinner();
   xhr.onload = function() {
     if(xhr.status == 200) {
       $(document_add_modal).modal('hide');
@@ -512,10 +523,12 @@ document.getElementById('document-add-form').addEventListener('submit', function
       console.error("Document upload failed: status", xhr.status);
       alert("Error uploading file!");
     }
+    hideSpinner();
   };
   xhr.onerror = function(e) {
     console.log("Document upload failed:", e);
     alert("Error uploading file!");
+    hideSpinner();
   }
   xhr.send(form_data);
 });
@@ -549,6 +562,7 @@ document.getElementById('document-change-form').addEventListener('submit', funct
   }
 
   var doc_id = document.getElementById('document-change-id').value;
+  showSpinner();
   postJSON(
     '/api/project/' + project_id + '/document/' + doc_id,
     update
@@ -561,7 +575,8 @@ document.getElementById('document-change-form').addEventListener('submit', funct
   .catch(function(error) {
     console.error("Failed to update document:", error);
     alert("Couldn't update document!");
-  });
+  })
+  .then(hideSpinner);
 });
 
 document.getElementById('document-change-delete').addEventListener('click', function(e) {
@@ -747,6 +762,7 @@ document.getElementById('tag-add-form').addEventListener('submit', function(e) {
        description: document.getElementById('tag-add-description').value}
     );
   }
+  showSpinner();
   req.then(function() {
     console.log("Tag posted");
     $(tag_add_modal).modal('hide');
@@ -755,7 +771,8 @@ document.getElementById('tag-add-form').addEventListener('submit', function(e) {
   .catch(function(error) {
     console.error("Failed to create tag:", error);
     alert("Couldn't create tag!");
-  });
+  })
+  .then(hideSpinner);
 });
 
 // Delete tag button
@@ -929,6 +946,7 @@ document.getElementById('highlight-add-form').addEventListener('submit', functio
        tags: hl_tags}
     );
   }
+  showSpinner();
   req.then(function() {
     console.log("Highlight posted");
     $(highlight_add_modal).modal('hide');
@@ -937,7 +955,8 @@ document.getElementById('highlight-add-form').addEventListener('submit', functio
   .catch(function(error) {
     console.error("Failed to create highlight:", error);
     alert("Couldn't create highlight!");
-  });
+  })
+  .then(hideSpinner);
 });
 
 // Delete highlight button
@@ -1087,6 +1106,7 @@ function sendMembersPatch() {
   }
 
   console.log("Patching members list");
+  showSpinner();
   patchJSON(
     '/api/project/' + project_id + '/members',
     patch
@@ -1098,7 +1118,8 @@ function sendMembersPatch() {
   .catch(function(error) {
     console.error("Failed to patch members list:", error);
     alert("Couldn't update collaborators");
-  });
+  })
+  .then(hideSpinner);
 
   members_initial = {};
 }

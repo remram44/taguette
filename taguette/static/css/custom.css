@@ -292,3 +292,31 @@ a.dropdown-item:hover {
   margin: 1rem 0;
   padding: 1rem 0.6rem 1rem 0.6rem;
 }
+
+/* Spinner animation */
+#spinner {
+  border: 3vh solid #dcdcdc;
+  border-top: 3vh solid #57068c;
+  border-radius: 50%;
+  width: 30vh;
+  height: 30vh;
+  animation: spinneranim 2s linear infinite;
+}
+
+@keyframes spinneranim {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+#spinner-modal .modal-dialog {
+  display: table;
+  position: relative;
+  margin: 0 auto;
+  top: calc(50% - 15vh);
+}
+
+#spinner-modal .modal-dialog .modal-content{
+  background-color: transparent;
+  border: none;
+  width: 30vh;
+}
