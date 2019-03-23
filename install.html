@@ -118,7 +118,8 @@
         <ol>
           <li>Clone this git repository from the terminal: <code>git clone https://gitlab.com/remram44/taguette.git</code></li>
           <li>Navigate on the command line to the repository you've just cloned locally, using the <code>cd</code> command. To get help using <code>cd</code>, use <a href="https://swcarpentry.github.io/shell-novice/02-filedir/index.html">this tutorial</a>.</li>
-          <li>To install the dependencies of Taguette, run <code>pip install -e .</code> We recommend you run this inside of a <a href="https://docs.python-guide.org/dev/virtualenvs/">virtualenv or pipenv</a> if possible.</li>
+          <li>Taguette uses <a href="https://poetry.eustace.io/">Poetry</a> for its packaging and dependency management. You will need to <a href="https://poetry.eustace.io/docs/#installation">install Poetry</a></li>
+          <li>Install Taguette and its dependencies by running <code>poetry install</code>. We recommend you run this inside of a <a href="https://docs.python-guide.org/dev/virtualenvs/">virtualenv</a> if possible.</li>
           <li>You can start taguette in development mode using <code>taguette --debug</code>. This will start Tornado in debug mode, which means in particular that it will auto-restart every time you make changes.</li>
           <li>Navigate to <a href="http://localhost:7465/"><code>localhost:7465</code></a> to use Taguette!</li>
         </ol>
@@ -130,7 +131,7 @@
     </main>
 
     <footer class="container">
-      <p>Last Updated: 2019-03-12 | Email: <a href="mailto:hi@taguette.org">hi@taguette.org</a> | Tweet us: <a href="https://twitter.com/TaguetteProject">@TaguetteProject</a> | Any issues using Taguette? Tell us on <a href="https://gitlab.com/remram44/taguette">GitLab</a>!</p>
+      <p>Last Updated: 2019-03-23 | Email: <a href="mailto:hi@taguette.org">hi@taguette.org</a> | Tweet us: <a href="https://twitter.com/TaguetteProject">@TaguetteProject</a> | Any issues using Taguette? Tell us on <a href="https://gitlab.com/remram44/taguette">GitLab</a>!</p>
     </footer>
 
     <!-- Bootstrap core JavaScript
