@@ -1,4 +1,4 @@
-FROM python:3.6
+FROM python:3.7
 
 RUN apt-get update && \
     apt-get install -y calibre wv && \
@@ -12,6 +12,6 @@ RUN /root/.poetry/bin/poetry install --no-interaction && rm -rf /root/.cache
 
 VOLUME /data
 ENV HOME=/data
-EXPOSE 8000
+EXPOSE 7465
 ENTRYPOINT ["taguette", "--no-browser", "--bind=0.0.0.0"]
-CMD ["--multiuser"]
+CMD []
