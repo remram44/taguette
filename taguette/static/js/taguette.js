@@ -487,8 +487,6 @@ function createDocument() {
   $(document_add_modal).modal();
 }
 
-var progress = document.getElementById('document-add-progress');
-
 document.getElementById('document-add-form').addEventListener('submit', function(e) {
   e.preventDefault();
   console.log("Uploading document...");
@@ -517,17 +515,8 @@ document.getElementById('document-add-form').addEventListener('submit', function
   };
   xhr.onerror = function(e) {
     console.log("Document upload failed:", e);
-    progress.setAttribute('aria-valuenow', '0');
-    progress.style.width = '0%';
     alert("Error uploading file!");
   }
-  xhr.onprogress = function(e) {
-    if(e.lengthComputable) {
-      var pc = e.loaded / e.total * 100;
-      progress.setAttribute('aria-valuenow', '' + pc);
-      progress.style.width = pc + '%';
-    }
-  };
   xhr.send(form_data);
 });
 
