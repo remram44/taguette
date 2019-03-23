@@ -435,6 +435,7 @@ function updateDocumentsList() {
   // Fill up the list again
   var before = documents_list.firstChild;
   var entries = Object.entries(documents);
+  sortByKey(entries, function(e) { return e[1].name; });
   for(var i = 0; i < entries.length; ++i) {
     var doc = entries[i][1];
     var elem = document.createElement('li');
