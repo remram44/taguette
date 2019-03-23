@@ -1,8 +1,8 @@
 Changelog
 =========
 
-0.5 (???)
----------
+0.5 (2019-03-23)
+----------------
 
 Bugfixes:
 * Improve reading of OPF output from Calibre, which might fix compatibility with some combinations of Calibre versions and input formats
@@ -20,6 +20,7 @@ Features:
 * Convert old .DOC files (Word 97) using WV if available
 * Add collaborator management modal, to add more members to a project
 * Changed default port number from `8000` to `7465`
+* Add spinning icon while requests are in progress, to prevent multiple submission of forms (document add takes ~10s for example)
 
 0.4.4 (2018-11-29)
 ------------------
