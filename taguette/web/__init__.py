@@ -19,7 +19,7 @@ class RedirectAccount(BaseHandler):
         self.redirect(self.reverse_url('account'), True)
 
 
-def make_app(config, debug=False):
+def make_app(config, debug=False, xsrf_cookies=True):
     if 'XDG_CACHE_HOME' in os.environ:
         cache = os.environ['XDG_CACHE_HOME']
     else:
@@ -110,7 +110,7 @@ def make_app(config, debug=False):
         ],
         static_path=pkg_resources.resource_filename('taguette', 'static'),
         login_url='/login',
-        xsrf_cookies=True,
+        xsrf_cookies=xsrf_cookies,
         debug=debug,
         config=config,
         cookie_secret=secret,

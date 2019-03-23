@@ -223,13 +223,17 @@ class TestSingleuser(MyHTTPTestCase):
     def get_app(self):
         with mock.patch.object(web.Application, '_set_password',
                                new=set_dumb_password):
-            self.application = web.make_app(dict(
-                main.DEFAULT_CONFIG,
-                NAME="Test Taguette instance", PORT=7465, DATABASE='sqlite://',
-                EMAIL='test@example.com',
-                MAIL_SERVER={'host': 'localhost', 'port': 25},
-                MULTIUSER=False,
-            ))
+            self.application = web.make_app(
+                dict(
+                    main.DEFAULT_CONFIG,
+                    NAME="Test Taguette instance", PORT=7465,
+                    DATABASE='sqlite://',
+                    EMAIL='test@example.com',
+                    MAIL_SERVER={'host': 'localhost', 'port': 25},
+                    MULTIUSER=False,
+                ),
+                xsrf_cookies=False,
+            )
             return self.application
 
     def test_login(self):
@@ -251,11 +255,10 @@ class TestSingleuser(MyHTTPTestCase):
         self.assertEqual(response.code, 404)
 
         # Register: fails
-        # FIXME: This actually fails because of missing XSRF cookie
         response = self.post(
             '/register', dict(login='tester',
                               password1='hacktoo', password2='hacktoo'))
-        self.assertEqual(response.code, 403)
+        self.assertEqual(response.code, 404)
 
         # Authenticate with token
         response = self.get('/?token=' + self.application.single_user_token)
