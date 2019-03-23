@@ -94,6 +94,10 @@ def filename(name):
     name = _not_ascii_re.sub('', name).strip('._')
     if not name:
         return '_'
-    if os.name == 'nt' and name.split('.')[0].upper() in _windows_device_files:
+    if (filename.windows and
+            name.split('.')[0].upper() in _windows_device_files):
         name = '_' + name
     return name
+
+
+filename.windows = os.name == 'nt'

@@ -1,11 +1,13 @@
 from http.cookies import SimpleCookie
+import json
 import re
-from tornado.testing import AsyncTestCase, gen_test, AsyncHTTPTestCase
+from tornado.testing import AsyncTestCase, gen_test, AsyncHTTPTestCase, \
+    get_async_test_timeout
 import unittest
 from unittest import mock
 from urllib.parse import urlencode
 
-from taguette import convert, database, extract, main, web
+from taguette import convert, database, extract, main, validate, web
 
 
 class TestConvert(AsyncTestCase):
@@ -101,6 +103,7 @@ class MyHTTPTestCase(AsyncHTTPTestCase):
 
     def setUp(self):
         web.Application.check_messages = lambda *a: None
+        validate.filename.windows = True  # escape device names
         super(MyHTTPTestCase, self).setUp()
         self.cookie = SimpleCookie()
 
@@ -111,7 +114,7 @@ class MyHTTPTestCase(AsyncHTTPTestCase):
         if response.code < 400:
             m = self._re_xsrf.search(response.body)
             if m is not None:
-                self.xsrf = m.group(1)
+                self.xsrf = m.group(1).decode('utf-8')
             if 'Set-Cookie' in response.headers:
                 self.cookie.load(response.headers['Set-Cookie'])
 
@@ -120,22 +123,66 @@ class MyHTTPTestCase(AsyncHTTPTestCase):
         return '; '.join('%s=%s' % (k, v.value)
                          for k, v in self.cookie.items())
 
-    def get(self, url):
+    def _fetch(self, url, **kwargs):
+        # Copied from tornado.testing.AsyncHTTPTestCase.fetch()
+        if not url.lower().startswith(('http://', 'https://')):
+            url = self.get_url(url)
+        return self.http_client.fetch(url, raise_error=False, **kwargs)
+
+    async def aget(self, url):
         headers = {}
         headers['Cookie'] = self.get_cookie()
-        response = self.fetch(url, follow_redirects=False,
-                              headers=headers)
+        response = self._fetch(url, follow_redirects=False,
+                               headers=headers)
+        response = await response
         self.update(response)
         return response
 
-    def post(self, url, args):
-        headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-        headers['Cookie'] = self.get_cookie()
-        response = self.fetch(url, method='POST', follow_redirects=False,
-                              headers=headers,
-                              body=urlencode(dict(args, _xsrf=self.xsrf)))
+    async def apost(self, url, args, fmt='form', files={}):
+        if fmt == 'form':
+            headers = {'Content-Type': 'application/x-www-form-urlencoded',
+                       'Cookie': self.get_cookie()}
+            body = urlencode(dict(args, _xsrf=self.xsrf))
+        elif fmt == 'json':
+            url = '%s%s%s' % (url, '&' if '?' in url else '?',
+                              urlencode(dict(_xsrf=self.xsrf)))
+            headers = {'Content-Type': 'application/json',
+                       'Accept': 'application/json',
+                       'Cookie': self.get_cookie()}
+            body = json.dumps(args)
+        elif fmt == 'multipart':
+            headers = {'Content-Type': 'multipart/form-data; charset=utf-8; '
+                                       'boundary=-sep',
+                       'Cookie': self.get_cookie()}
+            body = []
+            for k, v in dict(args, _xsrf=self.xsrf).items():
+                body.append(('---sep\r\nContent-Disposition: form-data; '
+                             'name="%s"\r\n' % k).encode('utf-8'))
+                body.append(v.encode('utf-8'))
+            for k, v in files.items():
+                body.append(('---sep\r\nContent-Disposition: form-data; name='
+                             '"%s"; filename="%s"\r\nContent-Type: %s\r\n' % (
+                                 k, v[0], v[1])).encode('utf-8'))
+                body.append(v[2])
+            body.append(b'---sep--\r\n')
+            body = b'\r\n'.join(body)
+        else:
+            raise ValueError
+        response = self._fetch(url, method='POST', follow_redirects=False,
+                               headers=headers, body=body)
+        response = await response
         self.update(response)
         return response
+
+    def get(self, url):
+        return self.io_loop.run_sync(
+            lambda: self.aget(url),
+            timeout=get_async_test_timeout())
+
+    def post(self, url, args):
+        return self.io_loop.run_sync(
+            lambda: self.apost(url, args),
+            timeout=get_async_test_timeout())
 
 
 def set_dumb_password(self, user):
@@ -217,6 +264,141 @@ class TestMultiuser(MyHTTPTestCase):
                                   password='hackme'))
         self.assertEqual(response.code, 302)
         self.assertEqual(response.headers['Location'], '/project/1')
+
+    @gen_test
+    async def test_projects(self):
+        # Log in
+        response = await self.aget('/login')
+        self.assertEqual(response.code, 200)
+        response = await self.apost('/login', dict(next='/', login='admin',
+                                                   password='hackme'))
+        self.assertEqual(response.code, 302)
+        self.assertEqual(response.headers['Location'], '/')
+
+        # Create project 1
+        response = await self.aget('/project/new')
+        self.assertEqual(response.code, 200)
+        response = await self.apost('/project/new', dict(
+            name='\uFF9F\uFF65\u273F\u30FE\u2572\x28\uFF61\u25D5\u203F\u25D5'
+                 '\uFF61\x29\u2571\u273F\uFF65\uFF9F',
+            description="R\xE9mi's project"))
+        self.assertEqual(response.code, 302)
+        self.assertEqual(response.headers['Location'], '/project/1')
+
+        # Check project page
+        response = await self.aget('/project/1')
+        self.assertEqual(response.code, 200)
+        body = response.body.decode('utf-8')
+        self.assertIn('we are good at engineering', body)
+        idx = body.index('we are good at engineering')
+        init_js = '\n'.join(body[idx:].splitlines()[1:9])
+        self.assertEqual(
+            init_js,
+            '<script type="text/javascript">\n'
+            '  var user_login = "admin";\n'
+            '  var project_id = 1;\n'
+            '  var last_event = -1;\n'
+            '  var documents = {};\n'
+            '  var tags = {"1": {"description": "Further review required", '
+            '"id": 1, "path": "interesting"}, "2": '
+            '{"description": "Known people", "id": 2, "path": "people"}};\n'
+            '  var members = {"admin": {"privileges": "ADMIN"}};\n'
+            '</script>',
+        )
+
+        # Start polling
+        poll_proj1 = self.poll_event(1, -1)
+
+        # Create project 2
+        response = await self.aget('/project/new')
+        self.assertEqual(response.code, 200)
+        response = await self.apost('/project/new', dict(name='other project',
+                                                         description=''))
+        self.assertEqual(response.code, 302)
+        self.assertEqual(response.headers['Location'], '/project/2')
+
+        # Start polling
+        poll_proj2 = self.poll_event(2, -1)
+
+        # Create tags in project 2
+        response = await self.apost('/api/project/2/tag/new',
+                                    dict(path='people.dev',
+                                         description="Developers"),
+                                    fmt='json')
+        self.assertEqual(response.code, 200)
+        self.assertEqual(
+            await poll_proj2,
+            {'tag_add': [{'description': "Developers", 'id': 5,
+                          'path': 'people.dev'}],
+             'id': 1})
+        poll_proj2 = self.poll_event(2, 1)
+
+        response = await self.apost('/api/project/2/tag/new',
+                                    dict(path='people.female',
+                                         description=''),
+                                    fmt='json')
+        self.assertEqual(response.code, 200)
+        self.assertEqual(
+            await poll_proj2,
+            {'tag_add': [{'description': '', 'id': 6,
+                          'path': 'people.female'}],
+             'id': 2})
+        poll_proj2 = self.poll_event(2, 2)
+
+        # Create document 1 in project 1
+        name = '\u03A9\u2248\xE7\u221A\u222B\u02DC\xB5\u2264\u2265\xF7'
+        response = await self.apost('/api/project/1/document/new',
+                                    dict(name=name, description=''),
+                                    fmt='multipart',
+                                    files=dict(file=('../NUL.html',
+                                                     'text/plain',
+                                                     b'content here')))
+        self.assertEqual(response.code, 200)
+        self.assertEqual(response.body, b'{"created": 1}')
+        db = self.application.DBSession()
+        doc = db.query(database.Document).get(1)
+        self.assertEqual(doc.name, name)
+        self.assertEqual(doc.description, '')
+        self.assertEqual(doc.filename, '_NUL.html')
+        self.assertEqual(
+            await poll_proj1,
+            {'document_add': [{'description': '', 'id': 1, 'name': name}],
+             'id': 3})
+        poll_proj1 = self.poll_event(1, 3)
+
+        # Create document 2 in project 2
+        response = await self.apost('/api/project/2/document/new',
+                                    dict(name='otherdoc',
+                                         description='Other one'),
+                                    fmt='multipart',
+                                    files=dict(file=('../otherdoc.html',
+                                                     'text/plain',
+                                                     b'different content')))
+        self.assertEqual(response.code, 200)
+        self.assertEqual(response.body, b'{"created": 2}')
+        db = self.application.DBSession()
+        doc = db.query(database.Document).get(2)
+        self.assertEqual(doc.name, 'otherdoc')
+        self.assertEqual(doc.description, 'Other one')
+        self.assertEqual(doc.filename, 'otherdoc.html')
+        self.assertEqual(
+            await poll_proj2,
+            {'document_add': [{'description': 'Other one', 'id': 2,
+                               'name': 'otherdoc'}], 'id': 4})
+        poll_proj2 = self.poll_event(2, 4)
+
+        # Create highlight 1 in document 1
+        # Change project 2 metadata
+        # Create document 3 in project 2
+        # Create highlight 2 in document 2
+        # Create highlight 3 in document 2
+        # List highlights in project 2
+
+    async def poll_event(self, proj, from_id):
+        response = await self.aget('/api/project/%d/events?from=%d' % (
+                                   proj, from_id))
+        self.assertEqual(response.code, 200)
+        return json.loads(response.body.decode('utf-8'))
 
 
 class TestSingleuser(MyHTTPTestCase):
