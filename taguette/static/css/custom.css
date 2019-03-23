@@ -296,7 +296,7 @@ a.dropdown-item:hover {
 /* Spinner animation */
 #spinner {
   border: 3vh solid #dcdcdc;
-  border-top: 3vh solid #57068c;
+  border-top: 3vh solid #125368;
   border-radius: 50%;
   width: 30vh;
   height: 30vh;
