@@ -435,6 +435,7 @@ function updateDocumentsList() {
   // Fill up the list again
   var before = documents_list.firstChild;
   var entries = Object.entries(documents);
+  sortByKey(entries, function(e) { return e[1].name; });
   for(var i = 0; i < entries.length; ++i) {
     var doc = entries[i][1];
     var elem = document.createElement('li');
@@ -1204,13 +1205,15 @@ function loadTag(tag_path) {
       elem.appendChild(doclink);
       elem.appendChild(document.createTextNode(' '));
 
-      for(var j = 0; j < hl.tags.length; ++j) {
+      var tag_names = hl.tags.map(function(tag) { return tags['' + tag].path; });
+      tag_names.sort();
+      for(var j = 0; j < tag_names.length; ++j) {
         if(j > 0) {
           elem.appendChild(document.createTextNode(' '));
         }
         var taglink = document.createElement('a');
         taglink.className = 'badge badge-dark';
-        taglink.textContent = tags['' + hl.tags[j]].path;
+        taglink.textContent = tag_names[j];
         linkTag(taglink, taglink.textContent);
         elem.appendChild(taglink);
       }

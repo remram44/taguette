@@ -430,6 +430,8 @@ class Highlights(BaseHandler):
                 .join(tag, hltag.tag_id == tag.id)
                 .filter(tag.path.startswith(path))
                 .filter(tag.project == project)
+                .order_by(database.Highlight.document_id,
+                          database.Highlight.start_offset)
             ).all()
         else:
             # Special case to select all highlights: we also need to select
@@ -439,6 +441,8 @@ class Highlights(BaseHandler):
                 self.db.query(database.Highlight)
                 .join(document, document.id == database.Highlight.document_id)
                 .filter(document.project == project)
+                .order_by(database.Highlight.document_id,
+                          database.Highlight.start_offset)
             ).all()
 
         self.send_json({
