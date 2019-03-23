@@ -853,18 +853,23 @@ var highlight_add_modal = document.getElementById('highlight-add-modal');
 // Updates current_selection and visibility of the controls
 function selectionChanged() {
   current_selection = describeSelection();
-  if(current_selection === null) {
-    document.getElementById('hlinfo').style.display = 'none';
-  } else {
+  if(current_selection !== null) {
     var current_range = window.getSelection().getRangeAt(0);
-    var last_char_range = document.createRange();
-    last_char_range.setStart(current_range.endContainer, current_range.endOffset - 1);
-    last_char_range.setEnd(current_range.endContainer, current_range.endOffset);
-    var rect = last_char_range.getClientRects().item(0);
-    var doc = document.documentElement, body = document.body;
-    hlinfo.style.left = (rect.x + rect.width) + 'px';
-    hlinfo.style.top = (rect.y + rect.height + document.documentElement.scrollTop + 20) + 'px';
-    hlinfo.style.display = 'block';
+    if(current_range.endOffset > 0) {
+      var last_char_range = document.createRange();
+      last_char_range.setStart(current_range.endContainer, current_range.endOffset - 1);
+      last_char_range.setEnd(current_range.endContainer, current_range.endOffset);
+      var rect = last_char_range.getClientRects().item(0);
+      var doc = document.documentElement, body = document.body;
+      hlinfo.style.left = (rect.x + rect.width) + 'px';
+      hlinfo.style.top = (rect.y + rect.height + document.documentElement.scrollTop + 20) + 'px';
+      hlinfo.style.display = 'block';
+    } else {
+      // We are in a weird situation where the end of the selection is in
+      // an empty node. We just don't move the popup, seems to work in practice
+    }
+  } else {
+    document.getElementById('hlinfo').style.display = 'none';
   }
 }
 document.addEventListener('selectionchange', selectionChanged);
