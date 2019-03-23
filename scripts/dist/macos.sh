@@ -10,7 +10,7 @@ VERSION="$1"
 
 cd "$(dirname "$0")/../.."
 cp scripts/dist/pyinstaller_entrypoint.py scripts/dist/macos/macos.spec .
-pip install -e .
+poetry install
 rm -rf build dist
 pyinstaller macos.spec
 rm -rf dist/taguette
