@@ -229,6 +229,7 @@ def main():
             ).decode('utf-8').strip()
         except (OSError, subprocess.CalledProcessError):
             from . import __version__ as version
+            version = 'v%s' % version
             logger.info("Not a Git repository, using version=%s", version)
         else:
             logger.info("Running from Git repository, using version=%s",
