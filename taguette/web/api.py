@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import aliased
 from tornado.concurrent import Future
 import tornado.log
-from tornado.web import authenticated, HTTPError
+from tornado.web import authenticated, HTTPError, MissingArgumentError
 
 from .. import convert
 from .. import database
@@ -79,7 +79,10 @@ class DocumentAdd(BaseHandler):
             validate.document_name(name)
             description = self.get_body_argument('description')
             validate.document_description(description)
-            file = self.request.files['file'][0]
+            try:
+                file = self.request.files['file'][0]
+            except (KeyError, IndexError):
+                raise MissingArgumentError('file')
             content_type = file.content_type
             filename = validate.filename(file.filename)
 
