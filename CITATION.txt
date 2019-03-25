@@ -4,7 +4,7 @@ If you use Taguette for your qualitative analysis, please cite it with the follo
 
 BibTex:
 
-@software{Tagutte,
+@software{Taguette,
   author = {{Rampin, Rémi and Steeves, Vicky and DeMott, Sarah}},
   title = {Taguette},
   doi = {10.5281/zenodo.2605647},
