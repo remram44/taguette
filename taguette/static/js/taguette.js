@@ -627,6 +627,25 @@ function removeTag(tag_id) {
   updateTagsList();
 }
 
+function mergeTags(tag_src, tag_dest) {
+  for(var id in highlights) {
+    var hl_tags = highlights[id].tags;
+
+    if(hl_tags.includes(tag_src)) {
+      // Remove src tag
+      var idx = hl_tags.indexOf(tag_src);
+      hl_tags.splice(idx, 1);
+
+      if(!hl_tags.includes(tag_dest)) {
+        // Add new tag
+        hl_tags.push(tag_dest);
+      }
+    }
+  }
+  delete tags['' + tag_src];
+  updateTagsList();
+}
+
 function updateTagsList() {
   var entries = Object.entries(tags);
   sortByKey(entries, function(e) { return e[1].path; });
@@ -1399,6 +1418,11 @@ function longPollForEvents() {
     if('tag_delete' in result) {
       for(var i = 0; i < result.tag_delete.length; ++i) {
         removeTag(result.tag_delete[i]);
+      }
+    }
+    if('tag_merge' in result) {
+      for(var i = 0; i < result.tag_merge.length; ++i) {
+        mergeTags(result.tag_merge[i].src, result.tag_merge[i].dest);
       }
     }
     if('member_add' in result) {
