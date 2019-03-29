@@ -202,12 +202,10 @@ if(window.TextEncoder) {
 }
 
 function showSpinner() {
-  console.log("show");
   $('#spinner-modal').modal('show');
 }
 
 function hideSpinner() {
-  console.log("hide");
   $('#spinner-modal').modal('hide');
 }
 
@@ -797,6 +795,73 @@ document.getElementById('tag-add-delete').addEventListener('click', function(e) 
       alert("Couldn't delete tag!");
     });
   }
+});
+
+// Merge tags button in tag edit modal: shows merge modal
+document.getElementById('tag-add-merge').addEventListener('click', function(e) {
+  var tag_id = document.getElementById('tag-add-id').value;
+  if(!tag_id)
+    return;
+  tag_id = parseInt(tag_id);
+
+  document.getElementById('tag-merge-form').reset();
+
+  // Set source tag
+  document.getElementById('tag-merge-src-id').value = '' + tag_id;
+  document.getElementById('tag-merge-src-name').value = tags['' + tag_id].path;
+
+  // Empty target tag <select>
+  var target = document.getElementById('tag-merge-dest');
+  target.innerHTML = '';
+
+  // Fill target tag <select>
+  var entries = Object.entries(tags);
+  sortByKey(entries, function(e) { return e[1].path; });
+  for(var i = 0; i < entries.length; ++i) {
+    if(entries[i][0] == '' + tag_id) {
+      // Can't merge into itself
+      continue;
+    }
+    var option = document.createElement('option');
+    option.setAttribute('value', entries[i][0]);
+    option.innerText = entries[i][1].path;
+    target.appendChild(option);
+  }
+
+  $(document.getElementById('tag-merge-modal')).modal();
+});
+
+// Merge modal submit button
+document.getElementById('tag-merge-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  var tag_src = document.getElementById('tag-merge-src-id').value;
+  if(!tag_src)
+    return;
+  tag_src = parseInt(tag_src);
+
+  var tag_dest = document.getElementById('tag-merge-dest').value;
+  if(!tag_dest)
+    return;
+  tag_dest = parseInt(tag_dest);
+
+  console.log(
+    "Merging tag " + tag_src + " (" + tags['' + tag_src].path +
+    ") into tag " + tag_dest + " (" + tags['' + tag_dest].path + ")");
+  showSpinner();
+  postJSON(
+    '/api/project/' + project_id + '/tag/merge',
+    {src: tag_src, dest: tag_dest}
+  )
+  .then(function() {
+    console.log("Tag merge posted");
+    $(document.getElementById('tag-merge-modal')).modal('hide');
+  })
+  .catch(function(error) {
+    console.error("Failed to merge tags:", error);
+    alert("Couldn't merge tags!");
+  })
+  .then(hideSpinner);
 });
 
 
