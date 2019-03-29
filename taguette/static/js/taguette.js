@@ -324,7 +324,7 @@ function splitAtPos(pos, after) {
 }
 
 // Highlight a described selection
-function highlightSelection(saved, id, clickedCallback) {
+function highlightSelection(saved, id, tagIds, clickedCallback) {
   console.log("Highlighting", saved);
   if(saved === null) {
     return;
@@ -334,12 +334,15 @@ function highlightSelection(saved, id, clickedCallback) {
   var end = locatePos(saved[1]);
   end = splitAtPos(end, true);
 
+  var css_tags = tagIds.map(function(i) { return 'tag-' + i; });
+  var css = 'highlight ' + tagIds.join(' ') + ' highlight-' + id;
+
   var node = start;
   while(node != end) {
     var next = nextElement(node);
     if(node.nodeType == 3 && node.textContent) { // TEXT_NODE
       var span = document.createElement('a');
-      span.className = 'highlight highlight-' + id;
+      span.className = css;
       span.setAttribute('data-highlight-id', '' + id);
       span.addEventListener('click', clickedCallback);
       node.parentNode.insertBefore(span, node);
@@ -813,8 +816,9 @@ function setHighlight(highlight) {
     removeHighlight(highlights[id]);
   }
   highlights[id] = highlight;
+  var tagIds = [1]; //highlight.
   try {
-    highlightSelection([highlight.start_offset, highlight.end_offset], id, editHighlight);
+    highlightSelection([highlight.start_offset, highlight.end_offset], id, tagIds, editHighlight);
     console.log("Highlight set:", highlight);
   } catch(error) {
     console.error(
