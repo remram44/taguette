@@ -32,7 +32,7 @@ classifiers = [
 ]
 
 include = [
-    "CHANGELOG.md", "tests.py", # LICENSE.txt README.rst
+    "CHANGELOG.md", "tests.py", "CITATION.txt", # LICENSE.txt README.rst
     "taguette/static/missing.png", "taguette/static/favicon.png",
     "taguette/static/css/*.css", "taguette/static/*.css.map",
     "taguette/static/js/*.js", "taguette/static/js/*.js.map",
