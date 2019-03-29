@@ -1,6 +1,5 @@
 import asyncio
 import logging
-from prometheus_async.aio import track_inprogress as prom_async_inprogress
 import prometheus_client
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import aliased
@@ -529,11 +528,22 @@ class ProjectEvents(BaseHandler):
     PROM_API.labels('events').inc(0)
 
     response_cancelled = False
+    polling_clients = set()
+    PROM_POLLING_CLIENTS.set_function(
+        lambda: len(ProjectEvents.polling_clients)
+    )
 
     @authenticated
-    @prom_async_inprogress(PROM_POLLING_CLIENTS)
     async def get(self, project_id):
         PROM_API.labels('events').inc()
+        ProjectEvents.polling_clients.add(self.request.remote_ip)
+        tornado.log.access_log.info(
+            "started %s %s (%s)",
+            self.request.method,
+            self.request.uri,
+            self.request.remote_ip,
+        )
+
         from_id = int(self.get_query_argument('from'))
         project, _ = self.get_project(project_id)
         self.project_id = int(project_id)
@@ -598,6 +608,9 @@ class ProjectEvents(BaseHandler):
         self.response_cancelled = True
         self.wait_future.cancel()
         self.application.unobserve_project(self.project_id, self.wait_future)
+
+    def on_finish(self):
+        ProjectEvents.polling_clients.discard(self.request.remote_ip)
 
     def _log(self):
         if not self.response_cancelled:
