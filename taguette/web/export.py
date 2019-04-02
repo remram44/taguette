@@ -72,10 +72,11 @@ class ExportHighlightsDoc(BaseHandler):
                 .join(document, document.id == database.Highlight.document_id)
                 .filter(document.project == project)
             ).all()
+            path = 'all_tags'
 
         html = self.render_string('export_highlights.html', path=path,
                                   highlights=highlights)
-        return 'path', html
+        return path, html
 
 
 def merge_overlapping_ranges(ranges):
