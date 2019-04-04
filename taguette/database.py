@@ -324,7 +324,8 @@ Project.last_event = column_property(
         Command.project_id == Project.id
     ).order_by(
         Command.id.desc()
-    ).as_scalar()
+    ).limit(1)
+    .as_scalar()
 )
 
 

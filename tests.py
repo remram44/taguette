@@ -1,5 +1,6 @@
 from http.cookies import SimpleCookie
 import json
+import os
 import re
 from tornado.testing import AsyncTestCase, gen_test, AsyncHTTPTestCase, \
     get_async_test_timeout
@@ -8,6 +9,12 @@ from unittest import mock
 from urllib.parse import urlencode
 
 from taguette import convert, database, extract, main, validate, web
+
+
+if 'TAGUETTE_TEST_DB' in os.environ:
+    DATABASE_URI = os.environ['TAGUETTE_TEST_DB']
+else:
+    DATABASE_URI = 'sqlite://'
 
 
 class TestConvert(AsyncTestCase):
@@ -205,7 +212,8 @@ class TestMultiuser(MyHTTPTestCase):
                                new=set_dumb_password):
             self.application = web.make_app(dict(
                 main.DEFAULT_CONFIG,
-                NAME="Test Taguette instance", PORT=7465, DATABASE='sqlite://',
+                NAME="Test Taguette instance", PORT=7465,
+                DATABASE=DATABASE_URI,
                 EMAIL='test@example.com',
                 MAIL_SERVER={'host': 'localhost', 'port': 25},
                 MULTIUSER=True,
@@ -421,7 +429,7 @@ class TestSingleuser(MyHTTPTestCase):
                 dict(
                     main.DEFAULT_CONFIG,
                     NAME="Test Taguette instance", PORT=7465,
-                    DATABASE='sqlite://',
+                    DATABASE=DATABASE_URI,
                     EMAIL='test@example.com',
                     MAIL_SERVER={'host': 'localhost', 'port': 25},
                     MULTIUSER=False,
