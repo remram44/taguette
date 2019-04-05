@@ -147,7 +147,7 @@ class ProjectMember(Base):
     project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
                         primary_key=True, index=True)
     project = relationship('Project')
-    user_login = Column(Integer, ForeignKey('users.login', ondelete='CASCADE'),
+    user_login = Column(String, ForeignKey('users.login', ondelete='CASCADE'),
                         primary_key=True, index=True)
     user = relationship('User')
     privileges = Column(Enum(Privileges), nullable=False)
