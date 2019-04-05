@@ -6,6 +6,9 @@ Create Date: 2019-04-04 21:50:36.046753
 
 """
 from alembic import op
+from taguette import validate
+from sqlalchemy.orm import Session
+import sys
 
 
 # revision identifiers, used by Alembic.
@@ -43,6 +46,29 @@ def upgrade():
     # Should update via the cascade:
     # op.execute('UPDATE project_members SET user_login = lower(user_login);')
     # op.execute('UPDATE commands SET user_login = lower(user_login);')
+
+    # Check that logins pass new validation requirements
+    bind = op.get_bind()
+    session = Session(bind=bind)
+    logins = session.execute('''\
+        SELECT login FROM users;
+    ''')
+    error = False
+    for row in logins:
+        login, = row
+        try:
+            l = validate.user_login(login)
+        except validate.InvalidFormat:
+            error = True
+            print("User login %r does not abide to new restrictions" % login,
+                  file=sys.stderr)
+        else:
+            if l != login:
+                raise ValueError("Login %r is still not canonical after "
+                                 "migration, please report this bug!" % login)
+    if error:
+        raise ValueError("Some user logins do not pass validation")
+    session.close()
 
 
 def downgrade():
