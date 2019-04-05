@@ -1,6 +1,16 @@
 Changelog
 =========
 
+0.6 (???)
+---------
+
+Bugfixes:
+* Make 'display' headings responsive
+* Fix exported highlights being called "path"
+
+Features:
+* Convert logins to lower-case (login and collaborator forms will convert too, so it should only affect display). Users with non-lowercase logins will be logged out on update
+
 0.5 (2019-03-23)
 ----------------
 
