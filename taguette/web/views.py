@@ -88,15 +88,20 @@ class Login(BaseHandler):
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         login = self.get_body_argument('login')
-        password = self.get_body_argument('password')
-        user = self.db.query(database.User).get(login)
-        if user is not None and user.check_password(password):
-            self.login(user.login)
-            self._go_to_next()
+        try:
+            login = validate.user_login(login)
+        except validate.InvalidFormat:
+            pass
         else:
-            self.render('login.html', register=False,
-                        next=self.get_argument('next', ''),
-                        login_error="Invalid login or password")
+            password = self.get_body_argument('password')
+            user = self.db.query(database.User).get(login)
+            if user is not None and user.check_password(password):
+                self.login(user.login)
+                return self._go_to_next()
+
+        self.render('login.html', register=False,
+                    next=self.get_argument('next', ''),
+                    login_error="Invalid login or password")
 
     def _go_to_next(self):
         next_ = self.get_argument('next')
@@ -140,7 +145,7 @@ class Register(BaseHandler):
             login = self.get_body_argument('login')
             password1 = self.get_body_argument('password1')
             password2 = self.get_body_argument('password2')
-            validate.user_login(login)
+            login = validate.user_login(login)
             validate.user_password(password1)
             email = self.get_body_argument('email', '')
             if email:

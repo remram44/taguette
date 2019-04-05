@@ -222,7 +222,7 @@ class TestMultiuser(MyHTTPTestCase):
 
         # Register
         response = self.post(
-            '/register', dict(login='tester',
+            '/register', dict(login='Tester',
                               password1='hacktoo', password2='hacktoo'))
         self.assertEqual(response.code, 302)
         self.assertEqual(response.headers['Location'], '/')

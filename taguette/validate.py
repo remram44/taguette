@@ -28,7 +28,7 @@ def project_description(description):
 
 
 ALLOWED_LOGIN_CHARACTERS = (
-    string.ascii_lowercase + string.ascii_uppercase + string.digits +
+    string.ascii_lowercase + string.digits +
     '.+@_-'
 )
 
@@ -38,9 +38,11 @@ def user_login(login):
         raise InvalidFormat("User login cannot be empty")
     if len(login) > 20:
         raise InvalidFormat("User login is too long")
+    login = login.lower()
     if any(c not in ALLOWED_LOGIN_CHARACTERS
            for c in login):
         raise InvalidFormat("User login contains forbidden characters")
+    return login
 
 
 def user_email(email):

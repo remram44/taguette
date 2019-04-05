@@ -482,6 +482,7 @@ class MembersUpdate(BaseHandler):
         obj = self.get_json()
         commands = []
         for login, user in obj.items():
+            login = validate.user_login(login)
             if login == self.current_user:
                 logger.warning("User tried to change own privileges")
                 continue
