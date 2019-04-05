@@ -57,13 +57,13 @@ def upgrade():
     for row in logins:
         login, = row
         try:
-            l = validate.user_login(login)
+            changed = validate.user_login(login)
         except validate.InvalidFormat:
             error = True
             print("User login %r does not abide to new restrictions" % login,
                   file=sys.stderr)
         else:
-            if l != login:
+            if changed != login:
                 raise ValueError("Login %r is still not canonical after "
                                  "migration, please report this bug!" % login)
     if error:
