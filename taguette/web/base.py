@@ -19,15 +19,12 @@ logger = logging.getLogger(__name__)
 
 
 class Application(tornado.web.Application):
-    def __init__(self, handlers, cookie_secret,
+    def __init__(self, handlers,
                  config, **kwargs):
         self.config = config
 
         # Don't reuse the secret
-        cookie_secret = cookie_secret + (
-            '.multi' if config['MULTIUSER']
-            else '.single'
-        )
+        cookie_secret = config['SECRET_KEY']
 
         super(Application, self).__init__(handlers,
                                           cookie_secret=cookie_secret,

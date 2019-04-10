@@ -1,4 +1,5 @@
 import argparse
+import base64
 import logging
 import os
 import prometheus_client
@@ -54,6 +55,9 @@ NAME = "Misconfigured Taguette Server"
 BIND_ADDRESS = "0.0.0.0"
 PORT = 7465
 
+# A unique secret key that will be used to sign cookies
+SECRET_KEY = "{secret}"
+
 # Database to use
 # This is a SQLAlchemy connection URL; refer to their documentation for info
 # https://docs.sqlalchemy.org/en/latest/core/engines.html
@@ -64,11 +68,11 @@ DATABASE = "sqlite:////non/existent/taguette/database.sqlite3"
 EMAIL = "Misconfigured Taguette Server <taguette@example.com>"
 
 # SMTP server to use to send emails
-MAIL_SERVER = {
+MAIL_SERVER = {{
     "ssl": False,
     "host": "localhost",
     "port": 25,
-}
+}}
 
 # Whether new users can create an account
 REGISTRATION_ENABLED = True
@@ -83,7 +87,7 @@ X_HEADERS = False
 
 # If you want to report errors to Sentry, set your DSN here
 #SENTRY_DSN = "https://<key>@sentry.io/<project>"
-''')
+'''.format(secret=base64.b64encode(os.urandom(30)).decode('ascii')))
     if output is not None:
         out.close()
 
@@ -95,7 +99,8 @@ DEFAULT_CONFIG = {
     'X_HEADERS': False,
 }
 
-REQUIRED_CONFIG = ['NAME', 'PORT', 'DATABASE', 'EMAIL', 'MAIL_SERVER']
+REQUIRED_CONFIG = ['NAME', 'PORT', 'SECRET_KEY', 'DATABASE',
+                   'EMAIL', 'MAIL_SERVER']
 
 
 def main():
@@ -205,6 +210,7 @@ def main():
             BIND_ADDRESS=args.bind,
             PORT=int(args.port),
             DATABASE=prepare_db(args.database),
+            SECRET_KEY=os.urandom(30).decode('iso-8859-15'),
         )
 
     if 'PROMETHEUS_LISTEN' in config:

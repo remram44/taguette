@@ -1,5 +1,3 @@
-import os
-import json
 import logging
 import pkg_resources
 from tornado.routing import URLSpec
@@ -20,37 +18,6 @@ class RedirectAccount(BaseHandler):
 
 
 def make_app(config, debug=False, xsrf_cookies=True):
-    if 'XDG_CACHE_HOME' in os.environ:
-        cache = os.environ['XDG_CACHE_HOME']
-    else:
-        cache = os.path.expanduser('~/.cache')
-    os.makedirs(cache, 0o700, exist_ok=True)
-    cache = os.path.join(cache, 'taguette.json')
-    secret = None
-    try:
-        fp = open(cache)
-    except IOError:
-        pass
-    else:
-        try:
-            secret = json.load(fp)['cookie_secret']
-            fp.close()
-        except Exception:
-            logger.exception("Couldn't load cookie secret from cache file")
-        if not isinstance(secret, str) or not 10 <= len(secret) < 2048:
-            logger.error("Invalid cookie secret in cache file")
-            secret = None
-    if secret is None:
-        secret = os.urandom(30).decode('iso-8859-15')
-        try:
-            fp = open(cache, 'w')
-            json.dump({'cookie_secret': secret}, fp)
-            fp.close()
-        except IOError:
-            logger.error("Couldn't open cache file, cookie secret won't be "
-                         "persisted! Users will be logged out if you restart "
-                         "the program.")
-
     return Application(
         [
             # Basic pages
@@ -113,5 +80,4 @@ def make_app(config, debug=False, xsrf_cookies=True):
         xsrf_cookies=xsrf_cookies,
         debug=debug,
         config=config,
-        cookie_secret=secret,
     )
