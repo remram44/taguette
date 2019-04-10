@@ -199,6 +199,7 @@ class TestMultiuser(MyHTTPTestCase):
                 EMAIL='test@example.com',
                 MAIL_SERVER={'host': 'localhost', 'port': 25},
                 MULTIUSER=True,
+                SECRET_KEY='2PbQ/5Rs005G/nTuWfibaZTUAo3Isng3QuRirmBK',
             ))
             return self.application
 
@@ -413,6 +414,7 @@ class TestSingleuser(MyHTTPTestCase):
                     EMAIL='test@example.com',
                     MAIL_SERVER={'host': 'localhost', 'port': 25},
                     MULTIUSER=False,
+                    SECRET_KEY='bq7ZoAtO7LtRJJ4P0iHSdH8yvcmCqynfeGB+x9y1',
                 ),
                 xsrf_cookies=False,
             )
