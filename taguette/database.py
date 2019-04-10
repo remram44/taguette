@@ -42,11 +42,7 @@ Base = declarative_base(metadata=meta)
 
 
 class JSON(TypeDecorator):
-    """Platform-independent UUID type.
-
-    Uses PostgreSQL's UUID type, otherwise uses
-    CHAR(32), storing as stringified hex values.
-
+    """Platform-independent JSON type.
     """
     impl = String
 
