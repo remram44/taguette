@@ -10,6 +10,7 @@ Bugfixes:
 
 Features:
 * Convert logins to lower-case (login and collaborator forms will convert too, so it should only affect display). Users with non-lowercase logins will be logged out on update
+* Moved the `SECRET_KEY` to the config, no longer writing to `~/.cache`
 
 0.5 (2019-03-23)
 ----------------
