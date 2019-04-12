@@ -693,7 +693,7 @@ function updateTagsList() {
     elem.className = 'tag-name';
     elem.innerHTML =
       '<input type="checkbox" value="' + tag.id + '" name="highlight-add-tags" id="highlight-add-tags-' + tag.id + '" />' +
-      '<label for="highlight-add-tags-' + tag.id + '">' + tag.path + '</label>';
+      '<label for="highlight-add-tags-' + tag.id + '">' + escapeHtml(tag.path) + '</label>';
     tags_modal_list.insertBefore(elem, before);
   }
   if(entries.length == 0) {
