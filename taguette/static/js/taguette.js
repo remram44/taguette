@@ -690,10 +690,10 @@ function updateTagsList() {
   for(var i = 0; i < entries.length; ++i) {
     var tag = entries[i][1];
     var elem = document.createElement('li');
-    elem.className = 'tag-name';
+    elem.className = 'tag-name form-check';
     elem.innerHTML =
-      '<input type="checkbox" value="' + tag.id + '" name="highlight-add-tags" id="highlight-add-tags-' + tag.id + '" />' +
-      '<label for="highlight-add-tags-' + tag.id + '">' + escapeHtml(tag.path) + '</label>';
+      '<input type="checkbox" class="form-check-input" value="' + tag.id + '" name="highlight-add-tags" id="highlight-add-tags-' + tag.id + '" />' +
+      '<label for="highlight-add-tags-' + tag.id + '" class="form-check-label">' + escapeHtml(tag.path) + '</label>';
     tags_modal_list.insertBefore(elem, before);
   }
   if(entries.length == 0) {
