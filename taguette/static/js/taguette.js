@@ -107,7 +107,7 @@ function getJSON(url='', args) {
     if(response.status != 200) {
       throw "Status " + response.status;
     }
-    return response.json();
+    return response.json().catch(function(error) { throw "Invalid JSON"; });
   });
 }
 
@@ -156,7 +156,7 @@ function postJSON(url='', data={}, args) {
     if(response.status != 200) {
       throw "Status " + response.status;
     }
-    return response.json();
+    return response.json().catch(function(error) { throw "Invalid JSON"; });
   });
 }
 
@@ -1356,10 +1356,19 @@ function longPollForEvents() {
     // Re-open connection
     setTimeout(longPollForEvents, 1);
   }, function(error) {
-    setTimeout(longPollForEvents, Math.max(1, 5000 + lastPoll - Date.now()));
+    console.error("Polling failed:", error);
+    if(error == 'Status 403') {
+      alert("It appears that you have been logged out.");
+      window.location = '/';
+    } else if(error == 'Status 404') {
+      alert("You can no longer access this project.")
+      window.location = '/';
+    } else {
+      setTimeout(longPollForEvents, Math.max(1, 5000 + lastPoll - Date.now()));
+    }
   })
   .catch(function(error) {
-    console.error("Polling failed:", error);
+    console.error("Polling function error:", error);
   });
 }
 longPollForEvents();
