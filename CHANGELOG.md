@@ -7,10 +7,12 @@ Changelog
 Bugfixes:
 * Make 'display' headings responsive
 * Fix exported highlights being called "path"
+* Fix possible weird characters in exported documents on Windows (depending on locale)
 
 Features:
 * Convert logins to lower-case (login and collaborator forms will convert too, so it should only affect display). Users with non-lowercase logins will be logged out on update
 * Moved the `SECRET_KEY` to the config, no longer writing to `~/.cache`
+* Let you know when you have been logged out or removed from a project while working
 
 0.5 (2019-03-23)
 ----------------
