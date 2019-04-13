@@ -1,11 +1,12 @@
 import asyncio
+import functools
 import logging
 import prometheus_client
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import aliased
 from tornado.concurrent import Future
 import tornado.log
-from tornado.web import authenticated, HTTPError, MissingArgumentError
+from tornado.web import HTTPError, MissingArgumentError
 
 from .. import convert
 from .. import database
@@ -28,10 +29,21 @@ PROM_API = prometheus_client.Counter(
 )
 
 
+def api_auth(method):
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        if not self.current_user:
+            self.set_status(403)
+            return self.send_json({'error': "Not logged in"})
+        return method(self, *args, **kwargs)
+
+    return wrapper
+
+
 class ProjectMeta(BaseHandler):
     PROM_API.labels('project_meta').inc(0)
 
-    @authenticated
+    @api_auth
     def post(self, project_id):
         PROM_API.labels('project_meta').inc()
         project, privileges = self.get_project(project_id)
@@ -66,7 +78,7 @@ class ProjectMeta(BaseHandler):
 class DocumentAdd(BaseHandler):
     PROM_API.labels('document_add').inc(0)
 
-    @authenticated
+    @api_auth
     async def post(self, project_id):
         PROM_API.labels('document_add').inc()
         project, privileges = self.get_project(project_id)
@@ -124,7 +136,7 @@ class DocumentUpdate(BaseHandler):
     PROM_API.labels('document_update').inc(0)
     PROM_API.labels('document_delete').inc(0)
 
-    @authenticated
+    @api_auth
     def post(self, project_id, document_id):
         PROM_API.labels('document_update').inc()
         document, privileges = self.get_document(project_id, document_id)
@@ -155,7 +167,7 @@ class DocumentUpdate(BaseHandler):
             self.set_status(e.status_code, e.reason)
             return self.send_json({'error': e.message})
 
-    @authenticated
+    @api_auth
     def delete(self, project_id, document_id):
         PROM_API.labels('document_delete').inc()
         document, privileges = self.get_document(project_id, document_id)
@@ -179,7 +191,7 @@ class DocumentUpdate(BaseHandler):
 class DocumentContents(BaseHandler):
     PROM_API.labels('document_contents').inc(0)
 
-    @authenticated
+    @api_auth
     def get(self, project_id, document_id):
         PROM_API.labels('document_contents').inc()
         document, _ = self.get_document(project_id, document_id, True)
@@ -200,7 +212,7 @@ class DocumentContents(BaseHandler):
 class TagAdd(BaseHandler):
     PROM_API.labels('tag_add').inc(0)
 
-    @authenticated
+    @api_auth
     def post(self, project_id):
         PROM_API.labels('tag_add').inc()
         project, privileges = self.get_project(project_id)
@@ -241,7 +253,7 @@ class TagUpdate(BaseHandler):
     PROM_API.labels('tag_update').inc(0)
     PROM_API.labels('tag_delete').inc(0)
 
-    @authenticated
+    @api_auth
     def post(self, project_id, tag_id):
         PROM_API.labels('tag_update').inc()
         project, privileges = self.get_project(project_id)
@@ -280,7 +292,7 @@ class TagUpdate(BaseHandler):
             self.set_status(e.status_code, e.reason)
             return self.send_json({'error': e.message})
 
-    @authenticated
+    @api_auth
     def delete(self, project_id, tag_id):
         PROM_API.labels('tag_delete').inc()
         project, privileges = self.get_project(project_id)
@@ -308,7 +320,7 @@ class TagUpdate(BaseHandler):
 class HighlightAdd(BaseHandler):
     PROM_API.labels('highlight_add').inc(0)
 
-    @authenticated
+    @api_auth
     def post(self, project_id, document_id):
         PROM_API.labels('highlight_add').inc()
         document, privileges = self.get_document(project_id, document_id, True)
@@ -349,7 +361,7 @@ class HighlightUpdate(BaseHandler):
     PROM_API.labels('highlight_update').inc(0)
     PROM_API.labels('highlight_delete').inc(0)
 
-    @authenticated
+    @api_auth
     def post(self, project_id, document_id, highlight_id):
         PROM_API.labels('highlight_update').inc()
         document, privileges = self.get_document(project_id, document_id)
@@ -390,7 +402,7 @@ class HighlightUpdate(BaseHandler):
 
         self.send_json({'id': hl.id})
 
-    @authenticated
+    @api_auth
     def delete(self, project_id, document_id, highlight_id):
         PROM_API.labels('highlight_delete').inc()
         document, privileges = self.get_document(project_id, document_id)
@@ -418,7 +430,7 @@ class HighlightUpdate(BaseHandler):
 class Highlights(BaseHandler):
     PROM_API.labels('highlights').inc(0)
 
-    @authenticated
+    @api_auth
     def get(self, project_id, path):
         PROM_API.labels('highlights').inc()
         project, _ = self.get_project(project_id)
@@ -463,7 +475,7 @@ class Highlights(BaseHandler):
 class MembersUpdate(BaseHandler):
     PROM_API.labels('members_update').inc(0)
 
-    @authenticated
+    @api_auth
     def patch(self, project_id):
         PROM_API.labels('members_update').inc()
         project, privileges = self.get_project(project_id)
@@ -534,7 +546,7 @@ class ProjectEvents(BaseHandler):
         lambda: len(ProjectEvents.polling_clients)
     )
 
-    @authenticated
+    @api_auth
     async def get(self, project_id):
         PROM_API.labels('events').inc()
         ProjectEvents.polling_clients.add(self.request.remote_ip)
