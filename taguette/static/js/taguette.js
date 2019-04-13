@@ -100,7 +100,8 @@ function getJSON(url='', args) {
     url + args,
     {
       credentials: 'same-origin',
-      mode: 'same-origin'
+      mode: 'same-origin',
+      redirect: 'error'
     }
   ).then(function(response) {
     if(response.status != 200) {
@@ -122,6 +123,7 @@ function deleteURL(url='', args) {
       credentials: 'same-origin',
       mode: 'same-origin',
       cache: 'no-cache',
+      redirect: 'error',
       method: 'DELETE'
     }
   ).then(function(response) {
@@ -143,6 +145,7 @@ function postJSON(url='', data={}, args) {
       credentials: 'same-origin',
       mode: 'same-origin',
       cache: 'no-cache',
+      redirect: 'error',
       method: 'POST',
       headers: {
         'Content-Type': 'application/json; charset=utf-8'
@@ -169,6 +172,7 @@ function patchJSON(url='', data={}, args) {
       credentials: 'same-origin',
       mode: 'same-origin',
       cache: 'no-cache',
+      redirect: 'error',
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json; charset=utf-8'
