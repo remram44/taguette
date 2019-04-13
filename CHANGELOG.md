@@ -1,8 +1,8 @@
 Changelog
 =========
 
-0.6 (???)
----------
+0.6 (2019-04-16)
+----------------
 
 Bugfixes:
 * Make 'display' headings responsive
