@@ -607,8 +607,14 @@ class MembersUpdate(BaseHandler):
     def patch(self, project_id):
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
+        obj = self.get_json()
         project, privileges = self.get_project(project_id)
-        if not privileges.can_edit_members():
+
+        if (obj.keys() == {self.current_user} and
+                not obj[self.current_user]):
+            # Special case: you are always allowed to remove yourself
+            pass
+        elif not privileges.can_edit_members():
             return self.send_error_json(403, "Unauthorized")
 
         # Get all members
@@ -619,7 +625,6 @@ class MembersUpdate(BaseHandler):
         members = {member.user_login: member for member in members}
 
         # Go over the JSON patch and update
-        obj = self.get_json()
         commands = []
         for login, user_info in obj.items():
             login = validate.user_login(login)
