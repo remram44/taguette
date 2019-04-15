@@ -14,7 +14,7 @@ class RedirectAccount(BaseHandler):
     def get(self):
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
-        self.redirect(self.reverse_url('account'), True)
+        return self.redirect(self.reverse_url('account'), True)
 
 
 def make_app(config, debug=False, xsrf_cookies=True):

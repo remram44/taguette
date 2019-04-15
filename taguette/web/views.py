@@ -36,8 +36,7 @@ class Index(BaseHandler):
         if self.current_user is not None:
             if self.get_query_argument('token', None):
                 PROM_PAGE.labels('token').inc()
-                self.redirect(self.reverse_url('index'))
-                return
+                return self.redirect(self.reverse_url('index'))
             user = self.db.query(database.User).get(self.current_user)
             if user is None:
                 PROM_PAGE.labels('index').inc()
@@ -50,24 +49,24 @@ class Index(BaseHandler):
                     messages = [Markup(msg['html'])
                                 for msg in self.application.messages]
                 PROM_PAGE.labels('index').inc()
-                self.render('index.html', user=user, projects=user.projects,
-                            messages=messages)
-                return
+                return self.render('index.html',
+                                   user=user, projects=user.projects,
+                                   messages=messages)
         elif not self.application.config['MULTIUSER']:
             token = self.get_query_argument('token', None)
             if token and token == self.application.single_user_token:
                 PROM_PAGE.labels('token').inc()
                 self.login('admin')
-                self.redirect(self.reverse_url('index'))
+                return self.redirect(self.reverse_url('index'))
             elif token:
                 PROM_PAGE.labels('token_needed').inc()
-                self.redirect(self.reverse_url('index'))
+                return self.redirect(self.reverse_url('index'))
             else:
                 PROM_PAGE.labels('token_needed').inc()
-                self.render('token_needed.html')
+                return self.render('token_needed.html')
         else:
             PROM_PAGE.labels('welcome').inc()
-            self.render('welcome.html')
+            return self.render('welcome.html')
 
 
 class Login(BaseHandler):
@@ -80,8 +79,8 @@ class Login(BaseHandler):
         if self.current_user:
             self._go_to_next()
         else:
-            self.render('login.html', register=False,
-                        next=self.get_argument('next', ''))
+            return self.render('login.html', register=False,
+                               next=self.get_argument('next', ''))
 
     def post(self):
         PROM_PAGE.labels('login').inc()
@@ -99,15 +98,15 @@ class Login(BaseHandler):
                 self.login(user.login)
                 return self._go_to_next()
 
-        self.render('login.html', register=False,
-                    next=self.get_argument('next', ''),
-                    login_error="Invalid login or password")
+        return self.render('login.html', register=False,
+                           next=self.get_argument('next', ''),
+                           login_error="Invalid login or password")
 
     def _go_to_next(self):
         next_ = self.get_argument('next')
         if not next_:
             next_ = self.reverse_url('index')
-        self.redirect(next_)
+        return self.redirect(next_)
 
 
 class Logout(BaseHandler):
@@ -118,7 +117,7 @@ class Logout(BaseHandler):
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         self.logout()
-        self.redirect(self.reverse_url('index'))
+        return self.redirect(self.reverse_url('index'))
 
 
 class Register(BaseHandler):
@@ -131,9 +130,9 @@ class Register(BaseHandler):
         if not self.application.config['REGISTRATION_ENABLED']:
             raise HTTPError(403)
         if self.current_user:
-            self.redirect(self.reverse_url('index'))
+            return self.redirect(self.reverse_url('index'))
         else:
-            self.render('login.html', register=True)
+            return self.render('login.html', register=True)
 
     def post(self):
         PROM_PAGE.labels('register').inc()
@@ -166,11 +165,11 @@ class Register(BaseHandler):
             self.db.commit()
             logger.info("User registered: %r", login)
             self.set_secure_cookie('user', login)
-            self.redirect(self.reverse_url('index'))
+            return self.redirect(self.reverse_url('index'))
         except validate.InvalidFormat as e:
             logging.info("Error validating Register: %r", e)
-            self.render('login.html', register=True,
-                        register_error=e.message)
+            return self.render('login.html', register=True,
+                               register_error=e.message)
 
 
 class Account(BaseHandler):
@@ -182,7 +181,7 @@ class Account(BaseHandler):
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         user = self.db.query(database.User).get(self.current_user)
-        self.render('account.html', user=user)
+        return self.render('account.html', user=user)
 
     @authenticated
     def post(self):
@@ -203,11 +202,11 @@ class Account(BaseHandler):
                     raise validate.InvalidFormat("Passwords do not match")
                 user.set_password(password1)
             self.db.commit()
-            self.redirect(self.reverse_url('account'))
+            return self.redirect(self.reverse_url('account'))
         except validate.InvalidFormat as e:
             logging.info("Error validating Account: %r", e)
-            self.render('account.html', user=user,
-                        error=e.message)
+            return self.render('account.html', user=user,
+                               error=e.message)
 
 
 class AskResetPassword(BaseHandler):
@@ -217,7 +216,7 @@ class AskResetPassword(BaseHandler):
         PROM_PAGE.labels('reset_password').inc()
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
-        self.render('reset_password.html')
+        return self.render('reset_password.html')
 
     def post(self):
         PROM_PAGE.labels('reset_password').inc()
@@ -263,7 +262,7 @@ class AskResetPassword(BaseHandler):
             send_mail(msg, self.application.config['MAIL_SERVER'])
             user.email_sent = datetime.utcnow()
             self.db.commit()
-        self.render('reset_password.html', message="Email sent!")
+        return self.render('reset_password.html', message="Email sent!")
 
 
 class SetNewPassword(BaseHandler):
@@ -276,7 +275,7 @@ class SetNewPassword(BaseHandler):
         reset_token = self.get_query_argument('reset_token')
         self.get_secure_cookie('reset_token', reset_token,
                                max_age_days=2).decode('utf-8')
-        self.render('new_password.html', reset_token=reset_token)
+        return self.render('new_password.html', reset_token=reset_token)
 
     def post(self):
         PROM_PAGE.labels('new_password').inc()
@@ -315,7 +314,7 @@ class ProjectAdd(BaseHandler):
     @authenticated
     def get(self):
         PROM_PAGE.labels('new_project').inc()
-        self.render('project_new.html')
+        return self.render('project_new.html')
 
     @authenticated
     def post(self):
@@ -343,12 +342,12 @@ class ProjectAdd(BaseHandler):
                                      description="Known people"))
 
             self.db.commit()
-            self.redirect(self.reverse_url('project', project.id))
+            return self.redirect(self.reverse_url('project', project.id))
         except validate.InvalidFormat as e:
             logging.info("Error validating ProjectAdd: %r", e)
-            self.render('project_new.html',
-                        name=name, description=description,
-                        error=e.message)
+            return self.render('project_new.html',
+                               name=name, description=description,
+                               error=e.message)
 
     def render(self, template_name, **kwargs):
         for name in ('name', 'description', 'error'):
@@ -371,9 +370,10 @@ class ProjectDelete(BaseHandler):
             .join(doc, database.Highlight.document_id == doc.id)
             .filter(doc.project_id == project.id)
         ).count()
-        self.render('project_delete.html', project=project,
-                    documents=len(project.documents), tags=len(project.tags),
-                    highlights=highlights)
+        return self.render('project_delete.html', project=project,
+                           documents=len(project.documents),
+                           tags=len(project.tags),
+                           highlights=highlights)
 
     @authenticated
     def post(self, project_id):
@@ -385,7 +385,7 @@ class ProjectDelete(BaseHandler):
                        project.id, project.name, self.current_user)
         self.db.delete(project)
         self.db.commit()
-        self.redirect(self.reverse_url('index'))
+        return self.redirect(self.reverse_url('index'))
 
 
 class Project(BaseHandler):
@@ -421,12 +421,14 @@ class Project(BaseHandler):
              for member in members}
         ))
         _ = self.xsrf_token  # Make sure XSRF cookie is set
-        self.render('project.html',
-                    project=project,
-                    last_event=(project.last_event
-                                if project.last_event is not None
-                                else -1),
-                    documents=documents_json,
-                    user_login=jinja2.Markup(json.dumps(self.current_user)),
-                    tags=tags_json,
-                    members=members_json)
+        return self.render('project.html',
+                           project=project,
+                           last_event=(project.last_event
+                                       if project.last_event is not None
+                                       else -1),
+                           documents=documents_json,
+                           user_login=jinja2.Markup(
+                               json.dumps(self.current_user)
+                           ),
+                           tags=tags_json,
+                           members=members_json)

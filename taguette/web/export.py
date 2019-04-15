@@ -39,7 +39,7 @@ def export_doc(wrapped):
                         'attachment; filename="%s.%s"' % (name, ext))
         for chunk in await contents:
             self.write(chunk)
-        self.finish()
+        return self.finish()
     return wrapper
 
 
@@ -146,7 +146,7 @@ class ExportCodebookCsv(BaseHandler):
         writer.writerow(['tag', 'description'])
         for tag in tags:
             writer.writerow([tag.path, tag.description])
-        self.finish(buf.getvalue())
+        return self.finish(buf.getvalue())
 
 
 class ExportCodebookDoc(BaseHandler):

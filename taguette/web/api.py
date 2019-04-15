@@ -102,7 +102,7 @@ class DocumentAdd(BaseHandler):
                                                     filename)
             except convert.ConversionError as err:
                 self.set_status(400)
-                self.send_json({
+                return self.send_json({
                     'error': str(err),
                 })
             else:
@@ -125,7 +125,7 @@ class DocumentAdd(BaseHandler):
                 self.db.commit()
                 self.db.refresh(cmd)
                 self.application.notify_project(project.id, cmd)
-                self.send_json({'created': doc.id})
+                return self.send_json({'created': doc.id})
         except validate.InvalidFormat as e:
             logging.info("Error validating DocumentAdd: %r", e)
             self.set_status(e.status_code, e.reason)
@@ -161,7 +161,7 @@ class DocumentUpdate(BaseHandler):
                 self.db.refresh(cmd)
                 self.application.notify_project(document.project_id, cmd)
 
-            self.send_json({'id': document.id})
+            return self.send_json({'id': document.id})
         except validate.InvalidFormat as e:
             logging.info("Error validating DocumentUpdate: %r", e)
             self.set_status(e.status_code, e.reason)
@@ -185,7 +185,7 @@ class DocumentUpdate(BaseHandler):
         self.application.notify_project(document.project_id, cmd)
 
         self.set_status(204)
-        self.finish()
+        return self.finish()
 
 
 class DocumentContents(BaseHandler):
@@ -195,7 +195,7 @@ class DocumentContents(BaseHandler):
     def get(self, project_id, document_id):
         PROM_API.labels('document_contents').inc()
         document, _ = self.get_document(project_id, document_id, True)
-        self.send_json({
+        return self.send_json({
             'contents': [
                 {'offset': 0, 'contents': document.contents},
             ],
@@ -242,7 +242,7 @@ class TagAdd(BaseHandler):
             self.db.refresh(cmd)
             self.application.notify_project(project.id, cmd)
 
-            self.send_json({'id': tag.id})
+            return self.send_json({'id': tag.id})
         except validate.InvalidFormat as e:
             logging.info("Error validating TagAdd: %r", e)
             self.set_status(e.status_code, e.reason)
@@ -286,7 +286,7 @@ class TagUpdate(BaseHandler):
                 self.db.refresh(cmd)
                 self.application.notify_project(project.id, cmd)
 
-            self.send_json({'id': tag.id})
+            return self.send_json({'id': tag.id})
         except validate.InvalidFormat as e:
             logging.info("Error validating TagUpdate: %r", e)
             self.set_status(e.status_code, e.reason)
@@ -314,7 +314,7 @@ class TagUpdate(BaseHandler):
         self.application.notify_project(project.id, cmd)
 
         self.set_status(204)
-        self.finish()
+        return self.finish()
 
 
 class HighlightAdd(BaseHandler):
@@ -354,7 +354,7 @@ class HighlightAdd(BaseHandler):
         self.db.refresh(cmd)
         self.application.notify_project(document.project_id, cmd)
 
-        self.send_json({'id': hl.id})
+        return self.send_json({'id': hl.id})
 
 
 class HighlightUpdate(BaseHandler):
@@ -400,7 +400,7 @@ class HighlightUpdate(BaseHandler):
             self.db.refresh(cmd)
             self.application.notify_project(document.project_id, cmd)
 
-        self.send_json({'id': hl.id})
+        return self.send_json({'id': hl.id})
 
     @api_auth
     def delete(self, project_id, document_id, highlight_id):
@@ -424,7 +424,7 @@ class HighlightUpdate(BaseHandler):
         self.application.notify_project(document.project_id, cmd)
 
         self.set_status(204)
-        self.finish()
+        return self.finish()
 
 
 class Highlights(BaseHandler):
@@ -459,7 +459,7 @@ class Highlights(BaseHandler):
                           database.Highlight.start_offset)
             ).all()
 
-        self.send_json({
+        return self.send_json({
             'highlights': [
                 {
                     'id': hl.id,
@@ -534,7 +534,7 @@ class MembersUpdate(BaseHandler):
             self.application.notify_project(project.id, cmd)
 
         self.set_status(204)
-        self.finish()
+        return self.finish()
 
 
 class ProjectEvents(BaseHandler):
@@ -615,7 +615,7 @@ class ProjectEvents(BaseHandler):
             raise ValueError("Unknown command type %r" % type_)
 
         result['id'] = cmd.id
-        self.send_json(result)
+        return self.send_json(result)
 
     def on_connection_close(self):
         self.response_cancelled = True
