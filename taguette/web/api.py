@@ -623,12 +623,9 @@ class MembersUpdate(BaseHandler):
         commands = []
         for login, user_info in obj.items():
             login = validate.user_login(login)
-            if login == self.current_user:
-                logger.warning("User tried to change own privileges")
-                continue
             if not user_info:
                 if login in members:
-                    self.db.delete(members[login])
+                    self.db.delete(members.pop(login))
                     cmd = database.Command.member_remove(
                         self.current_user, project.id,
                         login,
@@ -646,17 +643,25 @@ class MembersUpdate(BaseHandler):
                 if login in members:
                     members[login].privileges = privileges
                 else:
-                    self.db.add(
-                        database.ProjectMember(project=project,
-                                               user_login=login,
-                                               privileges=privileges)
-                    )
+                    member = database.ProjectMember(project=project,
+                                                    user_login=login,
+                                                    privileges=privileges)
+                    members[login] = member
+                    self.db.add(member)
                 cmd = database.Command.member_add(
                     self.current_user, project.id,
                     login, privileges,
                 )
                 self.db.add(cmd)
                 commands.append(cmd)
+
+        # Check that there are still admins
+        for member in members.values():
+            if member.privileges == database.Privileges.ADMIN:
+                break
+        else:
+            self.db.rollback()
+            return self.send_error_json(400, "There must be one admin")
 
         self.db.commit()
         for cmd in commands:
