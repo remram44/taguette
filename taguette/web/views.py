@@ -64,9 +64,8 @@ class Index(BaseHandler):
             else:
                 PROM_PAGE.labels('token_needed').inc()
                 return self.render('token_needed.html')
-        else:
-            PROM_PAGE.labels('welcome').inc()
-            return self.render('welcome.html')
+        PROM_PAGE.labels('welcome').inc()
+        return self.render('welcome.html')
 
 
 class Login(BaseHandler):
