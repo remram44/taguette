@@ -9,6 +9,7 @@ import smtplib
 from sqlalchemy.orm import joinedload, undefer, make_transient
 import tornado.ioloop
 from tornado.httpclient import AsyncHTTPClient
+import tornado.locale
 from tornado.web import HTTPError, RequestHandler
 
 from .. import __version__ as version
@@ -29,6 +30,10 @@ class Application(tornado.web.Application):
         super(Application, self).__init__(handlers,
                                           cookie_secret=cookie_secret,
                                           **kwargs)
+
+        d = pkg_resources.resource_filename('taguette', 'l10n')
+        tornado.locale.load_gettext_translations(d, 'taguette_main')
+        tornado.locale.set_default_locale(self.config['DEFAULT_LANGUAGE'])
 
         self.DBSession = database.connect(config['DATABASE'])
         self.event_waiters = {}
@@ -114,7 +119,8 @@ class BaseHandler(RequestHandler):
         loader=jinja2.FileSystemLoader(
             [pkg_resources.resource_filename('taguette', 'templates')]
         ),
-        autoescape=jinja2.select_autoescape(['html'])
+        autoescape=jinja2.select_autoescape(['html']),
+        extensions=['jinja2.ext.i18n'],
     )
 
     @jinja2.contextfunction
@@ -136,6 +142,19 @@ class BaseHandler(RequestHandler):
     def __init__(self, application, request, **kwargs):
         super(BaseHandler, self).__init__(application, request, **kwargs)
         self.db = application.DBSession()
+        self._gettext = None
+
+    def gettext(self, message, **kwargs):
+        trans = self.locale.translate(message)
+        if kwargs:
+            trans = trans % kwargs
+        return trans
+
+    def ngettext(self, singular, plural, n, **kwargs):
+        trans = self.locale.translate(singular, plural, n)
+        if kwargs:
+            trans = trans % kwargs
+        return trans
 
     def get_current_user(self):
         user = self.get_secure_cookie('user')
@@ -143,6 +162,12 @@ class BaseHandler(RequestHandler):
             return user.decode('utf-8')
         else:
             return None
+
+    def get_user_locale(self):
+        if self.current_user is not None:
+            user = self.db.query(database.User).get(self.current_user)
+            if user is not None and user.language is not None:
+                return tornado.locale.get(user.language)
 
     def login(self, username):
         logger.info("Logged in as %r", username)
@@ -159,6 +184,8 @@ class BaseHandler(RequestHandler):
             current_user=self.current_user,
             multiuser=self.application.config['MULTIUSER'],
             register_enabled=self.application.config['REGISTRATION_ENABLED'],
+            gettext=self.gettext,
+            ngettext=self.ngettext,
             **kwargs)
 
     def get_project(self, project_id):
