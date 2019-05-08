@@ -97,9 +97,11 @@ class Login(BaseHandler):
                 self.login(user.login)
                 return self._go_to_next()
 
-        return self.render('login.html', register=False,
-                           next=self.get_argument('next', ''),
-                           login_error="Invalid login or password")
+        return self.render(
+            'login.html', register=False,
+            next=self.get_argument('next', ''),
+            login_error=self.gettext("Invalid login or password"),
+        )
 
     def _go_to_next(self):
         next_ = self.get_argument('next')
@@ -229,7 +231,8 @@ class AskResetPassword(BaseHandler):
         if user is None:
             return self.render(
                 'reset_password.html',
-                error="This email is not associated with any user",
+                error=self.gettext("This email is not associated with any "
+                                   "user"),
             )
         elif (user.email_sent is None or
                 user.email_sent + timedelta(days=1) < datetime.utcnow()):
@@ -250,7 +253,7 @@ class AskResetPassword(BaseHandler):
                                      ''])
 
             msg = EmailMessage()
-            msg['Subject'] = "Password reset for Taguette"
+            msg['Subject'] = self.gettext("Password reset for Taguette")
             msg['From'] = self.application.config['EMAIL']
             msg['To'] = "{} <{}>".format(user.login, user.email)
             msg.set_content(self.render_string('email_reset_password.txt',
@@ -336,10 +339,16 @@ class ProjectAdd(BaseHandler):
             )
             self.db.add(membership)
             # Add default set of tags
-            self.db.add(database.Tag(project=project, path='interesting',
-                                     description="Further review required"))
-            self.db.add(database.Tag(project=project, path='people',
-                                     description="Known people"))
+            self.db.add(database.Tag(
+                project=project,
+                path=self.gettext("interesting"),
+                description=self.gettext("Further review required")),
+            )
+            self.db.add(database.Tag(
+                project=project,
+                path=self.gettext("people"),
+                description=self.gettext("Known people")),
+            )
 
             self.db.commit()
             return self.redirect(self.reverse_url('project', project.id))
