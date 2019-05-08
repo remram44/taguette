@@ -59,6 +59,7 @@ sentry-sdk = "*"
 coverage = "*"
 flake8 = "*"
 readme_renderer = "*"
+babel = "^2.6"
 
 [tool.poetry.scripts]
 taguette = "taguette.main:main"
