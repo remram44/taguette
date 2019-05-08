@@ -1,7 +1,10 @@
 import argparse
 import base64
+import gettext
+import locale
 import logging
 import os
+import pkg_resources
 import prometheus_client
 import re
 import subprocess
@@ -111,6 +114,12 @@ def main():
     logging.root.handlers.clear()
     logging.basicConfig(level=logging.INFO,
                         format="%(asctime)s %(levelname)s: %(message)s")
+    locale.setlocale(locale.LC_ALL, '')
+    lang = locale.getlocale()[0]
+    lang = [lang] if lang else []
+    d = pkg_resources.resource_filename('taguette', 'l10n')
+    trans = gettext.translation('taguette', d, lang, fallback=True)
+    _ = trans.gettext
 
     if sys.platform == 'win32':
         import ctypes.wintypes
@@ -140,29 +149,30 @@ def main():
     parser.add_argument('--version', action='version',
                         version='taguette version %s' % __version__)
     parser.add_argument('-p', '--port', default='7465',
-                        help="Port number on which to listen")
+                        help=_("Port number on which to listen"))
     parser.add_argument('-b', '--bind', default='127.0.0.1',
-                        help="Address to bind on")
+                        help=_("Address to bind on"))
     parser.add_argument('--browser', action='store_true', default=True,
-                        help="Open web browser to the application")
+                        help=_("Open web browser to the application"))
     parser.add_argument('--no-browser', action='store_false', dest='browser',
-                        help="Don't open the web browser")
+                        help=_("Don't open the web browser"))
     parser.add_argument('--debug', action='store_true', default=False,
                         help=argparse.SUPPRESS)
     parser.add_argument('--database', action='store',
                         default=default_db,
-                        help="Database location or connection string, for "
-                             "example 'project.db' or "
-                             "'postgresql://me:pw@localhost/mydb' "
-                             "(default: %r)" % default_db_show)
+                        help=_("Database location or connection string, for "
+                               "example 'project.db' or "
+                               "'postgresql://me:pw@localhost/mydb' "
+                               "(default: %(default)r)") %
+                        dict(default=default_db_show))
     parser.set_defaults(func=None)
 
-    subparsers = parser.add_subparsers(title="additional commands",
+    subparsers = parser.add_subparsers(title=_("additional commands"),
                                        metavar='', dest='cmd')
 
     parser_migrate = subparsers.add_parser('migrate',
-                                           help="Manually trigger a database "
-                                                "migration")
+                                           help=_("Manually trigger a "
+                                                  "database migration"))
     parser_migrate.add_argument('revision', action='store', default='head',
                                 nargs=argparse.OPTIONAL)
     parser_migrate.set_defaults(
@@ -170,18 +180,19 @@ def main():
 
     parser_config = subparsers.add_parser(
         'default-config',
-        help="Print the default server configuration")
+        help=_("Print the default server configuration"))
     parser_config.add_argument('--output', '-o', action='store', nargs=1,
-                               help="Output to this file rather than stdout")
+                               help=_("Output to this file rather than "
+                                      "stdout"))
     parser_config.set_defaults(func=lambda args: default_config(args.output))
 
     parser_server = subparsers.add_parser(
         'server',
-        help="Run in server mode, suitable for a multi-user deployment")
+        help=_("Run in server mode, suitable for a multi-user deployment"))
     parser_server.add_argument('config_file',
-                               help="Configuration file for the server. The "
-                                    "default configuration can be generated "
-                                    "using the `default-config` command")
+                               help=_("Configuration file for the server. The "
+                                      "default configuration can be generated "
+                                      "using the `default-config` command"))
 
     args = parser.parse_args()
 
@@ -201,7 +212,8 @@ def main():
         missing = False
         for key in REQUIRED_CONFIG:
             if key not in config:
-                print("Missing required configuration variable %s" % key,
+                print(_("Missing required configuration variable %(var)s") %
+                      dict(var=key),
                       file=sys.stderr)
                 missing = True
         if missing:
@@ -262,8 +274,8 @@ def main():
         url = 'http://localhost:%d/?token=%s' % (config['PORT'], token)
     else:
         url = 'http://localhost:%d/' % config['PORT']
-    print("\n    Taguette is now running. You can connect to it using this "
-          "link:\n\n    %s\n" % url)
+    print(_("\n    Taguette is now running. You can connect to it using this "
+          "link:\n\n    %(url)s\n") % dict(url=url))
 
     if args.browser and not args.debug:
         loop.call_later(0.01, webbrowser.open, url)

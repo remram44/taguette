@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Taguette 0.6\n"
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
-"POT-Creation-Date: 2019-05-08 17:50+0200\n"
+"POT-Creation-Date: 2019-05-08 18:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -251,5 +251,68 @@ msgstr ""
 
 #: taguette/templates/email_reset_password.html:3
 msgid "This link will expire in 1 day."
+msgstr ""
+
+#: taguette/main.py:152
+msgid "Port number on which to listen"
+msgstr ""
+
+#: taguette/main.py:154
+msgid "Address to bind on"
+msgstr ""
+
+#: taguette/main.py:156
+msgid "Open web browser to the application"
+msgstr ""
+
+#: taguette/main.py:158
+msgid "Don't open the web browser"
+msgstr ""
+
+#: taguette/main.py:163
+#, python-format
+msgid ""
+"Database location or connection string, for example 'project.db' or "
+"'postgresql://me:pw@localhost/mydb' (default: %(default)r)"
+msgstr ""
+
+#: taguette/main.py:170
+msgid "additional commands"
+msgstr ""
+
+#: taguette/main.py:174
+msgid "Manually trigger a database migration"
+msgstr ""
+
+#: taguette/main.py:183
+msgid "Print the default server configuration"
+msgstr ""
+
+#: taguette/main.py:185
+msgid "Output to this file rather than stdout"
+msgstr ""
+
+#: taguette/main.py:191
+msgid "Run in server mode, suitable for a multi-user deployment"
+msgstr ""
+
+#: taguette/main.py:193
+msgid ""
+"Configuration file for the server. The default configuration can be "
+"generated using the `default-config` command"
+msgstr ""
+
+#: taguette/main.py:215
+#, python-format
+msgid "Missing required configuration variable %(var)s"
+msgstr ""
+
+#: taguette/main.py:277
+#, python-format
+msgid ""
+"\n"
+"    Taguette is now running. You can connect to it using this link:\n"
+"\n"
+"    %(url)s\n"
 msgstr ""
 

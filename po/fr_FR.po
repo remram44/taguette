@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Taguette 0.6\n"
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
-"POT-Creation-Date: 2019-05-08 17:50+0200\n"
-"PO-Revision-Date: 2019-05-08 17:57+0200\n"
+"POT-Creation-Date: 2019-05-08 18:14+0200\n"
+"PO-Revision-Date: 2019-05-08 18:20+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -281,3 +281,76 @@ msgstr ""
 #: taguette/templates/email_reset_password.html:3
 msgid "This link will expire in 1 day."
 msgstr "Ce lien expirera dans 1 jour."
+
+#: taguette/main.py:152
+msgid "Port number on which to listen"
+msgstr "Numéro de port sur lequel écouter"
+
+#: taguette/main.py:154
+msgid "Address to bind on"
+msgstr "Adresse sur laquelle écouter"
+
+#: taguette/main.py:156
+msgid "Open web browser to the application"
+msgstr "Ouvrir le navigateur automatiquement"
+
+#: taguette/main.py:158
+msgid "Don't open the web browser"
+msgstr "Ne pas ouvrir le navigateur automatiquement"
+
+#: taguette/main.py:163
+#, python-format
+msgid ""
+"Database location or connection string, for example 'project.db' or "
+"'postgresql://me:pw@localhost/mydb' (default: %(default)r)"
+msgstr ""
+"Emplacement de la base de données ou identifiant de connexion, par exemple "
+"'projet.db' or 'postgresql://moi:mdp@localhost/mabdd' (par défaut : "
+"%(default)r)"
+
+#: taguette/main.py:170
+msgid "additional commands"
+msgstr "autres commandes"
+
+#: taguette/main.py:174
+msgid "Manually trigger a database migration"
+msgstr "Déclencher manuellement une migration de la base de données"
+
+#: taguette/main.py:183
+msgid "Print the default server configuration"
+msgstr "Afficher la configuration serveur par défaut"
+
+#: taguette/main.py:185
+msgid "Output to this file rather than stdout"
+msgstr "Écrire dans ce fichier plutôt que le terminal"
+
+#: taguette/main.py:191
+msgid "Run in server mode, suitable for a multi-user deployment"
+msgstr "Démarrer en mode serveur, adapté à un environnement multi-utilisateur"
+
+#: taguette/main.py:193
+msgid ""
+"Configuration file for the server. The default configuration can be "
+"generated using the `default-config` command"
+msgstr ""
+"Fichier de configuration pour le serveur. La configuration par défaut peut "
+"être générée en utilisant la commande `default-config`"
+
+#: taguette/main.py:215
+#, python-format
+msgid "Missing required configuration variable %(var)s"
+msgstr "Variable de configuration requise %(var)s est manquante"
+
+#: taguette/main.py:277
+#, python-format
+msgid ""
+"\n"
+"    Taguette is now running. You can connect to it using this link:\n"
+"\n"
+"    %(url)s\n"
+msgstr ""
+"\n"
+"    Taguette est maintenant lancée. Vous pouvez vous y connecter en "
+"utilisant ce lien :\n"
+"\n"
+"    %(url)s\n"
