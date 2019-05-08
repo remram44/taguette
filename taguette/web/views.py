@@ -6,12 +6,13 @@ import jinja2
 from markupsafe import Markup
 import prometheus_client
 from sqlalchemy.orm import aliased
+import tornado.locale
 from tornado.web import authenticated, HTTPError
 from urllib.parse import urlunparse
 
 from .. import database
 from .. import validate
-from .base import BaseHandler, send_mail
+from .base import BaseHandler, _f, send_mail
 
 
 logger = logging.getLogger(__name__)
@@ -97,9 +98,11 @@ class Login(BaseHandler):
                 self.login(user.login)
                 return self._go_to_next()
 
-        return self.render('login.html', register=False,
-                           next=self.get_argument('next', ''),
-                           login_error="Invalid login or password")
+        return self.render(
+            'login.html', register=False,
+            next=self.get_argument('next', ''),
+            login_error=self.gettext("Invalid login or password"),
+        )
 
     def _go_to_next(self):
         next_ = self.get_argument('next')
@@ -149,13 +152,13 @@ class Register(BaseHandler):
             if email:
                 validate.user_email(email)
             if password1 != password2:
-                raise validate.InvalidFormat("Passwords do not match")
+                raise validate.InvalidFormat(_f("Passwords do not match"))
             if self.db.query(database.User).get(login) is not None:
-                raise validate.InvalidFormat("Username is taken")
+                raise validate.InvalidFormat(_f("Username is taken"))
             if (email and
                     self.db.query(database.User)
                     .filter(database.User.email == email).count() > 0):
-                raise validate.InvalidFormat("Email is already used")
+                raise validate.InvalidFormat(_f("Email is already used"))
             user = database.User(login=login)
             user.set_password(password1)
             if email:
@@ -168,7 +171,7 @@ class Register(BaseHandler):
         except validate.InvalidFormat as e:
             logging.info("Error validating Register: %r", e)
             return self.render('login.html', register=True,
-                               register_error=e.message)
+                               register_error=self.gettext(e.message))
 
 
 class Account(BaseHandler):
@@ -199,14 +202,14 @@ class Account(BaseHandler):
             if password1 or password2:
                 validate.user_password(password1)
                 if password1 != password2:
-                    raise validate.InvalidFormat("Passwords do not match")
+                    raise validate.InvalidFormat(_f("Passwords do not match"))
                 user.set_password(password1)
             self.db.commit()
             return self.redirect(self.reverse_url('account'))
         except validate.InvalidFormat as e:
             logging.info("Error validating Account: %r", e)
             return self.render('account.html', user=user,
-                               error=e.message)
+                               error=self.gettext(e.message))
 
 
 class AskResetPassword(BaseHandler):
@@ -229,7 +232,8 @@ class AskResetPassword(BaseHandler):
         if user is None:
             return self.render(
                 'reset_password.html',
-                error="This email is not associated with any user",
+                error=self.gettext("This email is not associated with any "
+                                   "user"),
             )
         elif (user.email_sent is None or
                 user.email_sent + timedelta(days=1) < datetime.utcnow()):
@@ -250,7 +254,7 @@ class AskResetPassword(BaseHandler):
                                      ''])
 
             msg = EmailMessage()
-            msg['Subject'] = "Password reset for Taguette"
+            msg['Subject'] = self.gettext("Password reset for Taguette")
             msg['From'] = self.application.config['EMAIL']
             msg['To'] = "{} <{}>".format(user.login, user.email)
             msg.set_content(self.render_string('email_reset_password.txt',
@@ -298,14 +302,14 @@ class SetNewPassword(BaseHandler):
             password2 = self.get_body_argument('password2')
             validate.user_password(password1)
             if password1 != password2:
-                raise validate.InvalidFormat("Passwords do not match")
+                raise validate.InvalidFormat(_f("Passwords do not match"))
             user.set_password(password1)
             self.db.commit()
             return self.redirect(self.reverse_url('index'))
         except validate.InvalidFormat as e:
             logging.info("Error validating SetNewPassword: %r", e)
             return self.render('new_password.html', email=email,
-                               error=e.message)
+                               error=self.gettext(e.message))
 
 
 class ProjectAdd(BaseHandler):
@@ -336,10 +340,20 @@ class ProjectAdd(BaseHandler):
             )
             self.db.add(membership)
             # Add default set of tags
-            self.db.add(database.Tag(project=project, path='interesting',
-                                     description="Further review required"))
-            self.db.add(database.Tag(project=project, path='people',
-                                     description="Known people"))
+            self.db.add(database.Tag(
+                project=project,
+                # TRANSLATORS: Default tag 1, name
+                path=self.gettext("interesting"),
+                # TRANSLATORS: Default tag 1, description
+                description=self.gettext("Further review required")),
+            )
+            self.db.add(database.Tag(
+                project=project,
+                # TRANSLATORS: Default tag 2, name
+                path=self.gettext("people"),
+                # TRANSLATORS: Default tag 2, description
+                description=self.gettext("Known people")),
+            )
 
             self.db.commit()
             return self.redirect(self.reverse_url('project', project.id))
@@ -347,7 +361,7 @@ class ProjectAdd(BaseHandler):
             logging.info("Error validating ProjectAdd: %r", e)
             return self.render('project_new.html',
                                name=name, description=description,
-                               error=e.message)
+                               error=self.gettext(e.message))
 
     def render(self, template_name, **kwargs):
         for name in ('name', 'description', 'error'):

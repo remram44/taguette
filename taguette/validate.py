@@ -4,6 +4,8 @@ import string
 import sys
 from tornado.web import HTTPError
 
+from .web.base import _f
+
 
 class InvalidFormat(HTTPError):
     """User-supplied value doesn't pass validation."""
@@ -17,14 +19,14 @@ class InvalidFormat(HTTPError):
 
 def project_name(name):
     if not name:
-        raise InvalidFormat("Project name cannot be empty")
+        raise InvalidFormat(_f("Project name cannot be empty"))
     if len(name) > 50:
-        raise InvalidFormat("Project name is too long")
+        raise InvalidFormat(_f("Project name is too long"))
 
 
 def project_description(description):
     if len(description) > 102400:
-        raise InvalidFormat("Project description is too long")
+        raise InvalidFormat(_f("Project description is too long"))
 
 
 ALLOWED_LOGIN_CHARACTERS = (
@@ -35,52 +37,52 @@ ALLOWED_LOGIN_CHARACTERS = (
 
 def user_login(login):
     if not login:
-        raise InvalidFormat("User login cannot be empty")
+        raise InvalidFormat(_f("User login cannot be empty"))
     if len(login) > 20:
-        raise InvalidFormat("User login is too long")
+        raise InvalidFormat(_f("User login is too long"))
     login = login.lower()
     if any(c not in ALLOWED_LOGIN_CHARACTERS
            for c in login):
-        raise InvalidFormat("User login contains forbidden characters")
+        raise InvalidFormat(_f("User login contains forbidden characters"))
     return login
 
 
 def user_email(email):
     if not email:
-        raise InvalidFormat("Email cannot be empty")  # but it can be NULL
+        raise InvalidFormat(_f("Email cannot be empty"))  # but it can be NULL
     if '@' not in email:
-        raise InvalidFormat("Invalid email address")
+        raise InvalidFormat(_f("Invalid email address"))
 
 
 def user_password(password):
     if len(password) < 5:
-        raise InvalidFormat("Please use a longer password")
+        raise InvalidFormat(_f("Please use a longer password"))
     if len(password) > 5120:
-        raise InvalidFormat("Please use a shorter password")
+        raise InvalidFormat(_f("Please use a shorter password"))
 
 
 def document_name(name):
     if not name:
-        raise InvalidFormat("Document name cannot be empty")
+        raise InvalidFormat(_f("Document name cannot be empty"))
     if len(name) > 50:
-        raise InvalidFormat("Document name is too long")
+        raise InvalidFormat(_f("Document name is too long"))
 
 
 def document_description(description):
     if len(description) > 102400:
-        raise InvalidFormat("Document description is too long")
+        raise InvalidFormat(_f("Document description is too long"))
 
 
 def tag_path(path):
     if not path:
-        raise InvalidFormat("Tag path cannot be empty")
+        raise InvalidFormat(_f("Tag path cannot be empty"))
     if len(path) > 200:
-        raise InvalidFormat("Tag path is too long")
+        raise InvalidFormat(_f("Tag path is too long"))
 
 
 def tag_description(description):
     if len(description) > 102400:
-        raise InvalidFormat("Tag description is too long")
+        raise InvalidFormat(_f("Tag description is too long"))
 
 
 _windows_device_files = ('CON', 'AUX', 'COM1', 'COM2', 'COM3', 'COM4', 'LPT1',
