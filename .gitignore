@@ -2,6 +2,10 @@
 *.py[co]
 .ipynb_checkpoints
 
+# Translation catalogs
+po/*.mo
+taguette/l10n
+
 # Packages
 *.egg
 *.egg-info
