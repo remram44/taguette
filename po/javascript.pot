@@ -1,0 +1,19 @@
+# Translations template for Taguette.
+# Copyright (C) 2019 Remi Rampin
+# This file is distributed under the same license as the Taguette project.
+# Remi Rampin <r@remirampin.com>, 2018.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Taguette 0.6\n"
+"Report-Msgid-Bugs-To: hi@taguette.org\n"
+"POT-Creation-Date: 2019-05-08 23:45+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+

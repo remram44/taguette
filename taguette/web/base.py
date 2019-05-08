@@ -32,7 +32,7 @@ class Application(tornado.web.Application):
                                           **kwargs)
 
         d = pkg_resources.resource_filename('taguette', 'l10n')
-        tornado.locale.load_gettext_translations(d, 'taguette')
+        tornado.locale.load_gettext_translations(d, 'taguette_main')
         tornado.locale.set_default_locale(self.config['DEFAULT_LANGUAGE'])
 
         self.DBSession = database.connect(config['DATABASE'])

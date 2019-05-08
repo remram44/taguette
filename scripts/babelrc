@@ -7,4 +7,4 @@ encoding = utf-8
 
 [javascript: taguette/static/js/**.js]
 encoding = utf-8
-extract_messages = _
+extract_messages = gettext
