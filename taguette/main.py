@@ -67,6 +67,9 @@ DATABASE = "sqlite:////non/existent/taguette/database.sqlite3"
 # Address to send system emails from
 EMAIL = "Misconfigured Taguette Server <taguette@example.com>"
 
+# Default language
+DEFAULT_LANGUAGE = 'en_US'
+
 # SMTP server to use to send emails
 MAIL_SERVER = {{
     "ssl": False,
@@ -97,6 +100,7 @@ DEFAULT_CONFIG = {
     'BIND_ADDRESS': '0.0.0.0',
     'REGISTRATION_ENABLED': True,
     'X_HEADERS': False,
+    'DEFAULT_LANGUAGE': 'en_US',
 }
 
 REQUIRED_CONFIG = ['NAME', 'PORT', 'SECRET_KEY', 'DATABASE',

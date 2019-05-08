@@ -142,8 +142,15 @@ class BaseHandler(RequestHandler):
 
     def _load_translations(self):
         d = pkg_resources.resource_filename('taguette', 'l10n')
-        self._gettext = gettext.translation('taguette', d, ['fr_FR'],
-                                            fallback=True)
+        languages = []
+        if self.current_user is not None:
+            user = self.db.query(database.User).get(self.current_user)
+            if user is not None and user.language is not None:
+                languages.append(user.language)
+        languages.append(self.application.config['DEFAULT_LANGUAGE'])
+        self.get_user_locale()
+        self._gettext = gettext.translation('taguette', d,
+                                            languages, fallback=True)
 
     def gettext(self, message, **kwargs):
         if self._gettext is None:
