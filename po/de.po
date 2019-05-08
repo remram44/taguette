@@ -82,7 +82,7 @@ msgstr "Neues Passwort wiederholen"
 
 #: taguette/templates/account.html:38
 msgid "Update"
-msgstr ""
+msgstr "Aktualisieren"
 
 #: taguette/templates/base.html:21
 msgid "Home"
@@ -91,11 +91,11 @@ msgstr "Home"
 #: taguette/templates/base.html:32
 #, python-format
 msgid "Taguette Guide %(external_icon)s"
-msgstr ""
+msgstr "Taguette-Hilfe %(external_icon)s"
 
 #: taguette/templates/base.html:36
 msgid "Single-user mode"
-msgstr ""
+msgstr "Einzelbenutzer-Modus"
 
 #: taguette/templates/base.html:40
 msgid "Account"
@@ -122,11 +122,11 @@ msgstr ""
 #: taguette/templates/index.html:9
 #, python-format
 msgid "Welcome %(user_login)s"
-msgstr ""
+msgstr "Willkommen %(user_login)s"
 
 #: taguette/templates/index.html:11
 msgid "Welcome!"
-msgstr ""
+msgstr "Willkommen!"
 
 #: taguette/templates/index.html:13
 msgid "Here are your projects:"
@@ -151,6 +151,10 @@ msgid ""
 " to create an open-source web-based document tagging tool for qualitative "
 "data analysis."
 msgstr ""
+"Das <span style=\"font-family:BadScript;\"><a "
+"href=\"https://www.taguette.org/\">TAGUETTE</a></span>-Projekt versucht, ein"
+" web-basiertes Open-Source Dokumenten-Tagging-Tool für die qualitative "
+"Datenanalyse zu erstellen."
 
 #: taguette/templates/welcome.html:8
 msgid ""
@@ -158,11 +162,15 @@ msgid ""
 "hierarchy of tags, and annotate portions of documents with tags and notes "
 "that you can recall and organize later."
 msgstr ""
+"Mit diesem Tool können Sie Sammlungen von Dokumenten hochladen, Tag-"
+"Hierarchien  erstellen und Abschnitte von Dokumenten mit Tags und Notizen "
+"versehen, die Sie später abrufen und organisieren können."
 
 #: taguette/templates/welcome.html:10
 #, python-format
 msgid "<a href=\"%(url)s\">Register now</a> for free and get started!"
 msgstr ""
+"<a href=\"%(url)s\">Registrieren Sie sich jetzt</a>gratis und beginnen Sie!"
 
 #: taguette/templates/login.html:7 taguette/templates/login.html:39
 msgid "Log in"
@@ -189,10 +197,12 @@ msgid ""
 "Optional. <em>We will not share your email with anyone. This is only used in"
 " case you forget your password.</em>"
 msgstr ""
+"Optional. <em>Wir werden ihr Passwort mit niemandem teilen. Dies wird nur "
+"verwendet, falls Sie Ihr Passwort vergessen.</em>"
 
 #: taguette/templates/new_password.html:8
 msgid "Please enter a new password below:"
-msgstr ""
+msgstr "Bitte ein neues Passwort unten eingeben:"
 
 #: taguette/templates/new_password.html:13
 msgid "Password:"
@@ -226,32 +236,38 @@ msgid ""
 "application. Please check the console for the correct URL to log in, or "
 "simply restart Taguette."
 msgstr ""
+"Ihr Browser hat kein secret token für die Authentifikation übermittelt. "
+"Bitte prüfen Sie in der Adresszeile, ob die korrekte URL eingegeben ist, um "
+"sich einzuloggen, oder starten Sie einfach Taguette erneut."
 
 #: taguette/templates/reset_password.html:11
 msgid ""
 "If you had set an email address in your profile, you can enter it below and "
 "a link to reset your password will be sent to you."
 msgstr ""
+"Falls Sie eine Email-Adresse in Ihrem Profil angegeben haben, können Sie sie"
+" unten eingeben und ein Link zum Zurücksetzen des Passworts wird an Sie "
+"verschickt."
 
 #: taguette/templates/reset_password.html:20
 msgid "Send"
-msgstr ""
+msgstr "Senden"
 
 #: taguette/templates/project_new.html:4
 msgid "New project"
-msgstr ""
+msgstr "Neues Projekt"
 
 #: taguette/templates/project_new.html:11
 msgid "Name"
-msgstr ""
+msgstr "Name"
 
 #: taguette/templates/project_new.html:17
 msgid "Description"
-msgstr ""
+msgstr "Beschreibung"
 
 #: taguette/templates/project_new.html:24
 msgid "Create"
-msgstr ""
+msgstr "Erstellen"
 
 #: taguette/templates/email_reset_password.html:1
 #, python-format
@@ -260,10 +276,13 @@ msgid ""
 "associated with this email. If this was you, please follow this link: <a "
 "href=\"%(link)s\">%(link)s</a>"
 msgstr ""
+"Jemand hat das Zurücksetzen des Passwortes angefordert für den Taguette-"
+"Account der mit dieser Email verknüpft ist. Wenn Sie das waren, folgen Sie "
+"bitte diesem Link: <a href=\"%(link)s\">%(link)s</a>"
 
 #: taguette/templates/email_reset_password.html:3
 msgid "This link will expire in 1 day."
-msgstr ""
+msgstr "Dieser Link wird nach 1 Tag ungültig."
 
 #: taguette/main.py:152
 msgid "Port number on which to listen"
@@ -275,11 +294,11 @@ msgstr ""
 
 #: taguette/main.py:156
 msgid "Open web browser to the application"
-msgstr ""
+msgstr "Web-Browser für die Anwendung öffnen"
 
 #: taguette/main.py:158
 msgid "Don't open the web browser"
-msgstr ""
+msgstr "Web-Browser nicht öffnen"
 
 #: taguette/main.py:163
 #, python-format
@@ -290,15 +309,15 @@ msgstr ""
 
 #: taguette/main.py:170
 msgid "additional commands"
-msgstr ""
+msgstr "weitere Befehle"
 
 #: taguette/main.py:174
 msgid "Manually trigger a database migration"
-msgstr ""
+msgstr "Datenbank-Migration manuell einleiten"
 
 #: taguette/main.py:183
 msgid "Print the default server configuration"
-msgstr ""
+msgstr "Standard-Serverkonfiguratin ausdrucken"
 
 #: taguette/main.py:185
 msgid "Output to this file rather than stdout"
@@ -313,11 +332,13 @@ msgid ""
 "Configuration file for the server. The default configuration can be "
 "generated using the `default-config` command"
 msgstr ""
+"Konfigurations-Datei für den Server. Die Standard-Konfiguration kann mit dem"
+" 'default-config'-Befehl generiert werden."
 
 #: taguette/main.py:215
 #, python-format
 msgid "Missing required configuration variable %(var)s"
-msgstr ""
+msgstr "Fehlende benötigte Konfigurations-Variablen %(var)s"
 
 #: taguette/main.py:277
 #, python-format
