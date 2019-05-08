@@ -458,7 +458,7 @@ function updateDocumentsList() {
     elem.innerHTML =
       '<div class="d-flex justify-content-between align-items-center">' +
       '  <a class="document-link-a">' + escapeHtml(doc.name) + '</a>' +
-      '  <a href="javascript:editDocument(' + doc.id + ');" class="badge badge-primary badge-pill">edit</a>' +
+      '  <a href="javascript:editDocument(' + doc.id + ');" class="badge badge-primary badge-pill">' + gettext("edit") + '</a>' +
       '</div>';
     documents_list.insertBefore(elem, before);
     var links = elem.getElementsByTagName('a');
@@ -662,7 +662,7 @@ function updateTagsList() {
       '    <a class="expand-marker">&nbsp;</a> ' +
       '    <a id="tag-link-' + tag.id + '">' + escapeHtml(tag.path) + '</a>' +
       '  </div>' +
-      '  <a href="javascript:editTag(' + tag.id + ');" class="badge badge-primary badge-pill">edit</a>' +
+      '  <a href="javascript:editTag(' + tag.id + ');" class="badge badge-primary badge-pill">' + gettext("edit") + '</a>' +
       //'  <span href="#" class="badge badge-primary badge-pill">?</span>' + // TODO: highlight count
       '</div>' +
       '<ul class="sublist"></div>';
