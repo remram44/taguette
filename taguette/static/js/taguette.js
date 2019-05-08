@@ -402,7 +402,7 @@ function projectMetadataChanged() {
     })
     .catch(function(error) {
       console.error("Failed to update project metadata:", error);
-      alert("Couldn't update project metadata!");
+      alert(gettext("Couldn't update project metadata!"));
       project_name_input.value = project_name;
       project_description_input.value = project_description;
     });
@@ -458,7 +458,7 @@ function updateDocumentsList() {
     elem.innerHTML =
       '<div class="d-flex justify-content-between align-items-center">' +
       '  <a class="document-link-a">' + escapeHtml(doc.name) + '</a>' +
-      '  <a href="javascript:editDocument(' + doc.id + ');" class="badge badge-primary badge-pill">edit</a>' +
+      '  <a href="javascript:editDocument(' + doc.id + ');" class="badge badge-primary badge-pill">' + gettext("edit") + '</a>' +
       '</div>';
     documents_list.insertBefore(elem, before);
     var links = elem.getElementsByTagName('a');
@@ -467,7 +467,7 @@ function updateDocumentsList() {
   if(entries.length == 0) {
     var elem = document.createElement('div');
     elem.className = 'list-group-item disabled';
-    elem.textContent = "There are no documents in this project yet.";
+    elem.textContent = gettext("There are no documents in this project yet.");
     documents_list.insertBefore(elem, before);
   }
   console.log("Documents list updated");
@@ -525,13 +525,13 @@ document.getElementById('document-add-form').addEventListener('submit', function
       console.log("Document upload complete");
     } else {
       console.error("Document upload failed: status", xhr.status);
-      alert("Error uploading file!");
+      alert(gettext("Error uploading file!"));
     }
     hideSpinner();
   };
   xhr.onerror = function(e) {
     console.log("Document upload failed:", e);
-    alert("Error uploading file!");
+    alert(gettext("Error uploading file!"));
     hideSpinner();
   }
   xhr.send(form_data);
@@ -561,7 +561,7 @@ document.getElementById('document-change-form').addEventListener('submit', funct
     description: document.getElementById('document-change-description').value
   };
   if(!update.name || update.name.length == 0) {
-    alert("Document name cannot be empty");
+    alert(gettext("Document name cannot be empty"));
     return;
   }
 
@@ -578,7 +578,7 @@ document.getElementById('document-change-form').addEventListener('submit', funct
   })
   .catch(function(error) {
     console.error("Failed to update document:", error);
-    alert("Couldn't update document!");
+    alert(gettext("Couldn't update document!"));
   })
   .then(hideSpinner);
 });
@@ -587,7 +587,7 @@ document.getElementById('document-change-delete').addEventListener('click', func
   e.preventDefault();
 
   var doc_id = document.getElementById('document-change-id').value;
-  if(!window.confirm("Are you sure you want to delete the document '" + documents[doc_id].name + "'?")) {
+  if(!window.confirm(gettext("Are you sure you want to delete the document '%(doc)s'?", {doc: documents[doc_id].name}))) {
     return;
   }
   console.log("Deleting document " + doc_id + "...");
@@ -599,7 +599,7 @@ document.getElementById('document-change-delete').addEventListener('click', func
   })
   .catch(function(error) {
     console.error("Failed to delete document:", error);
-    alert("Couldn't delete document!");
+    alert(gettext("Couldn't delete document!"));
   });
 });
 
@@ -662,7 +662,7 @@ function updateTagsList() {
       '    <a class="expand-marker">&nbsp;</a> ' +
       '    <a id="tag-link-' + tag.id + '">' + escapeHtml(tag.path) + '</a>' +
       '  </div>' +
-      '  <a href="javascript:editTag(' + tag.id + ');" class="badge badge-primary badge-pill">edit</a>' +
+      '  <a href="javascript:editTag(' + tag.id + ');" class="badge badge-primary badge-pill">' + gettext("edit") + '</a>' +
       //'  <span href="#" class="badge badge-primary badge-pill">?</span>' + // TODO: highlight count
       '</div>' +
       '<ul class="sublist"></div>';
@@ -672,7 +672,7 @@ function updateTagsList() {
   if(entries.length == 0) {
     var elem = document.createElement('div');
     elem.className = 'list-group-item disabled';
-    elem.textContent = "There are no tags in this project yet.";
+    elem.textContent = gettext("There are no tags in this project yet.");
     tags_list.insertBefore(elem, before);
   }
 
@@ -702,7 +702,7 @@ function updateTagsList() {
   }
   if(entries.length == 0) {
     var elem = document.createElement('li');
-    elem.textContent = "no tags";
+    elem.textContent = gettext("no tags");
     tags_modal_list.appendChild(elem);
   }
 
@@ -747,7 +747,7 @@ document.getElementById('tag-add-form').addEventListener('submit', function(e) {
   }
   var tag_path = document.getElementById('tag-add-path').value;
   if(!tag_path) {
-    alert("Invalid tag name");
+    alert(gettext("Invalid tag name"));
     return;
   }
   var req;
@@ -774,7 +774,7 @@ document.getElementById('tag-add-form').addEventListener('submit', function(e) {
   })
   .catch(function(error) {
     console.error("Failed to create tag:", error);
-    alert("Couldn't create tag!");
+    alert(gettext("Couldn't create tag!"));
   })
   .then(hideSpinner);
 });
@@ -783,7 +783,7 @@ document.getElementById('tag-add-form').addEventListener('submit', function(e) {
 document.getElementById('tag-add-delete').addEventListener('click', function(e) {
   var tag_id = document.getElementById('tag-add-id').value;
   if(tag_id) {
-    if(!window.confirm("Are you sure you want to delete the tag '" + tags[tag_id].path + "'?")) {
+    if(!window.confirm(gettext("Are you sure you want to delete the tag '%(tag)s'?", {tag: tags[tag_id].path}))) {
       e.preventDefault();
       return;
     }
@@ -798,7 +798,7 @@ document.getElementById('tag-add-delete').addEventListener('click', function(e) 
     })
     .catch(function(error) {
       console.error("Failed to delete tag:", error);
-      alert("Couldn't delete tag!");
+      alert(gettext("Couldn't delete tag!"));
     });
   }
 });
@@ -958,7 +958,7 @@ document.getElementById('highlight-add-form').addEventListener('submit', functio
   })
   .catch(function(error) {
     console.error("Failed to create highlight:", error);
-    alert("Couldn't create highlight!");
+    alert(gettext("Couldn't create highlight!"));
   })
   .then(hideSpinner);
 });
@@ -978,7 +978,7 @@ document.getElementById('highlight-delete').addEventListener('click', function(e
     })
     .catch(function(error) {
       console.error("Failed to delete highlight:", error);
-      alert("Couldn't delete highlight!");
+      alert(gettext("Couldn't delete highlight!"));
     });
   }
 });
@@ -1008,10 +1008,10 @@ function _memberRow(login, user) {
     '</div>' +
     '<div class="col-md-4 form-group">' +
     '  <select class="form-control">' +
-    '    <option value="ADMIN">Full permissions</option>' +
-    '    <option value="MANAGE_DOCS">Can\'t change collaborators / delete project</option>' +
-    '    <option value="TAG">View &amp; make changes</option>' +
-    '    <option value="READ">View only</option>' +
+    '    <option value="ADMIN">' + gettext("Full permissions") + '</option>' +
+    '    <option value="MANAGE_DOCS">' + gettext("Can't change collaborators / delete project") + '</option>' +
+    '    <option value="TAG">' + gettext("View & make changes") + '</option>' +
+    '    <option value="READ">' + gettext("View only") + '</option>' +
     '  </select>' +
     '</div>' +
     '<button type="button" class="btn btn-danger col-md-4 form-group">Remove collaborator</button>';
@@ -1121,7 +1121,7 @@ function sendMembersPatch() {
   })
   .catch(function(error) {
     console.error("Failed to patch members list:", error);
-    alert("Couldn't update collaborators");
+    alert(gettext("Couldn't update collaborators!"));
   })
   .then(hideSpinner);
 
@@ -1148,7 +1148,7 @@ var export_button = document.getElementById('export-button');
 
 function loadDocument(document_id) {
   if(document_id === null) {
-    document_contents.innerHTML = '<p style="font-style: oblique; text-align: center;">Load a document on the left</p>';
+    document_contents.innerHTML = '<p style="font-style: oblique; text-align: center;">' + gettext("Load a document on the left") + '</p>';
     return;
   }
   getJSON(
@@ -1192,7 +1192,7 @@ function loadDocument(document_id) {
   })
   .catch(function(error) {
     console.error("Failed to load document:", error);
-    alert("Error loading document!");
+    alert(gettext("Error loading document!"));
   });
 }
 
@@ -1240,7 +1240,7 @@ function loadTag(tag_path) {
       document_contents.appendChild(elem);
     }
     if(result.highlights.length == 0) {
-      document_contents.innerHTML = '<p style="font-style: oblique; text-align: center;">No highlights with this tag yet.</p>';
+      document_contents.innerHTML = '<p style="font-style: oblique; text-align: center;">' + gettext("No highlights with this tag yet.") + '</p>';
     }
 
     // Update export button
@@ -1256,7 +1256,7 @@ function loadTag(tag_path) {
   })
   .catch(function(error) {
     console.error("Failed to load tag highlights:", error);
-    alert("Error loading tag highlights!");
+    alert(gettext("Error loading tag highlights!"));
   });
 }
 
@@ -1358,10 +1358,10 @@ function longPollForEvents() {
   }, function(error) {
     console.error("Polling failed:", error);
     if(error == 'Status 403') {
-      alert("It appears that you have been logged out.");
+      alert(gettext("It appears that you have been logged out."));
       window.location = '/';
     } else if(error == 'Status 404') {
-      alert("You can no longer access this project.")
+      alert(gettext("You can no longer access this project."));
       window.location = '/';
     } else {
       setTimeout(longPollForEvents, Math.max(1, 5000 + lastPoll - Date.now()));
