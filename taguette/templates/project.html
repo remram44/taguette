@@ -11,13 +11,13 @@
       <!-- Tab selector -->
       <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
-          <a class="nav-link" id="project-tab" data-toggle="tab" href="#project" role="tab" aria-controls="project" aria-selected="true">Project info</a>
+          <a class="nav-link" id="project-tab" data-toggle="tab" href="#project" role="tab" aria-controls="project" aria-selected="true">{# TRANSLATORS: Left pane tab #}{% trans %}Project info{% endtrans %}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" id="documents-tab" data-toggle="tab" href="#documents" role="tab" aria-controls="documents" aria-selected="false">Documents</a>
+          <a class="nav-link active" id="documents-tab" data-toggle="tab" href="#documents" role="tab" aria-controls="documents" aria-selected="false">{# TRANSLATORS: Left pane tab #}{% trans %}Documents{% endtrans %}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="tags-tab" data-toggle="tab" href="#tags" role="tab" aria-controls="tags" aria-selected="false">Highlights</a>
+          <a class="nav-link" id="tags-tab" data-toggle="tab" href="#tags" role="tab" aria-controls="tags" aria-selected="false">{# TRANSLATORS: Left pane tab #}{% trans %}Highlights{% endtrans %}</a>
         </li>
       </ul>
 
@@ -27,24 +27,24 @@
         <div class="tab-pane fade" id="project" role="tabpanel" aria-labelledby="project-tab">
           <form id="project-metadata-form">
             <div class="form-group">
-              <label for="project-name" class="col-sm-2 col-form-label">Name</label>
+              <label for="project-name" class="col-sm-2 col-form-label">{# TRANSLATORS: Project name field #}{% trans %}Name{% endtrans %}</label>
               <input type="text" class="form-control" id="project-name" name="project-name" value="{{ project.name }}" />
             </div>
             <div class="form-group">
-              <label for="project-description" class="col-sm-2 col-form-label">Description</label>
+              <label for="project-description" class="col-sm-2 col-form-label">{% trans %}Description{% endtrans %}</label>
               <textarea class="form-control" id="project-description" name="project-description">{{ project.description }}</textarea>
             </div>
           </form>
 
           {% if multiuser %}
 
-          <p><a href="javascript:showMembers()" class="btn btn-outline-secondary" role="button">Manage collaborators</a></p>
+          <p><a href="javascript:showMembers()" class="btn btn-outline-secondary" role="button">{% trans %}Manage collaborators{% endtrans %}</a></p>
 
           {% endif %}
 
           <div class="dropdown mb-3">
             <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdown-codebook" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Export codebook
+              {% trans %}Export codebook{% endtrans %}
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdown-codebook">
               <a href="{{ reverse_url('export_codebook_csv', project.id) }}" class="dropdown-item">CSV</a>
@@ -54,25 +54,25 @@
             </div>
           </div>
 
-          <p><a href="{{ reverse_url('delete_project', project.id) }}" class="btn btn-outline-danger">Delete project</a></p>
+          <p><a href="{{ reverse_url('delete_project', project.id) }}" class="btn btn-outline-danger">{% trans %}Delete project{% endtrans %}</a></p>
 
         </div>
 
         <!-- List of documents -->
         <div class="tab-pane fade show active" id="documents" role="tabpanel" aria-labelledby="documents-tab">
           <ul class="list-group list-group-flush" id="documents-list">
-            <li class="list-group-item disabled">Loading...</li>
-            <li class="list-group-item list-group-item-primary special-item-button"><a href="javascript:createDocument()">Add a document</a></li>
+            <li class="list-group-item disabled">{% trans %}Loading...{% endtrans %}</li>
+            <li class="list-group-item list-group-item-primary special-item-button"><a href="javascript:createDocument()">{% trans %}Add a document{% endtrans %}</a></li>
           </ul>
-          <input type="checkbox" id="backlight" class="mt-3" /> <label for="backlight">Backlight</label>
+          <input type="checkbox" id="backlight" class="mt-3" /> <label for="backlight">{% trans %}Backlight{% endtrans %}</label>
         </div>
 
         <!-- List of tags -->
         <div class="tab-pane fade" id="tags" role="tabpanel" aria-labelledby="tags-tab">
           <ul class="list-group list-group-flush" id="tags-list">
-            <li class="list-group-item disabled">Loading...</li>
-            <li id="load-all-tags" class="list-group-item list-group-item-secondary special-item-button"><a href="/project/{{ project.id }}/highlights/">See all highlights</a></li>
-            <li class="list-group-item list-group-item-primary special-item-button"><a href="javascript:createTag()">Create a tag</a></li>
+            <li class="list-group-item disabled">{% trans %}Loading...{% endtrans %}</li>
+            <li id="load-all-tags" class="list-group-item list-group-item-secondary special-item-button"><a href="/project/{{ project.id }}/highlights/">{% trans %}See all highlights{% endtrans %}</a></li>
+            <li class="list-group-item list-group-item-primary special-item-button"><a href="javascript:createTag()">{% trans %}Create a tag{% endtrans %}</a></li>
           </ul>
         </div>
 
@@ -86,7 +86,7 @@
     <div id="document-view" class="document-view">
       <div id="export-button" class="dropdown" style="display: none;">
         <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdown-export" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Export this view
+          {% trans %}Export this view{% endtrans %}
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdown-export">
           <a href="#" class="dropdown-item">HTML</a>
@@ -96,7 +96,7 @@
       </div>
 
       <div id="document-contents">
-        <p style="font-style: oblique; text-align: center;">Load a document on the left</p>
+        <p style="font-style: oblique; text-align: center;">{% trans %}Load a document on the left{% endtrans %}</p>
       </div>
     </div>
 
@@ -108,38 +108,38 @@
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Manage Collaborators</h5>
+        <h5 class="modal-title">{% trans %}Manage Collaborators{% endtrans %}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="container">
-          <h5>Add Collaborators</h5>
+          <h5>{% trans %}Add Collaborators{% endtrans %}</h5>
           <form id="members-add">
             <div class="row">
               <div class="col-md-4 form-group">
-                <input type="text" class="form-control" id="member-add-name" placeholder="Username" />
+                <input type="text" class="form-control" id="member-add-name" placeholder="{{ gettext("Username") }}" />
               </div>
               <div class="col-md-4 form-group">
                 <select id="member-add-privileges" class="form-control">
-                  <option value="ADMIN">Full permissions</option>
-                  <option value="MANAGE_DOCS">Can't change collaborators / delete project</option>
-                  <option value="TAG" selected>View &amp; make changes</option>
-                  <option value="READ">View only</option>
+                  <option value="ADMIN">{# TRANSLATORS: Permissions level #}{% trans %}Full permissions{% endtrans %}</option>
+                  <option value="MANAGE_DOCS">{# TRANSLATORS: Permissions level #}{% trans %}Can't change collaborators / delete project{% endtrans %}</option>
+                  <option value="TAG" selected>{# TRANSLATORS: Permissions level #}{% trans %}View & make changes{% endtrans %}</option>
+                  <option value="READ">{# TRANSLATORS: Permissions level #}{% trans %}View only{% endtrans %}</option>
                 </select>
               </div>
-              <button type="submit" class="btn btn-info col-md-4 form-group">Add to project</button>
+              <button type="submit" class="btn btn-info col-md-4 form-group">{% trans %}Add to project{% endtrans %}</button>
             </div>
           </form>
-          <h5>Current Collaborators</h5>
+          <h5>{% trans %}Current Collaborators{% endtrans %}</h5>
           <form id="members-current">
           </form>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" id="members-submit" class="btn btn-primary">Save & Close</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" id="members-submit" class="btn btn-primary">{% trans %}Save & Close{% endtrans %}</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans %}Cancel{% endtrans %}</button>
       </div>
     </div>
   </div>
@@ -150,7 +150,7 @@
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <form id="document-add-form" class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Add a document</h5>
+        <h5 class="modal-title">{% trans %}Add a document{% endtrans %}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -159,18 +159,18 @@
         <div class="container">
           <div class="row">
             <div class="col-md-6 form-group">
-              <input type="text" class="form-control" id="document-add-name" name="document-add-name" placeholder="Name" />
+              <input type="text" class="form-control" id="document-add-name" name="document-add-name" placeholder="{{ gettext("Name") }}" />
             </div>
             <div class="col-md-6 form-group">
               <input type="file" class="form-control-file" id="document-add-file" name="document-add-file" />
             </div>
           </div>
-          <textarea class="form-control mb-3" id="document-add-description" name="document-add-description" placeholder="Description"></textarea>
+          <textarea class="form-control mb-3" id="document-add-description" name="document-add-description" placeholder="{{ gettext("Description") }}"></textarea>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Import</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary">{% trans %}Import{% endtrans %}</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans %}Cancel{% endtrans %}</button>
       </div>
     </form>
   </div>
@@ -181,7 +181,7 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <form id="document-change-form" class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Edit document</h5>
+        <h5 class="modal-title">{% trans %}Edit document{% endtrans %}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -191,15 +191,15 @@
         <div class="container">
           <div class="row">
             <div class="col-md-6 form-group">
-              <input type="text" class="form-control mb-3" id="document-change-name" name="document-change-name" placeholder="Name" />
+              <input type="text" class="form-control mb-3" id="document-change-name" name="document-change-name" placeholder="{{ gettext("Name") }}" />
             </div>
           </div>
-          <textarea class="form-control" id="document-change-description" name="document-change-description" placeholder="Description"></textarea>
+          <textarea class="form-control" id="document-change-description" name="document-change-description" placeholder="{{ gettext("Description") }}"></textarea>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Save & Close</button>
-        <button type="button" id="document-change-delete" class="btn btn-danger" data-dismiss="modal">Delete document</button>
+        <button type="submit" class="btn btn-primary">{% trans %}Save & Close{% endtrans %}</button>
+        <button type="button" id="document-change-delete" class="btn btn-danger" data-dismiss="modal">{% trans %}Delete document{% endtrans %}</button>
       </div>
     </form>
   </div>
@@ -210,7 +210,7 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <form id="highlight-add-form" class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Highlight</h5>
+        <h5 class="modal-title">{% trans %}Highlight{% endtrans %}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -221,14 +221,14 @@
         <input type="hidden" id="highlight-add-end" />
         <div class="container">
           <ul class="list-unstyled" id="highlight-add-tags">
-            <li>Loading...</li>
-            <li class="special-item-button"><a href="javascript:createTag()">Create a tag</a></li>
+            <li>{% trans %}Loading...{% endtrans %}</li>
+            <li class="special-item-button"><a href="javascript:createTag()">{% trans %}Create a tag{% endtrans %}</a></li>
           </ul>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Save & Close</button>
-        <button type="button" class="btn btn-danger" data-dismiss="modal" id="highlight-delete">Delete highlight</button>
+        <button type="submit" class="btn btn-primary">{% trans %}Save & Close{% endtrans %}</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal" id="highlight-delete">{% trans %}Delete highlight{% endtrans %}</button>
       </div>
     </form>
   </div>
@@ -239,8 +239,8 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <form id="tag-add-form" class="modal-content">
       <div class="modal-header">
-        <h5 id="tag-add-label-new" class="modal-title">New tag</h5>
-        <h5 id="tag-add-label-change" class="modal-title" style="display: none;">Change tag</h5>
+        <h5 id="tag-add-label-new" class="modal-title">{% trans %}New tag{% endtrans %}</h5>
+        <h5 id="tag-add-label-change" class="modal-title" style="display: none;">{% trans %}Change tag{% endtrans %}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -248,14 +248,14 @@
       <div class="modal-body">
         <input type="hidden" id="tag-add-id" />
         <div class="container">
-          <input type="text" class="form-group" id="tag-add-path" name="tag-add-path" placeholder="name" />
-          <textarea class="form-control" id="tag-add-description" name="tag-add-description" placeholder="Description"></textarea>
+          <input type="text" class="form-group" id="tag-add-path" name="tag-add-path" placeholder="{{ gettext("Name") }}" />
+          <textarea class="form-control" id="tag-add-description" name="tag-add-description" placeholder="{{ gettext("Description") }}"></textarea>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Save & Close</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="tag-add-cancel">Cancel</button>
-        <button type="button" class="btn btn-danger" data-dismiss="modal" id="tag-add-delete">Delete tag</button>
+        <button type="submit" class="btn btn-primary">{% trans %}Save & Close{% endtrans %}</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="tag-add-cancel">{% trans %}Cancel{% endtrans %}</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal" id="tag-add-delete">{% trans %}Delete tag{% endtrans %}</button>
       </div>
     </form>
   </div>
@@ -284,6 +284,6 @@
 <script type="text/javascript" src="{{ static_url('js/taguette.js') }}"></script>
 
 <!-- "New highlight" button shown after selecting text -->
-<div id="hlinfo"><a href="javascript:createHighlight(current_selection);">[new highlight]</a></div>
+<div id="hlinfo"><a href="javascript:createHighlight(current_selection);">{% trans %}[new highlight]{% endtrans %}</a></div>
 
 {% endblock %}

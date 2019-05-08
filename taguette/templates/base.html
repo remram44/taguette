@@ -18,7 +18,7 @@
         <div class="collapse navbar-collapse" id="navbar">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-              <a class="nav-link {{ 'active' if active_page == 'index' else '' }}" href="{{ reverse_url('index') }}">Home</a>
+              <a class="nav-link {{ 'active' if active_page == 'index' else '' }}" href="{{ reverse_url('index') }}">{% trans %}Home{% endtrans %}</a>
             </li>
             {% if project %}
             <li class="nav-item">
@@ -28,23 +28,24 @@
           </ul>
           <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-              <a class="nav-link" href="https://www.taguette.org/getting-started.html">Taguette Guide <i class="fas fa-external-link-alt"></i></a>
+              {% set external_icon %}<i class="fas fa-external-link-alt"></i>{% endset %}
+              <a class="nav-link" href="https://www.taguette.org/getting-started.html">{% trans %}Taguette Guide {{ external_icon }}{% endtrans %}</a>
             </li>
             {% if not multiuser %}
             <li class="nav-item">
-              <a class="nav-link disabled">Single-user mode</a>
+              <a class="nav-link disabled">{% trans %}Single-user mode{% endtrans %}</a>
             </li>
             {% elif current_user %}
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle {{ 'active' if active_page == 'account' else '' }}" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Account</a>
+              <a class="nav-link dropdown-toggle {{ 'active' if active_page == 'account' else '' }}" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{% trans %}Account{% endtrans %}</a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item {{ 'active' if active_page == 'account' else '' }}" href="{{ reverse_url('account') }}">Settings</a>
-                <a class="dropdown-item" href="{{ reverse_url('logout') }}">Logout</a>
+                <a class="dropdown-item {{ 'active' if active_page == 'account' else '' }}" href="{{ reverse_url('account') }}">{% trans %}Settings{% endtrans %}</a>
+                <a class="dropdown-item" href="{{ reverse_url('logout') }}">{% trans %}Logout{% endtrans %}</a>
               </div>
             </li>
             {% else %}
             <li class="nav-item {{ 'active' if active_page == 'login' else '' }}">
-              <a class="nav-link" href="{{ reverse_url('login') }}">Login</a>
+              <a class="nav-link" href="{{ reverse_url('login') }}">{# TRANSLATORS: Link to form #}{% trans %}Login{% endtrans %}</a>
             </li>
             {% endif %}
           </ul>
@@ -58,7 +59,7 @@
       <footer class="footer">
         <hr/>
         <div class="container">
-          <p>Taguette is released under a <a href="https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt">BSD-3-Clause license</a>, &#169; Rémi Rampin | <a href="https://www.taguette.org/getting-started.html">User Documentation</a> | Please report issues via <a href="https://gitlab.com/remram44/taguette">GitLab</a> or <a href="mailto:hi@taguette.org">hi@taguette.org</a>!</p>
+          <p>{% trans %}Taguette is released under a <a href="https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt">BSD-3-Clause license</a>, &#169; Rémi Rampin | <a href="https://www.taguette.org/getting-started.html">User Documentation</a> | Please report issues via <a href="https://gitlab.com/remram44/taguette">GitLab</a> or <a href="mailto:hi@taguette.org">hi@taguette.org</a>!{% endtrans %}</p>
         </div>
       </footer>
     </div>
