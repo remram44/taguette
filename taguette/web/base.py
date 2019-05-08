@@ -1,4 +1,5 @@
 import asyncio
+import gettext
 import hashlib
 import hmac
 import json
@@ -114,7 +115,8 @@ class BaseHandler(RequestHandler):
         loader=jinja2.FileSystemLoader(
             [pkg_resources.resource_filename('taguette', 'templates')]
         ),
-        autoescape=jinja2.select_autoescape(['html'])
+        autoescape=jinja2.select_autoescape(['html']),
+        extensions=['jinja2.ext.i18n'],
     )
 
     @jinja2.contextfunction
@@ -136,6 +138,28 @@ class BaseHandler(RequestHandler):
     def __init__(self, application, request, **kwargs):
         super(BaseHandler, self).__init__(application, request, **kwargs)
         self.db = application.DBSession()
+        self._gettext = None
+
+    def _load_translations(self):
+        d = pkg_resources.resource_filename('taguette', 'l10n')
+        self._gettext = gettext.translation('taguette', d, ['fr_FR'],
+                                            fallback=True)
+
+    def gettext(self, message, **kwargs):
+        if self._gettext is None:
+            self._load_translations()
+        trans = self._gettext.gettext(message)
+        if kwargs:
+            trans = trans % kwargs
+        return trans
+
+    def ngettext(self, singular, plural, n, **kwargs):
+        if self._gettext is None:
+            self._load_translations()
+        trans = self._gettext.ngettext(singular, plural, n)
+        if kwargs:
+            trans = trans % kwargs
+        return trans
 
     def get_current_user(self):
         user = self.get_secure_cookie('user')
@@ -159,6 +183,8 @@ class BaseHandler(RequestHandler):
             current_user=self.current_user,
             multiuser=self.application.config['MULTIUSER'],
             register_enabled=self.application.config['REGISTRATION_ENABLED'],
+            gettext=self.gettext,
+            ngettext=self.ngettext,
             **kwargs)
 
     def get_project(self, project_id):
