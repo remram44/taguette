@@ -1,0 +1,51 @@
+# Translations template for Taguette.
+# Copyright (C) 2019 Remi Rampin
+# This file is distributed under the same license as the Taguette project.
+# Remi Rampin <r@remirampin.com>, 2018.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Taguette 0.6\n"
+"Report-Msgid-Bugs-To: hi@taguette.org\n"
+"POT-Creation-Date: 2019-05-08 16:24+0200\n"
+"PO-Revision-Date: 2019-05-08 16:32+0200\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+"X-Generator: Poedit 2.0.6\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: fr_FR\n"
+
+#: taguette/templates/welcome.html:6
+msgid "Welcome"
+msgstr "Bienvenue"
+
+#: taguette/templates/welcome.html:7
+msgid ""
+"The <span style=\"font-family:BadScript;\"><a href=\"https://www.taguette."
+"org/\">TAGUETTE</a></span> project is an attempt to create an open-source "
+"web-based document tagging tool for qualitative data analysis."
+msgstr ""
+"<span style=\"font-family:BadScript;\"><a href=\"https://www.taguette.org/"
+"\">TAGUETTE</a></span> est un projet de création d'un logiciel de "
+"marquage open-source pour l'analyse de données qualitative."
+
+#: taguette/templates/welcome.html:8
+msgid ""
+"Using this tool, you can upload a collection of documents, create a "
+"hierarchy of tags, and annotate portions of documents with tags and notes "
+"that you can recall and organize later."
+msgstr ""
+"En utilisant ce logiciel, vous pouvez charger une collection de "
+"documents, créer une hiérarchie de tags et annoter des portions de "
+"documents avec des tags et des notes que vous pouvez rappeler et "
+"organiser plus tard."
+
+#: taguette/templates/welcome.html:10
+#, python-format
+msgid "<a href=\"%(url)s\">Register now</a> for free and get started!"
+msgstr ""
+"<a href=\"%(url)s\">Inscrivez-vous</a> gratuitement et lancez-vous !"
