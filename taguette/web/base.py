@@ -1,5 +1,4 @@
 import asyncio
-import gettext
 import hashlib
 import hmac
 import json
@@ -10,6 +9,7 @@ import smtplib
 from sqlalchemy.orm import joinedload, undefer, make_transient
 import tornado.ioloop
 from tornado.httpclient import AsyncHTTPClient
+import tornado.locale
 from tornado.web import HTTPError, RequestHandler
 
 from .. import __version__ as version
@@ -30,6 +30,10 @@ class Application(tornado.web.Application):
         super(Application, self).__init__(handlers,
                                           cookie_secret=cookie_secret,
                                           **kwargs)
+
+        d = pkg_resources.resource_filename('taguette', 'l10n')
+        tornado.locale.load_gettext_translations(d, 'taguette')
+        tornado.locale.set_default_locale(self.config['DEFAULT_LANGUAGE'])
 
         self.DBSession = database.connect(config['DATABASE'])
         self.event_waiters = {}
@@ -140,30 +144,14 @@ class BaseHandler(RequestHandler):
         self.db = application.DBSession()
         self._gettext = None
 
-    def _load_translations(self):
-        d = pkg_resources.resource_filename('taguette', 'l10n')
-        languages = []
-        if self.current_user is not None:
-            user = self.db.query(database.User).get(self.current_user)
-            if user is not None and user.language is not None:
-                languages.append(user.language)
-        languages.append(self.application.config['DEFAULT_LANGUAGE'])
-        self.get_user_locale()
-        self._gettext = gettext.translation('taguette', d,
-                                            languages, fallback=True)
-
     def gettext(self, message, **kwargs):
-        if self._gettext is None:
-            self._load_translations()
-        trans = self._gettext.gettext(message)
+        trans = self.locale.translate(message)
         if kwargs:
             trans = trans % kwargs
         return trans
 
     def ngettext(self, singular, plural, n, **kwargs):
-        if self._gettext is None:
-            self._load_translations()
-        trans = self._gettext.ngettext(singular, plural, n)
+        trans = self.locale.translate(singular, plural, n)
         if kwargs:
             trans = trans % kwargs
         return trans
@@ -174,6 +162,12 @@ class BaseHandler(RequestHandler):
             return user.decode('utf-8')
         else:
             return None
+
+    def get_user_locale(self):
+        if self.current_user is not None:
+            user = self.db.query(database.User).get(self.current_user)
+            if user is not None and user.language is not None:
+                return tornado.locale.get(user.language)
 
     def login(self, username):
         logger.info("Logged in as %r", username)
