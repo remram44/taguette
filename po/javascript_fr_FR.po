@@ -27,6 +27,22 @@ msgstr "Impossible de créer la marque !"
 msgid "Couldn't delete highlight!"
 msgstr "Impossible de supprimer la marque !"
 
+#: taguette/static/js/taguette.js:1011
+msgid "Full permissions"
+msgstr "Toutes les permissions"
+
+#: taguette/static/js/taguette.js:1012
+msgid "Can't change collaborators / delete project"
+msgstr "Ne peut pas changer les collaborateurs / supprimer le projet"
+
+#: taguette/static/js/taguette.js:1013
+msgid "View & make changes"
+msgstr "Voir & faire des changements"
+
+#: taguette/static/js/taguette.js:1014
+msgid "View only"
+msgstr "Voir seulement"
+
 #: taguette/static/js/taguette.js:1124
 msgid "Couldn't update collaborators!"
 msgstr "Impossible de mettre à jour les collaborateurs !"
@@ -38,6 +54,10 @@ msgstr "Sélectionnez un document sur la gauche"
 #: taguette/static/js/taguette.js:1195
 msgid "Error loading document!"
 msgstr "Impossible de charger le document !"
+
+#: taguette/static/js/taguette.js:1243
+msgid "No highlights with this tag yet."
+msgstr "Aucune marque avec ce tag."
 
 #: taguette/static/js/taguette.js:1259
 msgid "Error loading tag highlights!"
