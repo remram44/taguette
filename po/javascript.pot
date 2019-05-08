@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Taguette 0.6\n"
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
-"POT-Creation-Date: 2019-05-08 23:45+0200\n"
+"POT-Creation-Date: 2019-05-08 23:56+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,4 +16,56 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.6.0\n"
+
+#: taguette/static/js/taguette.js:961
+msgid "Couldn't create highlight!"
+msgstr ""
+
+#: taguette/static/js/taguette.js:981
+msgid "Couldn't delete highlight!"
+msgstr ""
+
+#: taguette/static/js/taguette.js:1011
+msgid "Full permissions"
+msgstr ""
+
+#: taguette/static/js/taguette.js:1012
+msgid "Can't change collaborators / delete project"
+msgstr ""
+
+#: taguette/static/js/taguette.js:1013
+msgid "View & make changes"
+msgstr ""
+
+#: taguette/static/js/taguette.js:1014
+msgid "View only"
+msgstr ""
+
+#: taguette/static/js/taguette.js:1124
+msgid "Couldn't update collaborators!"
+msgstr ""
+
+#: taguette/static/js/taguette.js:1151
+msgid "Load a document on the left"
+msgstr ""
+
+#: taguette/static/js/taguette.js:1195
+msgid "Error loading document!"
+msgstr ""
+
+#: taguette/static/js/taguette.js:1243
+msgid "No highlights with this tag yet."
+msgstr ""
+
+#: taguette/static/js/taguette.js:1259
+msgid "Error loading tag highlights!"
+msgstr ""
+
+#: taguette/static/js/taguette.js:1361
+msgid "It appears that you have been logged out."
+msgstr ""
+
+#: taguette/static/js/taguette.js:1364
+msgid "You can no longer access this project."
+msgstr ""
 

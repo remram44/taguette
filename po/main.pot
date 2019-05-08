@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Taguette 0.6\n"
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
-"POT-Creation-Date: 2019-05-08 18:20+0200\n"
+"POT-Creation-Date: 2019-05-08 23:56+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -107,6 +107,153 @@ msgid ""
 "/getting-started.html\">User Documentation</a> | Please report issues via"
 " <a href=\"https://gitlab.com/remram44/taguette\">GitLab</a> or <a "
 "href=\"mailto:hi@taguette.org\">hi@taguette.org</a>!"
+msgstr ""
+
+#: taguette/templates/project.html:14
+msgid "Project info"
+msgstr ""
+
+#: taguette/templates/project.html:17
+msgid "Documents"
+msgstr ""
+
+#: taguette/templates/project.html:20
+msgid "Highlights"
+msgstr ""
+
+#: taguette/templates/project.html:30 taguette/templates/project.html:162
+#: taguette/templates/project.html:194 taguette/templates/project.html:251
+#: taguette/templates/project_new.html:11
+msgid "Name"
+msgstr ""
+
+#: taguette/templates/project.html:34 taguette/templates/project.html:168
+#: taguette/templates/project.html:197 taguette/templates/project.html:252
+#: taguette/templates/project_new.html:17
+msgid "Description"
+msgstr ""
+
+#: taguette/templates/project.html:41
+msgid "Manage collaborators"
+msgstr ""
+
+#: taguette/templates/project.html:47
+msgid "Export codebook"
+msgstr ""
+
+#: taguette/templates/project.html:57
+msgid "Delete project"
+msgstr ""
+
+#: taguette/templates/project.html:64 taguette/templates/project.html:73
+#: taguette/templates/project.html:224
+msgid "Loading..."
+msgstr ""
+
+#: taguette/templates/project.html:65 taguette/templates/project.html:153
+msgid "Add a document"
+msgstr ""
+
+#: taguette/templates/project.html:67
+msgid "Backlight"
+msgstr ""
+
+#: taguette/templates/project.html:74
+msgid "See all highlights"
+msgstr ""
+
+#: taguette/templates/project.html:75 taguette/templates/project.html:225
+msgid "Create a tag"
+msgstr ""
+
+#: taguette/templates/project.html:89
+msgid "Export this view"
+msgstr ""
+
+#: taguette/templates/project.html:99
+msgid "Load a document on the left"
+msgstr ""
+
+#: taguette/templates/project.html:111
+msgid "Manage Collaborators"
+msgstr ""
+
+#: taguette/templates/project.html:118
+msgid "Add Collaborators"
+msgstr ""
+
+#: taguette/templates/project.html:122
+msgid "Username"
+msgstr ""
+
+#: taguette/templates/project.html:126
+msgid "Full permissions"
+msgstr ""
+
+#: taguette/templates/project.html:127
+msgid "Can't change collaborators / delete project"
+msgstr ""
+
+#: taguette/templates/project.html:128
+msgid "View &amp; make changes"
+msgstr ""
+
+#: taguette/templates/project.html:129
+msgid "View only"
+msgstr ""
+
+#: taguette/templates/project.html:132
+msgid "Add to project"
+msgstr ""
+
+#: taguette/templates/project.html:135
+msgid "Current Collaborators"
+msgstr ""
+
+#: taguette/templates/project.html:141 taguette/templates/project.html:201
+#: taguette/templates/project.html:230 taguette/templates/project.html:256
+msgid "Save & Close"
+msgstr ""
+
+#: taguette/templates/project.html:142 taguette/templates/project.html:173
+#: taguette/templates/project.html:257
+msgid "Cancel"
+msgstr ""
+
+#: taguette/templates/project.html:172
+msgid "Import"
+msgstr ""
+
+#: taguette/templates/project.html:184
+msgid "Edit document"
+msgstr ""
+
+#: taguette/templates/project.html:202
+msgid "Delete document"
+msgstr ""
+
+#: taguette/templates/project.html:213
+msgid "Highlight"
+msgstr ""
+
+#: taguette/templates/project.html:231
+msgid "Delete highlight"
+msgstr ""
+
+#: taguette/templates/project.html:242
+msgid "New tag"
+msgstr ""
+
+#: taguette/templates/project.html:243
+msgid "Change tag"
+msgstr ""
+
+#: taguette/templates/project.html:258
+msgid "Delete tag"
+msgstr ""
+
+#: taguette/templates/project.html:289
+msgid "[new highlight]"
 msgstr ""
 
 #: taguette/templates/index.html:9
@@ -229,14 +376,6 @@ msgstr ""
 msgid "New project"
 msgstr ""
 
-#: taguette/templates/project_new.html:11
-msgid "Name"
-msgstr ""
-
-#: taguette/templates/project_new.html:17
-msgid "Description"
-msgstr ""
-
 #: taguette/templates/project_new.html:24
 msgid "Create"
 msgstr ""
@@ -251,6 +390,34 @@ msgstr ""
 
 #: taguette/templates/email_reset_password.html:3
 msgid "This link will expire in 1 day."
+msgstr ""
+
+#: taguette/web/views.py:103
+msgid "Invalid login or password"
+msgstr ""
+
+#: taguette/web/views.py:233
+msgid "This email is not associated with any user"
+msgstr ""
+
+#: taguette/web/views.py:255
+msgid "Password reset for Taguette"
+msgstr ""
+
+#: taguette/web/views.py:343
+msgid "interesting"
+msgstr ""
+
+#: taguette/web/views.py:344
+msgid "Further review required"
+msgstr ""
+
+#: taguette/web/views.py:348
+msgid "people"
+msgstr ""
+
+#: taguette/web/views.py:349
+msgid "Known people"
 msgstr ""
 
 #: taguette/main.py:152
