@@ -242,6 +242,14 @@ class BaseHandler(RequestHandler):
         return self.finish(json.dumps(obj))
 
 
+def _f(message):
+    """Pass-through translation function.
+
+    Marks a string for translation without translating it at run time.
+    """
+    return message
+
+
 def send_mail(msg, config):
     if config.get('ssl', False):
         cls = smtplib.SMTP_SSL

@@ -1,6 +1,6 @@
 [python: taguette/**.py]
 encoding = utf-8
-extract_messages = _
+extract_messages = _, _f
 
 [jinja2: taguette/templates/**.html]
 encoding = utf-8

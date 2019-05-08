@@ -13,6 +13,7 @@ run_tests:
     - coverage run --source=taguette tests.py
     - coverage html
     - flake8 --ignore=W504 tests.py taguette
+    - ! find taguette -name '*.py' -exec grep --color 'raise \(validate\.\)\?InvalidFormat([^_]' {} +
   artifacts:
     paths:
       - htmlcov

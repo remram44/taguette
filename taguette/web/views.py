@@ -11,7 +11,7 @@ from urllib.parse import urlunparse
 
 from .. import database
 from .. import validate
-from .base import BaseHandler, send_mail
+from .base import BaseHandler, _f, send_mail
 
 
 logger = logging.getLogger(__name__)
@@ -149,13 +149,13 @@ class Register(BaseHandler):
             if email:
                 validate.user_email(email)
             if password1 != password2:
-                raise validate.InvalidFormat("Passwords do not match")
+                raise validate.InvalidFormat(_f("Passwords do not match"))
             if self.db.query(database.User).get(login) is not None:
-                raise validate.InvalidFormat("Username is taken")
+                raise validate.InvalidFormat(_f("Username is taken"))
             if (email and
                     self.db.query(database.User)
                     .filter(database.User.email == email).count() > 0):
-                raise validate.InvalidFormat("Email is already used")
+                raise validate.InvalidFormat(_f("Email is already used"))
             user = database.User(login=login)
             user.set_password(password1)
             if email:
@@ -168,7 +168,7 @@ class Register(BaseHandler):
         except validate.InvalidFormat as e:
             logging.info("Error validating Register: %r", e)
             return self.render('login.html', register=True,
-                               register_error=e.message)
+                               register_error=self.gettext(e.message))
 
 
 class Account(BaseHandler):
@@ -199,14 +199,14 @@ class Account(BaseHandler):
             if password1 or password2:
                 validate.user_password(password1)
                 if password1 != password2:
-                    raise validate.InvalidFormat("Passwords do not match")
+                    raise validate.InvalidFormat(_f("Passwords do not match"))
                 user.set_password(password1)
             self.db.commit()
             return self.redirect(self.reverse_url('account'))
         except validate.InvalidFormat as e:
             logging.info("Error validating Account: %r", e)
             return self.render('account.html', user=user,
-                               error=e.message)
+                               error=self.gettext(e.message))
 
 
 class AskResetPassword(BaseHandler):
@@ -298,14 +298,14 @@ class SetNewPassword(BaseHandler):
             password2 = self.get_body_argument('password2')
             validate.user_password(password1)
             if password1 != password2:
-                raise validate.InvalidFormat("Passwords do not match")
+                raise validate.InvalidFormat(_f("Passwords do not match"))
             user.set_password(password1)
             self.db.commit()
             return self.redirect(self.reverse_url('index'))
         except validate.InvalidFormat as e:
             logging.info("Error validating SetNewPassword: %r", e)
             return self.render('new_password.html', email=email,
-                               error=e.message)
+                               error=self.gettext(e.message))
 
 
 class ProjectAdd(BaseHandler):
@@ -347,7 +347,7 @@ class ProjectAdd(BaseHandler):
             logging.info("Error validating ProjectAdd: %r", e)
             return self.render('project_new.html',
                                name=name, description=description,
-                               error=e.message)
+                               error=self.gettext(e.message))
 
     def render(self, template_name, **kwargs):
         for name in ('name', 'description', 'error'):
