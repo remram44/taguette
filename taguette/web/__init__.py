@@ -1,3 +1,6 @@
+import gettext
+import jinja2
+import json
 import logging
 import pkg_resources
 from tornado.routing import URLSpec
@@ -15,6 +18,24 @@ class RedirectAccount(BaseHandler):
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         return self.redirect(self.reverse_url('account'), True)
+
+
+class TranslationJs(BaseHandler):
+    def get(self):
+        catalog = {}
+
+        d = pkg_resources.resource_filename('taguette', 'l10n')
+        gettext_trans = gettext.translation('taguette_javascript', d,
+                                            [self.locale.code], fallback=True)
+        if gettext_trans is not None:
+            if isinstance(gettext_trans, gettext.GNUTranslations):
+                catalog = gettext_trans._catalog
+
+        language = jinja2.Markup(json.dumps(self.locale.code))
+        catalog = jinja2.Markup(json.dumps(catalog))
+        return self.render('trans.js',
+                           language=language,
+                           catalog=catalog)
 
 
 def make_app(config, debug=False, xsrf_cookies=True):
@@ -71,6 +92,9 @@ def make_app(config, debug=False, xsrf_cookies=True):
             URLSpec('/api/project/([0-9]+)/tag/([0-9]+)', api.TagUpdate),
             URLSpec('/api/project/([0-9]+)/members', api.MembersUpdate),
             URLSpec('/api/project/([0-9]+)/events', api.ProjectEvents),
+
+            # Translation catalog and functions
+            URLSpec('/trans.js', TranslationJs, name='trans.js'),
 
             # Well-known URLs
             URLSpec('/.well-known/change-password', RedirectAccount),
