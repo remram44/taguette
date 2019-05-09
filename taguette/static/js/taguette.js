@@ -50,13 +50,19 @@ function encodeGetParams(params) {
     .join("&");
 }
 
+// Don't use RegExp literals https://github.com/python-babel/babel/issues/640
+var _escapeA = new RegExp('&', 'g'),
+    _escapeL = new RegExp('<', 'g'),
+    _escapeG = new RegExp('>', 'g'),
+    _escapeQ = new RegExp('"', 'g'),
+    _escapeP = new RegExp("'", 'g');
 function escapeHtml(s) {
   return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+    .replace(_escapeA, "&amp;")
+    .replace(_escapeL, "&lt;")
+    .replace(_escapeG, "&gt;")
+    .replace(_escapeQ, "&quot;")
+    .replace(_escapeP, "&#039;");
 }
 
 function nextElement(node) {
@@ -1261,12 +1267,15 @@ function loadTag(tag_path) {
 }
 
 // Load the document if the URL includes one
-var m = window.location.pathname.match(/\/project\/([0-9]+)\/document\/([0-9]+)/);
+var _document_url = new RegExp('/project/([0-9]+)/document/([0-9]+)');
+// Don't use RegExp literals https://github.com/python-babel/babel/issues/640
+var m = window.location.pathname.match(_document_url);
 if(m) {
   loadDocument(parseInt(m[2]));
 }
 // Or a tag
-m = window.location.pathname.match(/\/project\/([0-9]+)\/highlights\/([^\/]*)/);
+var _tag_url = new RegExp('/project/([0-9]+)/highlights/([^/]*)');
+m = window.location.pathname.match(_tag_url);
 if(m) {
   loadTag(m[2]);
 }
