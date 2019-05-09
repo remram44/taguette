@@ -39,9 +39,9 @@ msgid ""
 "<strong>%(documents)s documents and %(highlights)s highlights in %(tags)s "
 "tags</strong>. There is no way to undo."
 msgstr ""
-"Sind Sie sicher, dass Sie dieses Projekt löschen möchten? Es hat zur "
-"Zeit<strong>%(documents)sDokumente und%(highlights)sHighlights in "
-"%(tags)sTags</strong>. Sie können diese Aktion nicht rückgängig machen."
+"Sind Sie sicher, dass Sie dieses Projekt löschen möchten? Es hat zur Zeit "
+"<strong>%(documents)s Dokumente und %(highlights)s Highlights in %(tags)s "
+"Tags</strong>. Sie können diese Aktion nicht rückgängig machen."
 
 #: taguette/templates/project_delete.html:11
 msgid "Delete forever"
@@ -365,7 +365,7 @@ msgstr "Passwort"
 
 #: taguette/templates/new_password.html:19
 msgid "Confirm:"
-msgstr "Bestätigen:"
+msgstr "Bestätigen"
 
 #: taguette/templates/new_password.html:26
 msgid "Set new password"
@@ -437,7 +437,7 @@ msgstr "Ungültiger Benutzername oder Passwort"
 
 #: taguette/web/views.py:233
 msgid "This email is not associated with any user"
-msgstr "Es gibt keinen Benutzer für diese eMail-Adresse"
+msgstr "Es gibt keinen Benutzer für diese Email-Adresse"
 
 #: taguette/web/views.py:255
 msgid "Password reset for Taguette"
@@ -453,7 +453,7 @@ msgstr "Weitere Überprüfung nötig"
 
 #: taguette/web/views.py:348
 msgid "people"
-msgstr "Personen"
+msgstr "personen"
 
 #: taguette/web/views.py:349
 msgid "Known people"
@@ -526,6 +526,7 @@ msgid ""
 "    %(url)s\n"
 msgstr ""
 "\n"
-"Taguette läuft nun. Sie können sich damit verbinden indem Sie folgenden Link verwenden: \n"
+"  Taguette läuft nun. Sie können sich damit verbinden indem Sie folgenden "
+"Link verwenden: \n"
 "\n"
-"%(url)s\n"
+"  %(url)s\n"

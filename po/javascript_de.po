@@ -98,7 +98,7 @@ msgstr "Kann Mitarbeitende nicht ändern / das Projekt nicht löschen"
 
 #: taguette/static/js/taguette.js:1019
 msgid "View & make changes"
-msgstr "Ansehen &amp; Bearbeiten"
+msgstr "Ansehen & Bearbeiten"
 
 #: taguette/static/js/taguette.js:1020
 msgid "View only"
@@ -114,7 +114,7 @@ msgstr "Lade ein Dokument auf der linken Seite"
 
 #: taguette/static/js/taguette.js:1201
 msgid "Error loading document!"
-msgstr "Fehler beim Laden des Dokuments"
+msgstr "Fehler beim Laden des Dokuments!"
 
 #: taguette/static/js/taguette.js:1249
 msgid "No highlights with this tag yet."
