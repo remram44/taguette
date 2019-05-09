@@ -213,8 +213,8 @@ msgid "Can't change collaborators / delete project"
 msgstr "Kann Mitarbeitende nicht ändern / das Projekt nicht löschen"
 
 #: taguette/templates/project.html:128
-msgid "View &amp; make changes"
-msgstr "Ansehen &amp; Bearbeiten"
+msgid "View & make changes"
+msgstr "Ansehen & Bearbeiten"
 
 #: taguette/templates/project.html:129
 msgid "View only"
@@ -360,11 +360,11 @@ msgid "Please enter a new password below:"
 msgstr "Bitte ein neues Passwort unten eingeben:"
 
 #: taguette/templates/new_password.html:13
-msgid "Password:"
+msgid "Password"
 msgstr "Passwort"
 
 #: taguette/templates/new_password.html:19
-msgid "Confirm:"
+msgid "Confirm"
 msgstr "Bestätigen"
 
 #: taguette/templates/new_password.html:26
