@@ -13,9 +13,11 @@ What should NOT be translated:
 * Logging and exception messages (those are really destined to developers)
 * API messages and errors
 
-Run the script `scripts/update_translations.sh` before and after updating PO files. It will update the POT catalog with the changes from the code and also generate the MO files from the translated PO files.
+There are two catalogs: `main` is used by the server, and `javascript` is loaded client-side as JSON to be used by the JavaScript code.
 
-You will have to update your PO file from the POT manually.
+Run the script `scripts/update_translations.sh` before and after updating PO files. It will update the POT catalogs with the changes from the code and also generate the MO files from the translated PO files.
+
+You will have to update your PO files from the POT files manually.
 
 Standard mapping
 ================
