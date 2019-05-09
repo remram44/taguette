@@ -22,6 +22,17 @@
     </div>
   </div>
   <div class="form-group row">
+    <label for="language" class="col-sm-2 col-form-label">{% trans %}Language{% endtrans %}</label>
+    <div class="col-sm-10">
+      <select id="language" name="language" class="form-control">
+        <option value="auto">{% trans %}Auto-detect{% endtrans %}</option>
+        {% for lang_code, lang_name in languages %}
+        <option value="{{ lang_code }}"{% if lang_code == current_language %} selected{% endif %}>{{ lang_name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+  <div class="form-group row">
     <label for="password1" class="col-sm-2 col-form-label">{% trans %}New password{% endtrans %}</label>
     <div class="col-sm-10">
       <input type="password" name="password1" id="password1" class="form-control" />

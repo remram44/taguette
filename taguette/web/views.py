@@ -6,6 +6,7 @@ import jinja2
 from markupsafe import Markup
 import prometheus_client
 from sqlalchemy.orm import aliased
+import tornado.locale
 from tornado.web import authenticated, HTTPError
 from urllib.parse import urlunparse
 
@@ -176,13 +177,23 @@ class Register(BaseHandler):
 class Account(BaseHandler):
     PROM_PAGE.labels('account').inc(0)
 
+    def get_languages(self):
+        languages = []
+        for loc_code in tornado.locale.get_supported_locales():
+            loc_name = tornado.locale.get(loc_code).name
+            languages.append((loc_code, loc_name))
+        return dict(
+            languages=languages,
+            current_language=self.locale.code,
+        )
+
     @authenticated
     def get(self):
         PROM_PAGE.labels('account').inc()
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         user = self.db.query(database.User).get(self.current_user)
-        return self.render('account.html', user=user)
+        return self.render('account.html', user=user, **self.get_languages())
 
     @authenticated
     def post(self):
@@ -192,6 +203,7 @@ class Account(BaseHandler):
         user = self.db.query(database.User).get(self.current_user)
         try:
             email = self.get_body_argument('email', None)
+            language = self.get_body_argument('language', None)
             password1 = self.get_body_argument('password1', None)
             password2 = self.get_body_argument('password2', None)
             if email is not None:
@@ -203,11 +215,15 @@ class Account(BaseHandler):
                 if password1 != password2:
                     raise validate.InvalidFormat(_f("Passwords do not match"))
                 user.set_password(password1)
+            if language not in tornado.locale.get_supported_locales():
+                language = None
+            user.language = language
             self.db.commit()
             return self.redirect(self.reverse_url('account'))
         except validate.InvalidFormat as e:
             logging.info("Error validating Account: %r", e)
             return self.render('account.html', user=user,
+                               **self.get_languages(),
                                error=self.gettext(e.message))
 
 
