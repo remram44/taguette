@@ -193,9 +193,10 @@ class Account(BaseHandler):
             password1 = self.get_body_argument('password1', None)
             password2 = self.get_body_argument('password2', None)
             if email is not None:
-                validate.user_email(email)
-                user.email = email
-            if password1 is not None or password2 is not None:
+                if email:
+                    validate.user_email(email)
+                user.email = email or None
+            if password1 or password2:
                 validate.user_password(password1)
                 if password1 != password2:
                     raise validate.InvalidFormat("Passwords do not match")
