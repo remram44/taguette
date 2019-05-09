@@ -1,6 +1,13 @@
 Changelog
 =========
 
+0.7 (???)
+---------
+
+Bugfixes:
+* Fix exporting highlights for non-ASCII tags
+* Fix account page not accepting empty optional fields
+
 0.6 (2019-04-13)
 ----------------
 
