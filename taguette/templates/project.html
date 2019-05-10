@@ -11,13 +11,13 @@
       <!-- Tab selector -->
       <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
-          <a class="nav-link" id="project-tab" data-toggle="tab" href="#project" role="tab" aria-controls="project" aria-selected="true">{% trans %}Project info{% endtrans %}</a>
+          <a class="nav-link" id="project-tab" data-toggle="tab" href="#project" role="tab" aria-controls="project" aria-selected="true">{# TRANSLATORS: Left pane tab #}{% trans %}Project info{% endtrans %}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" id="documents-tab" data-toggle="tab" href="#documents" role="tab" aria-controls="documents" aria-selected="false">{% trans %}Documents{% endtrans %}</a>
+          <a class="nav-link active" id="documents-tab" data-toggle="tab" href="#documents" role="tab" aria-controls="documents" aria-selected="false">{# TRANSLATORS: Left pane tab #}{% trans %}Documents{% endtrans %}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="tags-tab" data-toggle="tab" href="#tags" role="tab" aria-controls="tags" aria-selected="false">{% trans %}Highlights{% endtrans %}</a>
+          <a class="nav-link" id="tags-tab" data-toggle="tab" href="#tags" role="tab" aria-controls="tags" aria-selected="false">{# TRANSLATORS: Left pane tab #}{% trans %}Highlights{% endtrans %}</a>
         </li>
       </ul>
 
@@ -27,7 +27,7 @@
         <div class="tab-pane fade" id="project" role="tabpanel" aria-labelledby="project-tab">
           <form id="project-metadata-form">
             <div class="form-group">
-              <label for="project-name" class="col-sm-2 col-form-label">{% trans %}Name{% endtrans %}</label>
+              <label for="project-name" class="col-sm-2 col-form-label">{# TRANSLATORS: Project name field #}{% trans %}Name{% endtrans %}</label>
               <input type="text" class="form-control" id="project-name" name="project-name" value="{{ project.name }}" />
             </div>
             <div class="form-group">
@@ -123,10 +123,10 @@
               </div>
               <div class="col-md-4 form-group">
                 <select id="member-add-privileges" class="form-control">
-                  <option value="ADMIN">{% trans %}Full permissions{% endtrans %}</option>
-                  <option value="MANAGE_DOCS">{% trans %}Can't change collaborators / delete project{% endtrans %}</option>
-                  <option value="TAG" selected>{% trans %}View & make changes{% endtrans %}</option>
-                  <option value="READ">{% trans %}View only{% endtrans %}</option>
+                  <option value="ADMIN">{# TRANSLATORS: Permissions level #}{% trans %}Full permissions{% endtrans %}</option>
+                  <option value="MANAGE_DOCS">{# TRANSLATORS: Permissions level #}{% trans %}Can't change collaborators / delete project{% endtrans %}</option>
+                  <option value="TAG" selected>{# TRANSLATORS: Permissions level #}{% trans %}View & make changes{% endtrans %}</option>
+                  <option value="READ">{# TRANSLATORS: Permissions level #}{% trans %}View only{% endtrans %}</option>
                 </select>
               </div>
               <button type="submit" class="btn btn-info col-md-4 form-group">{% trans %}Add to project{% endtrans %}</button>

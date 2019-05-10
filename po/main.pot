@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Taguette 0.6\n"
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
-"POT-Creation-Date: 2019-05-09 13:08+0200\n"
+"POT-Creation-Date: 2019-05-10 23:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,9 +21,10 @@ msgstr ""
 msgid "Delete project: confirm?"
 msgstr ""
 
+#. Name of the project to be deleted
 #: taguette/templates/project_delete.html:6
 #, python-format
-msgid "Title: %(project_name)s"
+msgid "Name: %(project_name)s"
 msgstr ""
 
 #: taguette/templates/project_delete.html:7
@@ -42,10 +43,13 @@ msgstr ""
 msgid "Go back"
 msgstr ""
 
+#. Heading
 #: taguette/templates/account.html:5
 msgid "Account settings"
 msgstr ""
 
+#. User name
+#. Link to form
 #: taguette/templates/account.html:12 taguette/templates/base.html:48
 #: taguette/templates/login.html:26 taguette/templates/login.html:57
 msgid "Login"
@@ -63,14 +67,23 @@ msgid ""
 msgstr ""
 
 #: taguette/templates/account.html:25
+msgid "Language"
+msgstr ""
+
+#: taguette/templates/account.html:28
+msgid "Auto-detect"
+msgstr ""
+
+#: taguette/templates/account.html:36
 msgid "New password"
 msgstr ""
 
-#: taguette/templates/account.html:31
+#: taguette/templates/account.html:42
 msgid "Repeat new password"
 msgstr ""
 
-#: taguette/templates/account.html:38
+#. Submit button
+#: taguette/templates/account.html:49
 msgid "Update"
 msgstr ""
 
@@ -109,18 +122,22 @@ msgid ""
 "href=\"mailto:hi@taguette.org\">hi@taguette.org</a>!"
 msgstr ""
 
+#. Left pane tab
 #: taguette/templates/project.html:14
 msgid "Project info"
 msgstr ""
 
+#. Left pane tab
 #: taguette/templates/project.html:17
 msgid "Documents"
 msgstr ""
 
+#. Left pane tab
 #: taguette/templates/project.html:20
 msgid "Highlights"
 msgstr ""
 
+#. Project name field
 #: taguette/templates/project.html:30 taguette/templates/project.html:162
 #: taguette/templates/project.html:194 taguette/templates/project.html:251
 #: taguette/templates/project_new.html:11
@@ -186,18 +203,22 @@ msgstr ""
 msgid "Username"
 msgstr ""
 
+#. Permissions level
 #: taguette/templates/project.html:126
 msgid "Full permissions"
 msgstr ""
 
+#. Permissions level
 #: taguette/templates/project.html:127
 msgid "Can't change collaborators / delete project"
 msgstr ""
 
+#. Permissions level
 #: taguette/templates/project.html:128
 msgid "View & make changes"
 msgstr ""
 
+#. Permissions level
 #: taguette/templates/project.html:129
 msgid "View only"
 msgstr ""
@@ -301,15 +322,18 @@ msgstr ""
 msgid "<a href=\"%(url)s\">Register now</a> for free and get started!"
 msgstr ""
 
+#. Submit button
 #: taguette/templates/login.html:7 taguette/templates/login.html:39
 msgid "Log in"
 msgstr ""
 
+#. Submit button
 #: taguette/templates/login.html:10 taguette/templates/login.html:83
 msgid "Register"
 msgstr ""
 
 #: taguette/templates/login.html:32 taguette/templates/login.html:63
+#: taguette/templates/new_password.html:13
 msgid "Password"
 msgstr ""
 
@@ -317,7 +341,7 @@ msgstr ""
 msgid "Forgot password"
 msgstr ""
 
-#: taguette/templates/login.html:69
+#: taguette/templates/login.html:69 taguette/templates/new_password.html:19
 msgid "Confirm password"
 msgstr ""
 
@@ -331,14 +355,7 @@ msgstr ""
 msgid "Please enter a new password below:"
 msgstr ""
 
-#: taguette/templates/new_password.html:13
-msgid "Password"
-msgstr ""
-
-#: taguette/templates/new_password.html:19
-msgid "Confirm"
-msgstr ""
-
+#. Submit button
 #: taguette/templates/new_password.html:26
 msgid "Set new password"
 msgstr ""
@@ -368,6 +385,7 @@ msgid ""
 "and a link to reset your password will be sent to you."
 msgstr ""
 
+#. Submit button
 #: taguette/templates/reset_password.html:20
 msgid "Send"
 msgstr ""
@@ -392,31 +410,35 @@ msgstr ""
 msgid "This link will expire in 1 day."
 msgstr ""
 
-#: taguette/web/views.py:103
+#: taguette/web/views.py:104
 msgid "Invalid login or password"
 msgstr ""
 
-#: taguette/web/views.py:233
+#: taguette/web/views.py:250
 msgid "This email is not associated with any user"
 msgstr ""
 
-#: taguette/web/views.py:255
+#: taguette/web/views.py:272
 msgid "Password reset for Taguette"
 msgstr ""
 
-#: taguette/web/views.py:343
+#. Default tag 1, name
+#: taguette/web/views.py:361
 msgid "interesting"
 msgstr ""
 
-#: taguette/web/views.py:344
+#. Default tag 1, description
+#: taguette/web/views.py:363
 msgid "Further review required"
 msgstr ""
 
-#: taguette/web/views.py:348
+#. Default tag 2, name
+#: taguette/web/views.py:368
 msgid "people"
 msgstr ""
 
-#: taguette/web/views.py:349
+#. Default tag 2, description
+#: taguette/web/views.py:370
 msgid "Known people"
 msgstr ""
 
