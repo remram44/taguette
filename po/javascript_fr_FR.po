@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Taguette 0.6\n"
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
-"POT-Creation-Date: 2019-05-09 13:08+0200\n"
-"PO-Revision-Date: 2019-05-09 13:14+0200\n"
+"POT-Creation-Date: 2019-05-10 23:51+0200\n"
+"PO-Revision-Date: 2019-05-10 23:57+0200\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -121,10 +121,10 @@ msgstr "Aucune marque avec ce tag."
 msgid "Error loading tag highlights!"
 msgstr "Impossible de charger les marques du tag !"
 
-#: taguette/static/js/taguette.js:1369
+#: taguette/static/js/taguette.js:1370
 msgid "It appears that you have been logged out."
 msgstr "Il semble que vous vous soyez déconnecté de votre profil."
 
-#: taguette/static/js/taguette.js:1372
+#: taguette/static/js/taguette.js:1373
 msgid "You can no longer access this project."
 msgstr "Vous ne pouvez plus accéder à ce projet."
