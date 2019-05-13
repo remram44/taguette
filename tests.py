@@ -302,7 +302,7 @@ class TestMultiuser(MyHTTPTestCase):
         body = response.body.decode('utf-8')
         self.assertIn('we are good at engineering', body)
         idx = body.index('we are good at engineering')
-        init_js = '\n'.join(body[idx:].splitlines()[1:9])
+        init_js = '\n'.join(body[idx:].splitlines()[1:10])
         self.assertEqual(
             init_js,
             '<script type="text/javascript">\n'
@@ -310,6 +310,7 @@ class TestMultiuser(MyHTTPTestCase):
             '  var project_id = 1;\n'
             '  var last_event = -1;\n'
             '  var documents = {};\n'
+            '  var highlights = {};\n'
             '  var tags = {"1": {"description": "Further review required", '
             '"id": 1, "path": "interesting"}, "2": '
             '{"description": "Known people", "id": 2, "path": "people"}};\n'

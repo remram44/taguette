@@ -334,7 +334,7 @@ function splitAtPos(pos, after) {
 }
 
 // Highlight a described selection
-function highlightSelection(saved, id, clickedCallback) {
+function highlightSelection(saved, id, clickedCallback, title) {
   console.log("Highlighting", saved);
   if(saved === null) {
     return;
@@ -351,6 +351,7 @@ function highlightSelection(saved, id, clickedCallback) {
       var span = document.createElement('a');
       span.className = 'highlight highlight-' + id;
       span.setAttribute('data-highlight-id', '' + id);
+      span.setAttribute('title', title);
       span.addEventListener('click', clickedCallback);
       node.parentNode.insertBefore(span, node);
       span.appendChild(node);
@@ -713,6 +714,14 @@ function updateTagsList() {
   }
 
   console.log("Tags list updated");
+
+  // Re-set all highlights, to update titles
+  var hl_entries = Object.entries(highlights);
+  for(var i = 0; i < hl_entries.length; ++i) {
+    setHighlight(hl_entries[i][1]);
+  }
+
+  console.log("Highlights updated");
 }
 
 updateTagsList();
@@ -814,8 +823,6 @@ document.getElementById('tag-add-delete').addEventListener('click', function(e) 
  * Highlights
  */
 
-var highlights = {};
-
 // Add or replace a highlight
 function setHighlight(highlight) {
   var id = '' + highlight.id;
@@ -823,8 +830,11 @@ function setHighlight(highlight) {
     removeHighlight(highlights[id]);
   }
   highlights[id] = highlight;
+  var tag_names = highlight.tags.map(function(id) { return tags[id].path; });
+  sortByKey(tag_names, function(path) { return path; });
+  tag_names = tag_names.join(", ");
   try {
-    highlightSelection([highlight.start_offset, highlight.end_offset], id, editHighlight);
+    highlightSelection([highlight.start_offset, highlight.end_offset], id, editHighlight, tag_names);
     console.log("Highlight set:", highlight);
   } catch(error) {
     console.error(
