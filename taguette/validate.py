@@ -1,7 +1,6 @@
 import os
 import re
 import string
-import sys
 from tornado.web import HTTPError
 
 
