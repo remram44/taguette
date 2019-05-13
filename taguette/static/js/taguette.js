@@ -334,7 +334,7 @@ function splitAtPos(pos, after) {
 }
 
 // Highlight a described selection
-function highlightSelection(saved, id, clickedCallback) {
+function highlightSelection(saved, id, clickedCallback, title) {
   console.log("Highlighting", saved);
   if(saved === null) {
     return;
@@ -351,6 +351,7 @@ function highlightSelection(saved, id, clickedCallback) {
       var span = document.createElement('a');
       span.className = 'highlight highlight-' + id;
       span.setAttribute('data-highlight-id', '' + id);
+      span.setAttribute('title', title);
       span.addEventListener('click', clickedCallback);
       node.parentNode.insertBefore(span, node);
       span.appendChild(node);
@@ -823,8 +824,9 @@ function setHighlight(highlight) {
     removeHighlight(highlights[id]);
   }
   highlights[id] = highlight;
+  var tag_names = highlight.tags.map(function(id) { return tags[id].path; }).join(", ");
   try {
-    highlightSelection([highlight.start_offset, highlight.end_offset], id, editHighlight);
+    highlightSelection([highlight.start_offset, highlight.end_offset], id, editHighlight, tag_names);
     console.log("Highlight set:", highlight);
   } catch(error) {
     console.error(
