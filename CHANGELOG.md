@@ -16,6 +16,7 @@ Features:
 * Added internationalization
 * Added French translation
 * Added German translation
+* Show tag names when hovering a highlight
 
 0.6 (2019-04-13)
 ----------------
