@@ -1,5 +1,6 @@
 * Update CHANGELOG and version numbers
 * Create a signed tag (git tag -s)
+* Update translation files (scripts/update_translations.sh)
 * Build sdist / bdist_wheel, upload to PyPI (with Twine)
 * Buid MacOS installer (using macos.sh)
 * Build Windows installer (using pyinstaller_entrypoint.py and windows.spec, then windows-installer.iss)

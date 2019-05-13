@@ -1,11 +1,12 @@
 import asyncio
+import functools
 import logging
 import prometheus_client
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import aliased
 from tornado.concurrent import Future
 import tornado.log
-from tornado.web import authenticated, HTTPError, MissingArgumentError
+from tornado.web import HTTPError, MissingArgumentError
 
 from .. import convert
 from .. import database
@@ -28,10 +29,21 @@ PROM_API = prometheus_client.Counter(
 )
 
 
+def api_auth(method):
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        if not self.current_user:
+            self.set_status(403)
+            return self.send_json({'error': "Not logged in"})
+        return method(self, *args, **kwargs)
+
+    return wrapper
+
+
 class ProjectMeta(BaseHandler):
     PROM_API.labels('project_meta').inc(0)
 
-    @authenticated
+    @api_auth
     def post(self, project_id):
         PROM_API.labels('project_meta').inc()
         project, privileges = self.get_project(project_id)
@@ -66,7 +78,7 @@ class ProjectMeta(BaseHandler):
 class DocumentAdd(BaseHandler):
     PROM_API.labels('document_add').inc(0)
 
-    @authenticated
+    @api_auth
     async def post(self, project_id):
         PROM_API.labels('document_add').inc()
         project, privileges = self.get_project(project_id)
@@ -90,7 +102,7 @@ class DocumentAdd(BaseHandler):
                                                     filename)
             except convert.ConversionError as err:
                 self.set_status(400)
-                self.send_json({
+                return self.send_json({
                     'error': str(err),
                 })
             else:
@@ -113,7 +125,7 @@ class DocumentAdd(BaseHandler):
                 self.db.commit()
                 self.db.refresh(cmd)
                 self.application.notify_project(project.id, cmd)
-                self.send_json({'created': doc.id})
+                return self.send_json({'created': doc.id})
         except validate.InvalidFormat as e:
             logging.info("Error validating DocumentAdd: %r", e)
             self.set_status(e.status_code, e.reason)
@@ -124,7 +136,7 @@ class DocumentUpdate(BaseHandler):
     PROM_API.labels('document_update').inc(0)
     PROM_API.labels('document_delete').inc(0)
 
-    @authenticated
+    @api_auth
     def post(self, project_id, document_id):
         PROM_API.labels('document_update').inc()
         document, privileges = self.get_document(project_id, document_id)
@@ -138,7 +150,7 @@ class DocumentUpdate(BaseHandler):
                     validate.document_name(obj['name'])
                     document.name = obj['name']
                 if 'description' in obj:
-                    validate.document_name(obj['description'])
+                    validate.document_description(obj['description'])
                     document.description = obj['description']
                 cmd = database.Command.document_add(
                     self.current_user,
@@ -149,13 +161,13 @@ class DocumentUpdate(BaseHandler):
                 self.db.refresh(cmd)
                 self.application.notify_project(document.project_id, cmd)
 
-            self.send_json({'id': document.id})
+            return self.send_json({'id': document.id})
         except validate.InvalidFormat as e:
             logging.info("Error validating DocumentUpdate: %r", e)
             self.set_status(e.status_code, e.reason)
             return self.send_json({'error': e.message})
 
-    @authenticated
+    @api_auth
     def delete(self, project_id, document_id):
         PROM_API.labels('document_delete').inc()
         document, privileges = self.get_document(project_id, document_id)
@@ -173,17 +185,17 @@ class DocumentUpdate(BaseHandler):
         self.application.notify_project(document.project_id, cmd)
 
         self.set_status(204)
-        self.finish()
+        return self.finish()
 
 
 class DocumentContents(BaseHandler):
     PROM_API.labels('document_contents').inc(0)
 
-    @authenticated
+    @api_auth
     def get(self, project_id, document_id):
         PROM_API.labels('document_contents').inc()
         document, _ = self.get_document(project_id, document_id, True)
-        self.send_json({
+        return self.send_json({
             'contents': [
                 {'offset': 0, 'contents': document.contents},
             ],
@@ -200,7 +212,7 @@ class DocumentContents(BaseHandler):
 class TagAdd(BaseHandler):
     PROM_API.labels('tag_add').inc(0)
 
-    @authenticated
+    @api_auth
     def post(self, project_id):
         PROM_API.labels('tag_add').inc()
         project, privileges = self.get_project(project_id)
@@ -230,7 +242,7 @@ class TagAdd(BaseHandler):
             self.db.refresh(cmd)
             self.application.notify_project(project.id, cmd)
 
-            self.send_json({'id': tag.id})
+            return self.send_json({'id': tag.id})
         except validate.InvalidFormat as e:
             logging.info("Error validating TagAdd: %r", e)
             self.set_status(e.status_code, e.reason)
@@ -241,7 +253,7 @@ class TagUpdate(BaseHandler):
     PROM_API.labels('tag_update').inc(0)
     PROM_API.labels('tag_delete').inc(0)
 
-    @authenticated
+    @api_auth
     def post(self, project_id, tag_id):
         PROM_API.labels('tag_update').inc()
         project, privileges = self.get_project(project_id)
@@ -274,13 +286,13 @@ class TagUpdate(BaseHandler):
                 self.db.refresh(cmd)
                 self.application.notify_project(project.id, cmd)
 
-            self.send_json({'id': tag.id})
+            return self.send_json({'id': tag.id})
         except validate.InvalidFormat as e:
             logging.info("Error validating TagUpdate: %r", e)
             self.set_status(e.status_code, e.reason)
             return self.send_json({'error': e.message})
 
-    @authenticated
+    @api_auth
     def delete(self, project_id, tag_id):
         PROM_API.labels('tag_delete').inc()
         project, privileges = self.get_project(project_id)
@@ -302,13 +314,13 @@ class TagUpdate(BaseHandler):
         self.application.notify_project(project.id, cmd)
 
         self.set_status(204)
-        self.finish()
+        return self.finish()
 
 
 class TagMerge(BaseHandler):
     PROM_API.labels('tag_merge').inc(0)
 
-    @authenticated
+    @api_auth
     def post(self, project_id):
         PROM_API.labels('tag_merge').inc()
         project, privileges = self.get_project(project_id)
@@ -345,7 +357,7 @@ class TagMerge(BaseHandler):
 class HighlightAdd(BaseHandler):
     PROM_API.labels('highlight_add').inc(0)
 
-    @authenticated
+    @api_auth
     def post(self, project_id, document_id):
         PROM_API.labels('highlight_add').inc()
         document, privileges = self.get_document(project_id, document_id, True)
@@ -379,14 +391,14 @@ class HighlightAdd(BaseHandler):
         self.db.refresh(cmd)
         self.application.notify_project(document.project_id, cmd)
 
-        self.send_json({'id': hl.id})
+        return self.send_json({'id': hl.id})
 
 
 class HighlightUpdate(BaseHandler):
     PROM_API.labels('highlight_update').inc(0)
     PROM_API.labels('highlight_delete').inc(0)
 
-    @authenticated
+    @api_auth
     def post(self, project_id, document_id, highlight_id):
         PROM_API.labels('highlight_update').inc()
         document, privileges = self.get_document(project_id, document_id)
@@ -425,9 +437,9 @@ class HighlightUpdate(BaseHandler):
             self.db.refresh(cmd)
             self.application.notify_project(document.project_id, cmd)
 
-        self.send_json({'id': hl.id})
+        return self.send_json({'id': hl.id})
 
-    @authenticated
+    @api_auth
     def delete(self, project_id, document_id, highlight_id):
         PROM_API.labels('highlight_delete').inc()
         document, privileges = self.get_document(project_id, document_id)
@@ -449,13 +461,13 @@ class HighlightUpdate(BaseHandler):
         self.application.notify_project(document.project_id, cmd)
 
         self.set_status(204)
-        self.finish()
+        return self.finish()
 
 
 class Highlights(BaseHandler):
     PROM_API.labels('highlights').inc(0)
 
-    @authenticated
+    @api_auth
     def get(self, project_id, path):
         PROM_API.labels('highlights').inc()
         project, _ = self.get_project(project_id)
@@ -484,7 +496,7 @@ class Highlights(BaseHandler):
                           database.Highlight.start_offset)
             ).all()
 
-        self.send_json({
+        return self.send_json({
             'highlights': [
                 {
                     'id': hl.id,
@@ -500,7 +512,7 @@ class Highlights(BaseHandler):
 class MembersUpdate(BaseHandler):
     PROM_API.labels('members_update').inc(0)
 
-    @authenticated
+    @api_auth
     def patch(self, project_id):
         PROM_API.labels('members_update').inc()
         project, privileges = self.get_project(project_id)
@@ -519,6 +531,7 @@ class MembersUpdate(BaseHandler):
         obj = self.get_json()
         commands = []
         for login, user in obj.items():
+            login = validate.user_login(login)
             if login == self.current_user:
                 logger.warning("User tried to change own privileges")
                 continue
@@ -558,7 +571,7 @@ class MembersUpdate(BaseHandler):
             self.application.notify_project(project.id, cmd)
 
         self.set_status(204)
-        self.finish()
+        return self.finish()
 
 
 class ProjectEvents(BaseHandler):
@@ -570,7 +583,7 @@ class ProjectEvents(BaseHandler):
         lambda: len(ProjectEvents.polling_clients)
     )
 
-    @authenticated
+    @api_auth
     async def get(self, project_id):
         PROM_API.labels('events').inc()
         ProjectEvents.polling_clients.add(self.request.remote_ip)
@@ -645,7 +658,7 @@ class ProjectEvents(BaseHandler):
             raise ValueError("Unknown command type %r" % type_)
 
         result['id'] = cmd.id
-        self.send_json(result)
+        return self.send_json(result)
 
     def on_connection_close(self):
         self.response_cancelled = True

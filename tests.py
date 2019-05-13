@@ -43,6 +43,16 @@ class TestConvert(AsyncTestCase):
             "<a href=\"http://and/the/last/one\">3</a></p>"
         )
 
+    def test_filename(self):
+        validate.filename.windows = True  # escape device names
+
+        self.assertEqual(validate.filename('/etc/passwd'), 'passwd')
+        self.assertEqual(validate.filename('/etc/passwd.txt'), 'passwd.txt')
+        self.assertEqual(validate.filename('ééé'), '_')
+        self.assertEqual(validate.filename('ééé.pdf'), '_.pdf')
+        self.assertEqual(validate.filename('/tmp/NUL.pdf'), '_NUL.pdf')
+        self.assertEqual(validate.filename('/tmp/nul.pdf'), '_nul.pdf')
+
 
 class TestMergeOverlapping(unittest.TestCase):
     def test_merge_overlapping_ranges(self):
@@ -199,6 +209,7 @@ class TestMultiuser(MyHTTPTestCase):
                 EMAIL='test@example.com',
                 MAIL_SERVER={'host': 'localhost', 'port': 25},
                 MULTIUSER=True,
+                SECRET_KEY='2PbQ/5Rs005G/nTuWfibaZTUAo3Isng3QuRirmBK',
             ))
             return self.application
 
@@ -222,7 +233,7 @@ class TestMultiuser(MyHTTPTestCase):
 
         # Register
         response = self.post(
-            '/register', dict(login='tester',
+            '/register', dict(login='Tester',
                               password1='hacktoo', password2='hacktoo'))
         self.assertEqual(response.code, 302)
         self.assertEqual(response.headers['Location'], '/')
@@ -291,7 +302,7 @@ class TestMultiuser(MyHTTPTestCase):
         body = response.body.decode('utf-8')
         self.assertIn('we are good at engineering', body)
         idx = body.index('we are good at engineering')
-        init_js = '\n'.join(body[idx:].splitlines()[1:9])
+        init_js = '\n'.join(body[idx:].splitlines()[1:10])
         self.assertEqual(
             init_js,
             '<script type="text/javascript">\n'
@@ -299,6 +310,7 @@ class TestMultiuser(MyHTTPTestCase):
             '  var project_id = 1;\n'
             '  var last_event = -1;\n'
             '  var documents = {};\n'
+            '  var highlights = {};\n'
             '  var tags = {"1": {"description": "Further review required", '
             '"id": 1, "path": "interesting"}, "2": '
             '{"description": "Known people", "id": 2, "path": "people"}};\n'
@@ -413,6 +425,7 @@ class TestSingleuser(MyHTTPTestCase):
                     EMAIL='test@example.com',
                     MAIL_SERVER={'host': 'localhost', 'port': 25},
                     MULTIUSER=False,
+                    SECRET_KEY='bq7ZoAtO7LtRJJ4P0iHSdH8yvcmCqynfeGB+x9y1',
                 ),
                 xsrf_cookies=False,
             )

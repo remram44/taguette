@@ -1,6 +1,36 @@
 Changelog
 =========
 
+0.7 (???)
+---------
+
+Taguette can now be translated! You can help bring Taguette to your language on [Transifex](http://transifex.com/remram44/taguette/).
+
+Bugfixes:
+* Fix exporting highlights for non-ASCII tags
+* Fix account page not accepting empty optional fields
+* Fix document description being validated as its name
+* Fix importing documents with completely non-ASCII filenames
+
+Features:
+* Added internationalization
+* Added French translation
+* Added German translation
+* Show tag names when hovering a highlight
+
+0.6 (2019-04-13)
+----------------
+
+Bugfixes:
+* Make 'display' headings responsive
+* Fix exported highlights being called "path"
+* Fix possible weird characters in exported documents on Windows (depending on locale)
+
+Features:
+* Convert logins to lower-case (login and collaborator forms will convert too, so it should only affect display). Users with non-lowercase logins will be logged out on update
+* Moved the `SECRET_KEY` to the config, no longer writing to `~/.cache`
+* Let you know when you have been logged out or removed from a project while working
+
 0.5 (2019-03-23)
 ----------------
 

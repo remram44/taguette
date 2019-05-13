@@ -1,0 +1,532 @@
+# Translations template for Taguette.
+# Copyright (C) 2019 Remi Rampin
+# This file is distributed under the same license as the Taguette project.
+# Remi Rampin <r@remirampin.com>, 2018.
+# 
+# Translators:
+# CH_ <ch@infobib.de>, 2019
+# Bastian Greshake Tzovaras <bgreshake@googlemail.com>, 2019
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Taguette 0.6\n"
+"Report-Msgid-Bugs-To: hi@taguette.org\n"
+"POT-Creation-Date: 2019-05-09 13:08+0200\n"
+"PO-Revision-Date: 2019-05-08 16:49+0000\n"
+"Last-Translator: Bastian Greshake Tzovaras <bgreshake@googlemail.com>, 2019\n"
+"Language-Team: German (https://www.transifex.com/remram44/teams/98824/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: taguette/templates/project_delete.html:4
+msgid "Delete project: confirm?"
+msgstr "Projekt löschen: Bestätigen?"
+
+#: taguette/templates/project_delete.html:6
+#, python-format
+msgid "Title: %(project_name)s"
+msgstr "Title: %(project_name)s"
+
+#: taguette/templates/project_delete.html:7
+#, python-format
+msgid ""
+"Are you sure you want to delete this project? It currently has "
+"<strong>%(documents)s documents and %(highlights)s highlights in %(tags)s "
+"tags</strong>. There is no way to undo."
+msgstr ""
+"Sind Sie sicher, dass Sie dieses Projekt löschen möchten? Es hat zur Zeit "
+"<strong>%(documents)s Dokumente und %(highlights)s Highlights in %(tags)s "
+"Tags</strong>. Sie können diese Aktion nicht rückgängig machen."
+
+#: taguette/templates/project_delete.html:11
+msgid "Delete forever"
+msgstr "Endgültig löschen"
+
+#: taguette/templates/project_delete.html:12
+msgid "Go back"
+msgstr "Zurück"
+
+#: taguette/templates/account.html:5
+msgid "Account settings"
+msgstr "Account-Einstellungen"
+
+#: taguette/templates/account.html:12 taguette/templates/base.html:48
+#: taguette/templates/login.html:26 taguette/templates/login.html:57
+msgid "Login"
+msgstr "Anmelden"
+
+#: taguette/templates/account.html:18 taguette/templates/login.html:75
+#: taguette/templates/reset_password.html:15
+msgid "Email"
+msgstr "Email"
+
+#: taguette/templates/account.html:21
+msgid ""
+"Optional. <em>We will not share your password with anyone. This is only used"
+" in case you forget your password.</em>"
+msgstr ""
+"Optional. <em>Wir werden ihr Passwort mit niemandem teilen. Dies wird nur "
+"verwendet, falls Sie Ihr Passwort vergessen.</em>"
+
+#: taguette/templates/account.html:25
+msgid "New password"
+msgstr "Neues Passwort"
+
+#: taguette/templates/account.html:31
+msgid "Repeat new password"
+msgstr "Neues Passwort wiederholen"
+
+#: taguette/templates/account.html:38
+msgid "Update"
+msgstr "Aktualisieren"
+
+#: taguette/templates/base.html:21
+msgid "Home"
+msgstr "Home"
+
+#: taguette/templates/base.html:32
+#, python-format
+msgid "Taguette Guide %(external_icon)s"
+msgstr "Taguette-Hilfe %(external_icon)s"
+
+#: taguette/templates/base.html:36
+msgid "Single-user mode"
+msgstr "Einzelbenutzer-Modus"
+
+#: taguette/templates/base.html:40
+msgid "Account"
+msgstr "Account"
+
+#: taguette/templates/base.html:42
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: taguette/templates/base.html:43
+msgid "Logout"
+msgstr "Abmelden"
+
+#: taguette/templates/base.html:62
+msgid ""
+"Taguette is released under a <a "
+"href=\"https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt\">BSD-3-Clause"
+" license</a>, &#169; Rémi Rampin | <a href=\"https://www.taguette.org"
+"/getting-started.html\">User Documentation</a> | Please report issues via <a"
+" href=\"https://gitlab.com/remram44/taguette\">GitLab</a> or <a "
+"href=\"mailto:hi@taguette.org\">hi@taguette.org</a>!"
+msgstr ""
+"Taguette ist under einer <a "
+"href=\"https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt\">BSD-3-Clause</a>"
+" veröffentlicht, &#169; Rémi Rampin | <a href=\"https://www.taguette.org"
+"/getting-started.html\">Dokumentation</a> | Bitte melden sie "
+"Softwareprobleme via <a "
+"href=\"https://gitlab.com/remram44/taguette\">GitLab</a> oder <a "
+"href=\"mailto:hi@taguette.org\">hi@taguette.org</a>!"
+
+#: taguette/templates/project.html:14
+msgid "Project info"
+msgstr "Projektinformationen"
+
+#: taguette/templates/project.html:17
+msgid "Documents"
+msgstr "Dokumente"
+
+#: taguette/templates/project.html:20
+msgid "Highlights"
+msgstr "Highlights"
+
+#: taguette/templates/project.html:30 taguette/templates/project.html:162
+#: taguette/templates/project.html:194 taguette/templates/project.html:251
+#: taguette/templates/project_new.html:11
+msgid "Name"
+msgstr "Name"
+
+#: taguette/templates/project.html:34 taguette/templates/project.html:168
+#: taguette/templates/project.html:197 taguette/templates/project.html:252
+#: taguette/templates/project_new.html:17
+msgid "Description"
+msgstr "Beschreibung"
+
+#: taguette/templates/project.html:41
+msgid "Manage collaborators"
+msgstr "Mitarbeitende verwalten"
+
+#: taguette/templates/project.html:47
+msgid "Export codebook"
+msgstr "Codebook exportieren"
+
+#: taguette/templates/project.html:57
+msgid "Delete project"
+msgstr "Projekt löschen"
+
+#: taguette/templates/project.html:64 taguette/templates/project.html:73
+#: taguette/templates/project.html:224
+msgid "Loading..."
+msgstr "Lade…"
+
+#: taguette/templates/project.html:65 taguette/templates/project.html:153
+msgid "Add a document"
+msgstr "Dokument hinzufügen"
+
+#: taguette/templates/project.html:67
+msgid "Backlight"
+msgstr "Backlight"
+
+#: taguette/templates/project.html:74
+msgid "See all highlights"
+msgstr "Alle Highlights ansehen"
+
+#: taguette/templates/project.html:75 taguette/templates/project.html:225
+msgid "Create a tag"
+msgstr "Tag erstellen"
+
+#: taguette/templates/project.html:89
+msgid "Export this view"
+msgstr "Diese Ansicht exportieren"
+
+#: taguette/templates/project.html:99
+msgid "Load a document on the left"
+msgstr "Lade ein Dokument auf der linken Seite"
+
+#: taguette/templates/project.html:111
+msgid "Manage Collaborators"
+msgstr "Mitarbeitende verwalten"
+
+#: taguette/templates/project.html:118
+msgid "Add Collaborators"
+msgstr "Mitarbeitende hinzufügen"
+
+#: taguette/templates/project.html:122
+msgid "Username"
+msgstr "Benutzername"
+
+#: taguette/templates/project.html:126
+msgid "Full permissions"
+msgstr "Volle Zugriffsrechte"
+
+#: taguette/templates/project.html:127
+msgid "Can't change collaborators / delete project"
+msgstr "Kann Mitarbeitende nicht ändern / das Projekt nicht löschen"
+
+#: taguette/templates/project.html:128
+msgid "View & make changes"
+msgstr "Ansehen & Bearbeiten"
+
+#: taguette/templates/project.html:129
+msgid "View only"
+msgstr "Nur Ansehen"
+
+#: taguette/templates/project.html:132
+msgid "Add to project"
+msgstr "Zu Projekt hinzufügen"
+
+#: taguette/templates/project.html:135
+msgid "Current Collaborators"
+msgstr "Aktuelle Mitarbeitende"
+
+#: taguette/templates/project.html:141 taguette/templates/project.html:201
+#: taguette/templates/project.html:230 taguette/templates/project.html:256
+msgid "Save & Close"
+msgstr "Speichern & Schliessen"
+
+#: taguette/templates/project.html:142 taguette/templates/project.html:173
+#: taguette/templates/project.html:257
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: taguette/templates/project.html:172
+msgid "Import"
+msgstr "Importieren"
+
+#: taguette/templates/project.html:184
+msgid "Edit document"
+msgstr "Dokument bearbeiten"
+
+#: taguette/templates/project.html:202
+msgid "Delete document"
+msgstr "Dokument löschen"
+
+#: taguette/templates/project.html:213
+msgid "Highlight"
+msgstr "Highlight"
+
+#: taguette/templates/project.html:231
+msgid "Delete highlight"
+msgstr "Highlight löschen"
+
+#: taguette/templates/project.html:242
+msgid "New tag"
+msgstr "Neues Tag"
+
+#: taguette/templates/project.html:243
+msgid "Change tag"
+msgstr "Tag bearbeiten"
+
+#: taguette/templates/project.html:258
+msgid "Delete tag"
+msgstr "Tag löschen"
+
+#: taguette/templates/project.html:289
+msgid "[new highlight]"
+msgstr "[neues Highlight]"
+
+#: taguette/templates/index.html:9
+#, python-format
+msgid "Welcome %(user_login)s"
+msgstr "Willkommen %(user_login)s"
+
+#: taguette/templates/index.html:11
+msgid "Welcome!"
+msgstr "Willkommen!"
+
+#: taguette/templates/index.html:13
+msgid "Here are your projects:"
+msgstr "Hier sind Ihre Projekte:"
+
+#: taguette/templates/index.html:18
+msgid "You have no projects yet."
+msgstr "Sie haben noch keine Projekte."
+
+#: taguette/templates/index.html:20
+msgid "Create a project"
+msgstr "Projekt erstellen"
+
+#: taguette/templates/welcome.html:6
+msgid "Welcome"
+msgstr "Willkommen"
+
+#: taguette/templates/welcome.html:7
+msgid ""
+"The <span style=\"font-family:BadScript;\"><a "
+"href=\"https://www.taguette.org/\">TAGUETTE</a></span> project is an attempt"
+" to create an open-source web-based document tagging tool for qualitative "
+"data analysis."
+msgstr ""
+"Das <span style=\"font-family:BadScript;\"><a "
+"href=\"https://www.taguette.org/\">TAGUETTE</a></span>-Projekt versucht, ein"
+" web-basiertes Open-Source Dokumenten-Tagging-Tool für die qualitative "
+"Datenanalyse zu erstellen."
+
+#: taguette/templates/welcome.html:8
+msgid ""
+"Using this tool, you can upload a collection of documents, create a "
+"hierarchy of tags, and annotate portions of documents with tags and notes "
+"that you can recall and organize later."
+msgstr ""
+"Mit diesem Tool können Sie Sammlungen von Dokumenten hochladen, Tag-"
+"Hierarchien  erstellen und Abschnitte von Dokumenten mit Tags und Notizen "
+"versehen, die Sie später abrufen und organisieren können."
+
+#: taguette/templates/welcome.html:10
+#, python-format
+msgid "<a href=\"%(url)s\">Register now</a> for free and get started!"
+msgstr ""
+"<a href=\"%(url)s\">Registrieren Sie sich jetzt</a>gratis und beginnen Sie!"
+
+#: taguette/templates/login.html:7 taguette/templates/login.html:39
+msgid "Log in"
+msgstr "Anmelden"
+
+#: taguette/templates/login.html:10 taguette/templates/login.html:83
+msgid "Register"
+msgstr "Registrieren"
+
+#: taguette/templates/login.html:32 taguette/templates/login.html:63
+msgid "Password"
+msgstr "Passwort"
+
+#: taguette/templates/login.html:40
+msgid "Forgot password"
+msgstr "Passwort vergessen"
+
+#: taguette/templates/login.html:69
+msgid "Confirm password"
+msgstr "Passwort bestätigen"
+
+#: taguette/templates/login.html:78
+msgid ""
+"Optional. <em>We will not share your email with anyone. This is only used in"
+" case you forget your password.</em>"
+msgstr ""
+"Optional. <em>Wir werden ihr Passwort mit niemandem teilen. Dies wird nur "
+"verwendet, falls Sie Ihr Passwort vergessen.</em>"
+
+#: taguette/templates/new_password.html:8
+msgid "Please enter a new password below:"
+msgstr "Bitte ein neues Passwort unten eingeben:"
+
+#: taguette/templates/new_password.html:13
+msgid "Password"
+msgstr "Passwort"
+
+#: taguette/templates/new_password.html:19
+msgid "Confirm"
+msgstr "Bestätigen"
+
+#: taguette/templates/new_password.html:26
+msgid "Set new password"
+msgstr "Neues Passwort eingeben"
+
+#: taguette/templates/new_password.html:30
+#: taguette/templates/reset_password.html:24
+msgid ""
+"If you didn't set an email address, you can try contacting your server "
+"administrator."
+msgstr ""
+"Falls Sie keine Email-Adresse angegeben haben, können Sie versuchen, Ihren "
+"Server-Administrator zu kontaktieren."
+
+#: taguette/templates/export_codebook.html:10
+#: taguette/templates/export_codebook.html:13
+msgid "Taguette Codebook"
+msgstr "Taguette-Codebook"
+
+#: taguette/templates/token_needed.html:4
+msgid ""
+"Your browser did not supply a secret token to authenticate with the "
+"application. Please check the console for the correct URL to log in, or "
+"simply restart Taguette."
+msgstr ""
+"Ihr Browser hat kein secret token für die Authentifikation übermittelt. "
+"Bitte prüfen Sie in der Adresszeile, ob die korrekte URL eingegeben ist, um "
+"sich einzuloggen, oder starten Sie einfach Taguette erneut."
+
+#: taguette/templates/reset_password.html:11
+msgid ""
+"If you had set an email address in your profile, you can enter it below and "
+"a link to reset your password will be sent to you."
+msgstr ""
+"Falls Sie eine Email-Adresse in Ihrem Profil angegeben haben, können Sie sie"
+" unten eingeben und ein Link zum Zurücksetzen des Passworts wird an Sie "
+"verschickt."
+
+#: taguette/templates/reset_password.html:20
+msgid "Send"
+msgstr "Senden"
+
+#: taguette/templates/project_new.html:4
+msgid "New project"
+msgstr "Neues Projekt"
+
+#: taguette/templates/project_new.html:24
+msgid "Create"
+msgstr "Erstellen"
+
+#: taguette/templates/email_reset_password.html:1
+#, python-format
+msgid ""
+"Someone has requested to reset the password on the Taguette account "
+"associated with this email. If this was you, please follow this link: <a "
+"href=\"%(link)s\">%(link)s</a>"
+msgstr ""
+"Jemand hat das Zurücksetzen des Passwortes angefordert für den Taguette-"
+"Account der mit dieser Email verknüpft ist. Wenn Sie das waren, folgen Sie "
+"bitte diesem Link: <a href=\"%(link)s\">%(link)s</a>"
+
+#: taguette/templates/email_reset_password.html:3
+msgid "This link will expire in 1 day."
+msgstr "Dieser Link wird nach 1 Tag ungültig."
+
+#: taguette/web/views.py:103
+msgid "Invalid login or password"
+msgstr "Ungültiger Benutzername oder Passwort"
+
+#: taguette/web/views.py:233
+msgid "This email is not associated with any user"
+msgstr "Es gibt keinen Benutzer für diese Email-Adresse"
+
+#: taguette/web/views.py:255
+msgid "Password reset for Taguette"
+msgstr "Passwort für Taguette zurücksetzen"
+
+#: taguette/web/views.py:343
+msgid "interesting"
+msgstr "interessant"
+
+#: taguette/web/views.py:344
+msgid "Further review required"
+msgstr "Weitere Überprüfung nötig"
+
+#: taguette/web/views.py:348
+msgid "people"
+msgstr "personen"
+
+#: taguette/web/views.py:349
+msgid "Known people"
+msgstr "Bekannte Personen"
+
+#: taguette/main.py:152
+msgid "Port number on which to listen"
+msgstr "Port-Nummer die benutzt werden soll"
+
+#: taguette/main.py:154
+msgid "Address to bind on"
+msgstr "Adresse für die Anbindung"
+
+#: taguette/main.py:156
+msgid "Open web browser to the application"
+msgstr "Web-Browser für die Anwendung öffnen"
+
+#: taguette/main.py:158
+msgid "Don't open the web browser"
+msgstr "Web-Browser nicht öffnen"
+
+#: taguette/main.py:163
+#, python-format
+msgid ""
+"Database location or connection string, for example 'project.db' or "
+"'postgresql://me:pw@localhost/mydb' (default: %(default)r)"
+msgstr ""
+"Speicherort oder Verbindungslink der Datenbank , zum Beispiel 'project.db' "
+"oder 'postgresql://me:pw@localhost/mydb' (default: %(default)r)"
+
+#: taguette/main.py:170
+msgid "additional commands"
+msgstr "weitere Befehle"
+
+#: taguette/main.py:174
+msgid "Manually trigger a database migration"
+msgstr "Datenbank-Migration manuell einleiten"
+
+#: taguette/main.py:183
+msgid "Print the default server configuration"
+msgstr "Standard-Serverkonfiguratin ausdrucken"
+
+#: taguette/main.py:185
+msgid "Output to this file rather than stdout"
+msgstr "Schreibe Output in diese Datei statt in den stdout"
+
+#: taguette/main.py:191
+msgid "Run in server mode, suitable for a multi-user deployment"
+msgstr "Starte in Server-Modus, geeignet für ein Mehrbenutzereinsatz."
+
+#: taguette/main.py:193
+msgid ""
+"Configuration file for the server. The default configuration can be "
+"generated using the `default-config` command"
+msgstr ""
+"Konfigurations-Datei für den Server. Die Standard-Konfiguration kann mit dem"
+" 'default-config'-Befehl generiert werden."
+
+#: taguette/main.py:215
+#, python-format
+msgid "Missing required configuration variable %(var)s"
+msgstr "Fehlende benötigte Konfigurations-Variablen %(var)s"
+
+#: taguette/main.py:277
+#, python-format
+msgid ""
+"\n"
+"    Taguette %(version)s is now running. You can connect to it using this "
+"link:\n"
+"\n"
+"    %(url)s\n"
+msgstr ""
+"\n"
+"  Taguette %(version)s läuft nun. Sie können sich damit verbinden indem Sie "
+"folgenden Link verwenden: \n"
+"\n"
+"  %(url)s\n"

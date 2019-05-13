@@ -42,11 +42,7 @@ Base = declarative_base(metadata=meta)
 
 
 class JSON(TypeDecorator):
-    """Platform-independent UUID type.
-
-    Uses PostgreSQL's UUID type, otherwise uses
-    CHAR(32), storing as stringified hex values.
-
+    """Platform-independent JSON type.
     """
     impl = String
 
@@ -64,6 +60,7 @@ class User(Base):
     created = Column(DateTime, nullable=False,
                      server_default=functions.now())
     hashed_password = Column(String, nullable=True)
+    language = Column(String, nullable=True)
     email = Column(String, nullable=True, index=True, unique=True)
     email_sent = Column(DateTime, nullable=True)
     projects = relationship('Project', secondary='project_members')
@@ -148,7 +145,9 @@ class ProjectMember(Base):
     project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
                         primary_key=True, index=True)
     project = relationship('Project')
-    user_login = Column(Integer, ForeignKey('users.login', ondelete='CASCADE'),
+    user_login = Column(String,
+                        ForeignKey('users.login',
+                                   ondelete='CASCADE', onupdate='CASCADE'),
                         primary_key=True, index=True)
     user = relationship('User')
     privileges = Column(Enum(Privileges), nullable=False)
@@ -178,7 +177,9 @@ class Command(Base):
     id = Column(Integer, primary_key=True)
     date = Column(DateTime, nullable=False,
                   server_default=functions.now(), index=True)
-    user_login = Column(String, ForeignKey('users.login'), nullable=False)
+    user_login = Column(String,
+                        ForeignKey('users.login', onupdate='CASCADE'),
+                        nullable=False)
     user = relationship('User')
     project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
                         nullable=False, index=True)

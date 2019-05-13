@@ -35,11 +35,14 @@ def export_doc(wrapped):
         name, html = wrapped(self, *args)
         mimetype, contents = convert.html_to(html, ext)
         self.set_header('Content-Type', mimetype)
-        self.set_header('Content-Disposition',
-                        'attachment; filename="%s.%s"' % (name, ext))
+        if name:
+            self.set_header('Content-Disposition',
+                            'attachment; filename="%s.%s"' % (name, ext))
+        else:
+            self.set_header('Content-Disposition', 'attachment')
         for chunk in await contents:
             self.write(chunk)
-        self.finish()
+        return self.finish()
     return wrapper
 
 
@@ -63,6 +66,7 @@ class ExportHighlightsDoc(BaseHandler):
                 .filter(tag.path.startswith(path))
                 .filter(tag.project == project)
             ).all()
+            name = None
         else:
             # Special case to select all highlights: we also need to select
             # highlights that have no tag at all
@@ -72,10 +76,11 @@ class ExportHighlightsDoc(BaseHandler):
                 .join(document, document.id == database.Highlight.document_id)
                 .filter(document.project == project)
             ).all()
+            name = 'all_tags'
 
         html = self.render_string('export_highlights.html', path=path,
                                   highlights=highlights)
-        return 'path', html
+        return name, html
 
 
 def merge_overlapping_ranges(ranges):
@@ -126,7 +131,9 @@ class ExportDocument(BaseHandler):
             name=doc.name,
             contents=Markup(extract.highlight(doc.contents, highlights)),
         )
-        return doc.name, html
+        # Drop non-ASCII characters from the name
+        name = doc.name.encode('ascii', 'ignore').decode('ascii') or None
+        return name, html
 
 
 class ExportCodebookCsv(BaseHandler):
@@ -145,7 +152,7 @@ class ExportCodebookCsv(BaseHandler):
         writer.writerow(['tag', 'description'])
         for tag in tags:
             writer.writerow([tag.path, tag.description])
-        self.finish(buf.getvalue())
+        return self.finish(buf.getvalue())
 
 
 class ExportCodebookDoc(BaseHandler):

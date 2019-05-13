@@ -1,12 +1,14 @@
 /* Add Taguette font */
 @font-face {
   font-family: BadScript;
+  font-display: swap;
   src: url(../webfonts/BadScript.ttf);
 }
 
 /* Add body font */
 @font-face {
   font-family: Montserrat;
+  font-display: optional;
   src: url(../webfonts/Montserrat-Light.ttf);
 }
 

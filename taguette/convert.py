@@ -304,7 +304,7 @@ async def calibre_from_html(html, extension):
     tmp = tempfile.mkdtemp(prefix='taguette_calibre_')
     try:
         input_filename = os.path.join(tmp, 'input.html')
-        with open(input_filename, 'w') as fp:
+        with open(input_filename, 'w', encoding='utf-8') as fp:
             fp.write(html)
         output_filename = os.path.join(tmp, 'output.%s' % extension)
         convert = 'ebook-convert'

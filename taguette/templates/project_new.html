@@ -1,27 +1,27 @@
 {% extends "base.html" %}
 
 {% block contents %}
-<p>New project</p>
+<p>{% trans %}New project{% endtrans %}</p>
 {% if error %}
 <div class="alert alert-danger">{{ error }}</div>
 {% endif %}
 <form action="{{ reverse_url('new_project') }}" method="post">
   {{ xsrf_form_html() }}
   <div class="form-group row">
-    <label for="project-name" class="col-sm-2 col-form-label">Name</label>
+    <label for="project-name" class="col-sm-2 col-form-label">{% trans %}Name{% endtrans %}</label>
     <div class="col-sm-10">
       <input type="text" class="form-control" id="project-name" name="name" value="{{ name }}" />
     </div>
   </div>
   <div class="form-group row">
-    <label for="project-description" class="col-sm-2 col-form-label">Description</label>
+    <label for="project-description" class="col-sm-2 col-form-label">{% trans %}Description{% endtrans %}</label>
     <div class="col-sm-10">
       <textarea class="form-control" id="project-description" name="description">{{ description }}</textarea>
     </div>
   </div>
   <div class="form-group row">
     <div class="col-sm-10 offset-sm-2">
-      <button type="submit" class="btn btn-primary">Create</button>
+      <button type="submit" class="btn btn-primary">{% trans %}Create{% endtrans %}</button>
     </div>
   </div>
 </form>
