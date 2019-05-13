@@ -714,6 +714,14 @@ function updateTagsList() {
   }
 
   console.log("Tags list updated");
+
+  // Re-set all highlights, to update titles
+  var hl_entries = Object.entries(highlights);
+  for(var i = 0; i < hl_entries.length; ++i) {
+    setHighlight(hl_entries[i][1]);
+  }
+
+  console.log("Highlights updated");
 }
 
 updateTagsList();
@@ -814,8 +822,6 @@ document.getElementById('tag-add-delete').addEventListener('click', function(e) 
 /*
  * Highlights
  */
-
-var highlights = {};
 
 // Add or replace a highlight
 function setHighlight(highlight) {
