@@ -7,6 +7,7 @@ Changelog
 Bugfixes:
 * Fix exporting highlights for non-ASCII tags
 * Fix account page not accepting empty optional fields
+* Fix document description being validated as its name
 
 0.6 (2019-04-13)
 ----------------

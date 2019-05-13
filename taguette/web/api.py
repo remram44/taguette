@@ -150,7 +150,7 @@ class DocumentUpdate(BaseHandler):
                     validate.document_name(obj['name'])
                     document.name = obj['name']
                 if 'description' in obj:
-                    validate.document_name(obj['description'])
+                    validate.document_description(obj['description'])
                     document.description = obj['description']
                 cmd = database.Command.document_add(
                     self.current_user,
