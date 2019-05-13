@@ -13,9 +13,10 @@ Bugfixes:
 * Fix importing documents with completely non-ASCII filenames
 
 Features:
+* Merge tags
 * Added internationalization
-* Added French translation
-* Added German translation
+* French translation
+* German translation
 * Show tag names when hovering a highlight
 
 0.6 (2019-04-13)
