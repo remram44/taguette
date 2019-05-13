@@ -897,7 +897,7 @@ document.getElementById('tag-merge-form').addEventListener('submit', function(e)
   })
   .catch(function(error) {
     console.error("Failed to merge tags:", error);
-    alert("Couldn't merge tags!");
+    alert(gettext("Couldn't merge tags!"));
   })
   .then(hideSpinner);
 });
