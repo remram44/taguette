@@ -178,14 +178,10 @@ class Account(BaseHandler):
     PROM_PAGE.labels('account').inc(0)
 
     def get_languages(self):
-        languages = []
-        for loc_code in tornado.locale.get_supported_locales():
-            loc_name = tornado.locale.get(loc_code).name
-            languages.append((loc_code, loc_name))
-        return dict(
-            languages=languages,
-            current_language=self.locale.code,
-        )
+        return [
+            (loc_code, tornado.locale.get(loc_code).name)
+            for loc_code in tornado.locale.get_supported_locales()
+        ]
 
     @authenticated
     def get(self):
@@ -193,7 +189,9 @@ class Account(BaseHandler):
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         user = self.db.query(database.User).get(self.current_user)
-        return self.render('account.html', user=user, **self.get_languages())
+        return self.render('account.html', user=user,
+                           languages=self.get_languages(),
+                           current_language=user.language)
 
     @authenticated
     def post(self):
@@ -223,7 +221,8 @@ class Account(BaseHandler):
         except validate.InvalidFormat as e:
             logging.info("Error validating Account: %r", e)
             return self.render('account.html', user=user,
-                               **self.get_languages(),
+                               languages=self.get_languages(),
+                               current_language=user.language,
                                error=self.gettext(e.message))
 
 
