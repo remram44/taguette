@@ -250,7 +250,6 @@ def main():
                 stderr=subprocess.PIPE,
             ).decode('utf-8').strip()
         except (OSError, subprocess.CalledProcessError):
-            from . import __version__ as version
             version = 'v%s' % version
             logger.info("Not a Git repository, using version=%s", version)
         else:
@@ -274,8 +273,9 @@ def main():
         url = 'http://localhost:%d/?token=%s' % (config['PORT'], token)
     else:
         url = 'http://localhost:%d/' % config['PORT']
-    print(_("\n    Taguette is now running. You can connect to it using this "
-          "link:\n\n    %(url)s\n") % dict(url=url))
+    print(_("\n    Taguette %(version)s is now running. You can connect to it "
+            "using this link:\n\n    %(url)s\n") %
+          dict(url=url, version=__version__))
 
     if args.browser and not args.debug:
         loop.call_later(0.01, webbrowser.open, url)
