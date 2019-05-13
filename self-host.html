@@ -102,6 +102,16 @@ taguette --no-browser server taguette.conf</pre>
         <p>In either case, running the server requires a configuration file. This file contains important information, such as email server and addresses, the port number to listen on, whether registration of new accounts is enabled, etc.</p>
         <p>You might want to change the <code>PORT</code> to <code>80</code>, or better yet configure a webserver (such as <a href="https://nginx.org/">nginx</a> or <a href="https://httpd.apache.org/">Apache</a>) to act as a proxy between the users and Taguette, and provide encryption using TLS (for example using <a href="https://letsencrypt.org/">Let's Encrypt</a>, free).</p>
 
+        <h3 id="database">Database</h3>
+
+        <p>The <code>DATABASE</code> setting should be a SQLAlchemy connection string. For example, you can use:</p>
+        <ul>
+          <li>a SQLite database file (note the 4 slashes): <code>sqlite:////srv/taguette/taguette.sqlite3</code></li>
+          <li>a PostgreSQL database: <code>postgresql://user:secretpassword@localhost/taguette</code></li>
+          <li>a MySQL or MariaDB database: <code>mysql://user:secretpassword@localhost/taguette</code></li>
+          <li>... or any of the <a href="https://docs.sqlalchemy.org/en/13/core/engines.html">other databases supported by SQLAlchemy</a></li>
+        </ul>
+
         <hr/>
       </div>
     </main>
