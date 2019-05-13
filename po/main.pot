@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Taguette 0.6\n"
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
-"POT-Creation-Date: 2019-05-10 23:51+0200\n"
+"POT-Creation-Date: 2019-05-13 17:38-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -267,6 +267,11 @@ msgstr ""
 
 #: taguette/templates/project.html:243
 msgid "Change tag"
+msgstr ""
+
+#. Button in tag edit window
+#: taguette/templates/project.html:256
+msgid "Merge..."
 msgstr ""
 
 #: taguette/templates/project.html:258

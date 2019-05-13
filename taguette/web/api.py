@@ -317,6 +317,43 @@ class TagUpdate(BaseHandler):
         return self.finish()
 
 
+class TagMerge(BaseHandler):
+    PROM_API.labels('tag_merge').inc(0)
+
+    @api_auth
+    def post(self, project_id):
+        PROM_API.labels('tag_merge').inc()
+        project, privileges = self.get_project(project_id)
+        if not privileges.can_merge_tags():
+            self.set_status(403)
+            return self.send_json({'error': "Unauthorized"})
+        obj = self.get_json()
+        tag_src = self.db.query(database.Tag).get(obj['src'])
+        if tag_src.project_id != project.id:
+            raise HTTPError(404)
+        tag_dest = self.db.query(database.Tag).get(obj['dest'])
+        if tag_dest.project_id != project.id:
+            raise HTTPError(404)
+        self.db.execute(
+            database.HighlightTag.__table__.update()
+            .where(database.HighlightTag.tag_id == tag_src.id)
+            .values(tag_id=tag_dest.id)
+        )
+        self.db.delete(tag_src)
+        cmd = database.Command.tag_merge(
+            self.current_user,
+            project.id,
+            tag_src.id,
+            tag_dest.id,
+        )
+        self.db.add(cmd)
+        self.db.commit()
+        self.db.refresh(cmd)
+        self.application.notify_project(project.id, cmd)
+
+        self.send_json({'id': tag_dest.id})
+
+
 class HighlightAdd(BaseHandler):
     PROM_API.labels('highlight_add').inc(0)
 
@@ -601,6 +638,12 @@ class ProjectEvents(BaseHandler):
         elif type_ == 'tag_delete':
             result = {
                 'tag_delete': [payload['id']],
+            }
+        elif type_ == 'tag_merge':
+            result = {
+                'tag_merge': [
+                    {'src': payload['src'], 'dest': payload['dest']},
+                ],
             }
         elif type_ == 'member_add':
             result = {

@@ -131,6 +131,7 @@ class Privileges(enum.Enum):
                         Privileges.TAG)
     can_add_tag = can_update_tag
     can_delete_tag = can_update_tag
+    can_merge_tags = can_update_tag
 
     def can_add_highlight(self):
         return self in (Privileges.ADMIN, Privileges.MANAGE_DOCS,
@@ -198,7 +199,7 @@ class Command(Base):
 
     for n in ['project_meta', 'document_add', 'document_delete',
               'highlight_add', 'highlight_delete', 'tag_add', 'tag_delete',
-              'member_add', 'member_remove']:
+              'tag_merge', 'member_add', 'member_remove']:
         PROM_COMMAND.labels(n).inc(0)
 
     @classmethod
@@ -278,6 +279,19 @@ class Command(Base):
             project_id=project_id,
             payload={'type': 'tag_delete',  # keep in sync above
                      'id': tag_id},
+        )
+
+    @classmethod
+    def tag_merge(cls, user_login, project_id, tag_src, tag_dest):
+        assert isinstance(project_id, int)
+        assert isinstance(tag_src, int)
+        assert isinstance(tag_dest, int)
+        return cls(
+            user_login=user_login,
+            project_id=project_id,
+            payload={'type': 'tag_merge',  # keep in sync above
+                     'src': tag_src,
+                     'dest': tag_dest},
         )
 
     @classmethod

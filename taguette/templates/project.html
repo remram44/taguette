@@ -253,9 +253,45 @@
         </div>
       </div>
       <div class="modal-footer">
+        <button type="button" class="btn btn-info" data-dismiss="modal" id="tag-add-merge">{# TRANSLATORS: Button in tag edit window #}{% trans %}Merge...{% endtrans %}</button>
         <button type="submit" class="btn btn-primary">{% trans %}Save & Close{% endtrans %}</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal" id="tag-add-cancel">{% trans %}Cancel{% endtrans %}</button>
         <button type="button" class="btn btn-danger" data-dismiss="modal" id="tag-add-delete">{% trans %}Delete tag{% endtrans %}</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Merge tags modal -->
+<div class="modal" id="tag-merge-modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <form id="tag-merge-form" class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Merge tags</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-5 form-group">
+              <input type="hidden" id="tag-merge-src-id" />
+              <input type="text" class="form-control" id="tag-merge-src-name" disabled />
+            </div>
+            <div class="col-md-2 form-group">
+              <label for="tag-merge-dest">into</label>
+            </div>
+            <div class="col-md-5 form-group">
+              <select class="form-control-file" id="tag-merge-dest">
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Merge tags</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
       </div>
     </form>
   </div>

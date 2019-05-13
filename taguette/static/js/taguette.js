@@ -212,12 +212,10 @@ if(window.TextEncoder) {
 }
 
 function showSpinner() {
-  console.log("show");
   $('#spinner-modal').modal('show');
 }
 
 function hideSpinner() {
-  console.log("hide");
   $('#spinner-modal').modal('hide');
 }
 
@@ -640,6 +638,25 @@ function removeTag(tag_id) {
   updateTagsList();
 }
 
+function mergeTags(tag_src, tag_dest) {
+  for(var id in highlights) {
+    var hl_tags = highlights[id].tags;
+
+    if(hl_tags.includes(tag_src)) {
+      // Remove src tag
+      var idx = hl_tags.indexOf(tag_src);
+      hl_tags.splice(idx, 1);
+
+      if(!hl_tags.includes(tag_dest)) {
+        // Add new tag
+        hl_tags.push(tag_dest);
+      }
+    }
+  }
+  delete tags['' + tag_src];
+  updateTagsList();
+}
+
 function updateTagsList() {
   var entries = Object.entries(tags);
   sortByKey(entries, function(e) { return e[1].path; });
@@ -816,6 +833,73 @@ document.getElementById('tag-add-delete').addEventListener('click', function(e) 
       alert(gettext("Couldn't delete tag!"));
     });
   }
+});
+
+// Merge tags button in tag edit modal: shows merge modal
+document.getElementById('tag-add-merge').addEventListener('click', function(e) {
+  var tag_id = document.getElementById('tag-add-id').value;
+  if(!tag_id)
+    return;
+  tag_id = parseInt(tag_id);
+
+  document.getElementById('tag-merge-form').reset();
+
+  // Set source tag
+  document.getElementById('tag-merge-src-id').value = '' + tag_id;
+  document.getElementById('tag-merge-src-name').value = tags['' + tag_id].path;
+
+  // Empty target tag <select>
+  var target = document.getElementById('tag-merge-dest');
+  target.innerHTML = '';
+
+  // Fill target tag <select>
+  var entries = Object.entries(tags);
+  sortByKey(entries, function(e) { return e[1].path; });
+  for(var i = 0; i < entries.length; ++i) {
+    if(entries[i][0] == '' + tag_id) {
+      // Can't merge into itself
+      continue;
+    }
+    var option = document.createElement('option');
+    option.setAttribute('value', entries[i][0]);
+    option.innerText = entries[i][1].path;
+    target.appendChild(option);
+  }
+
+  $(document.getElementById('tag-merge-modal')).modal();
+});
+
+// Merge modal submit button
+document.getElementById('tag-merge-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  var tag_src = document.getElementById('tag-merge-src-id').value;
+  if(!tag_src)
+    return;
+  tag_src = parseInt(tag_src);
+
+  var tag_dest = document.getElementById('tag-merge-dest').value;
+  if(!tag_dest)
+    return;
+  tag_dest = parseInt(tag_dest);
+
+  console.log(
+    "Merging tag " + tag_src + " (" + tags['' + tag_src].path +
+    ") into tag " + tag_dest + " (" + tags['' + tag_dest].path + ")");
+  showSpinner();
+  postJSON(
+    '/api/project/' + project_id + '/tag/merge',
+    {src: tag_src, dest: tag_dest}
+  )
+  .then(function() {
+    console.log("Tag merge posted");
+    $(document.getElementById('tag-merge-modal')).modal('hide');
+  })
+  .catch(function(error) {
+    console.error("Failed to merge tags:", error);
+    alert(gettext("Couldn't merge tags!"));
+  })
+  .then(hideSpinner);
 });
 
 
@@ -1357,6 +1441,11 @@ function longPollForEvents() {
     if('tag_delete' in result) {
       for(var i = 0; i < result.tag_delete.length; ++i) {
         removeTag(result.tag_delete[i]);
+      }
+    }
+    if('tag_merge' in result) {
+      for(var i = 0; i < result.tag_merge.length; ++i) {
+        mergeTags(result.tag_merge[i].src, result.tag_merge[i].dest);
       }
     }
     if('member_add' in result) {
