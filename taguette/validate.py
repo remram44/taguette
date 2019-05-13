@@ -99,13 +99,16 @@ def filename(name):
     """
     if '/' in name:
         name = name[name.rindex('/') + 1:]
-    if sys.platform == 'win32' and '\\' in name:
+    if filename.windows and '\\' in name:
         # It seems that IE gets that wrong, at least when the file is from
         # a network share
         name = name[name.rindex('\\') + 1:]
+    name, ext = os.path.splitext(name)
     name = _not_ascii_re.sub('', name).strip('._')
     if not name:
-        return '_'
+        name = '_'
+    ext = _not_ascii_re.sub('', ext)
+    name = name + ext
     if (filename.windows and
             name.split('.')[0].upper() in _windows_device_files):
         name = '_' + name

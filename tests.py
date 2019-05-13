@@ -43,6 +43,16 @@ class TestConvert(AsyncTestCase):
             "<a href=\"http://and/the/last/one\">3</a></p>"
         )
 
+    def test_filename(self):
+        validate.filename.windows = True  # escape device names
+
+        self.assertEqual(validate.filename('/etc/passwd'), 'passwd')
+        self.assertEqual(validate.filename('/etc/passwd.txt'), 'passwd.txt')
+        self.assertEqual(validate.filename('ééé'), '_')
+        self.assertEqual(validate.filename('ééé.pdf'), '_.pdf')
+        self.assertEqual(validate.filename('/tmp/NUL.pdf'), '_NUL.pdf')
+        self.assertEqual(validate.filename('/tmp/nul.pdf'), '_nul.pdf')
+
 
 class TestMergeOverlapping(unittest.TestCase):
     def test_merge_overlapping_ranges(self):
