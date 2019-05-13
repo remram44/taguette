@@ -118,7 +118,7 @@ def main():
     lang = locale.getlocale()[0]
     lang = [lang] if lang else []
     d = pkg_resources.resource_filename('taguette', 'l10n')
-    trans = gettext.translation('taguette', d, lang, fallback=True)
+    trans = gettext.translation('taguette_main', d, lang, fallback=True)
     _ = trans.gettext
 
     if sys.platform == 'win32':
