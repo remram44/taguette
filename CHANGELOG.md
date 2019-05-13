@@ -4,10 +4,18 @@ Changelog
 0.7 (???)
 ---------
 
+Taguette can now be translated! You can help bring Taguette to your language on [Transifex](http://transifex.com/remram44/taguette/).
+
 Bugfixes:
 * Fix exporting highlights for non-ASCII tags
 * Fix account page not accepting empty optional fields
 * Fix document description being validated as its name
+* Fix importing documents with completely non-ASCII filenames
+
+Features:
+* Added internationalization
+* Added French translation
+* Added German translation
 
 0.6 (2019-04-13)
 ----------------
