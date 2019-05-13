@@ -306,9 +306,12 @@ footer p {
 
 .list-group-item.active {
   z-index: 2;
-  color: #fff;
   background-color: #125368;
   border-color: #125368;
+}
+
+.list-group-item.active a{
+	color: white !important;
 }
 
 .list-group-item.disabled, .list-group-item:disabled {
