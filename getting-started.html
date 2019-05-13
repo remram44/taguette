@@ -45,7 +45,10 @@
               <a class="nav-link" href="#">Getting Started <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="https://app.taguette.org/">Try it online <i class="fas fa-external-link-alt"></i></a>
+              <a class="nav-link" href="self-host.html">Self-Host</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="https://app.taguette.org/">Try it <i class="fas fa-external-link-alt"></i></a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="https://gitlab.com/remram44/taguette"><i class="fab fa-gitlab"></i></a>
@@ -60,6 +63,25 @@
 
     <main class="container">
       <div id="container-body">
+
+      <div class="row">
+        <div class="col-sm-3">
+        <div class="sticky-top">
+          <p>Explore the guide:</p>
+          <ul class="list-group border border-dark">
+            <li class="list-group-item border-0"><a href="#start">Open Taguette</a></li>
+            <li class="list-group-item border-0"><a href="#create-proj">Start a project</a></li>
+            <li class="list-group-item border-0"><a href="#upload">Upload materials</a></li>
+            <li class="list-group-item border-0"><a href="#collabs">Add collaborators (server only)</a></li>
+            <li class="list-group-item border-0"><a href="#tag">Create tags</a></li>
+            <li class="list-group-item border-0"><a href="#highlight">Highlight materials</a></li>
+            <li class="list-group-item border-0"><a href="#view">View tagged materials</a></li>
+            <li class="list-group-item border-0"><a href="#export">Export options</a></li>
+          </ul>
+        </div>
+        </div>
+
+        <div class="col-lg-9">
         <h2>Getting started with <span style="font-family: BadScript;">TAGUETTE</span></h2>
 
         <h3 id="start"><i class="far fa-play-circle"></i> Start it up!</h3>
@@ -215,7 +237,7 @@
 
         <p>If you've accidentally tagged a section of text you didn't want to, you can delete it by clicking on the highlighted text. This will give you the same pop-up window that you used to tag it. Next to the save button, there is a red button called <strong>Delete highlight</strong>. Click that, and the tags will be removed from the text. It should no longer be highlighted.</p>
 
-        <h3 id="upload"><i class="fas fa-file-invoice"></i> View highlighted &amp; tagged text</h3>
+        <h3 id="view"><i class="fas fa-file-invoice"></i> View highlighted &amp; tagged text</h3>
 
         <p>If you want to see all the highlighted text associated with a given tag, first go to the <strong>Highlights</strong> tab in the left pane. Click a tag, and in the right pane you will see a list of quotes with a blue link to the document where they originated from and all their associated tags with a black badge:</p>
 
@@ -275,10 +297,11 @@
 
         <hr/>
       </div>
+      </div>
     </main>
 
     <footer class="container">
-      <p>Last Updated: 2019-03-23 | Email: <a href="mailto:hi@taguette.org">hi@taguette.org</a> | Tweet us: <a href="https://twitter.com/TaguetteProject">@TaguetteProject</a> | Any issues using Taguette? Tell us on <a href="https://gitlab.com/remram44/taguette">GitLab</a>!</p>
+      <p>Last Updated: 2019-05-13 | Email: <a href="mailto:hi@taguette.org">hi@taguette.org</a> | Tweet us: <a href="https://twitter.com/TaguetteProject">@TaguetteProject</a> | Any issues using Taguette? Tell us on <a href="https://gitlab.com/remram44/taguette">GitLab</a>!</p>
     </footer>
 
     <!-- Bootstrap core JavaScript
@@ -287,5 +310,14 @@
     <script src="js/jquery-slim.min.js"></script>
     <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+
+    <!-- make list-group-item active when clicked with some jquery -->
+    <script>
+    var $lis = $('.list-group-item')
+    $lis.on('click', function(){
+      $lis.removeClass('active')
+      $(this).addClass('active')
+    })
+    </script>
   </body>
 </html>
