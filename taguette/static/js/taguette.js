@@ -830,7 +830,9 @@ function setHighlight(highlight) {
     removeHighlight(highlights[id]);
   }
   highlights[id] = highlight;
-  var tag_names = highlight.tags.map(function(id) { return tags[id].path; }).join(", ");
+  var tag_names = highlight.tags.map(function(id) { return tags[id].path; });
+  sortByKey(tag_names, function(path) { return path; });
+  tag_names = tag_names.join(", ");
   try {
     highlightSelection([highlight.start_offset, highlight.end_offset], id, editHighlight, tag_names);
     console.log("Highlight set:", highlight);
