@@ -70,13 +70,15 @@
         <p>Taguette can be run in two separate ways:</p>
         <ul>
           <li>On your machine, after <a href="install.html">installing it</a>. This requires no complex setup, and your data never has to leave your machine!</li>
-          <li>On a server. This is more difficult to setup, but users can then use that installed version with nothing more than their web browser! We host a publicly-available Taguette server at <a href="https://app.taguette.fr/">app.taguette.fr</a> at the moment, so you can feel free to use that. If you want to deploy your own server for your own organization, read on!</li>
+          <li>On a server. This is more difficult to setup, but users can then use that installed version with nothing more than their web browser! We host a publicly-available Taguette server at <a href="https://app.taguette.org/">app.taguette.org</a> at the moment, so you can feel free to use that. If you want to deploy your own server for your organization, read on!</li>
         </ul>
 
         <h3 id="docker">Using Docker</h3>
 
         <p>If you so choose, you can simply run the <a href="https://hub.docker.com/r/remram/taguette/"><code>remram/taguette</code> Docker image</a>. You will be prompted for an 'admin' password the first time. You can persist the data by mounting a volume over <code>/data</code>, like so:</p>
-        <pre>docker run -ti -p 80:8000 -v /srv/taguette:/data --restart=always remram/taguette</pre>
+        <pre>docker run -ti --rm remram/taguette default-config >/srv/taguette/taguette.conf
+edit /srv/taguette/taguette.conf  # Edit configuration file, see below
+docker run -ti -p 80:7465 -v /srv/taguette:/data --restart=always remram/taguette server /data/taguette.conf</pre>
 
         <h3 id="native">"Native" installation on a server</h3>
 
@@ -86,12 +88,19 @@
 
         <pre>apt update
 apt install calibre python3.5 virtualenv
-virtualenv --python=python3.5 /var/www/taguette
-. /var/www/taguette/bin/activate
+virtualenv --python=python3.5 /srv/taguette
+. /srv/taguette/bin/activate
 pip install taguette
-taguette --multiuser --no-browser -p 80</pre>
+taguette default-config >taguette.conf
+edit taguette.conf  # Edit configuration file, see below
+taguette --no-browser server taguette.conf</pre>
 
         <p>This will start the server on port 80. In practice, you should configure a webserver (for example <a href="https://nginx.org/">nginx</a> or <a href="https://httpd.apache.org/">Apache</a>) to act as a proxy between the users and Taguette, and provide encryption using TLS (for example using <a href="https://letsencrypt.org/">Let's Encrypt</a>, free).</p>
+
+        <h3 id="config">Configuration file</h3>
+
+        <p>In either case, running the server requires a configuration file. This file contains important information, such as email server and addresses, the port number to listen on, whether registration of new accounts is enabled, etc.</p>
+        <p>You might want to change the <code>PORT</code> to <code>80</code>, or better yet configure a webserver (such as <a href="https://nginx.org/">nginx</a> or <a href="https://httpd.apache.org/">Apache</a>) to act as a proxy between the users and Taguette, and provide encryption using TLS (for example using <a href="https://letsencrypt.org/">Let's Encrypt</a>, free).</p>
 
         <hr/>
       </div>
