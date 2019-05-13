@@ -1,0 +1,130 @@
+# Translations template for Taguette.
+# Copyright (C) 2019 Remi Rampin
+# This file is distributed under the same license as the Taguette project.
+# Remi Rampin <r@remirampin.com>, 2018.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Taguette 0.6\n"
+"Report-Msgid-Bugs-To: hi@taguette.org\n"
+"POT-Creation-Date: 2019-05-10 23:51+0200\n"
+"PO-Revision-Date: 2019-05-10 23:57+0200\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+"X-Generator: Poedit 2.0.6\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: fr_FR\n"
+
+#: taguette/static/js/taguette.js:411
+msgid "Couldn't update project metadata!"
+msgstr "Impossible de mettre à jour les métadonnées !"
+
+#: taguette/static/js/taguette.js:467 taguette/static/js/taguette.js:671
+msgid "edit"
+msgstr "éditer"
+
+#: taguette/static/js/taguette.js:476
+msgid "There are no documents in this project yet."
+msgstr "Il n'y a pas encore de documents dans ce projet."
+
+#: taguette/static/js/taguette.js:534 taguette/static/js/taguette.js:540
+msgid "Error uploading file!"
+msgstr "Impossible d'envoyer ce fichier !"
+
+#: taguette/static/js/taguette.js:570
+msgid "Document name cannot be empty"
+msgstr "Le nom du document ne peut pas être vide"
+
+#: taguette/static/js/taguette.js:587
+msgid "Couldn't update document!"
+msgstr "Impossible de mettre à jour le document !"
+
+#: taguette/static/js/taguette.js:596
+#, python-format
+msgid "Are you sure you want to delete the document '%(doc)s'?"
+msgstr "Êtes-vous sûr de vouloir supprimer le document \"%(doc)s\" ?"
+
+#: taguette/static/js/taguette.js:608
+msgid "Couldn't delete document!"
+msgstr "Impossible de supprimer le document !"
+
+#: taguette/static/js/taguette.js:681
+msgid "There are no tags in this project yet."
+msgstr "Il n'y a pas encore de tags dans ce projet."
+
+#: taguette/static/js/taguette.js:711
+msgid "no tags"
+msgstr "pas de tags"
+
+#: taguette/static/js/taguette.js:756
+msgid "Invalid tag name"
+msgstr "Nom de tag invalide"
+
+#: taguette/static/js/taguette.js:783
+msgid "Couldn't create tag!"
+msgstr "Impossible de créer le tag !"
+
+#: taguette/static/js/taguette.js:792
+#, python-format
+msgid "Are you sure you want to delete the tag '%(tag)s'?"
+msgstr "Êtes-vous sûr de vouloir supprimer le tag \"%(tag)s\" ?"
+
+#: taguette/static/js/taguette.js:807
+msgid "Couldn't delete tag!"
+msgstr "Impossible de supprimer le tag !"
+
+#: taguette/static/js/taguette.js:967
+msgid "Couldn't create highlight!"
+msgstr "Impossible de créer la marque !"
+
+#: taguette/static/js/taguette.js:987
+msgid "Couldn't delete highlight!"
+msgstr "Impossible de supprimer la marque !"
+
+#: taguette/static/js/taguette.js:1017
+msgid "Full permissions"
+msgstr "Toutes les permissions"
+
+#: taguette/static/js/taguette.js:1018
+msgid "Can't change collaborators / delete project"
+msgstr "Ne peut pas changer les collaborateurs / supprimer le projet"
+
+#: taguette/static/js/taguette.js:1019
+msgid "View & make changes"
+msgstr "Voir & faire des changements"
+
+#: taguette/static/js/taguette.js:1020
+msgid "View only"
+msgstr "Voir seulement"
+
+#: taguette/static/js/taguette.js:1130
+msgid "Couldn't update collaborators!"
+msgstr "Impossible de mettre à jour les collaborateurs !"
+
+#: taguette/static/js/taguette.js:1157
+msgid "Load a document on the left"
+msgstr "Sélectionnez un document sur la gauche"
+
+#: taguette/static/js/taguette.js:1201
+msgid "Error loading document!"
+msgstr "Impossible de charger le document !"
+
+#: taguette/static/js/taguette.js:1249
+msgid "No highlights with this tag yet."
+msgstr "Aucune marque avec ce tag."
+
+#: taguette/static/js/taguette.js:1265
+msgid "Error loading tag highlights!"
+msgstr "Impossible de charger les marques du tag !"
+
+#: taguette/static/js/taguette.js:1370
+msgid "It appears that you have been logged out."
+msgstr "Il semble que vous vous soyez déconnecté de votre profil."
+
+#: taguette/static/js/taguette.js:1373
+msgid "You can no longer access this project."
+msgstr "Vous ne pouvez plus accéder à ce projet."

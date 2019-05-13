@@ -10,12 +10,16 @@
     </style>
   </head>
   <body>
-    <h1>Taguette highlights{% if path %}: {{ path }}{% endif %}</h1>
+    {% if path %}
+    <h1>{% trans %}Taguette highlights: {{ path }}{% endtrans %}</h1>
+    {% else %}
+    <h1>{% trans %}Taguette highlights{% endtrans %}</h1>
+    {% endif %}
 {% for hl in highlights %}
     {{ hl.snippet |safe }}
     <p>
-      <strong>Document:</strong> {{ hl.document.name }}
-      <strong>Tags:</strong>
+      {% trans %}<strong>Document:</strong> {{ hl.document.name }}{% endtrans %}
+      <strong>{% trans %}Tags:{% endtrans %}</strong>
       {% for tag in hl.tags -%}
         {{ tag.path }}
         {%- if not loop.last %}, {% endif %}

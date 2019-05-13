@@ -38,7 +38,7 @@ include = [
     "taguette/static/js/*.js", "taguette/static/js/*.js.map",
     "taguette/static/webfonts/*", "taguette/templates/*.html",
     "taguette/migrations/env.py", "taguette/migrations/script.py.mako",
-    "taguette/migrations/versions/*.py",
+    "taguette/migrations/versions/*.py", "taguette/l10n/*/*/*.mo",
 ]
 
 [tool.poetry.dependencies]
@@ -59,6 +59,7 @@ sentry-sdk = "*"
 coverage = "*"
 flake8 = "*"
 readme_renderer = "*"
+babel = "^2.6"
 
 [tool.poetry.scripts]
 taguette = "taguette.main:main"

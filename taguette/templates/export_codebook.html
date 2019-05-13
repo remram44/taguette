@@ -7,10 +7,10 @@
         background-color: #ff0;
       }
     </style>
-    <title>Taguette Codebook</title>
+    <title>{% trans %}Taguette Codebook{% endtrans %}</title>
   </head>
   <body>
-    <h1>Taguete Codebook</h1>
+    <h1>{% trans %}Taguette Codebook{% endtrans %}</h1>
 {% for tag in tags %}
       <h2>{{ tag.path }}</h2>
       <p>{{ tag.description }}</p>
