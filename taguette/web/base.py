@@ -169,6 +169,14 @@ class BaseHandler(RequestHandler):
             if user is not None and user.language is not None:
                 return tornado.locale.get(user.language)
 
+    def all_supported_locales(self):
+        supported = tornado.locale.get_supported_locales()
+        return {
+            code: names
+            for code, names in tornado.locale.LOCALE_NAMES.items()
+            if code in supported or code.split('_')[0] in supported
+        }
+
     def login(self, username):
         logger.info("Logged in as %r", username)
         self.set_secure_cookie('user', username)
