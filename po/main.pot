@@ -60,10 +60,10 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: taguette/templates/account.html:21
+#: taguette/templates/account.html:21 taguette/templates/login.html:78
 msgid ""
-"Optional. <em>We will not share your password with anyone. This is only "
-"used in case you forget your password.</em>"
+"Optional. <em>We will not share your email with anyone. This is only used"
+" in case you forget your password.</em>"
 msgstr ""
 
 #: taguette/templates/account.html:25
@@ -348,12 +348,6 @@ msgstr ""
 
 #: taguette/templates/login.html:69 taguette/templates/new_password.html:19
 msgid "Confirm password"
-msgstr ""
-
-#: taguette/templates/login.html:78
-msgid ""
-"Optional. <em>We will not share your email with anyone. This is only used"
-" in case you forget your password.</em>"
 msgstr ""
 
 #: taguette/templates/new_password.html:8
