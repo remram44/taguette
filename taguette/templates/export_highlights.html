@@ -18,7 +18,7 @@
 {% for hl in highlights %}
     {{ hl.snippet |safe }}
     <p>
-      {% trans %}<strong>Document:</strong> {{ hl.document.name }}{% endtrans %}
+      {% trans doc=hl.document.name %}<strong>Document:</strong> {{ doc }}{% endtrans %}
       <strong>{% trans %}Tags:{% endtrans %}</strong>
       {% for tag in hl.tags -%}
         {{ tag.path }}
