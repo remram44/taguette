@@ -28,7 +28,7 @@
           <form id="project-metadata-form">
             <div class="form-group">
               <label for="project-name" class="col-sm-2 col-form-label">{# TRANSLATORS: Project name field #}{% trans %}Name{% endtrans %}</label>
-              <input type="text" class="form-control" id="project-name" name="project-name" value="{{ project.name }}" />
+              <input type="text" class="form-control" id="project-name" name="project-name" value="{{ project.name }}" required />
             </div>
             <div class="form-group">
               <label for="project-description" class="col-sm-2 col-form-label">{% trans %}Description{% endtrans %}</label>
@@ -119,7 +119,7 @@
           <form id="members-add">
             <div class="row">
               <div class="col-md-4 form-group">
-                <input type="text" class="form-control" id="member-add-name" placeholder="{{ gettext("Username") }}" />
+                <input type="text" class="form-control" id="member-add-name" placeholder="{{ gettext("Username") }}" required />
               </div>
               <div class="col-md-4 form-group">
                 <select id="member-add-privileges" class="form-control">
@@ -159,10 +159,10 @@
         <div class="container">
           <div class="row">
             <div class="col-md-6 form-group">
-              <input type="text" class="form-control" id="document-add-name" name="document-add-name" placeholder="{{ gettext("Name") }}" />
+              <input type="text" class="form-control" id="document-add-name" name="document-add-name" placeholder="{{ gettext("Name") }}" required />
             </div>
             <div class="col-md-6 form-group">
-              <input type="file" class="form-control-file" id="document-add-file" name="document-add-file" />
+              <input type="file" class="form-control-file" id="document-add-file" name="document-add-file" required />
             </div>
           </div>
           <textarea class="form-control mb-3" id="document-add-description" name="document-add-description" placeholder="{{ gettext("Description") }}"></textarea>
@@ -191,7 +191,7 @@
         <div class="container">
           <div class="row">
             <div class="col-md-6 form-group">
-              <input type="text" class="form-control mb-3" id="document-change-name" name="document-change-name" placeholder="{{ gettext("Name") }}" />
+              <input type="text" class="form-control mb-3" id="document-change-name" name="document-change-name" placeholder="{{ gettext("Name") }}" required />
             </div>
           </div>
           <textarea class="form-control" id="document-change-description" name="document-change-description" placeholder="{{ gettext("Description") }}"></textarea>
@@ -248,7 +248,7 @@
       <div class="modal-body">
         <input type="hidden" id="tag-add-id" />
         <div class="container">
-          <input type="text" class="form-group" id="tag-add-path" name="tag-add-path" placeholder="{{ gettext("Name") }}" />
+          <input type="text" class="form-group" id="tag-add-path" name="tag-add-path" placeholder="{{ gettext("Name") }}" required />
           <textarea class="form-control" id="tag-add-description" name="tag-add-description" placeholder="{{ gettext("Description") }}"></textarea>
         </div>
       </div>
