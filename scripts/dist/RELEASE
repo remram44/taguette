@@ -1,3 +1,5 @@
+* Update translations from https://www.transifex.com/remram44/taguette/
+* Run scripts/update_translations.sh
 * Update CHANGELOG and version numbers
 * Create a signed tag (git tag -s)
 * Update translation files (scripts/update_translations.sh)
