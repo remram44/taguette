@@ -2,15 +2,15 @@
 # Copyright (C) 2019 Remi Rampin
 # This file is distributed under the same license as the Taguette project.
 # Remi Rampin <r@remirampin.com>, 2018.
-#
+# 
 # Translators:
 # @jordiGH@mathstodon.xyz, 2019
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: Taguette 0.6\n"
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
-"POT-Creation-Date: 2019-05-13 17:38-0400\n"
+"POT-Creation-Date: 2019-05-15 19:12-0400\n"
 "PO-Revision-Date: 2019-05-08 22:49+0000\n"
 "Last-Translator: Rémi Rampin <remirampin@gmail.com>, 2019\n"
 "Language-Team: Spanish (https://www.transifex.com/remram44/teams/98824/es/)\n"
@@ -21,61 +21,61 @@ msgstr ""
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: taguette/static/js/taguette.js:411
+#: taguette/static/js/taguette.js:410
 msgid "Couldn't update project metadata!"
 msgstr "¡No se pudo actualizar los metadatos del proyecto!"
 
-#: taguette/static/js/taguette.js:467 taguette/static/js/taguette.js:671
+#: taguette/static/js/taguette.js:466 taguette/static/js/taguette.js:689
 msgid "edit"
 msgstr "editar"
 
-#: taguette/static/js/taguette.js:476
+#: taguette/static/js/taguette.js:475
 msgid "There are no documents in this project yet."
 msgstr "No hay documentos aún en este proyecto"
 
-#: taguette/static/js/taguette.js:534 taguette/static/js/taguette.js:540
+#: taguette/static/js/taguette.js:533 taguette/static/js/taguette.js:539
 msgid "Error uploading file!"
 msgstr "¡Error al subir archivo!"
 
-#: taguette/static/js/taguette.js:570
+#: taguette/static/js/taguette.js:569
 msgid "Document name cannot be empty"
 msgstr "El nombre del documento no puede estar vacío"
 
-#: taguette/static/js/taguette.js:587
+#: taguette/static/js/taguette.js:586
 msgid "Couldn't update document!"
 msgstr "¡No se pudo subir el documento!"
 
-#: taguette/static/js/taguette.js:596
+#: taguette/static/js/taguette.js:595
 #, python-format
 msgid "Are you sure you want to delete the document '%(doc)s'?"
 msgstr "¿Estás seguro/a de que quieres eliminar el documento '%(doc)s'?"
 
-#: taguette/static/js/taguette.js:608
+#: taguette/static/js/taguette.js:607
 msgid "Couldn't delete document!"
 msgstr "¡No se puedo eliminar el documento!"
 
-#: taguette/static/js/taguette.js:681
+#: taguette/static/js/taguette.js:699
 msgid "There are no tags in this project yet."
 msgstr "No hay etiquetas en este proyecto aún."
 
-#: taguette/static/js/taguette.js:711
+#: taguette/static/js/taguette.js:729
 msgid "no tags"
 msgstr "ninguna etiqueta"
 
-#: taguette/static/js/taguette.js:756
+#: taguette/static/js/taguette.js:782
 msgid "Invalid tag name"
 msgstr "Nombre no válido de etiqueta"
 
-#: taguette/static/js/taguette.js:783
+#: taguette/static/js/taguette.js:809
 msgid "Couldn't create tag!"
 msgstr "¡No se pudo crear la etiqueta!"
 
-#: taguette/static/js/taguette.js:792
+#: taguette/static/js/taguette.js:818
 #, python-format
 msgid "Are you sure you want to delete the tag '%(tag)s'?"
 msgstr "¿Estás seguro/a que quieres eliminar la etiqueta '%(tag)s'?"
 
-#: taguette/static/js/taguette.js:807
+#: taguette/static/js/taguette.js:833
 msgid "Couldn't delete tag!"
 msgstr "¡No se pudo eliminar la etiqueta!"
 
@@ -83,54 +83,54 @@ msgstr "¡No se pudo eliminar la etiqueta!"
 msgid "Couldn't merge tags!"
 msgstr "¡No se pudo fusionar las etiquetas!"
 
-#: taguette/static/js/taguette.js:967
+#: taguette/static/js/taguette.js:1061
 msgid "Couldn't create highlight!"
 msgstr "¡No se pudo crear el resaltado!"
 
-#: taguette/static/js/taguette.js:987
+#: taguette/static/js/taguette.js:1081
 msgid "Couldn't delete highlight!"
 msgstr "¡No es pudo eliminar el resaltado!"
 
-#: taguette/static/js/taguette.js:1017
+#: taguette/static/js/taguette.js:1111
 msgid "Full permissions"
 msgstr "Todos los permisos"
 
-#: taguette/static/js/taguette.js:1018
+#: taguette/static/js/taguette.js:1112
 msgid "Can't change collaborators / delete project"
 msgstr "Imposible cambiar colaboradores / cambiar proyecto"
 
-#: taguette/static/js/taguette.js:1019
+#: taguette/static/js/taguette.js:1113
 msgid "View & make changes"
 msgstr "Ver y hacer cambios"
 
-#: taguette/static/js/taguette.js:1020
+#: taguette/static/js/taguette.js:1114
 msgid "View only"
 msgstr "Solamente ver"
 
-#: taguette/static/js/taguette.js:1130
+#: taguette/static/js/taguette.js:1224
 msgid "Couldn't update collaborators!"
 msgstr "¡No se pudo actualizar a los colaboradores!"
 
-#: taguette/static/js/taguette.js:1157
+#: taguette/static/js/taguette.js:1251
 msgid "Load a document on the left"
 msgstr "Cargar un documento en la izquierda"
 
-#: taguette/static/js/taguette.js:1201
+#: taguette/static/js/taguette.js:1295
 msgid "Error loading document!"
 msgstr "¡Error al cargar documento!"
 
-#: taguette/static/js/taguette.js:1249
+#: taguette/static/js/taguette.js:1343
 msgid "No highlights with this tag yet."
 msgstr "No hay resaltados aún con esta etiqueta."
 
-#: taguette/static/js/taguette.js:1265
+#: taguette/static/js/taguette.js:1359
 msgid "Error loading tag highlights!"
 msgstr "¡Error al cargar resaltados de etiqueta!"
 
-#: taguette/static/js/taguette.js:1370
+#: taguette/static/js/taguette.js:1469
 msgid "It appears that you have been logged out."
 msgstr "Parece que has cerrado tu sesión."
 
-#: taguette/static/js/taguette.js:1373
+#: taguette/static/js/taguette.js:1472
 msgid "You can no longer access this project."
 msgstr "Ya no puedes acceder a este proyecto."

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Taguette 0.6\n"
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
-"POT-Creation-Date: 2019-05-13 17:38-0400\n"
+"POT-Creation-Date: 2019-05-15 19:12-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -49,9 +49,8 @@ msgid "Account settings"
 msgstr ""
 
 #. User name
-#. Link to form
-#: taguette/templates/account.html:12 taguette/templates/base.html:48
-#: taguette/templates/login.html:26 taguette/templates/login.html:57
+#: taguette/templates/account.html:12 taguette/templates/login.html:26
+#: taguette/templates/login.html:57
 msgid "Login"
 msgstr ""
 
@@ -87,32 +86,39 @@ msgstr ""
 msgid "Update"
 msgstr ""
 
-#: taguette/templates/base.html:21
+#: taguette/templates/base.html:23
 msgid "Home"
 msgstr ""
 
-#: taguette/templates/base.html:32
+#: taguette/templates/base.html:34
 #, python-format
 msgid "Taguette Guide %(external_icon)s"
 msgstr ""
 
-#: taguette/templates/base.html:36
+#: taguette/templates/base.html:38
 msgid "Single-user mode"
 msgstr ""
 
-#: taguette/templates/base.html:40
+#: taguette/templates/base.html:42
 msgid "Account"
 msgstr ""
 
-#: taguette/templates/base.html:42
+#: taguette/templates/base.html:44
 msgid "Settings"
 msgstr ""
 
-#: taguette/templates/base.html:43
+#: taguette/templates/base.html:45
 msgid "Logout"
 msgstr ""
 
-#: taguette/templates/base.html:62
+#. Link to form
+#. Submit button
+#: taguette/templates/base.html:50 taguette/templates/login.html:7
+#: taguette/templates/login.html:39
+msgid "Log in"
+msgstr ""
+
+#: taguette/templates/base.html:64
 msgid ""
 "Taguette is released under a <a "
 "href=\"https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt\">BSD-3-Clause"
@@ -232,12 +238,12 @@ msgid "Current Collaborators"
 msgstr ""
 
 #: taguette/templates/project.html:141 taguette/templates/project.html:201
-#: taguette/templates/project.html:230 taguette/templates/project.html:256
+#: taguette/templates/project.html:230 taguette/templates/project.html:257
 msgid "Save & Close"
 msgstr ""
 
 #: taguette/templates/project.html:142 taguette/templates/project.html:173
-#: taguette/templates/project.html:257
+#: taguette/templates/project.html:258
 msgid "Cancel"
 msgstr ""
 
@@ -274,32 +280,32 @@ msgstr ""
 msgid "Merge..."
 msgstr ""
 
-#: taguette/templates/project.html:258
+#: taguette/templates/project.html:259
 msgid "Delete tag"
 msgstr ""
 
-#: taguette/templates/project.html:289
+#: taguette/templates/project.html:326
 msgid "[new highlight]"
 msgstr ""
 
-#: taguette/templates/index.html:9
+#: taguette/templates/index.html:7
 #, python-format
 msgid "Welcome %(user_login)s"
 msgstr ""
 
-#: taguette/templates/index.html:11
+#: taguette/templates/index.html:9
 msgid "Welcome!"
 msgstr ""
 
-#: taguette/templates/index.html:13
+#: taguette/templates/index.html:11
 msgid "Here are your projects:"
 msgstr ""
 
-#: taguette/templates/index.html:18
+#: taguette/templates/index.html:16
 msgid "You have no projects yet."
 msgstr ""
 
-#: taguette/templates/index.html:20
+#: taguette/templates/index.html:18
 msgid "Create a project"
 msgstr ""
 
@@ -325,11 +331,6 @@ msgstr ""
 #: taguette/templates/welcome.html:10
 #, python-format
 msgid "<a href=\"%(url)s\">Register now</a> for free and get started!"
-msgstr ""
-
-#. Submit button
-#: taguette/templates/login.html:7 taguette/templates/login.html:39
-msgid "Log in"
 msgstr ""
 
 #. Submit button
@@ -397,6 +398,24 @@ msgstr ""
 msgid "Create"
 msgstr ""
 
+#: taguette/templates/export_highlights.html:14
+#, python-format
+msgid "Taguette highlights: %(path)s"
+msgstr ""
+
+#: taguette/templates/export_highlights.html:16
+msgid "Taguette highlights"
+msgstr ""
+
+#: taguette/templates/export_highlights.html:21
+#, python-format
+msgid "<strong>Document:</strong> %(doc)s"
+msgstr ""
+
+#: taguette/templates/export_highlights.html:22
+msgid "Tags:"
+msgstr ""
+
 #: taguette/templates/email_reset_password.html:1
 #, python-format
 msgid ""
@@ -409,35 +428,35 @@ msgstr ""
 msgid "This link will expire in 1 day."
 msgstr ""
 
-#: taguette/web/views.py:104
+#: taguette/web/views.py:98
 msgid "Invalid login or password"
 msgstr ""
 
-#: taguette/web/views.py:250
+#: taguette/web/views.py:243
 msgid "This email is not associated with any user"
 msgstr ""
 
-#: taguette/web/views.py:272
+#: taguette/web/views.py:265
 msgid "Password reset for Taguette"
 msgstr ""
 
 #. Default tag 1, name
-#: taguette/web/views.py:361
+#: taguette/web/views.py:354
 msgid "interesting"
 msgstr ""
 
 #. Default tag 1, description
-#: taguette/web/views.py:363
+#: taguette/web/views.py:356
 msgid "Further review required"
 msgstr ""
 
 #. Default tag 2, name
-#: taguette/web/views.py:368
+#: taguette/web/views.py:361
 msgid "people"
 msgstr ""
 
 #. Default tag 2, description
-#: taguette/web/views.py:370
+#: taguette/web/views.py:363
 msgid "Known people"
 msgstr ""
 
@@ -495,7 +514,7 @@ msgstr ""
 msgid "Missing required configuration variable %(var)s"
 msgstr ""
 
-#: taguette/main.py:277
+#: taguette/main.py:276
 #, python-format
 msgid ""
 "\n"
