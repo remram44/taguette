@@ -2,6 +2,7 @@ import gettext
 import jinja2
 import json
 import logging
+from markupsafe import Markup
 import pkg_resources
 from tornado.routing import URLSpec
 from tornado.web import HTTPError
@@ -37,6 +38,16 @@ class TranslationJs(BaseHandler):
         return self.render('trans.js',
                            language=language,
                            catalog=catalog)
+
+
+class MessagesJs(BaseHandler):
+    async def get(self):
+        if not self.application.messages_event.is_set():
+            await self.application.messages_event.wait()
+        messages = json.dumps(self.application.messages)
+        self.set_header('Content-Type', 'text/javascript')
+        return self.render('messages.js',
+                           messages=Markup(messages))
 
 
 def make_app(config, debug=False, xsrf_cookies=True):
@@ -97,6 +108,9 @@ def make_app(config, debug=False, xsrf_cookies=True):
 
             # Translation catalog and functions
             URLSpec('/trans.js', TranslationJs, name='trans.js'),
+
+            # Messages
+            URLSpec('/messages.js', MessagesJs, name='messages.js'),
 
             # Well-known URLs
             URLSpec('/.well-known/change-password', RedirectAccount),

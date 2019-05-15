@@ -67,6 +67,7 @@ class Application(tornado.web.Application):
 
         # Get messages from taguette.org
         self.messages = []
+        self.messages_event = asyncio.Event()
         self.check_messages()
 
     async def _check_messages(self):
@@ -78,6 +79,7 @@ class Application(tornado.web.Application):
         self.messages = obj['messages']
         for msg in self.messages:
             logger.warning("Taguette message: %s", msg['text'])
+        self.messages_event.set()
 
     @staticmethod
     def _check_messages_callback(future):
@@ -184,6 +186,7 @@ class BaseHandler(RequestHandler):
             current_user=self.current_user,
             multiuser=self.application.config['MULTIUSER'],
             register_enabled=self.application.config['REGISTRATION_ENABLED'],
+            show_messages=self.current_user == 'admin',
             gettext=self.gettext,
             ngettext=self.ngettext,
             **kwargs)

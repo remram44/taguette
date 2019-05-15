@@ -3,7 +3,6 @@ from email.message import EmailMessage
 import json
 import logging
 import jinja2
-from markupsafe import Markup
 import prometheus_client
 from sqlalchemy.orm import aliased
 import tornado.locale
@@ -45,14 +44,9 @@ class Index(BaseHandler):
                                self.current_user)
                 self.logout()
             else:
-                messages = []
-                if self.current_user == 'admin':
-                    messages = [Markup(msg['html'])
-                                for msg in self.application.messages]
                 PROM_PAGE.labels('index').inc()
                 return self.render('index.html',
-                                   user=user, projects=user.projects,
-                                   messages=messages)
+                                   user=user, projects=user.projects)
         elif not self.application.config['MULTIUSER']:
             token = self.get_query_argument('token', None)
             if token and token == self.application.single_user_token:

@@ -68,5 +68,8 @@
 
     <script src="{{ static_url('js/jquery-3.3.1.min.js') }}"></script>
     <script src="{{ static_url('js/bootstrap.bundle.min.js') }}"></script>
+    {% if show_messages %}
+    <script src="{{ reverse_url('messages.js') }}" async></script>
+    {% endif %}
   </body>
 </html>
