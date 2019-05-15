@@ -1,8 +1,8 @@
 Changelog
 =========
 
-0.7 (???)
----------
+0.7 (2019-05-15)
+----------------
 
 Taguette can now be translated! You can help bring Taguette to your language on [Transifex](http://transifex.com/remram44/taguette/).
 
