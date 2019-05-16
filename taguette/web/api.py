@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import aliased
 from tornado.concurrent import Future
 import tornado.log
-from tornado.web import HTTPError, MissingArgumentError
+from tornado.web import MissingArgumentError
 
 from .. import convert
 from .. import database
@@ -263,8 +263,9 @@ class TagUpdate(BaseHandler):
         try:
             obj = self.get_json()
             tag = self.db.query(database.Tag).get(int(tag_id))
-            if tag.project_id != project.id:
-                raise HTTPError(404)
+            if tag is None or tag.project_id != project.id:
+                self.set_status(404)
+                return self.send_json({'error': "No such tag"})
             if obj:
                 if 'path' in obj:
                     validate.tag_path(obj['path'])
@@ -300,8 +301,9 @@ class TagUpdate(BaseHandler):
             self.set_status(403)
             return self.send_json({'error': "Unauthorized"})
         tag = self.db.query(database.Tag).get(int(tag_id))
-        if tag.project_id != project.id:
-            raise HTTPError(404)
+        if tag is None or tag.project_id != project.id:
+            self.set_status(404)
+            return self.send_json({'error': "No such tag"})
         self.db.delete(tag)
         cmd = database.Command.tag_delete(
             self.current_user,
@@ -329,11 +331,11 @@ class TagMerge(BaseHandler):
             return self.send_json({'error': "Unauthorized"})
         obj = self.get_json()
         tag_src = self.db.query(database.Tag).get(obj['src'])
-        if tag_src.project_id != project.id:
-            raise HTTPError(404)
         tag_dest = self.db.query(database.Tag).get(obj['dest'])
-        if tag_dest.project_id != project.id:
-            raise HTTPError(404)
+        if (tag_src is None or tag_src.project_id != project.id or
+                tag_dest is None or tag_dest.project_id != project.id):
+            self.set_status(404)
+            return self.send_json({'error': "No such tag"})
         self.db.execute(
             database.HighlightTag.__table__.update()
             .where(database.HighlightTag.tag_id == tag_src.id)
@@ -351,7 +353,7 @@ class TagMerge(BaseHandler):
         self.db.refresh(cmd)
         self.application.notify_project(project.id, cmd)
 
-        self.send_json({'id': tag_dest.id})
+        return self.send_json({'id': tag_dest.id})
 
 
 class HighlightAdd(BaseHandler):
@@ -407,8 +409,9 @@ class HighlightUpdate(BaseHandler):
             return self.send_json({'error': "Unauthorized"})
         obj = self.get_json()
         hl = self.db.query(database.Highlight).get(int(highlight_id))
-        if hl.document_id != document.id:
-            raise HTTPError(404)
+        if hl is None or hl.document_id != document.id:
+            self.set_status(404)
+            return self.send_json({'error': "No such highlight"})
         if obj:
             if 'start_offset' in obj:
                 hl.start_offset = obj['start_offset']
@@ -447,8 +450,9 @@ class HighlightUpdate(BaseHandler):
             self.set_status(403)
             return self.send_json({'error': "Unauthorized"})
         hl = self.db.query(database.Highlight).get(int(highlight_id))
-        if hl.document_id != document.id:
-            raise HTTPError(404)
+        if hl is None or hl.document_id != document.id:
+            self.set_status(404)
+            return self.send_json({'error': "No such highlight"})
         self.db.delete(hl)
         cmd = database.Command.highlight_delete(
             self.current_user,
