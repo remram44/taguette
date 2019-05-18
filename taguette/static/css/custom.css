@@ -8,7 +8,7 @@
 /* Add body font */
 @font-face {
   font-family: Montserrat;
-  font-display: optional;
+  font-display: fallback;
   src: url(../webfonts/Montserrat-Light.ttf);
 }
 
