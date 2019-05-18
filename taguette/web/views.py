@@ -285,8 +285,9 @@ class SetNewPassword(BaseHandler):
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         reset_token = self.get_query_argument('reset_token')
-        self.get_secure_cookie('reset_token', reset_token,
-                               max_age_days=2).decode('utf-8')
+        if self.get_secure_cookie('reset_token', reset_token,
+                                  max_age_days=2) is None:
+            raise HTTPError(403)
         return self.render('new_password.html', reset_token=reset_token)
 
     def post(self):
@@ -299,7 +300,10 @@ class SetNewPassword(BaseHandler):
             reset_token,
             min_version=2,
             max_age_days=1,
-        ).decode('utf-8')
+        )
+        if email is None:
+            raise HTTPError(403)
+        email = email.decode('utf-8')
         user = (
             self.db.query(database.User).filter(database.User.email == email)
         ).one_or_none()
