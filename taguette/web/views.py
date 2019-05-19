@@ -271,6 +271,8 @@ class AskResetPassword(BaseHandler):
                                                    link=reset_link),
                                 subtype='html')
 
+            logger.warning("Sending reset password email to %s %s",
+                           user.login, user.email)
             send_mail(msg, self.application.config['MAIL_SERVER'])
             user.email_sent = datetime.utcnow()
             self.db.commit()
