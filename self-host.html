@@ -95,12 +95,12 @@ taguette default-config >taguette.conf
 edit taguette.conf  # Edit configuration file, see below
 taguette --no-browser server taguette.conf</pre>
 
-        <p>This will start the server on port 80. In practice, you should configure a webserver (for example <a href="https://nginx.org/">nginx</a> or <a href="https://httpd.apache.org/">Apache</a>) to act as a proxy between the users and Taguette, and provide encryption using TLS (for example using <a href="https://letsencrypt.org/">Let's Encrypt</a>, free).</p>
+        <p>This will start the server on port 80. In practice, you should configure a webserver (for example <a href="https://nginx.org/">nginx</a> or <a href="https://httpd.apache.org/">Apache</a>, see <a href="https://gitlab.com/remram44/taguette/tree/master/scripts/dist/server_configs">example configuration</a>) to act as a proxy between the users and Taguette, and provide encryption using TLS (for example using <a href="https://letsencrypt.org/">Let's Encrypt</a>, free).</p>
 
         <h3 id="config">Configuration file</h3>
 
         <p>In either case, running the server requires a configuration file. This file contains important information, such as email server and addresses, the port number to listen on, whether registration of new accounts is enabled, etc.</p>
-        <p>You might want to change the <code>PORT</code> to <code>80</code>, or better yet configure a webserver (such as <a href="https://nginx.org/">nginx</a> or <a href="https://httpd.apache.org/">Apache</a>) to act as a proxy between the users and Taguette, and provide encryption using TLS (for example using <a href="https://letsencrypt.org/">Let's Encrypt</a>, free).</p>
+        <p>You might want to change the <code>PORT</code> to <code>80</code>, or better yet configure a webserver (such as <a href="https://nginx.org/">nginx</a> or <a href="https://httpd.apache.org/">Apache</a>, see <a href="https://gitlab.com/remram44/taguette/tree/master/scripts/dist/server_configs">example configuration</a>) to act as a proxy between the users and Taguette, and provide encryption using TLS (for example using <a href="https://letsencrypt.org/">Let's Encrypt</a>, free).</p>
 
         <h3 id="database">Database</h3>
 
