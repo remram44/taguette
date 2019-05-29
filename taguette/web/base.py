@@ -146,6 +146,10 @@ class BaseHandler(RequestHandler):
         self.db = application.DBSession()
         self._gettext = None
 
+    def on_finish(self):
+        super(BaseHandler, self).on_finish()
+        self.db.close()
+
     def gettext(self, message, **kwargs):
         trans = self.locale.translate(message)
         if kwargs:
