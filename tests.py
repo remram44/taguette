@@ -2,6 +2,7 @@ from http.cookies import SimpleCookie
 import json
 import os
 import re
+from sqlalchemy import create_engine
 from tornado.testing import AsyncTestCase, gen_test, AsyncHTTPTestCase, \
     get_async_test_timeout
 import unittest
@@ -221,6 +222,11 @@ class TestMultiuser(MyHTTPTestCase):
             ))
             return self.application
 
+    def tearDown(self):
+        self.application.DBSession.close_all()
+        engine = create_engine(DATABASE_URI)
+        database.Base.metadata.drop_all(bind=engine)
+
     def test_login(self):
         # Fetch index, should have welcome message and register link
         response = self.get('/')
@@ -438,6 +444,11 @@ class TestSingleuser(MyHTTPTestCase):
                 xsrf_cookies=False,
             )
             return self.application
+
+    def tearDown(self):
+        self.application.DBSession.close_all()
+        engine = create_engine(DATABASE_URI)
+        database.Base.metadata.drop_all(bind=engine)
 
     def test_login(self):
         # Fetch index, should have welcome message and no register link
