@@ -1,6 +1,8 @@
 from http.cookies import SimpleCookie
 import json
+import os
 import re
+from sqlalchemy import create_engine
 from tornado.testing import AsyncTestCase, gen_test, AsyncHTTPTestCase, \
     get_async_test_timeout
 import unittest
@@ -8,6 +10,12 @@ from unittest import mock
 from urllib.parse import urlencode
 
 from taguette import convert, database, extract, main, validate, web
+
+
+if 'TAGUETTE_TEST_DB' in os.environ:
+    DATABASE_URI = os.environ['TAGUETTE_TEST_DB']
+else:
+    DATABASE_URI = 'sqlite://'
 
 
 class TestConvert(AsyncTestCase):
@@ -205,13 +213,19 @@ class TestMultiuser(MyHTTPTestCase):
                                new=set_dumb_password):
             self.application = web.make_app(dict(
                 main.DEFAULT_CONFIG,
-                NAME="Test Taguette instance", PORT=7465, DATABASE='sqlite://',
+                NAME="Test Taguette instance", PORT=7465,
+                DATABASE=DATABASE_URI,
                 EMAIL='test@example.com',
                 MAIL_SERVER={'host': 'localhost', 'port': 25},
                 MULTIUSER=True,
                 SECRET_KEY='2PbQ/5Rs005G/nTuWfibaZTUAo3Isng3QuRirmBK',
             ))
             return self.application
+
+    def tearDown(self):
+        self.application.DBSession.close_all()
+        engine = create_engine(DATABASE_URI)
+        database.Base.metadata.drop_all(bind=engine)
 
     def test_login(self):
         # Fetch index, should have welcome message and register link
@@ -421,7 +435,7 @@ class TestSingleuser(MyHTTPTestCase):
                 dict(
                     main.DEFAULT_CONFIG,
                     NAME="Test Taguette instance", PORT=7465,
-                    DATABASE='sqlite://',
+                    DATABASE=DATABASE_URI,
                     EMAIL='test@example.com',
                     MAIL_SERVER={'host': 'localhost', 'port': 25},
                     MULTIUSER=False,
@@ -430,6 +444,11 @@ class TestSingleuser(MyHTTPTestCase):
                 xsrf_cookies=False,
             )
             return self.application
+
+    def tearDown(self):
+        self.application.DBSession.close_all()
+        engine = create_engine(DATABASE_URI)
+        database.Base.metadata.drop_all(bind=engine)
 
     def test_login(self):
         # Fetch index, should have welcome message and no register link
