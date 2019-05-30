@@ -20,6 +20,8 @@ from .web import make_app
 
 logger = logging.getLogger(__name__)
 
+PROM_VERSION = prometheus_client.Info('version', "Application version")
+
 
 def prepare_db(database):
     # Windows paths kinda look like URLs, but aren't
@@ -240,21 +242,23 @@ def main():
         logger.info("Starting Prometheus exporter on port %d", p_port)
         prometheus_client.start_http_server(p_port, p_addr)
 
+    try:
+        version = subprocess.check_output(
+            ['git', '--git-dir=.git', 'describe'],
+            cwd=os.path.dirname(os.path.dirname(__file__)),
+            stderr=subprocess.PIPE,
+        ).decode('utf-8').strip()
+    except (OSError, subprocess.CalledProcessError):
+        version = 'v%s' % version
+        logger.info("Not a Git repository, using version=%s", version)
+    else:
+        logger.info("Running from Git repository, using version=%s",
+                    version)
+    PROM_VERSION.info({'version': version})
+
     if 'SENTRY_DSN' in config:
         import sentry_sdk
         from sentry_sdk.integrations.tornado import TornadoIntegration
-        try:
-            version = subprocess.check_output(
-                ['git', '--git-dir=.git', 'describe'],
-                cwd=os.path.dirname(os.path.dirname(__file__)),
-                stderr=subprocess.PIPE,
-            ).decode('utf-8').strip()
-        except (OSError, subprocess.CalledProcessError):
-            version = 'v%s' % version
-            logger.info("Not a Git repository, using version=%s", version)
-        else:
-            logger.info("Running from Git repository, using version=%s",
-                        version)
         logger.info("Initializing Sentry")
         sentry_sdk.init(
             dsn=config['SENTRY_DSN'],
