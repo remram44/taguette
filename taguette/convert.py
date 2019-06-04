@@ -151,6 +151,11 @@ async def calibre_to_html(input_filename, output_dir):
                      "%r" % manifests)
         raise ConversionError("Invalid output from Calibre")
 
+    if os.stat(manifest).st_size > 5_000_000:
+        logger.warning("OPF manifest is %d bytes; aborting",
+                       os.stat(manifest).st_size)
+        raise ConversionError("File is too long")
+
     # Open OEB manifest
     logger.info("Parsing OPF manifest %s", manifest)
     tree = ElementTree.parse(os.path.join(output_dir, manifest))
@@ -191,6 +196,7 @@ async def calibre_to_html(input_filename, output_dir):
     logger.info("Read %d items", len(items))
 
     # Read <spine>
+    size = 0
     for item in spine:
         if item.tag not in ('itemref', ns + 'itemref'):
             continue
@@ -219,6 +225,11 @@ async def calibre_to_html(input_filename, output_dir):
 
         # Read output
         logger.info("Reading in %r", output_name)
+        size += os.stat(output_filename).st_size
+        if size > 1_000_000:
+            logger.error("File is %d bytes for a total of %d bytes; aborting",
+                         os.stat(output_filename).st_size, size)
+            raise ConversionError("File is too long")
         with open(output_filename, 'rb') as fp:
             output.append(get_html_body(fp.read()))
     # TODO: Store media files
