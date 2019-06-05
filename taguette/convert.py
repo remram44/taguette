@@ -122,7 +122,8 @@ async def calibre_to_html(input_filename, output_dir):
     convert = 'ebook-convert'
     if os.environ.get('CALIBRE'):
         convert = os.path.join(os.environ['CALIBRE'], convert)
-    cmd = [convert, input_filename, output_dir, '--enable-heuristics']
+    cmd = [convert, input_filename, output_dir,
+           '--enable-heuristics', '--no-images']
     logger.info("Running: %s", ' '.join(cmd))
     try:
         await check_call(cmd)
