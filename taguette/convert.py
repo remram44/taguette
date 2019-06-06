@@ -153,9 +153,9 @@ async def calibre_to_html(input_filename, output_dir):
                      "%r" % manifests)
         raise ConversionError("Invalid output from Calibre")
 
-    if os.stat(manifest).st_size > 5_000_000:
-        logger.warning("OPF manifest is %d bytes; aborting",
-                       os.stat(manifest).st_size)
+    size = os.stat(os.path.join(output_dir, manifest)).st_size
+    if size > 5_000_000:
+        logger.warning("OPF manifest is %d bytes; aborting", size)
         raise ConversionError("File is too long")
 
     # Open OEB manifest
