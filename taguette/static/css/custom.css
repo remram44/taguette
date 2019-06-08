@@ -323,6 +323,13 @@ a.dropdown-item:hover {
   width: 30vh;
 }
 
+/* --------------------SCROLLBAR FOR MODALS--------------------------*/
+
+.modal-body {
+  max-height: calc(100vh - 210px);
+  overflow-y: auto;
+}
+
 /* --------------------RESPONSIVE DISPLAY HEADINGS--------------------------*/
 @media (max-width: 575.98px) {
   .display-1 {
