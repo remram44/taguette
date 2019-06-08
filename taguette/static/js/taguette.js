@@ -752,6 +752,7 @@ function createTag() {
   document.getElementById('tag-add-label-change').style.display = 'none';
   document.getElementById('tag-add-cancel').style.display = '';
   document.getElementById('tag-add-delete').style.display = 'none';
+  document.getElementById('tag-add-merge').style.display = 'none';
   $(tag_add_modal).modal();
 }
 
@@ -764,6 +765,7 @@ function editTag(tag_id) {
   document.getElementById('tag-add-label-change').style.display = '';
   document.getElementById('tag-add-cancel').style.display = 'none';
   document.getElementById('tag-add-delete').style.display = '';
+  document.getElementById('tag-add-merge').style.display = '';
   $(tag_add_modal).modal();
 }
 
