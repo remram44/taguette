@@ -1,6 +1,19 @@
 Changelog
 =========
 
+0.8 (???)
+---------
+
+Bugfixes:
+* Don't show 500 error on invalid email reset token
+* Explicitly close DB connections, which might help with some warnings
+* Don't show 'merge' button in modal when creating a new tag
+
+Features:
+* Add limits on converted file size
+* Don't have Calibre export image files from PDF, since we don't read them
+* Add a scrollbar to modals, since they can grow big in projects with many tags
+
 0.7 (2019-05-15)
 ----------------
 
