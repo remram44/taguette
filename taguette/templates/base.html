@@ -42,11 +42,9 @@
               <a class="nav-link dropdown-toggle {{ 'active' if active_page == 'account' else '' }}" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{% trans %}Account{% endtrans %}</a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <a class="dropdown-item {{ 'active' if active_page == 'account' else '' }}" href="{{ reverse_url('account') }}">{% trans %}Settings{% endtrans %}</a>
+                <a class="dropdown-item" href="{{ reverse_url('tos') }}">{% trans %}Terms of Service{% endtrans %}</a>
                 <a class="dropdown-item" href="{{ reverse_url('logout') }}">{% trans %}Log out{% endtrans %}</a>
               </div>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ reverse_url('tos') }}">Terms of Service</a>
             </li>
             {% else %}
             <li class="nav-item {{ 'active' if active_page == 'login' else '' }}">
