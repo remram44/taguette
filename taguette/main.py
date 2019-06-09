@@ -249,7 +249,7 @@ def main():
             stderr=subprocess.PIPE,
         ).decode('utf-8').strip()
     except (OSError, subprocess.CalledProcessError):
-        version = 'v%s' % version
+        version = 'v%s' % __version__
         logger.info("Not a Git repository, using version=%s", version)
     else:
         logger.info("Running from Git repository, using version=%s",
