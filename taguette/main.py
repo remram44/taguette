@@ -221,6 +221,13 @@ def main():
         if missing:
             sys.exit(2)
     else:
+        if args.debug:
+            # Use a deterministic secret key, to avoid it changing during
+            # auto-reload and such
+            secret = 'debug'
+        else:
+            secret = os.urandom(30).decode('iso-8859-15')
+
         # Set configuration from command-line
         config = dict(
             DEFAULT_CONFIG,
@@ -228,7 +235,7 @@ def main():
             BIND_ADDRESS=args.bind,
             PORT=int(args.port),
             DATABASE=prepare_db(args.database),
-            SECRET_KEY=os.urandom(30).decode('iso-8859-15'),
+            SECRET_KEY=secret,
         )
 
     if 'PROMETHEUS_LISTEN' in config:
