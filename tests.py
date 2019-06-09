@@ -3,6 +3,7 @@ import json
 import os
 import re
 from sqlalchemy import create_engine
+from sqlalchemy.orm import close_all_sessions
 from tornado.testing import AsyncTestCase, gen_test, AsyncHTTPTestCase, \
     get_async_test_timeout
 import unittest
@@ -223,7 +224,7 @@ class TestMultiuser(MyHTTPTestCase):
             return self.application
 
     def tearDown(self):
-        self.application.DBSession.close_all()
+        close_all_sessions()
         engine = create_engine(DATABASE_URI)
         database.Base.metadata.drop_all(bind=engine)
 
@@ -446,7 +447,7 @@ class TestSingleuser(MyHTTPTestCase):
             return self.application
 
     def tearDown(self):
-        self.application.DBSession.close_all()
+        close_all_sessions()
         engine = create_engine(DATABASE_URI)
         database.Base.metadata.drop_all(bind=engine)
 
