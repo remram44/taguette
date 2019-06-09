@@ -187,6 +187,12 @@ class Register(BaseHandler):
                                register_error=self.gettext(e.message))
 
 
+class TermsOfService(BaseHandler):
+    @PROM_REQUESTS.sync('tos')
+    def get(self):
+        return self.render('tos.html')
+
+
 class Account(BaseHandler):
     def get_languages(self):
         return [
