@@ -47,8 +47,8 @@ class TestConvert(AsyncTestCase):
             "images: <img src=\"/static/missing.png\" width=\"50\"> "
             "<img src=\"/static/missing.png\" width=\"30\"> "
             "<img src=\"/static/missing.png\">, and "
-            "links: <a href=\"#\">1</a> "
-            "<a href=\"#\">2</a> "
+            "links: <a title=\"here\">1</a> "
+            "<a title=\"/over/there\">2</a> "
             "<a href=\"http://and/the/last/one\">3</a></p>"
         )
 
