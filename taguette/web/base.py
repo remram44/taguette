@@ -181,11 +181,12 @@ class BaseHandler(RequestHandler):
                 self.get_cookie('user')):
             return super(BaseHandler, self).set_cookie(name, value, **kwargs)
         else:
-            return self.redirect(
+            self.redirect(
                 self.reverse_url('cookies_prompt') +
                 '?' +
                 urlencode(dict(next=self.request.uri)),
             )
+            raise HTTPError(302)
 
     def get_user_locale(self):
         if self.current_user is not None:
