@@ -99,7 +99,7 @@ class Login(BaseHandler):
         )
 
     def _go_to_next(self):
-        next_ = self.get_argument('next')
+        next_ = self.get_argument('next', '')
         if not next_:
             next_ = self.reverse_url('index')
         return self.redirect(next_)
