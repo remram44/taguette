@@ -55,6 +55,7 @@ def make_app(config, debug=False, xsrf_cookies=True):
         [
             # Basic pages
             URLSpec('/', views.Index, name='index'),
+            URLSpec('/cookies', views.CookiesPrompt, name='cookies_prompt'),
             URLSpec('/login', views.Login, name='login'),
             URLSpec('/logout', views.Logout, name='logout'),
             URLSpec('/register', views.Register, name='register'),

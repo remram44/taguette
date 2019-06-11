@@ -3,6 +3,8 @@ import hashlib
 import hmac
 import json
 import logging
+from urllib.parse import urlencode
+
 import jinja2
 import pkg_resources
 import smtplib
@@ -168,6 +170,22 @@ class BaseHandler(RequestHandler):
             return user.decode('utf-8')
         else:
             return None
+
+    def set_cookie(self, name, value, domain=None,
+                   expires=None, path='/', expires_days=None,
+                   *, dont_check=False,
+                   **kwargs):
+        if (dont_check or
+                not self.application.config['COOKIES_PROMPT'] or
+                self.get_cookie('cookies_accepted') or
+                self.get_cookie('user')):
+            return super(BaseHandler, self).set_cookie(name, value, **kwargs)
+        else:
+            return self.redirect(
+                self.reverse_url('cookies_prompt') +
+                '?' +
+                urlencode(dict(next=self.request.uri)),
+            )
 
     def get_user_locale(self):
         if self.current_user is not None:

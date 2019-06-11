@@ -63,6 +63,26 @@ class Index(BaseHandler):
         return self.render('welcome.html')
 
 
+class CookiesPrompt(BaseHandler):
+    PROM_PAGE.labels('cookies_prompt').inc(0)
+
+    def get(self):
+        PROM_PAGE.labels('cookies_prompt').inc()
+        return self.render('cookies_prompt.html',
+                           next=self.get_argument('next', ''))
+
+    def post(self):
+        PROM_PAGE.labels('cookies_prompt').inc()
+        self.set_cookie('cookies_accepted', 'yes', dont_check=True)
+        next_ = self.get_argument('next', '')
+        if not next_:
+            next_ = self.reverse_url('index')
+        return self.redirect(next_)
+
+    def check_xsrf_cookie(self):
+        pass
+
+
 class Login(BaseHandler):
     PROM_PAGE.labels('login').inc(0)
 
