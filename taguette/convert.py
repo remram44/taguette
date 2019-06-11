@@ -95,7 +95,11 @@ def get_html_body(body):
         if not (href.startswith('http://') or
                 href.startswith('https://') or
                 href.startswith('mailto:')):
+            e.attrs['title'] = e.attrs['href']
             del e.attrs['href']
+        else:
+            if 'title' in e.attrs:
+                del e.attrs['title']
     # Back to string
     body = str(soup)
     del soup
@@ -107,7 +111,7 @@ def get_html_body(body):
               'h1', 'h2', 'h3', 'h4', 'h5',
               'strong', 'em', 'b', 'u',
               'ul', 'ol', 'li'],
-        attributes={'a': ['href'], 'img': ['src', 'width', 'height']},
+        attributes={'a': ['href', 'title'], 'img': ['src', 'width', 'height']},
         strip=True,
     )
 
