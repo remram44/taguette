@@ -95,7 +95,7 @@ def get_html_body(body):
         if not (href.startswith('http://') or
                 href.startswith('https://') or
                 href.startswith('mailto:')):
-            e.attrs['href'] = '#'
+            del e.attrs['href']
     # Back to string
     body = str(soup)
     del soup

@@ -17,6 +17,11 @@
   color: #3498DB;
 }
 
+/* Disabled links */
+#document-contents a:not([href]) {
+  color: #216490;
+}
+
 .container-body a:not(.btn, .dropdown, .badge):hover {
   color: #0f2d41 !important;
   text-decoration: underline;
