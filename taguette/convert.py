@@ -92,7 +92,9 @@ def get_html_body(body):
         if 'href' not in e.attrs:
             continue
         href = e.attrs['href'].lower()
-        if not href.startswith('http://') and not href.startswith('https://'):
+        if not (href.startswith('http://') or
+                href.startswith('https://') or
+                href.startswith('mailto:')):
             e.attrs['href'] = '#'
     # Back to string
     body = str(soup)
