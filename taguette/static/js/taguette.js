@@ -506,13 +506,30 @@ function createDocument() {
   $(document_add_modal).modal();
 }
 
+function basename(filename) {
+  if(filename) {
+    var idx = Math.max(filename.lastIndexOf('/'), filename.lastIndexOf('\\'));
+    if(idx > -1) {
+      filename = filename.substring(idx + 1);
+    }
+  }
+  return filename;
+}
+
+document.getElementById('document-add-file').addEventListener('change', function(e) {
+  document.getElementById('document-add-name').setAttribute('placeholder', basename(this.value));
+});
+
 document.getElementById('document-add-form').addEventListener('submit', function(e) {
   e.preventDefault();
   console.log("Uploading document...");
 
   var form_data = new FormData();
-  form_data.append('name',
-                   document.getElementById('document-add-name').value);
+  var name = document.getElementById('document-add-name').value;
+  if(!name) {
+    name = basename(document.getElementById('document-add-file').value);
+  }
+  form_data.append('name', name);
   form_data.append('description',
                    document.getElementById('document-add-description').value);
   form_data.append('file',
