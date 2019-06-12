@@ -148,11 +148,12 @@ class Register(BaseHandler):
             if password1 != password2:
                 raise validate.InvalidFormat(_f("Passwords do not match"))
             if self.db.query(database.User).get(login) is not None:
-                raise validate.InvalidFormat(_f("Username is taken"))
+                raise validate.InvalidFormat(_f("User name is taken"))
             if (email and
                     self.db.query(database.User)
                     .filter(database.User.email == email).count() > 0):
-                raise validate.InvalidFormat(_f("Email is already used"))
+                raise validate.InvalidFormat(_f("Email address is already "
+                                                "used"))
             user = database.User(login=login)
             user.set_password(password1)
             if email:
@@ -240,8 +241,8 @@ class AskResetPassword(BaseHandler):
         if user is None:
             return self.render(
                 'reset_password.html',
-                error=self.gettext("This email is not associated with any "
-                                   "user"),
+                error=self.gettext("This email address is not associated with "
+                                   "any user"),
             )
         elif (user.email_sent is None or
                 user.email_sent + timedelta(days=1) < datetime.utcnow()):
