@@ -8,11 +8,15 @@ Bugfixes:
 * Don't show 500 error on invalid email reset token
 * Explicitly close DB connections, which might help with some warnings
 * Don't show 'merge' button in modal when creating a new tag
+* Fix getting logged out in single-user mode with `--debug`
+* Don't scroll to the top of the document when clicking on a disabled link
 
 Features:
 * Add limits on converted file size
 * Don't have Calibre export image files from PDF, since we don't read them
 * Add a scrollbar to modals, since they can grow big in projects with many tags
+* Use the file name as document name if left blank
+* Show cookie warning before setting any (optional in configuration)
 
 0.7 (2019-05-15)
 ----------------
