@@ -82,6 +82,9 @@ MAIL_SERVER = {{
     "port": 25,
 }}
 
+# Whether users must explicitly accept cookies before using the website
+COOKIES_PROMPT = True
+
 # Whether new users can create an account
 REGISTRATION_ENABLED = True
 
@@ -109,7 +112,7 @@ DEFAULT_CONFIG = {
 }
 
 REQUIRED_CONFIG = ['NAME', 'PORT', 'SECRET_KEY', 'DATABASE',
-                   'EMAIL', 'MAIL_SERVER']
+                   'EMAIL', 'MAIL_SERVER', 'COOKIES_PROMPT']
 
 
 def main():
@@ -236,6 +239,7 @@ def main():
             PORT=int(args.port),
             DATABASE=prepare_db(args.database),
             SECRET_KEY=secret,
+            COOKIES_PROMPT=False,
         )
 
     if 'PROMETHEUS_LISTEN' in config:

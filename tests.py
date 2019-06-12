@@ -218,6 +218,7 @@ class TestMultiuser(MyHTTPTestCase):
                 DATABASE=DATABASE_URI,
                 EMAIL='test@example.com',
                 MAIL_SERVER={'host': 'localhost', 'port': 25},
+                COOKIES_PROMPT=True,
                 MULTIUSER=True,
                 SECRET_KEY='2PbQ/5Rs005G/nTuWfibaZTUAo3Isng3QuRirmBK',
             ))
@@ -241,6 +242,17 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual([user.login
                           for user in db.query(database.User).all()],
                          ['admin'])
+
+        # Fetch registration page, should hit cookies prompt
+        response = self.get('/register')
+        self.assertEqual(response.code, 302)
+        self.assertEqual(response.headers['Location'],
+                         '/cookies?next=%2Fregister')
+
+        # Accept cookies
+        response = self.post('/cookies', dict(next='/register'))
+        self.assertEqual(response.code, 302)
+        self.assertEqual(response.headers['Location'], '/register')
 
         # Fetch registration page
         response = self.get('/register')
@@ -293,6 +305,11 @@ class TestMultiuser(MyHTTPTestCase):
 
     @gen_test
     async def test_projects(self):
+        # Accept cookies
+        response = await self.apost('/cookies', dict())
+        self.assertEqual(response.code, 302)
+        self.assertEqual(response.headers['Location'], '/')
+
         # Log in
         response = await self.aget('/login')
         self.assertEqual(response.code, 200)
@@ -439,6 +456,7 @@ class TestSingleuser(MyHTTPTestCase):
                     DATABASE=DATABASE_URI,
                     EMAIL='test@example.com',
                     MAIL_SERVER={'host': 'localhost', 'port': 25},
+                    COOKIES_PROMPT=False,
                     MULTIUSER=False,
                     SECRET_KEY='bq7ZoAtO7LtRJJ4P0iHSdH8yvcmCqynfeGB+x9y1',
                 ),
