@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Taguette 0.7\n"
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
-"POT-Creation-Date: 2019-06-11 10:08-0400\n"
+"POT-Creation-Date: 2019-06-11 19:58-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -438,15 +438,15 @@ msgid "Passwords do not match"
 msgstr ""
 
 #: taguette/web/views.py:151
-msgid "Username is taken"
+msgid "User name is taken"
 msgstr ""
 
 #: taguette/web/views.py:155
-msgid "Email is already used"
+msgid "Email address is already used"
 msgstr ""
 
 #: taguette/web/views.py:243
-msgid "This email is not associated with any user"
+msgid "This email address is not associated with any user"
 msgstr ""
 
 #: taguette/web/views.py:265
@@ -454,27 +454,24 @@ msgid "Password reset for Taguette"
 msgstr ""
 
 #. Default tag 1, name
-#: taguette/web/views.py:354
+#: taguette/web/views.py:360
 msgid "interesting"
 msgstr ""
 
 #. Default tag 1, description
-#: taguette/web/views.py:356
+#: taguette/web/views.py:362
 msgid "Further review required"
 msgstr ""
 
 #. Default tag 2, name
-#: taguette/web/views.py:361
+#: taguette/web/views.py:367
 msgid "people"
 msgstr ""
 
 #. Default tag 2, description
-#: taguette/web/views.py:363
+#: taguette/web/views.py:369
 msgid "Known people"
 msgstr ""
-
-#: taguette/main.py:152
-msgid "Port number on which to listen"
 
 #: taguette/validate.py:21
 msgid "Project name cannot be empty"
@@ -541,56 +538,60 @@ msgid "Tag description is too long"
 msgstr ""
 
 #: taguette/main.py:154
-msgid "Address to bind on"
+msgid "Port number on which to listen"
 msgstr ""
 
 #: taguette/main.py:156
-msgid "Open web browser to the application"
+msgid "Address to bind on"
 msgstr ""
 
 #: taguette/main.py:158
+msgid "Open web browser to the application"
+msgstr ""
+
+#: taguette/main.py:160
 msgid "Don't open the web browser"
 msgstr ""
 
-#: taguette/main.py:163
+#: taguette/main.py:165
 #, python-format
 msgid ""
 "Database location or connection string, for example 'project.db' or "
 "'postgresql://me:pw@localhost/mydb' (default: %(default)r)"
 msgstr ""
 
-#: taguette/main.py:170
+#: taguette/main.py:172
 msgid "additional commands"
 msgstr ""
 
-#: taguette/main.py:174
+#: taguette/main.py:176
 msgid "Manually trigger a database migration"
 msgstr ""
 
-#: taguette/main.py:183
+#: taguette/main.py:185
 msgid "Print the default server configuration"
 msgstr ""
 
-#: taguette/main.py:185
+#: taguette/main.py:187
 msgid "Output to this file rather than stdout"
 msgstr ""
 
-#: taguette/main.py:191
+#: taguette/main.py:193
 msgid "Run in server mode, suitable for a multi-user deployment"
 msgstr ""
 
-#: taguette/main.py:193
+#: taguette/main.py:195
 msgid ""
 "Configuration file for the server. The default configuration can be "
 "generated using the `default-config` command"
 msgstr ""
 
-#: taguette/main.py:215
+#: taguette/main.py:217
 #, python-format
 msgid "Missing required configuration variable %(var)s"
 msgstr ""
 
-#: taguette/main.py:276
+#: taguette/main.py:287
 #, python-format
 msgid ""
 "\n"
