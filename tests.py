@@ -432,11 +432,116 @@ class TestMultiuser(MyHTTPTestCase):
         poll_proj2 = self.poll_event(2, 4)
 
         # Create highlight 1 in document 1
+        response = await self.apost('/api/project/1/document/1/highlight/new',
+                                    dict(start_offset=3, end_offset=7,
+                                         tags=[1]),
+                                    fmt='json')
+        self.assertEqual(response.code, 200)
+        self.assertEqual(response.body, b'{"id": 1}')
+        self.assertEqual(
+            await poll_proj1,
+            {'highlight_add': {'1': [{'id': 1, 'tags': [1],
+                                      'start_offset': 3, 'end_offset': 7}]},
+             'id': 5})
+        poll_proj1 = self.poll_event(1, 5)
+
         # Change project 2 metadata
+        response = await self.apost('/api/project/2',
+                                    {'name': 'new project',
+                                     'description': "Meaningful"},
+                                    fmt='json')
+        self.assertEqual(response.code, 200)
+        self.assertEqual(response.body, b'{}')
+        self.assertEqual(
+            await poll_proj2,
+            {'project_meta': {'name': 'new project',
+                              'description': 'Meaningful'},
+             'id': 6})
+        poll_proj2 = self.poll_event(2, 6)
+
         # Create document 3 in project 2
+        response = await self.apost(
+            '/api/project/2/document/new',
+            dict(name='third',
+                 description='Last one'),
+            fmt='multipart',
+            files=dict(file=(
+                'C:\\Users\\Vicky\\Documents\\study.html',
+                'text/html',
+                b'<strong>Opinions</strong> and <em>facts</em>!',
+            )),
+        )
+        self.assertEqual(response.code, 200)
+        self.assertEqual(response.body, b'{"created": 3}')
+        self.assertEqual(
+            await poll_proj2,
+            {'document_add': [{'description': 'Last one', 'id': 3,
+                               'name': 'third'}], 'id': 7})
+        poll_proj2 = self.poll_event(2, 7)
+
+        # Create highlight in document 2, using wrong project id
+        response = await self.apost('/api/project/1/document/2/highlight/new',
+                                    dict(start_offset=0, end_offset=4,
+                                         tags=[3]),
+                                    fmt='json')
+        self.assertEqual(response.code, 404)
+
         # Create highlight 2 in document 2
+        response = await self.apost('/api/project/2/document/2/highlight/new',
+                                    dict(start_offset=0, end_offset=4,
+                                         tags=[3]),
+                                    fmt='json')
+        self.assertEqual(response.code, 200)
+        self.assertEqual(response.body, b'{"id": 2}')
+        self.assertEqual(
+            await poll_proj2,
+            {'highlight_add': {'2': [{'id': 2, 'tags': [3],
+                                      'start_offset': 0, 'end_offset': 4}]},
+             'id': 8})
+        poll_proj2 = self.poll_event(2, 8)
+
         # Create highlight 3 in document 2
-        # List highlights in project 2
+        response = await self.apost('/api/project/2/document/2/highlight/new',
+                                    dict(start_offset=13, end_offset=17,
+                                         tags=[4, 5]),
+                                    fmt='json')
+        self.assertEqual(response.code, 200)
+        self.assertEqual(response.body, b'{"id": 3}')
+        self.assertEqual(
+            await poll_proj2,
+            {'highlight_add': {'2': [{'id': 3, 'tags': [4, 5],
+                                      'start_offset': 13, 'end_offset': 17}]},
+             'id': 9})
+        poll_proj2 = self.poll_event(2, 9)
+
+        # List highlights in project 2 under 'people'
+        response = await self.aget('/api/project/2/highlights/people')
+        self.assertEqual(response.code, 200)
+        self.assertEqual(json.loads(response.body),
+                         {'highlights': [
+                             {'id': 3, 'document_id': 2, 'tags': [4, 5],
+                              'content': "tent"},
+                         ]})
+
+        # List highlights in project 2 under 'interesting'
+        response = await self.aget('/api/project/2/highlights/interesting')
+        self.assertEqual(response.code, 200)
+        self.assertEqual(json.loads(response.body),
+                         {'highlights': [
+                             {'id': 2, 'document_id': 2, 'tags': [3],
+                              'content': "diff"},
+                         ]})
+
+        # List all highlights in project 2
+        response = await self.aget('/api/project/2/highlights/')
+        self.assertEqual(response.code, 200)
+        self.assertEqual(json.loads(response.body),
+                         {'highlights': [
+                             {'id': 2, 'document_id': 2, 'tags': [3],
+                              'content': "diff"},
+                             {'id': 3, 'document_id': 2, 'tags': [4, 5],
+                              'content': "tent"},
+                         ]})
 
     async def poll_event(self, proj, from_id):
         response = await self.aget('/api/project/%d/events?from=%d' % (
