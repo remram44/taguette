@@ -292,6 +292,11 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(response.code, 302)
         self.assertEqual(response.headers['Location'], '/')
 
+        # Hit error page
+        response = self.get('/api/project/1/highlights/')
+        self.assertEqual(response.code, 403)
+        self.assertEqual(response.body, b'{"error": "Not logged in"}')
+
         # Fetch login page
         response = self.get('/login?' + urlencode(dict(next='/project/1')))
         self.assertEqual(response.code, 200)
@@ -542,6 +547,8 @@ class TestMultiuser(MyHTTPTestCase):
                              {'id': 3, 'document_id': 2, 'tags': [4, 5],
                               'content': "tent"},
                          ]})
+
+        # TODO: Export
 
     async def poll_event(self, proj, from_id):
         response = await self.aget('/api/project/%d/events?from=%d' % (
