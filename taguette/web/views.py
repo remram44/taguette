@@ -29,13 +29,10 @@ class Index(BaseHandler):
     """
     PROM_PAGE.labels('index').inc(0)
     PROM_PAGE.labels('welcome').inc(0)
-    PROM_PAGE.labels('token').inc(0)
-    PROM_PAGE.labels('token_needed').inc(0)
 
     def get(self):
         if self.current_user is not None:
             if self.get_query_argument('token', None):
-                PROM_PAGE.labels('token').inc()
                 return self.redirect(self.reverse_url('index'))
             user = self.db.query(database.User).get(self.current_user)
             if user is None:
@@ -50,14 +47,11 @@ class Index(BaseHandler):
         elif not self.application.config['MULTIUSER']:
             token = self.get_query_argument('token', None)
             if token and token == self.application.single_user_token:
-                PROM_PAGE.labels('token').inc()
                 self.login('admin')
                 return self.redirect(self.reverse_url('index'))
             elif token:
-                PROM_PAGE.labels('token_needed').inc()
                 return self.redirect(self.reverse_url('index'))
             else:
-                PROM_PAGE.labels('token_needed').inc()
                 return self.render('token_needed.html')
         PROM_PAGE.labels('welcome').inc()
         return self.render('welcome.html')
