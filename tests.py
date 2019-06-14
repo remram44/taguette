@@ -26,7 +26,7 @@ class TestConvert(AsyncTestCase):
         body = (
             b"<!DOCTYPE html>\n"
             b"<html>\n  <head>\n  <title>Test</title>\n</head>\n<body>"
-            b"<h1>Example</h1><p>This is an example text document.\n"
+            b"<h1>Example</h1><p>This is an <a>example</a> text document.\n"
             b"It should be <blink>converted</blink>.</p>\n\n"
             b"<p>It has another paragraph <strong>here</strong>, "
             b"images: <img width=\"50\" src=\"here.png\"> "

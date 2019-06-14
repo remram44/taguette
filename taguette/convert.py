@@ -90,6 +90,7 @@ def get_html_body(body):
     # Update 'href' URLs
     for e in soup.find_all('a'):
         if 'href' not in e.attrs:
+            e.replace_with(e.text)
             continue
         href = e.attrs['href'].lower()
         if not (href.startswith('http://') or
