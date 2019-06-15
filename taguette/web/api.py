@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import aliased
 from tornado.concurrent import Future
 import tornado.log
-from tornado.web import MissingArgumentError
+from tornado.web import MissingArgumentError, HTTPError
 
 from .. import convert
 from .. import database
@@ -46,6 +46,8 @@ class CheckUser(BaseHandler):
     @api_auth
     def post(self):
         PROM_API.labels('check_user').inc()
+        if not self.application.config['MULTIUSER']:
+            raise HTTPError(404)
         login = self.get_json()['login']
         if validate.user_login(login):
             user = self.db.query(database.User).get(login)
@@ -533,6 +535,8 @@ class MembersUpdate(BaseHandler):
     @api_auth
     def patch(self, project_id):
         PROM_API.labels('members_update').inc()
+        if not self.application.config['MULTIUSER']:
+            raise HTTPError(404)
         project, privileges = self.get_project(project_id)
         if not privileges.can_edit_members():
             self.set_status(403)
