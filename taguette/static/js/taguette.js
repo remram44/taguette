@@ -1197,7 +1197,7 @@ function showMembers() {
 document.getElementById('members-add').addEventListener('submit', function(e) {
   e.preventDefault();
 
-  var login = document.getElementById('member-add-name').value;
+  var login = document.getElementById('member-add-name').value.toLowerCase();
   if(!login) { return; }
   var privileges = document.getElementById('member-add-privileges').value;
 

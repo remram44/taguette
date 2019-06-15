@@ -49,7 +49,11 @@ class CheckUser(BaseHandler):
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         login = self.get_json()['login']
-        if validate.user_login(login):
+        try:
+            login = validate.user_login(login)
+        except validate.InvalidFormat:
+            pass
+        else:
             user = self.db.query(database.User).get(login)
             if user is not None:
                 return self.send_json({'exists': True})
