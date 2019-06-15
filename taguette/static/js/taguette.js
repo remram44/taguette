@@ -1117,6 +1117,7 @@ function removeMember(login) {
 
 var members_modal = document.getElementById('members-modal');
 var members_initial = {};
+var members_displayed = {};
 
 function _memberRow(login, user) {
   var elem = document.createElement('div');
@@ -1143,6 +1144,7 @@ function _memberRow(login, user) {
 
   elem.querySelector('button').addEventListener('click', function(e) {
     elem.parentNode.removeChild(elem);
+    delete members_displayed[login];
   });
 
   return elem;
@@ -1150,6 +1152,12 @@ function _memberRow(login, user) {
 
 function showMembers() {
   document.getElementById('members-add').reset();
+
+  if(members[user_login].privileges == 'ADMIN') {
+    document.getElementById('members-fields').removeAttribute('disabled');
+  } else {
+    document.getElementById('members-fields').setAttribute('disabled', 1);
+  }
 
   var entries = Object.entries(members);
   sortByKey(entries, function(e) { return e[0]; });
@@ -1181,6 +1189,7 @@ function showMembers() {
 
   // Store current state so that we can compare later
   members_initial = Object.assign({}, members);
+  members_displayed = Object.assign({}, members);
 
   $(members_modal).modal();
 }
@@ -1192,12 +1201,29 @@ document.getElementById('members-add').addEventListener('submit', function(e) {
   if(!login) { return; }
   var privileges = document.getElementById('member-add-privileges').value;
 
-  // Add it at the top
-  var elem = _memberRow(login, {privileges: privileges});
-  var current_members = document.getElementById('members-current');
-  current_members.insertBefore(elem, current_members.firstChild);
+  // Check login
+  if(login in members_displayed) {
+    alert(gettext("Already a member!"));
+    document.getElementById('members-add').reset();
+    return;
+  }
+  postJSON(
+    '/api/check_user',
+    {login: login}
+  )
+  .then(function(result) {
+    if(result.exists) {
+      // Add it at the top
+      var elem = _memberRow(login, {privileges: privileges});
+      var current_members = document.getElementById('members-current');
+      current_members.insertBefore(elem, current_members.firstChild);
+      members_displayed[login] = true;
 
-  document.getElementById('members-add').reset();
+      document.getElementById('members-add').reset();
+    } else {
+      alert(gettext("This user doesn't exist!"));
+    }
+  })
 });
 
 function sendMembersPatch() {

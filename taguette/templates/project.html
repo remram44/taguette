@@ -116,26 +116,28 @@
       </div>
       <div class="modal-body">
         <div class="container">
-          <h5>{% trans %}Add Collaborators{% endtrans %}</h5>
-          <form id="members-add">
-            <div class="row">
-              <div class="col-md-4 form-group">
-                <input type="text" class="form-control" id="member-add-name" placeholder="{{ gettext("Username") }}" required />
+          <fieldset id="members-fields">
+            <h5>{% trans %}Add Collaborators{% endtrans %}</h5>
+            <form id="members-add">
+              <div class="row">
+                <div class="col-md-4 form-group">
+                  <input type="text" class="form-control" id="member-add-name" placeholder="{{ gettext("Username") }}" required />
+                </div>
+                <div class="col-md-4 form-group">
+                  <select id="member-add-privileges" class="form-control">
+                    <option value="ADMIN">{# TRANSLATORS: Permissions level #}{% trans %}Full permissions{% endtrans %}</option>
+                    <option value="MANAGE_DOCS">{# TRANSLATORS: Permissions level #}{% trans %}Can't change collaborators / delete project{% endtrans %}</option>
+                    <option value="TAG" selected>{# TRANSLATORS: Permissions level #}{% trans %}View & make changes{% endtrans %}</option>
+                    <option value="READ">{# TRANSLATORS: Permissions level #}{% trans %}View only{% endtrans %}</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-info col-md-4 form-group">{% trans %}Add to project{% endtrans %}</button>
               </div>
-              <div class="col-md-4 form-group">
-                <select id="member-add-privileges" class="form-control">
-                  <option value="ADMIN">{# TRANSLATORS: Permissions level #}{% trans %}Full permissions{% endtrans %}</option>
-                  <option value="MANAGE_DOCS">{# TRANSLATORS: Permissions level #}{% trans %}Can't change collaborators / delete project{% endtrans %}</option>
-                  <option value="TAG" selected>{# TRANSLATORS: Permissions level #}{% trans %}View & make changes{% endtrans %}</option>
-                  <option value="READ">{# TRANSLATORS: Permissions level #}{% trans %}View only{% endtrans %}</option>
-                </select>
-              </div>
-              <button type="submit" class="btn btn-info col-md-4 form-group">{% trans %}Add to project{% endtrans %}</button>
-            </div>
-          </form>
-          <h5>{% trans %}Current Collaborators{% endtrans %}</h5>
-          <form id="members-current">
-          </form>
+            </form>
+            <h5>{% trans %}Current Collaborators{% endtrans %}</h5>
+            <form id="members-current">
+            </form>
+          </fieldset>
         </div>
       </div>
       <div class="modal-footer">
