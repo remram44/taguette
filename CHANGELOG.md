@@ -20,6 +20,7 @@ Features:
 * Show cookie warning before setting any (optional in configuration)
 * Add the REFI-QDA Codebook (.qdc) export format
 * Improve the collaborator management modal
+* Show the number of highlights which each tag in the "highlights" panel
 
 0.7 (2019-05-15)
 ----------------
