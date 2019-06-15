@@ -646,6 +646,9 @@ function linkTag(elem, tag_path) {
 linkTag(document.getElementById('load-all-tags'), '');
 
 function addTag(tag) {
+  if(!('count' in tag) && tag.id in tags) {
+    tag.count = tags[tag.id].count;
+  }
   tags[tag.id] = tag;
   updateTagsList();
 }
