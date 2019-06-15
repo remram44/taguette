@@ -1117,6 +1117,7 @@ function removeMember(login) {
 
 var members_modal = document.getElementById('members-modal');
 var members_initial = {};
+var members_displayed = {};
 
 function _memberRow(login, user) {
   var elem = document.createElement('div');
@@ -1143,6 +1144,7 @@ function _memberRow(login, user) {
 
   elem.querySelector('button').addEventListener('click', function(e) {
     elem.parentNode.removeChild(elem);
+    delete members_displayed[login];
   });
 
   return elem;
@@ -1181,6 +1183,7 @@ function showMembers() {
 
   // Store current state so that we can compare later
   members_initial = Object.assign({}, members);
+  members_displayed = Object.assign({}, members);
 
   $(members_modal).modal();
 }
@@ -1190,12 +1193,18 @@ document.getElementById('members-add').addEventListener('submit', function(e) {
 
   var login = document.getElementById('member-add-name').value;
   if(!login) { return; }
+  if(login in members_displayed) {
+    alert(gettext("Already a member!"));
+    document.getElementById('members-add').reset();
+    return;
+  }
   var privileges = document.getElementById('member-add-privileges').value;
 
   // Add it at the top
   var elem = _memberRow(login, {privileges: privileges});
   var current_members = document.getElementById('members-current');
   current_members.insertBefore(elem, current_members.firstChild);
+  members_displayed[login] = true;
 
   document.getElementById('members-add').reset();
 });
