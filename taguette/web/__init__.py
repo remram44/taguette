@@ -90,6 +90,7 @@ def make_app(config, debug=False, xsrf_cookies=True):
                     export.ExportHighlightsDoc, name='export_highlights_doc'),
 
             # API
+            URLSpec('/api/check_user', api.CheckUser),
             URLSpec('/api/project/([0-9]+)', api.ProjectMeta),
             URLSpec('/api/project/([0-9]+)/document/new', api.DocumentAdd),
             URLSpec('/api/project/([0-9]+)/document/([0-9]+)',

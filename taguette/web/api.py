@@ -40,6 +40,20 @@ def api_auth(method):
     return wrapper
 
 
+class CheckUser(BaseHandler):
+    PROM_API.labels('check_user').inc(0)
+
+    @api_auth
+    def post(self):
+        PROM_API.labels('check_user').inc()
+        login = self.get_json()['login']
+        if validate.user_login(login):
+            user = self.db.query(database.User).get(login)
+            if user is not None:
+                return self.send_json({'exists': True})
+        return self.send_json({'exists': False})
+
+
 class ProjectMeta(BaseHandler):
     PROM_API.labels('project_meta').inc(0)
 
