@@ -1153,6 +1153,12 @@ function _memberRow(login, user) {
 function showMembers() {
   document.getElementById('members-add').reset();
 
+  if(members[user_login].privileges == 'ADMIN') {
+    document.getElementById('members-fields').removeAttribute('disabled');
+  } else {
+    document.getElementById('members-fields').setAttribute('disabled', 1);
+  }
+
   var entries = Object.entries(members);
   sortByKey(entries, function(e) { return e[0]; });
   console.log(
