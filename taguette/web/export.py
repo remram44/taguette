@@ -2,18 +2,33 @@ import bisect
 import csv
 import io
 import logging
+import uuid
+from xml.sax.saxutils import XMLGenerator
+from xml.sax.xmlreader import AttributesNSImpl
+
 from markupsafe import Markup
 import prometheus_client
 from sqlalchemy.orm import aliased, joinedload
 from tornado.web import authenticated
 
-from .. import convert
+from .. import convert, __version__
 from .. import database
 from .. import extract
 from .base import BaseHandler
 
 
 logger = logging.getLogger(__name__)
+
+
+TAGUETTE_NAMESPACE = uuid.UUID('51B2B2B7-27EB-4ECB-9D56-E75B0A0496C2')
+
+
+class WriteAdapter(object):
+    def __init__(self, write_func):
+        self.write = write_func
+
+    def flush(self):
+        pass
 
 
 PROM_EXPORT = prometheus_client.Counter(
@@ -134,6 +149,57 @@ class ExportDocument(BaseHandler):
         # Drop non-ASCII characters from the name
         name = doc.name.encode('ascii', 'ignore').decode('ascii') or None
         return name, html
+
+
+class ExportCodebookXml(BaseHandler):
+    PROM_EXPORT.labels('codebook', 'qdc').inc(0)
+
+    @authenticated
+    def get(self, project_id):
+        PROM_EXPORT.labels('codebook', 'qdc').inc()
+        project, _ = self.get_project(project_id)
+        tags = list(project.tags)
+        self.set_header('Content-Type', 'text/xml; charset=utf-8')
+        self.set_header('Content-Disposition',
+                        'attachment; filename="codebook.qdc"')
+
+        # http://schema.qdasoftware.org/versions/Codebook/v1.0/Codebook.xsd
+        output = XMLGenerator(WriteAdapter(self.write), encoding='utf-8',
+                              short_empty_elements=True)
+        output.startDocument()
+        output.startPrefixMapping(None, 'urn:QDA-XML:codebook:1.0')
+        output.startElementNS(
+            (None, 'CodeBook'), 'CodeBook',
+            AttributesNSImpl({(None, 'origin'): 'Taguette %s' % __version__},
+                             {(None, 'origin'): 'origin'}),
+        )
+        output.startElementNS(
+            (None, 'Codes'), 'Codes',
+            AttributesNSImpl({}, {}),
+        )
+        for tag in tags:
+            guid = uuid.uuid5(TAGUETTE_NAMESPACE, tag.path)
+            guid = str(guid).upper()
+            output.startElementNS(
+                (None, 'Code'), 'Code',
+                AttributesNSImpl({(None, 'guid'): guid,
+                                  (None, 'name'): tag.path,
+                                  (None, 'isCodable'): 'true'},
+                                 {(None, 'guid'): 'guid',
+                                  (None, 'name'): 'name',
+                                  (None, 'isCodable'): 'isCodable'}),
+            )
+            output.endElementNS((None, 'Code'), 'Code')
+        output.endElementNS((None, 'Codes'), 'Codes')
+        output.startElementNS(
+            (None, 'Sets'), 'Sets',
+            AttributesNSImpl({}, {}),
+        )
+        output.endElementNS((None, 'Sets'), 'Sets')
+        output.endElementNS((None, 'CodeBook'), 'CodeBook')
+        output.endPrefixMapping(None)
+        output.endDocument()
+        return self.finish()
 
 
 class ExportCodebookCsv(BaseHandler):
