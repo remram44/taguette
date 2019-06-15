@@ -1193,20 +1193,31 @@ document.getElementById('members-add').addEventListener('submit', function(e) {
 
   var login = document.getElementById('member-add-name').value;
   if(!login) { return; }
+  var privileges = document.getElementById('member-add-privileges').value;
+
+  // Check login
   if(login in members_displayed) {
     alert(gettext("Already a member!"));
     document.getElementById('members-add').reset();
     return;
   }
-  var privileges = document.getElementById('member-add-privileges').value;
+  postJSON(
+    '/api/check_user',
+    {login: login}
+  )
+  .then(function(result) {
+    if(result.exists) {
+      // Add it at the top
+      var elem = _memberRow(login, {privileges: privileges});
+      var current_members = document.getElementById('members-current');
+      current_members.insertBefore(elem, current_members.firstChild);
+      members_displayed[login] = true;
 
-  // Add it at the top
-  var elem = _memberRow(login, {privileges: privileges});
-  var current_members = document.getElementById('members-current');
-  current_members.insertBefore(elem, current_members.firstChild);
-  members_displayed[login] = true;
-
-  document.getElementById('members-add').reset();
+      document.getElementById('members-add').reset();
+    } else {
+      alert(gettext("This user doesn't exist!"));
+    }
+  })
 });
 
 function sendMembersPatch() {
