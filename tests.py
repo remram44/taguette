@@ -348,11 +348,16 @@ class TestMultiuser(MyHTTPTestCase):
             '  var last_event = -1;\n'
             '  var documents = {};\n'
             '  var highlights = {};\n'
-            '  var tags = {"1": {"description": "Further review required", '
-            '"id": 1, "path": "interesting"}, "2": '
-            '{"description": "Known people", "id": 2, "path": "people"}};\n'
+            '  var tags = %s;\n'
             '  var members = {"admin": {"privileges": "ADMIN"}};\n'
-            '</script>',
+            '</script>' % (
+                json.dumps({
+                    "1": {"count": 0, "description": "Further review required",
+                          "id": 1, "path": "interesting"},
+                    "2": {"count": 0, "description": "Known people",
+                          "id": 2, "path": "people"},
+                }),
+            ),
         )
 
         # Start polling

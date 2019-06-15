@@ -188,6 +188,8 @@ class Command(Base):
                          nullable=True)  # Not ForeignKey, document can go away
     payload = Column(JSON, nullable=False)
 
+    tag_count_changes = None
+
     __table_args__ = (
         Index('idx_project_document', 'project_id', 'document_id'),
     )
@@ -400,6 +402,15 @@ class HighlightTag(Base):
                                         ondelete='CASCADE'),
                     primary_key=True)
     tag = relationship('Tag')
+
+
+Tag.highlights_count = column_property(
+    select(
+        [functions.count(HighlightTag.highlight_id)],
+    ).where(
+        HighlightTag.tag_id == Tag.id,
+    ).correlate_except(HighlightTag)
+)
 
 
 def connect(db_url):

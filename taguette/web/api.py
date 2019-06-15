@@ -400,7 +400,7 @@ class HighlightAdd(BaseHandler):
                 highlight_id=hl.id,
                 tag_id=tag,
             )
-            for tag in obj.get('tags', [])
+            for tag in set(obj.get('tags', []))
         ])
         cmd = database.Command.highlight_add(
             self.current_user,
@@ -408,6 +408,7 @@ class HighlightAdd(BaseHandler):
             hl,
             obj.get('tags', []),
         )
+        cmd.tag_count_changes = {tag: 1 for tag in obj.get('tags')}
         self.db.add(cmd)
         self.db.commit()
         self.db.refresh(cmd)
@@ -438,6 +439,16 @@ class HighlightUpdate(BaseHandler):
             if 'end_offset' in obj:
                 hl.end_offset = obj['end_offset']
             if 'tags' in obj:
+                # Obtain old tags from database
+                old_tags = (
+                    self.db.query(database.HighlightTag)
+                    .filter(database.HighlightTag.highlight == hl)
+                    .all()
+                )
+                old_tags = set(hl_tag.tag_id for hl_tag in old_tags)
+                new_tags = set(obj['tags'])
+
+                # Update tags in database
                 (
                     self.db.query(database.HighlightTag)
                     .filter(database.HighlightTag.highlight == hl)
@@ -447,14 +458,26 @@ class HighlightUpdate(BaseHandler):
                         highlight_id=hl.id,
                         tag_id=tag,
                     )
-                    for tag in obj.get('tags', [])
+                    for tag in new_tags
                 ])
+
+                # Compute the change in tag counts
+                tag_count_changes = {}
+                for tag in old_tags - new_tags:
+                    tag_count_changes[tag] = -1
+                for tag in new_tags - old_tags:
+                    tag_count_changes[tag] = 1
+            else:
+                new_tags = None
+                tag_count_changes = None
+
             cmd = database.Command.highlight_add(
                 self.current_user,
                 document,
                 hl,
-                obj.get('tags', []),
+                sorted(new_tags),
             )
+            cmd.tag_count_changes = tag_count_changes
             self.db.add(cmd)
             self.db.commit()
             self.db.refresh(cmd)
@@ -473,12 +496,19 @@ class HighlightUpdate(BaseHandler):
         if hl is None or hl.document_id != document.id:
             self.set_status(404)
             return self.send_json({'error': "No such highlight"})
+        old_tags = list(
+            self.db.query(database.HighlightTag)
+            .filter(database.HighlightTag.highlight == hl)
+            .all()
+        )
+        old_tags = [hl_tag.tag_id for hl_tag in old_tags]
         self.db.delete(hl)
         cmd = database.Command.highlight_delete(
             self.current_user,
             document,
             hl.id,
         )
+        cmd.tag_count_changes = {tag: -1 for tag in old_tags}
         self.db.add(cmd)
         self.db.commit()
         self.db.refresh(cmd)
@@ -682,6 +712,9 @@ class ProjectEvents(BaseHandler):
             }
         else:
             raise ValueError("Unknown command type %r" % type_)
+
+        if cmd.tag_count_changes is not None:
+            result['tag_count_changes'] = cmd.tag_count_changes
 
         result['id'] = cmd.id
         return self.send_json(result)

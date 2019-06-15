@@ -646,6 +646,9 @@ function linkTag(elem, tag_path) {
 linkTag(document.getElementById('load-all-tags'), '');
 
 function addTag(tag) {
+  if(!('count' in tag) && tag.id in tags) {
+    tag.count = tags[tag.id].count;
+  }
   tags[tag.id] = tag;
   updateTagsList();
 }
@@ -703,8 +706,10 @@ function updateTagsList() {
       '    <a class="expand-marker">&nbsp;</a> ' +
       '    <a id="tag-link-' + tag.id + '">' + escapeHtml(tag.path) + '</a>' +
       '  </div>' +
-      '  <a href="javascript:editTag(' + tag.id + ');" class="badge badge-primary badge-pill">' + gettext("edit") + '</a>' +
-      //'  <span href="#" class="badge badge-primary badge-pill">?</span>' + // TODO: highlight count
+      '  <div style="white-space: nowrap;">' +
+      '    <span href="#" class="badge badge-secondary badge-pill" id="tag-' + tag.id + '-count">' + tag.count + '</span>' +
+      '    <a href="javascript:editTag(' + tag.id + ');" class="badge badge-primary badge-pill">' + gettext("edit") + '</a>' +
+      '  </div>' +
       '</div>' +
       '<ul class="sublist"></div>';
     tags_list.insertBefore(elem, before);
@@ -759,6 +764,13 @@ function updateTagsList() {
 }
 
 updateTagsList();
+
+function updateTagCount(id, delta) {
+  var elem = document.getElementById('tag-' + id + '-count');
+  var value = parseInt(elem.textContent);
+  value += delta;
+  elem.textContent = value;
+}
 
 var tag_add_modal = document.getElementById('tag-add-modal');
 
@@ -1502,6 +1514,12 @@ function longPollForEvents() {
     if('member_remove' in result) {
       for(var i = 0; i < result.member_remove.length; ++i) {
         removeMember(result.member_remove[i]);
+      }
+    }
+    if('tag_count_changes' in result) {
+      var entries = Object.entries(result.tag_count_changes);
+      for(var i = 0; i < entries.length; ++i) {
+        updateTagCount(entries[i][0], entries[i][1]);
       }
     }
     last_event = result.id;
