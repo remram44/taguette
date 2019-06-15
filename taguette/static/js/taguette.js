@@ -930,7 +930,7 @@ document.getElementById('tag-merge-form').addEventListener('submit', function(e)
 function setHighlight(highlight) {
   var id = '' + highlight.id;
   if(highlights[id]) {
-    removeHighlight(highlights[id]);
+    removeHighlight(id);
   }
   highlights[id] = highlight;
   var tag_names = highlight.tags.map(function(id) { return tags[id].path; });
