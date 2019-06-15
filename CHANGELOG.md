@@ -1,8 +1,8 @@
 Changelog
 =========
 
-0.8 (???)
----------
+0.8 (2019-06-15)
+----------------
 
 Bugfixes:
 * Don't show 500 error on invalid email reset token
