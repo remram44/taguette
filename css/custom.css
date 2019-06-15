@@ -1,12 +1,12 @@
 /**************GLOBAL*******************/
 
 @font-face {
-	font-family: BadScript;
-	src: url(../webfonts/BadScript/BadScript.ttf);
+  font-family: BadScript;
+  src: url(../webfonts/BadScript/BadScript.ttf);
 }
 
 @font-face {
-	font-family: Montserrat;
+  font-family: Montserrat;
   src: url(../webfonts/Montserrat/Montserrat-Light.ttf);
 }
 
@@ -18,41 +18,41 @@ a {
 }
 
 body {
-	font-size:1.2em;
-	font-family:Montserrat;
+  font-size:1.2em;
+  font-family:Montserrat;
 }
 
 #container-body {
-	padding-top:1em;
+  padding-top:1em;
 }
 
 /**************JUMBOTRON**************/
 
 .jumbotron {
-	padding-bottom: 1em;
-	padding-top: 3.5em;
+  padding-bottom: 1em;
+  padding-top: 3.5em;
 }
 
 /**************FOOTER**************/
 
 footer p {
-	font-size: 0.9em !important;
-	text-align: center !important;
+  font-size: 0.9em !important;
+  text-align: center !important;
 }
 
 /**************NAV*******************/
 
 .nav-item {
-	padding-left: 0.8em;
-	padding-right: 0.8em;
+  padding-left: 0.8em;
+  padding-right: 0.8em;
 }
 
 .nav-link {
-	font-size:1.1em !important;
+  font-size:1.1em !important;
 }
 
 .navbar-brand {
-	font-size:1.3em !important;
+  font-size:1.3em !important;
 }
 
 .bg-primary .navbar-nav .active > .nav-link {
@@ -145,6 +145,7 @@ footer p {
 }
 
 /**************PRIMARY*******************/
+
 .bg-primary {
   background-color: #125368 !important;
 }
@@ -199,8 +200,8 @@ footer p {
   border-color: #125368;
 }
 
-
 /**************SECONDARY*******************/
+
 .bg-secondary {
   background-color: #6a1a1a !important;
 }
@@ -263,7 +264,6 @@ footer p {
   background-color: #6a1a1a;
 }
 
-
 /**************INFO*******************/
 .bg-info {
   background-color: #246a99 !important;
@@ -311,7 +311,7 @@ footer p {
 }
 
 .list-group-item.active a{
-	color: white !important;
+  color: white !important;
 }
 
 .list-group-item.disabled, .list-group-item:disabled {
@@ -319,13 +319,13 @@ footer p {
   background-color: #ecf0f1;
 }
 
-
 /* --------------------RESPONSIVE DISPLAY HEADINGS--------------------------*/
+
 @media (max-width: 575.98px) {
     .display-1 {
-	font-size: 3rem;
-	font-weight: 300;
-	line-height: 1.0;
+  font-size: 3rem;
+  font-weight: 300;
+  line-height: 1.0;
     }
     .display-2 {
         font-size: 2.75rem;
@@ -343,3 +343,10 @@ footer p {
         line-height: 1.0;
     }
 }
+
+/* --------------------FAQ CARD HEADINGS--------------------------*/
+
+.card-header button.btn.btn-link{
+  font-size:1em;
+}
+
