@@ -10,6 +10,7 @@ Bugfixes:
 * Don't show 'merge' button in modal when creating a new tag
 * Fix getting logged out in single-user mode with `--debug`
 * Don't scroll to the top of the document when clicking on a disabled link
+* Fix taguette --database=filename not working when filename does not contain directories
 
 Features:
 * Add limits on converted file size
@@ -17,6 +18,8 @@ Features:
 * Add a scrollbar to modals, since they can grow big in projects with many tags
 * Use the file name as document name if left blank
 * Show cookie warning before setting any (optional in configuration)
+* Add the REFI-QDA Codebook (.qdc) export format
+* Improve the collaborator management modal
 
 0.7 (2019-05-15)
 ----------------
