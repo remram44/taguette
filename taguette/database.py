@@ -188,6 +188,8 @@ class Command(Base):
                          nullable=True)  # Not ForeignKey, document can go away
     payload = Column(JSON, nullable=False)
 
+    tag_count_changes = None
+
     __table_args__ = (
         Index('idx_project_document', 'project_id', 'document_id'),
     )
