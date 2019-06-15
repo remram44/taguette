@@ -344,3 +344,9 @@ footer p {
     line-height: 1.0;
   }
 }
+
+/* --------------------FAQ CARD HEADINGS--------------------------*/
+
+.card-header button.btn.btn-link{
+  font-size: 1em;
+}
