@@ -339,8 +339,16 @@ optional = false
 python-versions = "*"
 version = "1.11.1"
 
+[[package]]
+category = "main"
+description = "A Python module for creating Excel XLSX files."
+name = "xlsxwriter"
+optional = false
+python-versions = "*"
+version = "1.1.8"
+
 [metadata]
-content-hash = "ccd9d8d863db5d8a6b15eddecd9e8233dac0ba2a6103a20adb2d44e9b66acc41"
+content-hash = "f8849c04d0d417919b72ea2d4833cbe6cd4e8c27a1f87c8ec43dcdecd8f66ba6"
 python-versions = "^3.5.3"
 
 [metadata.hashes]
@@ -379,3 +387,4 @@ tornado = ["1a58f2d603476d5e462f7c28ca1dbb5ac7e51348b27a9cac849cdec3471101f8", "
 urllib3 = ["61bf29cada3fc2fbefad4fdf059ea4bd1b4a86d2b6d15e1c7c0b582b9752fe39", "de9529817c93f27c8ccbfead6985011db27bd0ddfcdb2d86f3f663385c6a9c22"]
 webencodings = ["a0af1213f3c2226497a97e2b3aa01a7e4bee4f403f95be16fc9acd2947514a78", "b36a1c245f2d304965eb4e0a82848379241dc04b865afcc4aab16748587e1923"]
 wrapt = ["4aea003270831cceb8a90ff27c4031da6ead7ec1886023b80ce0dfe0adf61533"]
+xlsxwriter = ["5ec6aa71f6ae4b6298376d8b6a56ca9cdcb8b80323a444212226447aed4fa10f", "ec51d99c0cc5d95ec8d8e9c8de7c8fbbf461988bec01a8c86b5155a6716b0a5a"]
