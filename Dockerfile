@@ -8,7 +8,7 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 COPY taguette taguette
 COPY pyproject.toml poetry.lock README.rst tests.py ./
-RUN /root/.poetry/bin/poetry install --no-interaction && rm -rf /root/.cache
+RUN /root/.poetry/bin/poetry install --no-interaction --no-dev && rm -rf /root/.cache
 
 VOLUME /data
 ENV HOME=/data
