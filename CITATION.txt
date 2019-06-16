@@ -1,13 +1,13 @@
 If you use Taguette for your qualitative analysis, please cite it with the following:
 
-    Rémi Rampin, Vicky Steeves, & Sarah DeMott. (2019, March 23). Taguette (Version 0.5). Zenodo. http://doi.org/10.5281/zenodo.3246930
+    Rémi Rampin, Vicky Steeves, & Sarah DeMott. (2019, March 23). Taguette (Version 0.5). Zenodo. http://doi.org/10.5281/zenodo.3246958
 
 BibTex:
 
 @software{Taguette,
   author = {{Rampin, Rémi and Steeves, Vicky and DeMott, Sarah}},
   title = {Taguette},
-  doi = {10.5281/zenodo.3246930},
+  doi = {10.5281/zenodo.3246958},
   url = {https://taguette.org}
   version = {0.5},
   date = {2010-03-23},
