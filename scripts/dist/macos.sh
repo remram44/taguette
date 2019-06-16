@@ -11,6 +11,7 @@ VERSION="$1"
 cd "$(dirname "$0")/../.."
 cp scripts/dist/pyinstaller_entrypoint.py scripts/dist/macos/macos.spec .
 poetry install
+scripts/update_translations.sh
 rm -rf build dist
 pyinstaller macos.spec
 rm -rf dist/taguette
