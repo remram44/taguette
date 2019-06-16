@@ -10,6 +10,7 @@ import tempfile
 from tornado.web import authenticated
 from xml.sax.saxutils import XMLGenerator
 import xlsxwriter
+import zipfile
 
 from .. import convert
 from .. import database
@@ -242,3 +243,59 @@ class ExportCodebookDoc(BaseHandler):
         tags = list(project.tags)
         html = self.render_string('export_codebook.html', tags=tags)
         return 'codebook', html
+
+
+class ZipWriter(object):
+    def __init__(self, write):
+        self._write = write
+        self._zip = zipfile.ZipFile(self, 'w')
+
+    def write_recursive(self, src, dst=''):
+        if os.path.isdir(src):
+            for name in os.listdir(src):
+                self.write_recursive(os.path.join(src, name),
+                                     dst + '/' + name if dst else name)
+        else:
+            self._zip.write(src, dst)
+
+    def write(self, data):
+        self._write(data)
+        return len(data)
+
+    def flush(self):
+        return
+
+    def close(self):
+        self._zip.close()
+
+
+class ExportProjectXml(BaseHandler):
+    PROM_EXPORT.labels('project', 'qde').inc(0)
+
+    @authenticated
+    def get(self, project_id):
+        PROM_EXPORT.labels('project', 'qde').inc()
+        project, _ = self.get_project(project_id)
+        tmp = tempfile.mkdtemp('taguette_qde_')
+        try:
+            # Write XML
+            with open(os.path.join(tmp, 'Project.qde'), 'wb') as fp:
+                output = XMLGenerator(fp, encoding='utf-8',
+                                      short_empty_elements=True)
+                output.startDocument()
+                output.startPrefixMapping(None, 'urn:QDA‐XML:project:1.0')
+                refi_qda.write_project(project, output)
+                output.endPrefixMapping(None)
+                output.endDocument()
+
+            # Write documents
+
+            # Send as ZIP file
+            self.set_header('Content-Type', 'application/zip')
+            self.set_header('Content-Disposition',
+                            'attachment; filename="project.qdpx"')
+            zip_writer = ZipWriter(self.write)
+            zip_writer.write_recursive(tmp)
+            return self.finish()
+        finally:
+            shutil.rmtree(tmp)

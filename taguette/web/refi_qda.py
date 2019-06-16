@@ -37,3 +37,22 @@ def write_codebook(tags, output):
     )
     output.endElementNS((None, 'Sets'), 'Sets')
     output.endElementNS((None, 'CodeBook'), 'CodeBook')
+
+
+def write_project(project, output):
+    output.startElementNS(
+        (None, 'Project'), 'Project',
+        AttributesNSImpl({(None, 'origin'): 'Taguette %s' % __version__,
+                          (None, 'name'): project.name,
+                          (None, 'creatingUserGUID'): '',
+                          (None, 'creationDateTime'): '',
+                          (None, 'modifiedDateTime'): ''},
+                         {}),
+    )
+    output.startElementNS((None, 'Description'), 'Description',
+                          AttributesNSImpl({}, {}))
+    output.characters(project.description)
+    output.endElementNS((None, 'Description'), 'Description')
+    # Sources (TextSource)
+    # Coding
+    output.endElementNS((None, 'Project'), 'Project')
