@@ -395,18 +395,19 @@ class HighlightAdd(BaseHandler):
                                 snippet=snippet)
         self.db.add(hl)
         self.db.flush()  # Need to flush to get hl.id
+        new_tags = sorted(set(obj.get('tags', [])))
         self.db.bulk_insert_mappings(database.HighlightTag, [
             dict(
                 highlight_id=hl.id,
                 tag_id=tag,
             )
-            for tag in set(obj.get('tags', []))
+            for tag in new_tags
         ])
         cmd = database.Command.highlight_add(
             self.current_user,
             document,
             hl,
-            obj.get('tags', []),
+            new_tags,
         )
         cmd.tag_count_changes = {tag: 1 for tag in obj.get('tags')}
         self.db.add(cmd)
