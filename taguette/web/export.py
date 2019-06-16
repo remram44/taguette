@@ -8,21 +8,17 @@ import shutil
 from sqlalchemy.orm import aliased, joinedload
 import tempfile
 from tornado.web import authenticated
-import uuid
 from xml.sax.saxutils import XMLGenerator
-from xml.sax.xmlreader import AttributesNSImpl
 import xlsxwriter
 
-from .. import convert, __version__
+from .. import convert
 from .. import database
 from .. import extract
 from .base import BaseHandler
+from . import refi_qda
 
 
 logger = logging.getLogger(__name__)
-
-
-TAGUETTE_NAMESPACE = uuid.UUID('51B2B2B7-27EB-4ECB-9D56-E75B0A0496C2')
 
 
 class WriteAdapter(object):
@@ -170,35 +166,7 @@ class ExportCodebookXml(BaseHandler):
                               short_empty_elements=True)
         output.startDocument()
         output.startPrefixMapping(None, 'urn:QDA-XML:codebook:1.0')
-        output.startElementNS(
-            (None, 'CodeBook'), 'CodeBook',
-            AttributesNSImpl({(None, 'origin'): 'Taguette %s' % __version__},
-                             {(None, 'origin'): 'origin'}),
-        )
-        output.startElementNS(
-            (None, 'Codes'), 'Codes',
-            AttributesNSImpl({}, {}),
-        )
-        for tag in tags:
-            guid = uuid.uuid5(TAGUETTE_NAMESPACE, tag.path)
-            guid = str(guid).upper()
-            output.startElementNS(
-                (None, 'Code'), 'Code',
-                AttributesNSImpl({(None, 'guid'): guid,
-                                  (None, 'name'): tag.path,
-                                  (None, 'isCodable'): 'true'},
-                                 {(None, 'guid'): 'guid',
-                                  (None, 'name'): 'name',
-                                  (None, 'isCodable'): 'isCodable'}),
-            )
-            output.endElementNS((None, 'Code'), 'Code')
-        output.endElementNS((None, 'Codes'), 'Codes')
-        output.startElementNS(
-            (None, 'Sets'), 'Sets',
-            AttributesNSImpl({}, {}),
-        )
-        output.endElementNS((None, 'Sets'), 'Sets')
-        output.endElementNS((None, 'CodeBook'), 'CodeBook')
+        refi_qda.write_codebook(tags, output)
         output.endPrefixMapping(None)
         output.endDocument()
         return self.finish()
