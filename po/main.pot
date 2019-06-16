@@ -119,8 +119,9 @@ msgid "Log in"
 msgstr ""
 
 #: taguette/templates/base.html:64
+#, python-format
 msgid ""
-"Taguette is released under a <a "
+"Taguette %(version)s is released under a <a "
 "href=\"https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt\">BSD-3-Clause"
 " license</a>, &#169; Rémi Rampin | <a href=\"https://www.taguette.org"
 "/getting-started.html\">User Documentation</a> | Please report issues via"

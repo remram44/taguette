@@ -210,6 +210,7 @@ class BaseHandler(RequestHandler):
             multiuser=self.application.config['MULTIUSER'],
             register_enabled=self.application.config['REGISTRATION_ENABLED'],
             show_messages=self.current_user == 'admin',
+            version=version,
             gettext=self.gettext,
             ngettext=self.ngettext,
             **kwargs)
