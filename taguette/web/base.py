@@ -128,6 +128,27 @@ class Application(tornado.web.Application):
                 smtp.login(config['user'], config['password'])
             smtp.send_message(msg)
 
+    def log_request(self, handler):
+        if "log_function" in self.settings:
+            self.settings["log_function"](handler)
+            return
+        access_log = logging.getLogger("tornado.access")
+        if handler.get_status() < 400:
+            log_method = access_log.info
+        elif handler.get_status() < 500:
+            log_method = access_log.warning
+        else:
+            log_method = access_log.error
+        request_time = 1000.0 * handler.request.request_time()
+        log_method(
+            "%d %s %.2fms (%s) lang=%s",
+            handler.get_status(),
+            handler._request_summary(),
+            request_time,
+            handler.current_user,
+            handler.request.headers.get('Accept-Language'),
+        )
+
 
 class BaseHandler(RequestHandler):
     """Base class for all request handlers.
