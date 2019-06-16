@@ -1,6 +1,5 @@
 import bisect
 import csv
-import io
 import logging
 import uuid
 from xml.sax.saxutils import XMLGenerator
@@ -213,12 +212,11 @@ class ExportCodebookCsv(BaseHandler):
         self.set_header('Content-Type', 'text/csv; charset=utf-8')
         self.set_header('Content-Disposition',
                         'attachment; filename="codebook.csv"')
-        buf = io.StringIO()
-        writer = csv.writer(buf)
+        writer = csv.writer(WriteAdapter(self.write))
         writer.writerow(['tag', 'description'])
         for tag in tags:
             writer.writerow([tag.path, tag.description])
-        return self.finish(buf.getvalue())
+        return self.finish()
 
 
 class ExportCodebookDoc(BaseHandler):
