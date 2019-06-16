@@ -48,6 +48,7 @@
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdown-codebook">
               <a href="{{ reverse_url('export_codebook_qdc', project.id) }}" class="dropdown-item">QDC (XML)</a>
+              <a href="{{ reverse_url('export_codebook_xlsx', project.id) }}" class="dropdown-item">Excel</a>
               <a href="{{ reverse_url('export_codebook_csv', project.id) }}" class="dropdown-item">CSV</a>
               <a href="{{ reverse_url('export_codebook_doc', project.id, 'html') }}" class="dropdown-item">HTML</a>
               <a href="{{ reverse_url('export_codebook_doc', project.id, 'docx') }}" class="dropdown-item">DOCX</a>

@@ -1,14 +1,17 @@
 import bisect
 import csv
 import logging
+from markupsafe import Markup
+import os
+import prometheus_client
+import shutil
+from sqlalchemy.orm import aliased, joinedload
+import tempfile
+from tornado.web import authenticated
 import uuid
 from xml.sax.saxutils import XMLGenerator
 from xml.sax.xmlreader import AttributesNSImpl
-
-from markupsafe import Markup
-import prometheus_client
-from sqlalchemy.orm import aliased, joinedload
-from tornado.web import authenticated
+import xlsxwriter
 
 from .. import convert, __version__
 from .. import database
@@ -217,6 +220,47 @@ class ExportCodebookCsv(BaseHandler):
         for tag in tags:
             writer.writerow([tag.path, tag.description])
         return self.finish()
+
+
+class ExportCodebookXlsx(BaseHandler):
+    PROM_EXPORT.labels('codebook', 'xls').inc(0)
+
+    @authenticated
+    def get(self, project_id):
+        PROM_EXPORT.labels('codebook', 'xls').inc()
+        project, _ = self.get_project(project_id)
+        tags = list(project.tags)
+        self.set_header('Content-Type',
+                        ('application/vnd.openxmlformats-officedocument.'
+                         'spreadsheetml.sheet'))
+        self.set_header('Content-Disposition',
+                        'attachment; filename="codebook.xlsx"')
+        tmp = tempfile.mkdtemp(prefix='taguette_xlsx_')
+        try:
+            filename = os.path.join(tmp, 'codebook.xlsx')
+            workbook = xlsxwriter.Workbook(filename)
+            sheet = workbook.add_worksheet('codebook')
+
+            header = workbook.add_format({'bold': True})
+
+            sheet.write(0, 0, 'tag', header)
+            sheet.write(0, 1, 'description', header)
+            sheet.set_column(0, 0, 30.0)
+            sheet.set_column(1, 1, 80.0)
+            for row, tag in enumerate(tags, start=1):
+                sheet.write(row, 0, tag.path)
+                sheet.write(row, 1, tag.description)
+            workbook.close()
+            with open(filename, 'rb') as fp:
+                chunk = fp.read(4096)
+                self.write(chunk)
+                while len(chunk) == 4096:
+                    chunk = fp.read(4096)
+                    if chunk:
+                        self.write(chunk)
+            return self.finish()
+        finally:
+            shutil.rmtree(tmp)
 
 
 class ExportCodebookDoc(BaseHandler):
