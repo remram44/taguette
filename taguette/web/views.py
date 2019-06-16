@@ -368,20 +368,13 @@ class ProjectAdd(BaseHandler):
                 privileges=database.Privileges.ADMIN
             )
             self.db.add(membership)
-            # Add default set of tags
+            # Add default tags
             self.db.add(database.Tag(
                 project=project,
-                # TRANSLATORS: Default tag 1, name
+                # TRANSLATORS: Default tag name
                 path=self.gettext("interesting"),
-                # TRANSLATORS: Default tag 1, description
+                # TRANSLATORS: Default tag description
                 description=self.gettext("Further review required")),
-            )
-            self.db.add(database.Tag(
-                project=project,
-                # TRANSLATORS: Default tag 2, name
-                path=self.gettext("people"),
-                # TRANSLATORS: Default tag 2, description
-                description=self.gettext("Known people")),
             )
 
             self.db.commit()

@@ -471,24 +471,14 @@ msgstr ""
 msgid "Password reset for Taguette"
 msgstr ""
 
-#. Default tag 1, name
+#. Default tag name
 #: taguette/web/views.py:375
 msgid "interesting"
 msgstr ""
 
-#. Default tag 1, description
+#. Default tag description
 #: taguette/web/views.py:377
 msgid "Further review required"
-msgstr ""
-
-#. Default tag 2, name
-#: taguette/web/views.py:382
-msgid "people"
-msgstr ""
-
-#. Default tag 2, description
-#: taguette/web/views.py:384
-msgid "Known people"
 msgstr ""
 
 #: taguette/validate.py:21
