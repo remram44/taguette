@@ -128,15 +128,16 @@ msgid "Log in"
 msgstr "Connexion"
 
 #: taguette/templates/base.html:64
+#, python-format
 msgid ""
-"Taguette is released under a <a "
+"Taguette %(version)s is released under a <a "
 "href=\"https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt\">BSD-3-Clause"
 " license</a>, &#169; Rémi Rampin | <a href=\"https://www.taguette.org"
 "/getting-started.html\">User Documentation</a> | Please report issues via <a"
 " href=\"https://gitlab.com/remram44/taguette\">GitLab</a> or <a "
 "href=\"mailto:hi@taguette.org\">hi@taguette.org</a>!"
 msgstr ""
-"Taguette est publié selon les termes de la <a "
+"Taguette %(version)s est publié selon les termes de la <a "
 "href=\"https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt\">licence"
 " BSD-3-Clause</a>, &#169; Rémi Rampin | <a href=\"https://www.taguette.org"
 "/getting-started.html\">Documentation Utilisateur</a> | Merci de signaler "
@@ -478,7 +479,7 @@ msgid ""
 "href=\"%(link)s\">%(link)s</a>"
 msgstr ""
 "Quelqu'un a demandé la réinitialisation du mot de passe du compte Taguette "
-"associé à cet adresse e-mail. Si c'était vous, merci de suivre ce lien : <a "
+"associé à cette adresse e-mail. Si c'était vous, merci de suivre ce lien : <a "
 "href=\"%(link)s\">%(link)s</a>"
 
 #: taguette/templates/email_reset_password.html:3
@@ -510,25 +511,15 @@ msgstr "Cette adresse email n'est associée à aucun utilisateur"
 msgid "Password reset for Taguette"
 msgstr "Réinitialisation de mot de passe pour Taguette"
 
-#. Default tag 1, name
+#. Default tag name
 #: taguette/web/views.py:375
 msgid "interesting"
 msgstr "intéressant"
 
-#. Default tag 1, description
+#. Default tag description
 #: taguette/web/views.py:377
 msgid "Further review required"
 msgstr "Plus d'analyse requise"
-
-#. Default tag 2, name
-#: taguette/web/views.py:382
-msgid "people"
-msgstr "personnes"
-
-#. Default tag 2, description
-#: taguette/web/views.py:384
-msgid "Known people"
-msgstr "Personnes connues"
 
 #: taguette/validate.py:21
 msgid "Project name cannot be empty"
@@ -617,7 +608,7 @@ msgid ""
 "'postgresql://me:pw@localhost/mydb' (default: %(default)r)"
 msgstr ""
 "Emplacement de la base de données ou identifiant de connexion, par exemple "
-"'projet.db' or 'postgresql://moi:mdp@localhost/mabdd' (par défaut : "
+"'projet.db' ou 'postgresql://moi:mdp@localhost/mabdd' (par défaut : "
 "%(default)r)"
 
 #: taguette/main.py:176

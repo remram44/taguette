@@ -5,6 +5,7 @@
 # 
 # Translators:
 # Bastian Greshake Tzovaras <bgreshake@googlemail.com>, 2019
+# CH_ <ch@infobib.de>, 2019
 # 
 msgid ""
 msgstr ""
@@ -12,7 +13,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
 "POT-Creation-Date: 2019-06-15 15:56-0400\n"
 "PO-Revision-Date: 2019-05-08 22:49+0000\n"
-"Last-Translator: Bastian Greshake Tzovaras <bgreshake@googlemail.com>, 2019\n"
+"Last-Translator: CH_ <ch@infobib.de>, 2019\n"
 "Language-Team: German (https://www.transifex.com/remram44/teams/98824/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -81,7 +82,7 @@ msgstr "Konnte Tag nicht löschen!"
 
 #: taguette/static/js/taguette.js:919
 msgid "Couldn't merge tags!"
-msgstr ""
+msgstr "Konnte die Tags nicht mergen!"
 
 #: taguette/static/js/taguette.js:1080
 msgid "Couldn't create highlight!"
@@ -109,11 +110,11 @@ msgstr "Nur Ansehen"
 
 #: taguette/static/js/taguette.js:1206
 msgid "Already a member!"
-msgstr ""
+msgstr "Bereits registriert!"
 
 #: taguette/static/js/taguette.js:1224
 msgid "This user doesn't exist!"
-msgstr ""
+msgstr "Dieser Benutzer existiert nicht!"
 
 #: taguette/static/js/taguette.js:1269
 msgid "Couldn't update collaborators!"

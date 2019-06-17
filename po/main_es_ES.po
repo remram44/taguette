@@ -128,18 +128,19 @@ msgid "Log in"
 msgstr "Iniciar sesión"
 
 #: taguette/templates/base.html:64
+#, python-format
 msgid ""
-"Taguette is released under a <a "
+"Taguette %(version)s is released under a <a "
 "href=\"https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt\">BSD-3-Clause"
 " license</a>, &#169; Rémi Rampin | <a href=\"https://www.taguette.org"
 "/getting-started.html\">User Documentation</a> | Please report issues via <a"
 " href=\"https://gitlab.com/remram44/taguette\">GitLab</a> or <a "
 "href=\"mailto:hi@taguette.org\">hi@taguette.org</a>!"
 msgstr ""
-"Taguette está publicado bajo la licencia <a "
+"Taguette %(version)s está publicado bajo la licencia <a "
 "href=\"https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt\">BSD-3-Clause</a>,"
 " &#169; Rémi Rampin | <a href=\"https://www.taguette.org/getting-"
-"started.html\">Documentación para usuarios</a> Favor de informar sobre "
+"started.html\">Documentación para usuarios</a> | Favor de informar sobre "
 "problems por medio de <a "
 "href=\"https://gitlab.com/remram44/taguette\">GitLab</a> o <a "
 "href=\"mailto:hi@taguette.org\">hi@taguette.org</a>!"
@@ -448,7 +449,7 @@ msgstr "Crear"
 #: taguette/templates/export_highlights.html:14
 #, python-format
 msgid "Taguette highlights: %(path)s"
-msgstr "Taguette resaltados : %(path)s"
+msgstr "Taguette resaltados: %(path)s"
 
 #: taguette/templates/export_highlights.html:16
 msgid "Taguette highlights"
@@ -503,25 +504,15 @@ msgstr ""
 msgid "Password reset for Taguette"
 msgstr "Reestablecer contraseña en Taguette"
 
-#. Default tag 1, name
+#. Default tag name
 #: taguette/web/views.py:375
 msgid "interesting"
 msgstr "interesante"
 
-#. Default tag 1, description
+#. Default tag description
 #: taguette/web/views.py:377
 msgid "Further review required"
 msgstr "Se requiere más revisión"
-
-#. Default tag 2, name
-#: taguette/web/views.py:382
-msgid "people"
-msgstr "gente"
-
-#. Default tag 2, description
-#: taguette/web/views.py:384
-msgid "Known people"
-msgstr "Gente conocida"
 
 #: taguette/validate.py:21
 msgid "Project name cannot be empty"

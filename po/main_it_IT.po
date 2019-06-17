@@ -40,7 +40,7 @@ msgid ""
 "tags</strong>. There is no way to undo."
 msgstr ""
 "Sei sicuro di voler eliminare questo progetto? Al momento ha "
-"<strong>%(documents)sdocumenti e %(highlights)s evidenziazioni in %(tags)s "
+"<strong>%(documents)s documenti e %(highlights)s evidenziazioni in %(tags)s "
 "tags</strong>. Non c'è modo di annullare."
 
 #: taguette/templates/project_delete.html:11
@@ -129,17 +129,18 @@ msgid "Log in"
 msgstr "Accedi"
 
 #: taguette/templates/base.html:64
+#, python-format
 msgid ""
-"Taguette is released under a <a "
+"Taguette %(version)s is released under a <a "
 "href=\"https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt\">BSD-3-Clause"
 " license</a>, &#169; Rémi Rampin | <a href=\"https://www.taguette.org"
 "/getting-started.html\">User Documentation</a> | Please report issues via <a"
 " href=\"https://gitlab.com/remram44/taguette\">GitLab</a> or <a "
 "href=\"mailto:hi@taguette.org\">hi@taguette.org</a>!"
 msgstr ""
-"Taguette è rilasciata con licenza <a "
-"href=\"https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt\">BSD-3-Clause"
-" </a>, &#169; Rémi Rampin | <a href=\"https://www.taguette.org/getting-"
+"Taguette %(version)s è rilasciata con licenza <a "
+"href=\"https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt\">BSD-3-Clause</a>,"
+" &#169; Rémi Rampin | <a href=\"https://www.taguette.org/getting-"
 "started.html\">Documentazione Utente</a> | Per favore segnala problemi via "
 "<a href=\"https://gitlab.com/remram44/taguette\">GitLab</a> o <a "
 "href=\"mailto:hi@taguette.org\">hi@taguette.org</a>!"
@@ -503,25 +504,15 @@ msgstr "Questo indirizzo email non è associato a nessun utente"
 msgid "Password reset for Taguette"
 msgstr "Reimpostazione password per Taguette"
 
-#. Default tag 1, name
+#. Default tag name
 #: taguette/web/views.py:375
 msgid "interesting"
 msgstr "Interessante"
 
-#. Default tag 1, description
+#. Default tag description
 #: taguette/web/views.py:377
 msgid "Further review required"
 msgstr "Ulteriore revisione richiesta"
-
-#. Default tag 2, name
-#: taguette/web/views.py:382
-msgid "people"
-msgstr "persone"
-
-#. Default tag 2, description
-#: taguette/web/views.py:384
-msgid "Known people"
-msgstr "Persone conosciute"
 
 #: taguette/validate.py:21
 msgid "Project name cannot be empty"
