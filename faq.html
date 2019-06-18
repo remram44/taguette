@@ -76,19 +76,6 @@
           <h3>General info</h3>
 
           <div class="card">
-            <div class="card-header" id="whatis">
-              <h5 class="mb-0">
-                <button class="btn btn-link" data-toggle="collapse" data-target="#whatis-info" aria-expanded="true" aria-controls="whatis-info">What is Taguette?</button>
-              </h5>
-            </div>
-            <div id="whatis-info" class="collapse" aria-labelledby="whatis" data-parent="#accordion">
-              <div class="card-body">
-                <p>Taguette is a free and open source qualitative analysis tool. In Taguette, users can import their textual materials (in a variety of formats), highlight portions of text, and assign those highlights a tag. If <a href="self-host.html">self-hosting</a> or using <a href="https://app.taguette.org">app.taguette.org</a>, users can do this collaboratively with others. Users can also export all data they import into Taguette, in a variety of formats.</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="card">
             <div class="card-header" id="pronounce">
               <h5 class="mb-0">
                 <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#pronounce-info" aria-expanded="false" aria-controls="pronounce-info">How do you pronounce Taguette?</button>
@@ -109,7 +96,8 @@
             </div>
             <div id="cost-info" class="collapse" aria-labelledby="cost" data-parent="#accordion">
               <div class="card-body">
-                <p>Nothing! It is free and published under an open license (BSD), which you can read here: <a href="https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt">gitlab.com/remram44/taguette/blob/master/LICENSE.txt</a>.</p>
+                <p>It's free!</p>
+                <p>Taguete costs nothing, either to use on your own machine or install on a server. It is published under an open license (BSD), which you can read here: <a href="https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt">gitlab.com/remram44/taguette/blob/master/LICENSE.txt</a>.</p>
               </div>
             </div>
           </div>
@@ -150,6 +138,28 @@
               <div class="card-body">
                 <p>Feel free to shoot us an email over at <a href="mailto:hi@taguette.org">hi@taguette.org</a> with your problem or question, and we will do our best to get back to you quickly &mdash; though please note we are not working on Taguette full-time, so give us a few days (though we will try to be as quick as possible!).</p>
                 <p>If you ran into a bug or problem while using Taguette, or if you have a feature request, feel free to open an issue on GitLab, where Taguette's development takes place: <a href="https://gitlab.com/remram44/taguette/issues">gitlab.com/remram44/taguette/issues</a> or email us with that as well if you are not comfortable with GitLab.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header" id="formats">
+              <h5 class="mb-0">
+                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#formats-info" aria-expanded="false" aria-controls="formats-info">Which file formats can I use with Taguette?</button>
+              </h5>
+            </div>
+            <div id="formats-info" class="collapse" aria-labelledby="formats" data-parent="#accordion">
+              <div class="card-body mb-0">
+                <p>Taguette uses <a href="https://calibre-ebook.com/">Calibre</a> to convert documents to HTML, so you can use all the formats it supports, including:</p>
+                <ul>
+                  <li>Ebook formats (AZW, MOBI, EPUB)</li>
+                  <li>Microsoft Word (DOCX)</li>
+                  <li>LibreOffice (ODT)</li>
+                  <li>PDF</li>
+                  <li>Plain text (TXT)</li>
+                  <li>HTML</li>
+                </ul>
+                <p>See also <a href="https://manual.calibre-ebook.com/faq.html#what-formats-does-calibre-support-conversion-to-from">their own FAQ entry</a> on the subject.</p>
               </div>
             </div>
           </div>
@@ -217,7 +227,7 @@
             </div>
             <div id="dataloc-info" class="collapse" aria-labelledby="dataloc" data-parent="#accordion">
               <div class="card-body">
-                <p>On macOS and Linux, you can find the data at <code>~/.local/share/taguette/taguette.sqlite3</code>. On Windows, you can find it at: <code>My Documents/Taguette/taguette.sqlite3</code>.</p>
+                <p>All your projects and documents are kept in a single database file. On macOS and Linux, you can find it at <code>~/.local/share/taguette/taguette.sqlite3</code>. On Windows, you can find it at: <code>My Documents/Taguette/taguette.sqlite3</code>.</p>
               </div>
             </div>
           </div>
@@ -230,7 +240,13 @@
             </div>
             <div id="db-info" class="collapse" aria-labelledby="db" data-parent="#accordion">
               <div class="card-body">
-                <p>Yes! On the terminal, use the <code>--database</code> option to change from SQLite to your database system of choice (anything supported by <a href="https://docs.sqlalchemy.org/en/13/core/engines.html">SQLAlchemy</a>!).</p>
+                <p>Yes! On the terminal, use the <code>--database</code> option to change the location of your database or use a different database system. The argument is in the <a href="https://docs.sqlalchemy.org/en/13/core/engines.html">format used by SQLAlchemySQLAlchemy</a>, so for instance:</p>
+                <ul>
+                  <li><code>sqlite:////home/myname/myfile.sqlite3</code> (Unix or MacOS) or <code>sqlite3:///C:\Users\myname\Documents\myfile.sqlite3</code> (Windows)</li>
+                  <li><code>postgresql://username:password@host:port/databasename</code></li>
+                  <li><code>mysql://user:password@host:port/databasename</code></li>
+                  <li>Any of the <a href="https://docs.sqlalchemy.org/en/13/core/engines.html">other backends supported by SQLAlchemy</a></li>
+                </ul>
               </div>
             </div>
           </div>
@@ -247,7 +263,7 @@
             </div>
             <div id="server-info" class="collapse" aria-labelledby="server" data-parent="#accordion">
               <div class="card-body">
-                <p>Absolutely! We know that putting choice in the hands of our users is what open source is all about 😊 You can install Taguette on your server via Docker or right from source. Both methods and step-by-step instructions can be found on our <a href="self-host.html">self-hosting guide</a>.</p>
+                <p>Absolutely! We know that putting choice in the hands of our users is what open source is all about 😊 You can install Taguette on your server via Docker or right from source. Both methods can be found with step-by-step instructions on our <a href="self-host.html">self-hosting guide</a>.</p>
               </div>
             </div>
           </div>
