@@ -664,10 +664,11 @@ class ProjectEvents(BaseHandler):
     async def get(self, project_id):
         ProjectEvents.polling_clients.add(self.request.remote_ip)
         tornado.log.access_log.info(
-            "started %s %s (%s)",
+            "started %s %s (%s) (%s)",
             self.request.method,
             self.request.uri,
             self.request.remote_ip,
+            self.current_user,
         )
 
         from_id = int(self.get_query_argument('from'))
