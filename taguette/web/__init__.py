@@ -104,7 +104,7 @@ def make_app(config, debug=False, xsrf_cookies=True):
             URLSpec(
                 '/api/project/([0-9]+)/document/([0-9]+)/highlight/([0-9]+)',
                 api.HighlightUpdate),
-            URLSpec('/api/project/([0-9]+)/highlights/([^/]*)',
+            URLSpec('/api/project/([0-9]+)/highlights/(.*)',
                     api.Highlights),
             URLSpec('/api/project/([0-9]+)/tag/new', api.TagAdd),
             URLSpec('/api/project/([0-9]+)/tag/([0-9]+)', api.TagUpdate),
