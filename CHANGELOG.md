@@ -1,6 +1,15 @@
 Changelog
 =========
 
+0.9 (???)
+---------
+
+Bugfixes:
+* Fix showing highlights for a tag with a slash in it
+
+Features:
+* Export codebook to Excel (.xlsx)
+
 0.8 (2019-06-15)
 ----------------
 
