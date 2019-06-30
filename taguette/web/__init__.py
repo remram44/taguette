@@ -72,7 +72,7 @@ def make_app(config, debug=False, xsrf_cookies=True):
             URLSpec('/project/([0-9]+)', views.Project, name='project'),
             URLSpec('/project/([0-9]+)/document/[0-9]+', views.Project,
                     name='project_doc'),
-            URLSpec('/project/([0-9]+)/highlights/[^/]*', views.Project,
+            URLSpec('/project/([0-9]+)/highlights/.*', views.Project,
                     name='project_tag'),
 
             # Export options
@@ -88,7 +88,7 @@ def make_app(config, debug=False, xsrf_cookies=True):
                     '([^/]+)\\.([a-z0-9]{2,4})',
                     export.ExportDocument, name='export_document'),
             URLSpec('/project/([0-9]+)/export/highlights/'
-                    '([^/]*)\\.([a-z0-3]{2,4})',
+                    '(.*)\\.([a-z0-3]{2,4})',
                     export.ExportHighlightsDoc, name='export_highlights_doc'),
 
             # API
