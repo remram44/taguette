@@ -105,14 +105,15 @@ def filename(name):
         # a network share
         name = name[name.rindex('\\') + 1:]
     name, ext = os.path.splitext(name)
+    name = name[:20]
     name = _not_ascii_re.sub('', name).strip('._')
     if not name:
         name = '_'
     ext = _not_ascii_re.sub('', ext)
-    name = name + ext
     if (filename.windows and
             name.split('.')[0].upper() in _windows_device_files):
         name = '_' + name
+    name = name + ext
     return name
 
 
