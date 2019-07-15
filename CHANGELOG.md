@@ -6,6 +6,7 @@ Changelog
 
 Bugfixes:
 * Fix showing highlights for a tag with a slash in it
+* Fix new tags showing NaN highlight count
 
 Features:
 * Export codebook to Excel (.xlsx)
