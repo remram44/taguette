@@ -648,6 +648,8 @@ linkTag(document.getElementById('load-all-tags'), '');
 function addTag(tag) {
   if(!('count' in tag) && tag.id in tags) {
     tag.count = tags[tag.id].count;
+  } else if(!('count' in tag)) {
+    tag = Object.assign({'count': 0}, tag)
   }
   tags[tag.id] = tag;
   updateTagsList();
