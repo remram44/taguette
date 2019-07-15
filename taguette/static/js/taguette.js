@@ -111,7 +111,19 @@ function getJSON(url='', args) {
     }
   ).then(function(response) {
     if(response.status != 200) {
-      throw "Status " + response.status;
+      return response.json()
+      .then(
+      function(json) {
+        if("error" in json) {
+          throw json.error;
+        } else {
+          throw "Status " + response.status;
+        }
+      },
+      function() {
+        throw "Status " + response.status;
+      }
+      );
     }
     return response.json().catch(function(error) { throw "Invalid JSON"; });
   });
@@ -160,7 +172,19 @@ function postJSON(url='', data={}, args) {
     }
   ).then(function(response) {
     if(response.status != 200) {
-      throw "Status " + response.status;
+      return response.json()
+      .then(
+      function(json) {
+        if("error" in json) {
+          throw json.error;
+        } else {
+          throw "Status " + response.status;
+        }
+      },
+      function() {
+        throw "Status " + response.status;
+      }
+      );
     }
     return response.json().catch(function(error) { throw "Invalid JSON"; });
   });
@@ -407,7 +431,7 @@ function projectMetadataChanged() {
     })
     .catch(function(error) {
       console.error("Failed to update project metadata:", error);
-      alert(gettext("Couldn't update project metadata!"));
+      alert(gettext("Couldn't update project metadata!") + "\n\n" + error);
       project_name_input.value = project_name;
       project_description_input.value = project_description;
     });
@@ -547,7 +571,16 @@ document.getElementById('document-add-form').addEventListener('submit', function
       console.log("Document upload complete");
     } else {
       console.error("Document upload failed: status", xhr.status);
-      alert(gettext("Error uploading file!"));
+      console.error(xhr.response);
+      var error = null;
+      try {
+        error = xhr.response.error;
+      } catch(e) {
+      }
+      if(!error) {
+        error = "Status " + xhr.status;
+      }
+      alert(gettext("Error uploading file!") + "\n\n" + error);
     }
     hideSpinner();
   };
@@ -600,7 +633,7 @@ document.getElementById('document-change-form').addEventListener('submit', funct
   })
   .catch(function(error) {
     console.error("Failed to update document:", error);
-    alert(gettext("Couldn't update document!"));
+    alert(gettext("Couldn't update document!") + "\n\n" + error);
   })
   .then(hideSpinner);
 });
@@ -621,7 +654,7 @@ document.getElementById('document-change-delete').addEventListener('click', func
   })
   .catch(function(error) {
     console.error("Failed to delete document:", error);
-    alert(gettext("Couldn't delete document!"));
+    alert(gettext("Couldn't delete document!") + "\n\n" + error);
   });
 });
 
@@ -839,7 +872,7 @@ document.getElementById('tag-add-form').addEventListener('submit', function(e) {
   })
   .catch(function(error) {
     console.error("Failed to create tag:", error);
-    alert(gettext("Couldn't create tag!"));
+    alert(gettext("Couldn't create tag!") + "\n\n" + error);
   })
   .then(hideSpinner);
 });
@@ -863,7 +896,7 @@ document.getElementById('tag-add-delete').addEventListener('click', function(e) 
     })
     .catch(function(error) {
       console.error("Failed to delete tag:", error);
-      alert(gettext("Couldn't delete tag!"));
+      alert(gettext("Couldn't delete tag!") + "\n\n" + error);
     });
   }
 });
@@ -930,7 +963,7 @@ document.getElementById('tag-merge-form').addEventListener('submit', function(e)
   })
   .catch(function(error) {
     console.error("Failed to merge tags:", error);
-    alert(gettext("Couldn't merge tags!"));
+    alert(gettext("Couldn't merge tags!") + "\n\n" + error);
   })
   .then(hideSpinner);
 });
@@ -1091,7 +1124,7 @@ document.getElementById('highlight-add-form').addEventListener('submit', functio
   })
   .catch(function(error) {
     console.error("Failed to create highlight:", error);
-    alert(gettext("Couldn't create highlight!"));
+    alert(gettext("Couldn't create highlight!") + "\n\n" + error);
   })
   .then(hideSpinner);
 });
@@ -1111,7 +1144,7 @@ document.getElementById('highlight-delete').addEventListener('click', function(e
     })
     .catch(function(error) {
       console.error("Failed to delete highlight:", error);
-      alert(gettext("Couldn't delete highlight!"));
+      alert(gettext("Couldn't delete highlight!") + "\n\n" + error);
     });
   }
 });
@@ -1280,7 +1313,7 @@ function sendMembersPatch() {
   })
   .catch(function(error) {
     console.error("Failed to patch members list:", error);
-    alert(gettext("Couldn't update collaborators!"));
+    alert(gettext("Couldn't update collaborators!") + "\n\n" + error);
   })
   .then(hideSpinner);
 
@@ -1351,7 +1384,7 @@ function loadDocument(document_id) {
   })
   .catch(function(error) {
     console.error("Failed to load document:", error);
-    alert(gettext("Error loading document!"));
+    alert(gettext("Error loading document!") + "\n\n" + error);
   });
 }
 
@@ -1415,7 +1448,7 @@ function loadTag(tag_path) {
   })
   .catch(function(error) {
     console.error("Failed to load tag highlights:", error);
-    alert(gettext("Error loading tag highlights!"));
+    alert(gettext("Error loading tag highlights!") + "\n\n" + error);
   });
 }
 
