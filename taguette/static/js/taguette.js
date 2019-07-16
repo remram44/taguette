@@ -1172,6 +1172,15 @@ function createHighlight(selection) {
   $(highlight_add_modal).modal().drags({handle: '.modal-header'});
 }
 
+// TRANSLATORS: Key used to create a new highlight
+var newtag_key = gettext('n');
+
+document.addEventListener('keyup', function(e) {
+  if(event.key == newtag_key && current_selection !== null) {
+    createHighlight(current_selection);
+  }
+});
+
 function editHighlight() {
   document.getElementById('highlight-add-form').reset();
   var id = this.getAttribute('data-highlight-id');
