@@ -7,9 +7,12 @@ Changelog
 Bugfixes:
 * Fix showing highlights for a tag with a slash in it
 * Fix new tags showing NaN highlight count
+* Fix export button being on top of text, if the first line is long
 
 Features:
 * Export codebook to Excel (.xlsx)
+* Show error details in alert messages (in English)
+* Highlight the currently selected tag(s) in the left panel
 
 0.8 (2019-06-15)
 ----------------
