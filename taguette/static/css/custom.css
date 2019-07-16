@@ -239,6 +239,10 @@ li.document-link-current a.document-link-a {
   position: relative;
 }
 
+li.tag-current {
+  background-color: #e7f2ff;
+}
+
 .backlight {
   color: #bbb;
 }

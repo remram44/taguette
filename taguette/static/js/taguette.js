@@ -735,6 +735,9 @@ function updateTagsList() {
     var tag = entries[i][1];
     var elem = document.createElement('li');
     elem.className = 'list-group-item';
+    if(current_tag !== null && tag.path.substr(0, current_tag.length) == current_tag) {
+      elem.classList.add('tag-current');
+    }
     elem.innerHTML =
       '<div class="d-flex justify-content-between align-items-center">' +
       '  <div class="tag-name">' +
@@ -1434,6 +1437,8 @@ function loadTag(tag_path) {
     if(result.highlights.length == 0) {
       document_contents.innerHTML = '<p style="font-style: oblique; text-align: center;">' + gettext("No highlights with this tag yet.") + '</p>';
     }
+
+    updateTagsList();
 
     // Update export button
     export_button.style.display = '';
