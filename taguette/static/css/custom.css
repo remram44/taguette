@@ -235,7 +235,7 @@ li.document-link-current a.document-link-a {
 
 .document-view {
   border: 2px solid #dee2e6;
-  padding: 1.2em 0.3em;
+  padding: 2.2em 0.3em 1.2em 0.3em;
   position: relative;
 }
 
