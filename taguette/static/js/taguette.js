@@ -1061,12 +1061,15 @@ function selectionChanged() {
 }
 document.addEventListener('selectionchange', selectionChanged);
 
+var highlight_modal_search = document.getElementById('highlight-add-search');
+
 function createHighlight(selection) {
   document.getElementById('highlight-add-id').value = '';
   document.getElementById('highlight-add-start').value = selection[0];
   document.getElementById('highlight-add-end').value = selection[1];
   document.getElementById('highlight-add-form').reset();
   $(highlight_add_modal).modal();
+  highlight_modal_search.focus();
 }
 
 // TRANSLATORS: Key used to create a new highlight
@@ -1076,6 +1079,44 @@ document.addEventListener('keyup', function(e) {
   if(event.key == newtag_key && current_selection !== null) {
     createHighlight(current_selection);
   }
+});
+
+// Search bar keyboard shortcuts
+var search_selected_index = -1;
+highlight_modal_search.addEventListener('keydown', function(e) {
+  if(e.key == 'ArrowUp' || e.key == 'ArrowDown') {
+    var max = tags_modal_list.children.length - 1;
+    if(search_selected_index < 0 || search_selected_index > max) {
+      search_selected_index = -1;
+    }
+    [].forEach.call(tags_modal_list.querySelectorAll('li.active'), function(e) {
+      e.classList.remove('active');
+    });
+    search_selected_index += e.key == 'ArrowUp'?-1:1;
+    search_selected_index = Math.max(0, Math.min(max, search_selected_index));
+    tags_modal_list.children[search_selected_index].classList.add('active');
+  } else if(e.key == 'Enter') {
+    // Toggle the currently selected tag if any
+    var checkbox = tags_modal_list.querySelector('li.active input[type=checkbox]');
+    if(checkbox) {
+      checkbox.checked = !checkbox.checked;
+    } else {
+      // Otherwise, submit the form
+      return;
+    }
+    // Reset the form
+    highlight_modal_search.value = '';
+    search_selected_index = -1;
+    [].forEach.call(tags_modal_list.querySelectorAll('li.active'), function(e) {
+      e.classList.remove('active');
+    });
+  } else {
+    return; // Don't preventDefault
+  }
+  e.preventDefault();
+});
+highlight_modal_search.addEventListener('change', function() {
+  // TODO: filter the list
 });
 
 function editHighlight(e) {
@@ -1089,6 +1130,7 @@ function editHighlight(e) {
     document.getElementById('highlight-add-tags-' + hl_tags[i]).checked = true;
   }
   $(highlight_add_modal).modal();
+  highlight_modal_search.focus();
 }
 
 // Save highlight button

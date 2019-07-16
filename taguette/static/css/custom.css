@@ -27,6 +27,10 @@
   text-decoration: underline;
 }
 
+#highlight-add-tags li.active {
+  background-color: #e7f2ff;
+}
+
 /* Change body font */
 body {
   font-family: Montserrat !important;
