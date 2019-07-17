@@ -20,7 +20,8 @@ from .web import make_app
 
 logger = logging.getLogger(__name__)
 
-PROM_VERSION = prometheus_client.Info('version', "Application version")
+PROM_VERSION = prometheus_client.Gauge('version', "Application version",
+                                       ['version'])
 
 
 def prepare_db(database):
@@ -266,7 +267,7 @@ def main():
     else:
         logger.info("Running from Git repository, using version=%s",
                     version)
-    PROM_VERSION.info({'version': version})
+    PROM_VERSION.labels(version).set(1)
 
     if 'SENTRY_DSN' in config:
         import sentry_sdk
