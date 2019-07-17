@@ -24,8 +24,9 @@ import sys
 logger = logging.getLogger(__name__)
 
 
-PROM_DATABASE_VERSION = prometheus_client.Info('database_version',
-                                               "Database version")
+PROM_DATABASE_VERSION = prometheus_client.Gauge('database_version',
+                                                "Database version",
+                                                ['version'])
 PROM_COMMAND = prometheus_client.Counter('commands_total',
                                          "Number of commands",
                                          ['type'])
@@ -480,7 +481,7 @@ def connect(db_url):
     conn.close()
     conn = engine.connect()
     revision = MigrationContext.configure(conn).get_current_revision()
-    PROM_DATABASE_VERSION.info({'revision': revision})
+    PROM_DATABASE_VERSION.labels(revision).set(1)
 
     DBSession = sessionmaker(bind=engine)
 
