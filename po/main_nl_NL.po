@@ -1,0 +1,655 @@
+# Translations template for Taguette.
+# Copyright (C) 2019 Remi Rampin
+# This file is distributed under the same license as the Taguette project.
+# Remi Rampin <r@remirampin.com>, 2018.
+# 
+# Translators:
+# Chris Hartgerink <chris@libscie.org>, 2019
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Taguette 0.7\n"
+"Report-Msgid-Bugs-To: hi@taguette.org\n"
+"POT-Creation-Date: 2019-06-15 15:56-0400\n"
+"PO-Revision-Date: 2019-05-08 16:49+0000\n"
+"Last-Translator: Chris Hartgerink <chris@libscie.org>, 2019\n"
+"Language-Team: Dutch (Netherlands) (https://www.transifex.com/remram44/teams/98824/nl_NL/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+"Language: nl_NL\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: taguette/templates/project_delete.html:4
+msgid "Delete project: confirm?"
+msgstr "Bevestig: Project verwijderen?"
+
+#. Name of the project to be deleted
+#: taguette/templates/project_delete.html:6
+#, python-format
+msgid "Name: %(project_name)s"
+msgstr "Naam: %(project_name)s"
+
+#: taguette/templates/project_delete.html:7
+#, python-format
+msgid ""
+"Are you sure you want to delete this project? It currently has "
+"<strong>%(documents)s documents and %(highlights)s highlights in %(tags)s "
+"tags</strong>. There is no way to undo."
+msgstr ""
+"Weet je zeker dat je dit project wilt verwijderen? Deze heeft op het moment "
+"<strong>%(documents)s documenten en %(highlights)s markeringen in %(tags)s "
+"labels</strong>. Dit kan niet ongedaan worden gemaakt."
+
+#: taguette/templates/project_delete.html:11
+msgid "Delete forever"
+msgstr "Voor altijd verwijderen"
+
+#: taguette/templates/project_delete.html:12
+msgid "Go back"
+msgstr "Terug"
+
+#. Heading
+#: taguette/templates/account.html:5
+msgid "Account settings"
+msgstr "Profielvoorkeuren"
+
+#. User name
+#: taguette/templates/account.html:12 taguette/templates/login.html:26
+#: taguette/templates/login.html:57
+msgid "Login"
+msgstr "Inloggen"
+
+#: taguette/templates/account.html:18 taguette/templates/login.html:75
+#: taguette/templates/reset_password.html:15
+msgid "Email"
+msgstr "Email"
+
+#: taguette/templates/account.html:21 taguette/templates/login.html:78
+msgid ""
+"Optional. <em>We will not share your email with anyone. This is only used in"
+" case you forget your password.</em>"
+msgstr ""
+"Optioneel. <em>We delen je email met niemand. Dit is alleen voor het geval "
+"dat je je wachtwoord vergeet.</em>"
+
+#: taguette/templates/account.html:25
+msgid "Language"
+msgstr "Taal"
+
+#: taguette/templates/account.html:28
+msgid "Auto-detect"
+msgstr "Auto-herkenning"
+
+#: taguette/templates/account.html:36
+msgid "New password"
+msgstr "Nieuw wachtwoord"
+
+#: taguette/templates/account.html:42
+msgid "Repeat new password"
+msgstr "Herhaal nieuw wachtwoord"
+
+#. Submit button
+#: taguette/templates/account.html:49
+msgid "Update"
+msgstr "Update"
+
+#: taguette/templates/base.html:23
+msgid "Home"
+msgstr "Begin"
+
+#: taguette/templates/base.html:34
+#, python-format
+msgid "Taguette Guide %(external_icon)s"
+msgstr "Taguette Gids %(external_icon)s"
+
+#: taguette/templates/base.html:38
+msgid "Single-user mode"
+msgstr "Enkele gebruiker modus"
+
+#: taguette/templates/base.html:42
+msgid "Account"
+msgstr "Profiel"
+
+#: taguette/templates/base.html:44
+msgid "Settings"
+msgstr "Voorkeuren"
+
+#: taguette/templates/base.html:45
+msgid "Logout"
+msgstr "Uitloggen"
+
+#. Link to form
+#. Submit button
+#: taguette/templates/base.html:50 taguette/templates/login.html:7
+#: taguette/templates/login.html:39
+msgid "Log in"
+msgstr "Inloggen"
+
+#: taguette/templates/base.html:64
+#, python-format
+msgid ""
+"Taguette %(version)s is released under a <a "
+"href=\"https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt\">BSD-3-Clause"
+" license</a>, &#169; Rémi Rampin | <a href=\"https://www.taguette.org"
+"/getting-started.html\">User Documentation</a> | Please report issues via <a"
+" href=\"https://gitlab.com/remram44/taguette\">GitLab</a> or <a "
+"href=\"mailto:hi@taguette.org\">hi@taguette.org</a>!"
+msgstr ""
+"Taguette %(version)s is openbaar gemaakt onder een <a "
+"href=\"https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt\">BSD-3-Clause"
+" licensie</a>, &#169; Rémi Rampin | <a href=\"https://www.taguette.org"
+"/getting-started.html\">Gebruiksdocumentatie</a> | Rapporteer alstublieft "
+"problemen via <a href=\"https://gitlab.com/remram44/taguette\">GitLab</a> of"
+" <a href=\"mailto:hi@taguette.org\">hi@taguette.org</a>!"
+
+#. Left pane tab
+#: taguette/templates/project.html:14
+msgid "Project info"
+msgstr "Projectinfo"
+
+#. Left pane tab
+#: taguette/templates/project.html:17
+msgid "Documents"
+msgstr "Documenten"
+
+#. Left pane tab
+#: taguette/templates/project.html:20
+msgid "Highlights"
+msgstr "Markeringen"
+
+#. Project name field
+#: taguette/templates/project.html:30 taguette/templates/project.html:165
+#: taguette/templates/project.html:197 taguette/templates/project.html:254
+#: taguette/templates/project_new.html:11
+msgid "Name"
+msgstr "Naam"
+
+#: taguette/templates/project.html:34 taguette/templates/project.html:171
+#: taguette/templates/project.html:200 taguette/templates/project.html:255
+#: taguette/templates/project_new.html:17
+msgid "Description"
+msgstr "Beschrijving"
+
+#: taguette/templates/project.html:41
+msgid "Manage collaborators"
+msgstr "Medewerkers beheren"
+
+#: taguette/templates/project.html:47
+msgid "Export codebook"
+msgstr "Codeboek exporteren"
+
+#: taguette/templates/project.html:58
+msgid "Delete project"
+msgstr "Project verwijderen"
+
+#: taguette/templates/project.html:65 taguette/templates/project.html:74
+#: taguette/templates/project.html:227
+msgid "Loading..."
+msgstr "Laden..."
+
+#: taguette/templates/project.html:66 taguette/templates/project.html:156
+msgid "Add a document"
+msgstr "Document toevoegen"
+
+#: taguette/templates/project.html:68
+msgid "Backlight"
+msgstr "Backlight"
+
+#: taguette/templates/project.html:75
+msgid "See all highlights"
+msgstr "Toon alle markeringen"
+
+#: taguette/templates/project.html:76 taguette/templates/project.html:228
+msgid "Create a tag"
+msgstr "Label aanmaken"
+
+#: taguette/templates/project.html:90
+msgid "Export this view"
+msgstr "Exporteer deze blik"
+
+#: taguette/templates/project.html:100
+msgid "Load a document on the left"
+msgstr "Laad links een document"
+
+#: taguette/templates/project.html:112
+msgid "Manage Collaborators"
+msgstr "Medewerkers Beheren"
+
+#: taguette/templates/project.html:120
+msgid "Add Collaborators"
+msgstr "Medewerkers Toevoegen"
+
+#: taguette/templates/project.html:124
+msgid "Username"
+msgstr "Gebruikersnaam"
+
+#. Permissions level
+#: taguette/templates/project.html:128
+msgid "Full permissions"
+msgstr "Volledige toestemming"
+
+#. Permissions level
+#: taguette/templates/project.html:129
+msgid "Can't change collaborators / delete project"
+msgstr "Kan medewerkers niet wijzigen / project verwijderen"
+
+#. Permissions level
+#: taguette/templates/project.html:130
+msgid "View & make changes"
+msgstr "Toon & maak wijzigingen"
+
+#. Permissions level
+#: taguette/templates/project.html:131
+msgid "View only"
+msgstr "Alleen tonen"
+
+#: taguette/templates/project.html:134
+msgid "Add to project"
+msgstr "Aan project toevoegen"
+
+#: taguette/templates/project.html:137
+msgid "Current Collaborators"
+msgstr "Huidige Medewerkers"
+
+#: taguette/templates/project.html:144 taguette/templates/project.html:204
+#: taguette/templates/project.html:233 taguette/templates/project.html:260
+msgid "Save & Close"
+msgstr "Opslaan & Afsluiten"
+
+#: taguette/templates/project.html:145 taguette/templates/project.html:176
+#: taguette/templates/project.html:261
+msgid "Cancel"
+msgstr "Annuleren"
+
+#: taguette/templates/project.html:175
+msgid "Import"
+msgstr "Importeren"
+
+#: taguette/templates/project.html:187
+msgid "Edit document"
+msgstr "Document wijzigen"
+
+#: taguette/templates/project.html:205
+msgid "Delete document"
+msgstr "Document verwijderen"
+
+#: taguette/templates/project.html:216
+msgid "Highlight"
+msgstr "Markeren"
+
+#: taguette/templates/project.html:234
+msgid "Delete highlight"
+msgstr "Markering verwijderen"
+
+#: taguette/templates/project.html:245
+msgid "New tag"
+msgstr "Nieuw label"
+
+#: taguette/templates/project.html:246
+msgid "Change tag"
+msgstr "Label wijzigen"
+
+#. Button in tag edit window
+#: taguette/templates/project.html:259
+msgid "Merge..."
+msgstr "Samenvoegen..."
+
+#: taguette/templates/project.html:262
+msgid "Delete tag"
+msgstr "Label verwijderen"
+
+#: taguette/templates/project.html:329
+msgid "[new highlight]"
+msgstr "[nieuwe markering]"
+
+#: taguette/templates/index.html:7
+#, python-format
+msgid "Welcome %(user_login)s"
+msgstr "Welkom %(user_login)s"
+
+#: taguette/templates/index.html:9
+msgid "Welcome!"
+msgstr "Welkom!"
+
+#: taguette/templates/index.html:11
+msgid "Here are your projects:"
+msgstr "Hier zijn je projecten:"
+
+#: taguette/templates/index.html:16
+msgid "You have no projects yet."
+msgstr "Je hebt nog geen projecten."
+
+#: taguette/templates/index.html:18
+msgid "Create a project"
+msgstr "Creëer een project"
+
+#: taguette/templates/cookies_prompt.html:4
+msgid "Cookie warning"
+msgstr "Cookiewaarschuwing"
+
+#: taguette/templates/cookies_prompt.html:5
+msgid ""
+"This website uses cookies to store your identity (if you choose to log in) "
+"and as a protection against <a href=\"https://en.wikipedia.org/wiki/Cross-"
+"site_request_forgery\">cross-site request forgery (CSRF)</a>. Before "
+"continuing, you must accept their use by clicking the button below. Those "
+"<strong>are not</strong> \"third-party\" or \"tracking\" cookies."
+msgstr ""
+"Deze website gebruikt cookies om je identiteit op te slaan (als je er voor "
+"kiest om in te loggen) en als een bescherming tegen <a "
+"href=\"https://en.wikipedia.org/wiki/Cross-site_request_forgery\">cross-site"
+" request forgery (CSRF)</a>. Voordat je verder gaat, moet je het gebruik "
+"hiervan toestemmen door op de benedenstaande knop te klikken. Deze "
+"<strong>zijn geen</strong> \"third-party\" of \"tracking\" cookies."
+
+#: taguette/templates/cookies_prompt.html:10
+msgid "Accept cookies"
+msgstr "Cookies accepteren"
+
+#: taguette/templates/welcome.html:6
+msgid "Welcome"
+msgstr "Welkom"
+
+#: taguette/templates/welcome.html:7
+msgid ""
+"The <span style=\"font-family:BadScript;\"><a "
+"href=\"https://www.taguette.org/\">TAGUETTE</a></span> project is an attempt"
+" to create an open-source web-based document tagging tool for qualitative "
+"data analysis."
+msgstr ""
+"Het <span style=\"font-family:BadScript;\"><a "
+"href=\"https://www.taguette.org/\">TAGUETTE</a></span> project is een poging"
+" om een open-source web-based document markeringshulpmiddel voor "
+"kwalitatieve data analyse te creëeren. "
+
+#: taguette/templates/welcome.html:8
+msgid ""
+"Using this tool, you can upload a collection of documents, create a "
+"hierarchy of tags, and annotate portions of documents with tags and notes "
+"that you can recall and organize later."
+msgstr ""
+"Met deze tool kun je een verzameling van documenten uploaden, een hierarchie"
+" van labels maken, en porties van een document markeren met labels en "
+"notities. Deze kun je later organiseren en terugvinden."
+
+#: taguette/templates/welcome.html:10
+#, python-format
+msgid "<a href=\"%(url)s\">Register now</a> for free and get started!"
+msgstr "<a href=\"%(url)s\">Registreer nu</a> gratis en begin!"
+
+#. Submit button
+#: taguette/templates/login.html:10 taguette/templates/login.html:83
+msgid "Register"
+msgstr "Registratie"
+
+#: taguette/templates/login.html:32 taguette/templates/login.html:63
+#: taguette/templates/new_password.html:13
+msgid "Password"
+msgstr "Wachtwoord"
+
+#: taguette/templates/login.html:40
+msgid "Forgot password"
+msgstr "Wachtwoord vergeten"
+
+#: taguette/templates/login.html:69 taguette/templates/new_password.html:19
+msgid "Confirm password"
+msgstr "Wachtwoord bevestigen"
+
+#: taguette/templates/new_password.html:8
+msgid "Please enter a new password below:"
+msgstr "Voer beneden een nieuw wachtwoord in:"
+
+#. Submit button
+#: taguette/templates/new_password.html:26
+msgid "Set new password"
+msgstr "Nieuw wachtwoord aanmaken"
+
+#: taguette/templates/new_password.html:30
+#: taguette/templates/reset_password.html:24
+msgid ""
+"If you didn't set an email address, you can try contacting your server "
+"administrator."
+msgstr ""
+"Als je geen email adres hebt ingevoerd, kun je proberen met de administrator"
+" contact op te nemen."
+
+#: taguette/templates/export_codebook.html:10
+#: taguette/templates/export_codebook.html:13
+msgid "Taguette Codebook"
+msgstr "Taguette Codeboek"
+
+#: taguette/templates/token_needed.html:4
+msgid ""
+"Your browser did not supply a secret token to authenticate with the "
+"application. Please check the console for the correct URL to log in, or "
+"simply restart Taguette."
+msgstr ""
+"Je browser heeft geen geheim teken gegeven voor authenticatie. Check "
+"alstublieft de console voor de correcte URL om in te loggen, of herstart "
+"Taguette."
+
+#: taguette/templates/reset_password.html:11
+msgid ""
+"If you had set an email address in your profile, you can enter it below and "
+"a link to reset your password will be sent to you."
+msgstr ""
+"Als je een email adres in je profiel hebt ingesteld, kun je deze beneden "
+"invullen en wordt er een link naar je gestuurd om je wachtwoord te resetten."
+
+#. Submit button
+#: taguette/templates/reset_password.html:20
+msgid "Send"
+msgstr "Versturen"
+
+#: taguette/templates/project_new.html:4
+msgid "New project"
+msgstr "Nieuw project"
+
+#: taguette/templates/project_new.html:24
+msgid "Create"
+msgstr "Aanmaken"
+
+#: taguette/templates/export_highlights.html:14
+#, python-format
+msgid "Taguette highlights: %(path)s"
+msgstr "Taguette markeringen: %(path)s"
+
+#: taguette/templates/export_highlights.html:16
+msgid "Taguette highlights"
+msgstr "Taguette markeringen"
+
+#: taguette/templates/export_highlights.html:21
+#, python-format
+msgid "<strong>Document:</strong> %(doc)s"
+msgstr "<strong>Document:</strong> %(doc)s"
+
+#: taguette/templates/export_highlights.html:22
+msgid "Tags:"
+msgstr "Labels:"
+
+#: taguette/templates/email_reset_password.html:1
+#, python-format
+msgid ""
+"Someone has requested to reset the password on the Taguette account "
+"associated with this email. If this was you, please follow this link: <a "
+"href=\"%(link)s\">%(link)s</a>"
+msgstr ""
+"Iemand heeft een verzoek ingediend om je wachtwoord voor Taguette te "
+"resetten, die gelinkt is aan een account met deze email. Als jij dit was, "
+"klik dan alstublieft op: <a href=\"%(link)s\">%(link)s</a>"
+
+#: taguette/templates/email_reset_password.html:3
+msgid "This link will expire in 1 day."
+msgstr "Deze link verloopt in 1 dag."
+
+#: taguette/web/views.py:112
+msgid "Invalid login or password"
+msgstr "Foutieve login of wachtwoord"
+
+#: taguette/web/views.py:163 taguette/web/views.py:223
+#: taguette/web/views.py:334
+msgid "Passwords do not match"
+msgstr "Wachtwoorden zijn niet hetzelfde"
+
+#: taguette/web/views.py:165
+msgid "User name is taken"
+msgstr "Gebruikersnaam bezet"
+
+#: taguette/web/views.py:169
+msgid "Email address is already used"
+msgstr "Email adres al in gebruik"
+
+#: taguette/web/views.py:258
+msgid "This email address is not associated with any user"
+msgstr "Dit email adres is niet gelinkt aan een gebruiker"
+
+#: taguette/web/views.py:280
+msgid "Password reset for Taguette"
+msgstr "Wachtwoord reset voor Taguette"
+
+#. Default tag name
+#: taguette/web/views.py:375
+msgid "interesting"
+msgstr "interessant"
+
+#. Default tag description
+#: taguette/web/views.py:377
+msgid "Further review required"
+msgstr "Extra beoordeling vereist"
+
+#: taguette/validate.py:21
+msgid "Project name cannot be empty"
+msgstr "Projectnaam mag niet leeg zijn"
+
+#: taguette/validate.py:23
+msgid "Project name is too long"
+msgstr "Projectnaam is te lang"
+
+#: taguette/validate.py:28
+msgid "Project description is too long"
+msgstr "Projectbeschrijving is te lang"
+
+#: taguette/validate.py:39
+msgid "User login cannot be empty"
+msgstr "Gebruiker login mag niet leeg zijn"
+
+#: taguette/validate.py:41
+msgid "User login is too long"
+msgstr "Gebruiker login is te lang"
+
+#: taguette/validate.py:45
+msgid "User login contains forbidden characters"
+msgstr "Gebruiker login bevat verboden tekens"
+
+#: taguette/validate.py:51
+msgid "Email cannot be empty"
+msgstr "Email mag niet leeg zijn"
+
+#: taguette/validate.py:53
+msgid "Invalid email address"
+msgstr "Ongeldig email adres"
+
+#: taguette/validate.py:58
+msgid "Please use a longer password"
+msgstr "Gebruik alstublieft een langer wachtwoord"
+
+#: taguette/validate.py:60
+msgid "Please use a shorter password"
+msgstr "Gebruik alstublieft een korter wachtwoord"
+
+#: taguette/validate.py:65
+msgid "Document name cannot be empty"
+msgstr "Documentnaam mag niet leeg zijn"
+
+#: taguette/validate.py:67
+msgid "Document name is too long"
+msgstr "Documentnaam is te lang"
+
+#: taguette/validate.py:72
+msgid "Document description is too long"
+msgstr "Documentbeschrijving is te lang"
+
+#: taguette/validate.py:77
+msgid "Tag path cannot be empty"
+msgstr "Label pad mag niet leeg zijn"
+
+#: taguette/validate.py:79
+msgid "Tag path is too long"
+msgstr "Label pad is te lang"
+
+#: taguette/validate.py:84
+msgid "Tag description is too long"
+msgstr "Labelbeschrijving is te lang"
+
+#: taguette/main.py:158
+msgid "Port number on which to listen"
+msgstr "Poortnummer om op te luisteren"
+
+#: taguette/main.py:160
+msgid "Address to bind on"
+msgstr "Adres om op te binden"
+
+#: taguette/main.py:162
+msgid "Open web browser to the application"
+msgstr "Open webbrowser naar de applicatie"
+
+#: taguette/main.py:164
+msgid "Don't open the web browser"
+msgstr "Open de webbrowser niet"
+
+#: taguette/main.py:169
+#, python-format
+msgid ""
+"Database location or connection string, for example 'project.db' or "
+"'postgresql://me:pw@localhost/mydb' (default: %(default)r)"
+msgstr ""
+"Locatie van de database of verbindingsteken, bijvoorbeeld 'project.db' of "
+"'postgresql://me:pw@localhost/mydb' (default: %(default)r)"
+
+#: taguette/main.py:176
+msgid "additional commands"
+msgstr "additionele commando's"
+
+#: taguette/main.py:180
+msgid "Manually trigger a database migration"
+msgstr "Handmatig een database migratie beginnen"
+
+#: taguette/main.py:189
+msgid "Print the default server configuration"
+msgstr "Geef de standaard server configuratie weer"
+
+#: taguette/main.py:191
+msgid "Output to this file rather than stdout"
+msgstr "Schrijf naar dit bestand in plaats van stdout"
+
+#: taguette/main.py:197
+msgid "Run in server mode, suitable for a multi-user deployment"
+msgstr "In servermodus uitvoeren, toepasselijk voor meerdere gebruikers"
+
+#: taguette/main.py:199
+msgid ""
+"Configuration file for the server. The default configuration can be "
+"generated using the `default-config` command"
+msgstr ""
+"Configuratiebestand voor de server. De standaard configuratie kan "
+"gegenereerd worden met `default-config` commando"
+
+#: taguette/main.py:221
+#, python-format
+msgid "Missing required configuration variable %(var)s"
+msgstr "Vereiste configuratie variabele ontbreekt %(var)s"
+
+#: taguette/main.py:292
+#, python-format
+msgid ""
+"\n"
+"    Taguette %(version)s is now running. You can connect to it using this link:\n"
+"\n"
+"    %(url)s\n"
+msgstr ""
+"\n"
+"    Taguette %(version)s wordt nu uitgevoerd. Je kunt deze link gebruiken om verbinding te maken\n"
+"\n"
+"    %(url)s\n"
