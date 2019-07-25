@@ -1,0 +1,26 @@
+image: ubuntu/18.04
+packages: [
+  python3,
+  # Required by poetry
+  curl, python3-pkg-resources, python3-setuptools,
+  # Required by venv
+  python3-venv,
+]
+sources:
+- https://git.sr.ht/~remram44/taguette
+tasks:
+- setup_poetry: |
+    curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python3 && $HOME/.poetry/bin/poetry config settings.virtualenvs.create false
+    python3 -m venv $HOME/venv
+- install: |
+    cd taguette && . $HOME/venv/bin/activate
+    $HOME/.poetry/bin/poetry install --no-interaction
+    scripts/update_translations.sh
+- test: |
+    cd taguette && . $HOME/venv/bin/activate
+    export PYTHONIOENCODING="utf-8:replace"
+    export LANG=C.UTF-8
+    python -m readme_renderer README.rst >/dev/null
+    python tests.py
+    flake8 --ignore=W504 tests.py taguette
+    ! find taguette -name '*.py' -exec grep --color 'raise \(validate\.\)\?InvalidFormat([^_]' {} +
