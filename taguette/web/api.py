@@ -356,12 +356,28 @@ class TagMerge(BaseHandler):
                 tag_dest is None or tag_dest.project_id != project.id):
             self.set_status(404)
             return self.send_json({'error': "No such tag"})
+
+        # Remove tag from tag_src if it's already in tag_dest
+        highlights_in_dest = (
+            self.db.query(database.HighlightTag.highlight_id)
+            .filter(database.HighlightTag.tag_id == tag_dest.id)
+        )
+        (
+            self.db.query(database.HighlightTag)
+                .filter(database.HighlightTag.tag_id == tag_src.id)
+                .filter(database.HighlightTag.highlight_id.in_(
+                    highlights_in_dest
+                ))
+        ).delete(synchronize_session=False)
+        # Update tags that are in tag_src to be in tag_dest
         self.db.execute(
             database.HighlightTag.__table__.update()
             .where(database.HighlightTag.tag_id == tag_src.id)
             .values(tag_id=tag_dest.id)
         )
+        # Delete tag_src
         self.db.delete(tag_src)
+
         cmd = database.Command.tag_merge(
             self.current_user,
             project.id,
