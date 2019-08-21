@@ -667,7 +667,7 @@ var tags_list = document.getElementById('tags-list');
 var tags_modal_list = document.getElementById('highlight-add-tags');
 
 function linkTag(elem, tag_path) {
-  var url = '/project/' + project_id + '/highlights/' + tag_path;
+  var url = '/project/' + project_id + '/highlights/' + encodeURIComponent(tag_path);
   elem.setAttribute('href', url);
   elem.addEventListener('click', function(e) {
     e.preventDefault();
@@ -1393,7 +1393,7 @@ function loadDocument(document_id) {
 
 function loadTag(tag_path) {
   getJSON(
-    '/api/project/' + project_id + '/highlights/' + tag_path
+    '/api/project/' + project_id + '/highlights/' + encodeURIComponent(tag_path)
   )
   .then(function(result) {
     console.log("Loaded highlights for tag", tag_path || "''");
@@ -1447,7 +1447,7 @@ function loadTag(tag_path) {
       var ext = items[i].textContent.toLowerCase();
       items[i].setAttribute(
         'href',
-        '/project/' + project_id + '/export/highlights/' + tag_path + '.' + ext,
+        '/project/' + project_id + '/export/highlights/' + encodeURIComponent(tag_path) + '.' + ext,
       );
     }
   })
@@ -1468,7 +1468,7 @@ if(m) {
 var _tag_url = new RegExp('/project/([0-9]+)/highlights/([^/]*)');
 m = window.location.pathname.match(_tag_url);
 if(m) {
-  loadTag(m[2]);
+  loadTag(decodeURIComponent(m[2]));
 }
 
 // Load documents as we go through browser history
