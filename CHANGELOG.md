@@ -8,6 +8,7 @@ Bugfixes:
 * Fix showing highlights for a tag with a slash in it
 * Fix new tags showing NaN highlight count
 * Fix export button being on top of text, if the first line is long
+* Fix tag names containing '#' not working properly
 
 Features:
 * Export codebook to Excel (.xlsx)
