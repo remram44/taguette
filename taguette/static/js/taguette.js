@@ -79,13 +79,20 @@ function nextElement(node) {
   return node;
 }
 
+function getScrollPos() {
+  var doc = document.scrollingElement || document.documentElement, body = document.body;
+  var x = (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc.clientLeft || 0);
+  var y = (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc.clientTop || 0);
+  return {x: x, y: y};
+}
+
 function getPageXY(e) {
   // from jQuery
   // Calculate pageX/Y if missing
   if(e.pageX === null) {
-    var doc = document.documentElement, body = document.body;
-    var x = e.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc.clientLeft || 0);
-    var y = e.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc.clientTop || 0);
+    var scrollPos = getScrollPos();
+    var x = e.clientX + scrollPos.x;
+    var y = e.clientY + scrollPos.y;
     return {x: x, y: y};
   }
   return {x: e.pageX, y: e.pageY};
@@ -1050,9 +1057,9 @@ function selectionChanged() {
       last_char_range.setStart(current_range.endContainer, current_range.endOffset - 1);
       last_char_range.setEnd(current_range.endContainer, current_range.endOffset);
       var rect = last_char_range.getClientRects().item(0);
-      var doc = document.documentElement, body = document.body;
+      var scrollPos = getScrollPos();
       hlinfo.style.left = (rect.x + rect.width) + 'px';
-      hlinfo.style.top = (rect.y + rect.height + document.documentElement.scrollTop + 20) + 'px';
+      hlinfo.style.top = (rect.y + rect.height + scrollPos.y + 20) + 'px';
       hlinfo.style.display = 'block';
     } else {
       // We are in a weird situation where the end of the selection is in
