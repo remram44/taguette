@@ -1375,6 +1375,10 @@ function loadDocument(document_id) {
     }
     document.getElementById('document-link-' + current_document).classList.add('document-link-current');
     current_tag = null;
+    var tag_links = document.getElementsByClassName('tag-current');
+    for(var i = tag_links.length - 1; i >= 0; --i) {
+      tag_links[i].classList.remove('tag-current');
+    }
     console.log("Loaded document", document_id);
     for(var i = 0; i < result.highlights.length; ++i) {
       setHighlight(result.highlights[i]);
@@ -1410,6 +1414,7 @@ function loadTag(tag_path) {
     for(var i = document_links.length - 1; i >= 0; --i) {
       document_links[i].classList.remove('document-link-current');
     }
+    // No need to clear the 'tag-current', we are calling updateTagsList() below
     document_contents.innerHTML = '';
     highlights = {};
     for(var i = 0; i < result.highlights.length; ++i) {
