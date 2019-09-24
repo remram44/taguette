@@ -10,6 +10,7 @@ Bugfixes:
 * Fix export button being on top of text, if the first line is long
 * Fix tag names containing '#' not working properly
 * Fix "new highlight" button showing at the top of the page when scrolling on Safari
+* Sort highlights in the exported highlights view as well
 
 Features:
 * Export codebook to Excel (.xlsx)
