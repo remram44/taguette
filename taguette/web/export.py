@@ -78,6 +78,8 @@ class ExportHighlightsDoc(BaseHandler):
                 .join(tag, hltag.tag_id == tag.id)
                 .filter(tag.path.startswith(path))
                 .filter(tag.project == project)
+                .order_by(database.Highlight.document_id,
+                          database.Highlight.start_offset)
             ).all()
             name = None
         else:
@@ -88,6 +90,8 @@ class ExportHighlightsDoc(BaseHandler):
                 self.db.query(database.Highlight)
                 .join(document, document.id == database.Highlight.document_id)
                 .filter(document.project == project)
+                .order_by(database.Highlight.document_id,
+                          database.Highlight.start_offset)
             ).all()
             name = 'all_tags'
 
