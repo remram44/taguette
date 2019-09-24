@@ -1369,8 +1369,8 @@ function loadDocument(document_id) {
       chunk_offsets.push(chunk.offset);
     }
     current_document = document_id;
-    var document_links = document.getElementsByClassName('document-link');
-    for(var i = 0; i < document_links.length; ++i) {
+    var document_links = document.getElementsByClassName('document-link-current');
+    for(var i = document_links.length - 1; i >= 0; --i) {
       document_links[i].classList.remove('document-link-current');
     }
     document.getElementById('document-link-' + current_document).classList.add('document-link-current');
@@ -1406,8 +1406,8 @@ function loadTag(tag_path) {
     console.log("Loaded highlights for tag", tag_path || "''");
     current_tag = tag_path;
     current_document = null;
-    var document_links = document.getElementsByClassName('document-link');
-    for(var i = 0; i < document_links.length; ++i) {
+    var document_links = document.getElementsByClassName('document-link-current');
+    for(var i = document_links.length - 1; i >= 0; --i) {
       document_links[i].classList.remove('document-link-current');
     }
     document_contents.innerHTML = '';
