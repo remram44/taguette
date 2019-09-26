@@ -64,13 +64,8 @@ def export_doc(wrapped):
     return wrapper
 
 
-class ExportHighlightsDoc(BaseHandler):
-    init_PROM_EXPORT('highlights_doc')
-
-    @authenticated
-    @export_doc
-    def get(self, project_id, path, ext):
-        PROM_EXPORT.labels('highlights_doc', ext.lower()).inc()
+class BaseExportHighlights(BaseHandler):
+    def get_highlights_for_export(self, project_id, path):
         project, _ = self.get_project(project_id)
 
         if path:
@@ -99,6 +94,19 @@ class ExportHighlightsDoc(BaseHandler):
                           database.Highlight.start_offset)
             ).all()
             name = 'all_tags'
+
+        return name, highlights
+
+
+class ExportHighlightsDoc(BaseExportHighlights):
+    init_PROM_EXPORT('highlights_doc')
+
+    @authenticated
+    @export_doc
+    def get(self, project_id, path, ext):
+        PROM_EXPORT.labels('highlights_doc', ext.lower()).inc()
+
+        name, highlights = self.get_highlights_for_export(project_id, path)
 
         html = self.render_string('export_highlights.html', path=path,
                                   highlights=highlights)
