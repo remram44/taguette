@@ -46,7 +46,12 @@ def export_doc(wrapped):
         ext = args[-1]
         ext = ext.lower()
         name, html = wrapped(self, *args)
-        mimetype, contents = convert.html_to(html, ext)
+        try:
+            mimetype, contents = convert.html_to(html, ext)
+        except convert.UnsupportedFormat:
+            self.set_status(404)
+            self.set_header('Content-Type', 'text/plain')
+            return self.finish("Unsupported format: %s" % ext)
         self.set_header('Content-Type', mimetype)
         if name:
             self.set_header('Content-Disposition',

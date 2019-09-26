@@ -54,6 +54,11 @@ class ConversionError(ValueError):
     """
 
 
+class UnsupportedFormat(ConversionError):
+    """This format is not supported.
+    """
+
+
 if hasattr(signal, 'SIGCHLD'):
     from tornado.process import Subprocess, CalledProcessError
 
@@ -382,5 +387,8 @@ for n in html_to_extensions:
 
 
 def html_to(html, extension):
-    func, mimetype = html_to_extensions[extension]
+    try:
+        func, mimetype = html_to_extensions[extension]
+    except KeyError:
+        raise UnsupportedFormat
     return mimetype, asyncio.ensure_future(func(html))
