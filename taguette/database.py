@@ -90,8 +90,9 @@ class User(Base):
             return bcrypt.checkpw(password.encode('utf-8'),
                                   self.hashed_password[7:].encode('utf-8'))
         elif self.hashed_password.startswith('hashlib:'):
-            hash_pw = self.hashed_password[8:][20:-12]
-            salt = self.hashed_password[8:][:20] + self.hashed_password[8:][-12:]
+            pw = self.hashed_password[8:]
+            hash_pw = pw[20:-12]
+            salt = pw[:20] + pw[-12:]
             return hmac.compare_digest(
                 binascii.unhexlify(hash_pw.encode()),
                 hashlib.pbkdf2_hmac('sha256', password.encode(),
