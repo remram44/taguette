@@ -3,7 +3,10 @@ import alembic.config
 from alembic.runtime.migration import MigrationContext
 from alembic.script import ScriptDirectory
 import bcrypt
+import binascii
 import enum
+import hashlib
+import hmac
 import json
 import logging
 import os
@@ -71,6 +74,15 @@ class User(Base):
             h = bcrypt.hashpw(password.encode('utf-8'),
                               bcrypt.gensalt())
             self.hashed_password = 'bcrypt:%s' % h.decode('utf-8')
+        elif method == 'hashlib':
+            salt = binascii.hexlify(os.urandom(16))
+            h = hashlib.pbkdf2_hmac('sha256', password.encode(),
+                                    salt, 10000)
+            self.hashed_password = 'hashlib:%s%s%s' % (
+                salt[:20],
+                binascii.hexlify(h).decode(),
+                salt[20:],
+            )
         else:
             raise ValueError("Unsupported encryption method %r" % method)
 
@@ -80,6 +92,15 @@ class User(Base):
         elif self.hashed_password.startswith('bcrypt:'):
             return bcrypt.checkpw(password.encode('utf-8'),
                                   self.hashed_password[7:].encode('utf-8'))
+        elif self.hashed_password.startswith('hashlib:'):
+            pw = self.hashed_password[8:]
+            hash_pw = pw[20:-12]
+            salt = pw[:20] + pw[-12:]
+            return hmac.compare_digest(
+                binascii.unhexlify(hash_pw.encode()),
+                hashlib.pbkdf2_hmac('sha256', password.encode(),
+                                    salt.encode(), 10000)
+            )
         else:
             logger.warning("Password uses unknown encryption method")
             return False
