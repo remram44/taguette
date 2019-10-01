@@ -3,6 +3,8 @@ import alembic.config
 from alembic.runtime.migration import MigrationContext
 from alembic.script import ScriptDirectory
 import bcrypt
+from hashlib import pbkdf2_hmac
+from base64 import b64encode
 import enum
 import json
 import logging
@@ -53,6 +55,62 @@ class JSON(TypeDecorator):
     def process_result_value(self, value, dialect):
         return json.loads(value)
 
+class CryptTools():
+    """Cryptographic functions for passwords
+    """
+
+    encoding = 'utf-8'
+    pbkdf2_algo = 'sha256'
+    pbkdf2_iterations = 100000
+
+    @staticmethod
+    def gen_pbkdf2_salt(num_bytes):
+        unencoded_salt = os.urandom(num_bytes)
+        return b64encode(unencoded_salt)
+
+    @staticmethod
+    def gen_pbkdf2_hash(password, salt):
+        unencoded_hash = pbkdf2_hmac(
+                              CryptTools.pbkdf2_algo,
+                              password.encode(CryptTools.encoding),
+                              salt,
+                              CryptTools.pbkdf2_iterations) # Iterations
+        return b64encode(unencoded_hash)
+
+    @staticmethod
+    def gen_bcrypt_hash(password):
+        return bcrypt.hashpw(password.encode(CryptTools.encoding),
+                              bcrypt.gensalt())
+
+    @staticmethod
+    def generate_password(password, method):
+        if method == 'bcrypt':
+            h = CryptTools.gen_bcrypt_hash(password)
+            return 'bcrypt:%s' % h.decode(CryptTools.encoding)
+        elif method == 'pbkdf2':
+            salt = CryptTools.gen_pbkdf2_salt(16) # 16 recommended per docs
+            h = CryptTools.gen_pbkdf2_hash(password, salt)
+            return 'pbkdf2:%s:%s' % (
+                              salt.decode(CryptTools.encoding),
+                              h.decode(CryptTools.encoding))
+        else:
+            raise ValueError("Unsupported encryption method %r" % method)
+        
+    @staticmethod
+    def check_password(stored_password, password):
+        if stored_password is None:
+            return False
+        elif stored_password.startswith('bcrypt:'):
+            return bcrypt.checkpw(password.encode(CryptTools.encoding),
+                                  stored_password[7:].encode(CryptTools.encoding))
+        elif stored_password.startswith('pbkdf2:'):
+            stored_salt = stored_password[7:31].encode(CryptTools.encoding)
+            stored_pass_hash = stored_password[32:].encode(CryptTools.encoding)
+            return CryptTools.gen_pbkdf2_hash(password, stored_salt) == \
+                              stored_pass_hash
+        else:
+            logger.warning("Password uses unknown encryption method")
+            return False
 
 class User(Base):
     __tablename__ = 'users'
@@ -66,24 +124,11 @@ class User(Base):
     email_sent = Column(DateTime, nullable=True)
     projects = relationship('Project', secondary='project_members')
 
-    def set_password(self, password, method='bcrypt'):
-        if method == 'bcrypt':
-            h = bcrypt.hashpw(password.encode('utf-8'),
-                              bcrypt.gensalt())
-            self.hashed_password = 'bcrypt:%s' % h.decode('utf-8')
-        else:
-            raise ValueError("Unsupported encryption method %r" % method)
+    def set_password(self, password, method='pbkdf2'):
+        self.hashed_password = CryptTools.generate_password(password, method)
 
     def check_password(self, password):
-        if self.hashed_password is None:
-            return False
-        elif self.hashed_password.startswith('bcrypt:'):
-            return bcrypt.checkpw(password.encode('utf-8'),
-                                  self.hashed_password[7:].encode('utf-8'))
-        else:
-            logger.warning("Password uses unknown encryption method")
-            return False
-
+        return CryptTools.check_password(self.hashed_password, password)
 
 class Project(Base):
     __tablename__ = 'projects'
