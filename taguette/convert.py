@@ -265,6 +265,8 @@ async def wvware_to_html(input_filename, tmp):
     logger.info("Running: %s", ' '.join(cmd))
     try:
         await check_call(cmd)
+    except OSError:
+        raise ConversionError("Can't call wvHtml")
     except CalledProcessError as e:
         raise ConversionError("wvHtml returned %d" % e.returncode)
     logger.info("wvHtml successful")
