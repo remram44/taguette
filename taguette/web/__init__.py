@@ -76,13 +76,13 @@ def make_app(config, debug=False, xsrf_cookies=True):
                     name='project_tag'),
 
             # Export options
-            URLSpec('/project/([0-9]+)/export/codebook\\.qdc',
+            URLSpec('/project/([0-9]+)/export/codebook.qdc',
                     export.ExportCodebookXml, name='export_codebook_qdc'),
-            URLSpec('/project/([0-9]+)/export/codebook\\.csv',
+            URLSpec('/project/([0-9]+)/export/codebook.csv',
                     export.ExportCodebookCsv, name='export_codebook_csv'),
-            URLSpec('/project/([0-9]+)/export/codebook\\.xlsx',
+            URLSpec('/project/([0-9]+)/export/codebook.xlsx',
                     export.ExportCodebookXlsx, name='export_codebook_xlsx'),
-            URLSpec('/project/([0-9]+)/export/codebook\\.([a-z0-3]{2,4})',
+            URLSpec('/project/([0-9]+)/export/codebook.([a-z0-3]{2,4})',
                     export.ExportCodebookDoc, name='export_codebook_doc'),
             URLSpec('/project/([0-9]+)/export/document/'
                     '([^/]+)\\.([a-z0-9]{2,4})',
