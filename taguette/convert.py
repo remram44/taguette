@@ -113,7 +113,7 @@ def get_html_body(body):
     # Use bleach to sanitize the content
     body = bleach.clean(
         body,
-        tags=['p', 'a', 'img',
+        tags=['p', 'br', 'a', 'img',
               'h1', 'h2', 'h3', 'h4', 'h5',
               'strong', 'em', 'b', 'u',
               'ul', 'ol', 'li'],
