@@ -332,6 +332,7 @@ class SetNewPassword(BaseHandler):
             validate.user_password(password1)
             if password1 != password2:
                 raise validate.InvalidFormat(_f("Passwords do not match"))
+            logger.info("Password reset: changing password for %r", user.login)
             user.set_password(password1)
             self.db.commit()
             return self.redirect(self.reverse_url('index'))
