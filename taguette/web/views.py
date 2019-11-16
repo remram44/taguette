@@ -304,7 +304,10 @@ class SetNewPassword(BaseHandler):
         reset_token = self.get_query_argument('reset_token')
         if self.get_secure_cookie('reset_token', reset_token,
                                   max_age_days=2) is None:
-            raise HTTPError(403)
+            self.set_status(403)
+            return self.finish(
+                "This password reset link has expired",
+            )
         return self.render('new_password.html', reset_token=reset_token)
 
     def post(self):
@@ -400,7 +403,10 @@ class ProjectDelete(BaseHandler):
         PROM_PAGE.labels('delete_project').inc()
         project, privileges = self.get_project(project_id)
         if not privileges.can_delete_project():
-            raise HTTPError(403)
+            self.set_status(403)
+            return self.finish(
+                "You don't have permission to delete this project",
+            )
         doc = aliased(database.Document)
         highlights = (
             self.db.query(database.Highlight)
