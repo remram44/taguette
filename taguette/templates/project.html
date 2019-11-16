@@ -56,8 +56,9 @@
             </div>
           </div>
 
+          {% if can_delete_project %}
           <p><a href="{{ reverse_url('delete_project', project.id) }}" class="btn btn-outline-danger">{% trans %}Delete project{% endtrans %}</a></p>
-
+          {% endif %}
         </div>
 
         <!-- List of documents -->
