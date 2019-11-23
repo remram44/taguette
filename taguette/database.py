@@ -75,7 +75,7 @@ class User(Base):
                               bcrypt.gensalt())
             self.hashed_password = 'bcrypt:%s' % h.decode('utf-8')
         elif method == 'pbkdf2':
-            ITERATIONS = 10000
+            ITERATIONS = 500000
             salt = os.urandom(16)
             h = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'),
                                     salt, ITERATIONS)
