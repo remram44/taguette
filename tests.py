@@ -1,3 +1,4 @@
+import asyncio
 from http.cookies import SimpleCookie
 import json
 import os
@@ -450,7 +451,7 @@ class TestMultiuser(MyHTTPTestCase):
             await poll_proj1,
             {'highlight_add': {'1': [{'id': 1, 'tags': [1],
                                       'start_offset': 3, 'end_offset': 7}]},
-             'id': 5})
+             'id': 5, 'tag_count_changes': {'1': 1}})
         poll_proj1 = self.poll_event(1, 5)
 
         # Change project 2 metadata
@@ -505,7 +506,7 @@ class TestMultiuser(MyHTTPTestCase):
             await poll_proj2,
             {'highlight_add': {'2': [{'id': 2, 'tags': [4],
                                       'start_offset': 0, 'end_offset': 4}]},
-             'id': 8})
+             'id': 8, 'tag_count_changes': {'4': 1}})
         poll_proj2 = self.poll_event(2, 8)
 
         # Create highlight 3 in document 2
@@ -582,11 +583,46 @@ class TestMultiuser(MyHTTPTestCase):
 
         # TODO: Export
 
-    async def poll_event(self, proj, from_id):
+        # Merge tag 3 into 2
+        response = await self.apost('/api/project/2/tag/merge',
+                                    dict(src=3, dest=2),
+                                    fmt='json')
+        self.assertEqual(response.code, 200)
+        self.assertEqual(json.loads(response.body), {'id': 2})
+        self.assertEqual(
+            await poll_proj2,
+            {'tag_merge': [{'src': 3, 'dest': 2}], 'id': 11},
+        )
+        poll_proj2 = self.poll_event(2, 11)
+
+        # List all highlights in project 2
+        response = await self.aget('/api/project/2/highlights/')
+        self.assertEqual(response.code, 200)
+        self.assertEqual(json.loads(response.body),
+                         {'highlights': [
+                             {'id': 2, 'document_id': 2, 'tags': [4],
+                              'content': "diff"},
+                             {'id': 3, 'document_id': 2, 'tags': [2],
+                              'content': "tent"},
+                             {'id': 4, 'document_id': 3, 'tags': [2],
+                              'content': "<strong>Opinion</strong>"},
+                         ]})
+
+        await asyncio.sleep(2)
+        self.assertNotDone(poll_proj1)
+        self.assertNotDone(poll_proj2)
+
+    async def _poll_event(self, proj, from_id):
         response = await self.aget('/api/project/%d/events?from=%d' % (
                                    proj, from_id))
         self.assertEqual(response.code, 200)
         return json.loads(response.body.decode('utf-8'))
+
+    def poll_event(self, proj, from_id):
+        return asyncio.ensure_future(self._poll_event(proj, from_id))
+
+    def assertNotDone(self, fut):
+        self.assertTrue(fut.cancel())
 
 
 class TestSingleuser(MyHTTPTestCase):
