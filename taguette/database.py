@@ -389,7 +389,7 @@ class Tag(Base):
         UniqueConstraint('project_id', 'path'),
     )
 
-    documents = relationship('Highlight', secondary='highlight_tags')
+    highlights = relationship('Highlight', secondary='highlight_tags')
 
 
 class HighlightTag(Base):
