@@ -394,3 +394,8 @@ def html_to(html, extension):
     except KeyError:
         raise UnsupportedFormat
     return mimetype, asyncio.ensure_future(func(html))
+
+
+def html_to_plaintext(html):
+    soup = bs4.BeautifulSoup(html)
+    return soup.get_text(' ', strip=True)

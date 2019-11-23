@@ -124,7 +124,8 @@ class ExportHighlightsCsv(BaseExportHighlights):
                 tags = ['']
             for tag_path in tags:
                 writer.writerow([
-                    hl.id, hl.document.name, tag_path, hl.snippet,
+                    hl.id, hl.document.name, tag_path,
+                    convert.html_to_plaintext(hl.snippet),
                 ])
         return self.finish()
 
@@ -174,7 +175,7 @@ class ExportHighlightsXlsx(BaseExportHighlights):
                     sheet.write(row, 0, str(hl.id))
                     sheet.write(row, 1, hl.document.name)
                     sheet.write(row, 2, tag_path)
-                    sheet.write(row, 3, hl.snippet)
+                    sheet.write(row, 3, convert.html_to_plaintext(hl.snippet))
                     row += 1
             workbook.close()
             with open(filename, 'rb') as fp:
