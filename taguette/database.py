@@ -2,8 +2,10 @@ import alembic.command
 import alembic.config
 from alembic.runtime.migration import MigrationContext
 from alembic.script import ScriptDirectory
-import bcrypt
+import binascii
 import enum
+import hashlib
+import hmac
 import json
 import logging
 import os
@@ -66,11 +68,22 @@ class User(Base):
     email_sent = Column(DateTime, nullable=True)
     projects = relationship('Project', secondary='project_members')
 
-    def set_password(self, password, method='bcrypt'):
+    def set_password(self, password, method='pbkdf2'):
         if method == 'bcrypt':
+            import bcrypt
             h = bcrypt.hashpw(password.encode('utf-8'),
                               bcrypt.gensalt())
             self.hashed_password = 'bcrypt:%s' % h.decode('utf-8')
+        elif method == 'pbkdf2':
+            ITERATIONS = 500000
+            salt = os.urandom(16)
+            h = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'),
+                                    salt, ITERATIONS)
+            self.hashed_password = 'pbkdf2:%s$%d$%s' % (
+                binascii.hexlify(salt).decode('ascii'),
+                ITERATIONS,
+                binascii.hexlify(h).decode('ascii'),
+            )
         else:
             raise ValueError("Unsupported encryption method %r" % method)
 
@@ -78,8 +91,20 @@ class User(Base):
         if self.hashed_password is None:
             return False
         elif self.hashed_password.startswith('bcrypt:'):
+            import bcrypt
             return bcrypt.checkpw(password.encode('utf-8'),
                                   self.hashed_password[7:].encode('utf-8'))
+        elif self.hashed_password.startswith('pbkdf2:'):
+            pw = self.hashed_password[7:]
+            salt, iterations, hash_pw = pw.split('$', 2)
+            salt = binascii.unhexlify(salt.encode('ascii'))
+            iterations = int(iterations, 10)
+            hash_pw = binascii.unhexlify(hash_pw.encode('ascii'))
+            return hmac.compare_digest(
+                hash_pw,
+                hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'),
+                                    salt, iterations)
+            )
         else:
             logger.warning("Password uses unknown encryption method")
             return False

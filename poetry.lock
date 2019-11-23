@@ -24,7 +24,7 @@ version = "2.7.0"
 pytz = ">=2015.7"
 
 [[package]]
-category = "main"
+category = "dev"
 description = "Modern password hashing for your software and your servers"
 name = "bcrypt"
 optional = false
@@ -67,7 +67,7 @@ python-versions = "*"
 version = "2019.9.11"
 
 [[package]]
-category = "main"
+category = "dev"
 description = "Foreign Function Interface for Python calling C code."
 name = "cffi"
 optional = false
@@ -207,7 +207,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "2.5.0"
 
 [[package]]
-category = "main"
+category = "dev"
 description = "C parser in Python"
 name = "pycparser"
 optional = false
@@ -348,7 +348,7 @@ python-versions = "*"
 version = "1.1.9"
 
 [metadata]
-content-hash = "f8849c04d0d417919b72ea2d4833cbe6cd4e8c27a1f87c8ec43dcdecd8f66ba6"
+content-hash = "e668a23d848e28b3d1d44194a98e480c1f60d5e855d1e73aac4fc18ba3ac60b1"
 python-versions = "^3.5.3"
 
 [metadata.hashes]
