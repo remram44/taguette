@@ -2,7 +2,6 @@ import alembic.command
 import alembic.config
 from alembic.runtime.migration import MigrationContext
 from alembic.script import ScriptDirectory
-import bcrypt
 import binascii
 import enum
 import hashlib
@@ -71,6 +70,7 @@ class User(Base):
 
     def set_password(self, password, method='pbkdf2'):
         if method == 'bcrypt':
+            import bcrypt
             h = bcrypt.hashpw(password.encode('utf-8'),
                               bcrypt.gensalt())
             self.hashed_password = 'bcrypt:%s' % h.decode('utf-8')
@@ -91,6 +91,7 @@ class User(Base):
         if self.hashed_password is None:
             return False
         elif self.hashed_password.startswith('bcrypt:'):
+            import bcrypt
             return bcrypt.checkpw(password.encode('utf-8'),
                                   self.hashed_password[7:].encode('utf-8'))
         elif self.hashed_password.startswith('pbkdf2:'):
