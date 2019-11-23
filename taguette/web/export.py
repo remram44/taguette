@@ -98,6 +98,97 @@ class BaseExportHighlights(BaseHandler):
         return name, highlights
 
 
+class ExportHighlightsCsv(BaseExportHighlights):
+    PROM_EXPORT.labels('highlights_doc', 'csv').inc(0)
+
+    @authenticated
+    def get(self, project_id, path):
+        PROM_EXPORT.labels('highlights_doc', 'csv').inc()
+
+        name, highlights = self.get_highlights_for_export(project_id, path)
+
+        self.set_header('Content-Type', 'text/csv; charset=utf-8')
+        if name:
+            self.set_header('Content-Disposition',
+                            'attachment; filename="%s.csv"' % name)
+        else:
+            self.set_header('Content-Disposition', 'attachment')
+        writer = csv.writer(WriteAdapter(self.write))
+        writer.writerow(['id', 'document', 'tag', 'content'])
+        for hl in highlights:
+            tags = hl.tags
+            assert all(isinstance(t, database.Tag) for t in tags)
+            if tags:
+                tags = [t.path for t in tags]
+            else:
+                tags = ['']
+            for tag_path in tags:
+                writer.writerow([
+                    hl.id, hl.document.name, tag_path, hl.snippet,
+                ])
+        return self.finish()
+
+
+class ExportHighlightsXlsx(BaseExportHighlights):
+    PROM_EXPORT.labels('highlights_doc', 'xls').inc(0)
+
+    @authenticated
+    def get(self, project_id, path):
+        PROM_EXPORT.labels('highlights_doc', 'xls').inc()
+
+        name, highlights = self.get_highlights_for_export(project_id, path)
+
+        self.set_header('Content-Type',
+                        ('application/vnd.openxmlformats-officedocument.'
+                         'spreadsheetml.sheet'))
+        if name:
+            self.set_header('Content-Disposition',
+                            'attachment; filename="%s.xlsx"' % name)
+        else:
+            self.set_header('Content-Disposition', 'attachment')
+        tmp = tempfile.mkdtemp(prefix='taguette_xlsx_')
+        try:
+            filename = os.path.join(tmp, 'highlights.xlsx')
+            workbook = xlsxwriter.Workbook(filename)
+            sheet = workbook.add_worksheet('highlights')
+
+            header = workbook.add_format({'bold': True})
+
+            sheet.write(0, 0, 'id', header)
+            sheet.write(0, 1, 'document', header)
+            sheet.write(0, 2, 'tag', header)
+            sheet.write(0, 3, 'content', header)
+            sheet.set_column(0, 0, 5.0)
+            sheet.set_column(1, 1, 15.0)
+            sheet.set_column(2, 2, 15.0)
+            sheet.set_column(3, 3, 80.0)
+            row = 1
+            for hl in highlights:
+                tags = hl.tags
+                assert all(isinstance(t, database.Tag) for t in tags)
+                if tags:
+                    tags = [t.path for t in tags]
+                else:
+                    tags = ['']
+                for tag_path in tags:
+                    sheet.write(row, 0, str(hl.id))
+                    sheet.write(row, 1, hl.document.name)
+                    sheet.write(row, 2, tag_path)
+                    sheet.write(row, 3, hl.snippet)
+                    row += 1
+            workbook.close()
+            with open(filename, 'rb') as fp:
+                chunk = fp.read(4096)
+                self.write(chunk)
+                while len(chunk) == 4096:
+                    chunk = fp.read(4096)
+                    if chunk:
+                        self.write(chunk)
+            return self.finish()
+        finally:
+            shutil.rmtree(tmp)
+
+
 class ExportHighlightsDoc(BaseExportHighlights):
     init_PROM_EXPORT('highlights_doc')
 

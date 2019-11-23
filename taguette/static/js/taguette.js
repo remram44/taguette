@@ -1390,6 +1390,9 @@ function loadDocument(document_id) {
     var items = export_button.getElementsByClassName('dropdown-item');
     for(var i = 0; i < items.length; ++i) {
       var ext = items[i].textContent.toLowerCase();
+      if(ext == 'excel') {
+        ext = 'xlsx';
+      }
       items[i].setAttribute(
         'href',
         '/project/' + project_id + '/export/document/' + document_id + '.' + ext,
@@ -1457,6 +1460,9 @@ function loadTag(tag_path) {
     var items = export_button.getElementsByClassName('dropdown-item');
     for(var i = 0; i < items.length; ++i) {
       var ext = items[i].textContent.toLowerCase();
+      if(ext == 'excel') {
+        ext = 'xlsx';
+      }
       items[i].setAttribute(
         'href',
         '/project/' + project_id + '/export/highlights/' + encodeURIComponent(tag_path) + '.' + ext,
