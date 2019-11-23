@@ -87,6 +87,10 @@ def make_app(config, debug=False, xsrf_cookies=True):
             URLSpec('/project/([0-9]+)/export/document/'
                     '([^/]+)\\.([a-z0-9]{2,4})',
                     export.ExportDocument, name='export_document'),
+            URLSpec('/project/([0-9]+)/export/highlights/(.*)\\.csv',
+                    export.ExportHighlightsCsv),
+            URLSpec('/project/([0-9]+)/export/highlights/(.*)\\.xlsx',
+                    export.ExportHighlightsXlsx),
             URLSpec('/project/([0-9]+)/export/highlights/'
                     '(.*)\\.([a-z0-3]{2,4})',
                     export.ExportHighlightsDoc, name='export_highlights_doc'),
