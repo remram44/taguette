@@ -583,6 +583,31 @@ class TestMultiuser(MyHTTPTestCase):
 
         # TODO: Export
 
+        # Merge tag 3 into 2
+        response = await self.apost('/api/project/2/tag/merge',
+                                    dict(src=3, dest=2),
+                                    fmt='json')
+        self.assertEqual(response.code, 200)
+        self.assertEqual(json.loads(response.body), {'id': 2})
+        self.assertEqual(
+            await poll_proj2,
+            {'tag_merge': [{'src': 3, 'dest': 2}], 'id': 11},
+        )
+        poll_proj2 = self.poll_event(2, 11)
+
+        # List all highlights in project 2
+        response = await self.aget('/api/project/2/highlights/')
+        self.assertEqual(response.code, 200)
+        self.assertEqual(json.loads(response.body),
+                         {'highlights': [
+                             {'id': 2, 'document_id': 2, 'tags': [4],
+                              'content': "diff"},
+                             {'id': 3, 'document_id': 2, 'tags': [2],
+                              'content': "tent"},
+                             {'id': 4, 'document_id': 3, 'tags': [2],
+                              'content': "<strong>Opinion</strong>"},
+                         ]})
+
         await asyncio.sleep(2)
         self.assertNotDone(poll_proj1)
         self.assertNotDone(poll_proj2)
