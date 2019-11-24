@@ -6,12 +6,15 @@
 * Build MacOS installer
   * Update Calibre
   * Run macos.sh
+  * Put on OSF
 * Build Windows installer (using pyinstaller_entrypoint.py and windows.spec, then windows-installer.iss)
   * Update Calibre
   * Get l10n folder from PyPI
   * Run `pyinstaller windows.spec`
   * Copy Calibre2 to dist/taguette/
   * Build installer using windows-installer.iss
+  * Put on OSF
+* Update tag page on GitLab with changelog, links to OSF and PyPI downloads
 * Build Docker image remram/taguette (version tag + latest tag), push to docker.io
 * Push to Zenodo
   * Update citation in repo, website, GitLab badge
