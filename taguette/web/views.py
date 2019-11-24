@@ -306,7 +306,7 @@ class SetNewPassword(BaseHandler):
                                   max_age_days=2) is None:
             self.set_status(403)
             return self.finish(
-                "This password reset link has expired",
+                self.gettext("This password reset link has expired"),
             )
         return self.render('new_password.html', reset_token=reset_token)
 
@@ -404,9 +404,9 @@ class ProjectDelete(BaseHandler):
         project, privileges = self.get_project(project_id)
         if not privileges.can_delete_project():
             self.set_status(403)
-            return self.finish(
+            return self.finish(self.gettext(
                 "You don't have permission to delete this project",
-            )
+            ))
         doc = aliased(database.Document)
         highlights = (
             self.db.query(database.Highlight)
