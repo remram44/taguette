@@ -1389,14 +1389,16 @@ function loadDocument(document_id) {
     export_button.style.display = '';
     var items = export_button.getElementsByClassName('dropdown-item');
     for(var i = 0; i < items.length; ++i) {
-      var ext = items[i].textContent.toLowerCase();
-      if(ext == 'excel') {
-        ext = 'xlsx';
+      var ext = items[i].getAttribute('data-extension');
+      if(items[i].getAttribute('data-document') !== 'false') {
+        items[i].setAttribute(
+          'href',
+          '/project/' + project_id + '/export/document/' + document_id + '.' + ext,
+        );
+        items[i].style.display = '';
+      } else {
+        items[i].style.display = 'none';
       }
-      items[i].setAttribute(
-        'href',
-        '/project/' + project_id + '/export/document/' + document_id + '.' + ext,
-      );
     }
   })
   .catch(function(error) {
@@ -1459,14 +1461,16 @@ function loadTag(tag_path) {
     export_button.style.display = '';
     var items = export_button.getElementsByClassName('dropdown-item');
     for(var i = 0; i < items.length; ++i) {
-      var ext = items[i].textContent.toLowerCase();
-      if(ext == 'excel') {
-        ext = 'xlsx';
+      var ext = items[i].getAttribute('data-extension');
+      if(items[i].getAttribute('data-highlights') !== 'false') {
+        items[i].setAttribute(
+          'href',
+          '/project/' + project_id + '/export/highlights/' + encodeURIComponent(tag_path) + '.' + ext,
+        );
+        items[i].style.display = '';
+      } else {
+        items[i].style.display = 'none';
       }
-      items[i].setAttribute(
-        'href',
-        '/project/' + project_id + '/export/highlights/' + encodeURIComponent(tag_path) + '.' + ext,
-      );
     }
   })
   .catch(function(error) {
