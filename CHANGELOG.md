@@ -1,8 +1,8 @@
 Changelog
 =========
 
-0.9 (???)
----------
+0.9 (2019-11-23)
+----------------
 
 Bugfixes:
 * Fix showing highlights for a tag with a slash in it
