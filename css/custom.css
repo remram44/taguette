@@ -18,12 +18,12 @@ a {
 }
 
 body {
-  font-size:1.2em;
-  font-family:Montserrat;
+  font-size: 1.2em;
+  font-family: Montserrat;
 }
 
 #container-body {
-  padding-top:1em;
+  padding-top: 1em;
 }
 
 /**************JUMBOTRON**************/
@@ -48,11 +48,11 @@ footer p {
 }
 
 .nav-link {
-  font-size:1.1em !important;
+  font-size: 1.1em !important;
 }
 
 .navbar-brand {
-  font-size:1.3em !important;
+  font-size: 1.3em !important;
 }
 
 .bg-primary .navbar-nav .active > .nav-link {
@@ -265,6 +265,7 @@ footer p {
 }
 
 /**************INFO*******************/
+
 .bg-info {
   background-color: #246a99 !important;
 }
@@ -322,26 +323,32 @@ footer p {
 /* --------------------RESPONSIVE DISPLAY HEADINGS--------------------------*/
 
 @media (max-width: 575.98px) {
-    .display-1 {
-  font-size: 3rem;
-  font-weight: 300;
-  line-height: 1.0;
-    }
-    .display-2 {
-        font-size: 2.75rem;
-        font-weight: 300;
-        line-height: 1.0;
-    }
-    .display-3 {
-        font-size: 2.25rem;
-        font-weight: 300;
-        line-height: 1.0;
-    }
-    .display-4 {
-        font-size: 1.75rem;
-        font-weight: 300;
-        line-height: 1.0;
-    }
+  .display-1 {
+    font-size: 3rem;
+    font-weight: 300;
+    line-height: 1.0;
+  }
+  .display-2 {
+    font-size: 2.75rem;
+    font-weight: 300;
+    line-height: 1.0;
+  }
+  .display-3 {
+    font-size: 2.25rem;
+    font-weight: 300;
+    line-height: 1.0;
+  }
+  .display-4 {
+    font-size: 1.75rem;
+    font-weight: 300;
+    line-height: 1.0;
+  }
+}
+
+/* --------------------FAQ CARD HEADINGS--------------------------*/
+
+.card-header button.btn.btn-link{
+  font-size: 1em;
 }
 
 /* --------------------FAQ CARD HEADINGS--------------------------*/

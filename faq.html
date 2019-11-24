@@ -27,9 +27,9 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
       <div class="container">
         <a class="navbar-brand" href="#" style="font-family: BadScript;">TAGUETTE</a>
-        <a href=""class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
-        </a>
+        </button>
 
         <div class="collapse navbar-collapse" id="navbar">
           <ul class="navbar-nav mr-auto">
@@ -54,10 +54,10 @@
               <a class="nav-link" href="https://app.taguette.org/">Try it <i class="fas fa-external-link-alt"></i></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="https://gitlab.com/remram44/taguette"><i class="fab fa-gitlab"></i></a>
+              <a class="nav-link" href="https://gitlab.com/remram44/taguette"><i class="fab fa-gitlab"></i> <span class="d-lg-none">GitLab</span></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="https://twitter.com/TaguetteProject"><i class="fab fa-twitter"></i></a>
+              <a class="nav-link" href="https://twitter.com/TaguetteProject"><i class="fab fa-twitter"></i> <span class="d-lg-none">Twitter</span></a>
             </li>
           </ul>
         </div>
@@ -71,31 +71,19 @@
 
         <p>This is a non-exhaustive list of FAQs for Taguette &mdash; if you feel something else should be covered in this guide, please email us at <a href="mailto:hi@taguette.org">hi@taguette.org</a>.</p>
 
-        <h3>General info</h3>
         <div id="accordion">
 
-          <div class="card">
-            <div class="card-header" id="what-is">
-              <h5 class="mb-0">
-                <a href="#what-is-taguette" data-toggle="collapse" data-target="#what-is-taguette" aria-expanded="true" aria-controls="what-is-taguette"><i class="fas fa-plus"></i> What is Taguette?</a>
-              </h5>
-            </div>
-            <div id="what-is-taguette" class="collapse" aria-labelledby="what-is" data-parent="#accordion">
-              <div class="card-body">
-                <p>Taguette is a free and open source qualitative analysis tool. In Taguette, users can import their textual materials (in a variety of formats), highlight portions of text, and assign those highlights a tag. If <a href="self-host.html">self-hosting</a> or using <a href="https://app.taguette.org">app.taguette.org</a>, users can do this collaboratively with others. Users can also export all data they import into Taguette, in a variety of formats.</p>
-              </div>
-            </div>
-          </div>
+          <h3>General info</h3>
 
           <div class="card">
             <div class="card-header" id="pronounce">
               <h5 class="mb-0">
-                <a href="#pronunciation" data-toggle="collapse" data-target="#pronunciation" aria-expanded="false" aria-controls="pronunciation"><i class="fas fa-plus"></i> How do you pronounce Taguette?</a>
+                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#pronounce-info" aria-expanded="false" aria-controls="pronounce-info">How do you pronounce Taguette?</button>
               </h5>
             </div>
-            <div id="pronunciation" class="collapse" aria-labelledby="pronounce" data-parent="#accordion">
+            <div id="pronounce-info" class="collapse" aria-labelledby="pronounce" data-parent="#accordion">
               <div class="card-body">
-                <p>It's pronounced like 'baguette' just with a 't' instead of a 'b' at the start! Like so: ta·​guette | \ ta-ˈget \ </p>
+                <p>It's pronounced like 'baguette' just with a 't' instead of a 'b' at the start! <code>/tæˈɡɛt/</code></p>
               </div>
             </div>
           </div>
@@ -103,47 +91,47 @@
           <div class="card">
             <div class="card-header" id="cost">
               <h5 class="mb-0">
-                <a href="#costing" data-toggle="collapse" data-target="#costing" aria-expanded="true" aria-controls="costing"><i class="fas fa-plus"></i> How much does it cost?</a>
+                <button class="btn btn-link" data-toggle="collapse" data-target="#cost-info" aria-expanded="true" aria-controls="cost-info">How much does it cost?</button>
               </h5>
             </div>
-            <div id="costing" class="collapse" aria-labelledby="cost" data-parent="#accordion">
+            <div id="cost-info" class="collapse" aria-labelledby="cost" data-parent="#accordion">
               <div class="card-body">
-                <p>Nothing! It is free and published under an open license (BSD), which you can read here: <a href="https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt">gitlab.com/remram44/taguette/blob/master/LICENSE.txt</a>.</p>
+                <p>It's free!</p>
+                <p>Taguete costs nothing, either to use on your own machine or install on a server. It is published under an open license (BSD), which you can read here: <a href="https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt">gitlab.com/remram44/taguette/blob/master/LICENSE.txt</a>.</p>
               </div>
             </div>
           </div>
 
           <div class="card">
-            <div class="card-header" id="gen-install">
+            <div class="card-header" id="install">
               <h5 class="mb-0">
-                 <a href="#where-install" data-toggle="collapse" data-target="#where-install" aria-expanded="false" aria-controls="where-install"><i class="fas fa-plus"></i> Where can I install Taguette?</a>
+                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#install-info" aria-expanded="false" aria-controls=install-info">Where can I install Taguette?</button>
               </h5>
             </div>
-            <div id="where-install" class="collapse" aria-labelledby="gen-install" data-parent="#accordion">
+            <div id="install-info" class="collapse" aria-labelledby="install" data-parent="#accordion">
               <div class="card-body">
                 <p>You can install Taguette on your own personal computer running macOS, Windows, or Linux &mdash; full instructions and download links can be found on our <a href="install.html">installation guide</a>. You can also install Taguette on a server, if you need to collaborate with others &mdash; get a walkthrough on this process on our <a href="self-host.html">self-host guide</a>.</p>
               </div>
             </div>
           </div>
 
-        <div class="card">
+          <div class="card">
             <div class="card-header" id="learn">
               <h5 class="mb-0">
-                 <a href="#learn-taguette" data-toggle="collapse" data-target="#learn-taguette" aria-expanded="false" aria-controls="learn-taguette"><i class="fas fa-plus"></i> How do I learn to use Taguette?</a>
+                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#learn-info" aria-expanded="false" aria-controls="learn-info">How do I learn to use Taguette?</button>
               </h5>
             </div>
-            <div id="learn-taguette" class="collapse" aria-labelledby="learn" data-parent="#accordion">
+            <div id="learn-info" class="collapse" aria-labelledby="learn" data-parent="#accordion">
               <div class="card-body">
                 <p>You could begin over at our <a href="getting-started.html">getting started guide</a>, which walks through all the current functionality of Taguette with screenshots. We also have a few presentations walk through Taguette's full capabilities that are hosted on the Open Science Framework here: <a href="https://osf.io/xdszm/files/">osf.io/xdszm/files/</a>. Please make sure to look at the date for each presentation and pick the most recent one!</p>
               </div>
             </div>
           </div>
 
-
-        <div class="card">
+          <div class="card">
             <div class="card-header" id="help">
               <h5 class="mb-0">
-                <a href="#help-info" class="collapsed" data-toggle="collapse" data-target="#help-info" aria-expanded="false" aria-controls="help-info"><i class="fas fa-plus"></i> Where can I get support for Taguette?</a>
+                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#help-info" aria-expanded="false" aria-controls="help-info">Where can I get support for Taguette?</button>
               </h5>
             </div>
             <div id="help-info" class="collapse" aria-labelledby="help" data-parent="#accordion">
@@ -154,44 +142,64 @@
             </div>
           </div>
 
-        <div class="card">
-            <div class="card-header" id="citation">
+          <div class="card">
+            <div class="card-header" id="formats">
               <h5 class="mb-0">
-                <a href="#cite" class="collapsed" data-toggle="collapse" data-target="#cite" aria-expanded="false" aria-controls="cite"><i class="fas fa-plus"></i> I used Taguette for research and I want to cite you/give you credit &mdash; how can I do that?</a>
+                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#formats-info" aria-expanded="false" aria-controls="formats-info">Which file formats can I use with Taguette?</button>
               </h5>
             </div>
-            <div id="cite" class="collapse" aria-labelledby="citation" data-parent="#accordion">
+            <div id="formats-info" class="collapse" aria-labelledby="formats" data-parent="#accordion">
+              <div class="card-body mb-0">
+                <p>Taguette uses <a href="https://calibre-ebook.com/">Calibre</a> to convert documents to HTML, so you can use all the formats it supports, including:</p>
+                <ul>
+                  <li>Ebook formats (AZW, MOBI, EPUB)</li>
+                  <li>Microsoft Word (DOCX)</li>
+                  <li>LibreOffice (ODT)</li>
+                  <li>PDF</li>
+                  <li>Plain text (TXT)</li>
+                  <li>HTML</li>
+                </ul>
+                <p>See also <a href="https://manual.calibre-ebook.com/faq.html#what-formats-does-calibre-support-conversion-to-from">their own FAQ entry</a> on the subject.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header" id="cite">
+              <h5 class="mb-0">
+                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#cite-info" aria-expanded="false" aria-controls="cite-info">I used Taguette for research and I want to cite you/give you credit &mdash; how can I do that?</button>
+              </h5>
+            </div>
+            <div id="cite-info" class="collapse" aria-labelledby="cite" data-parent="#accordion">
               <div class="card-body mb-0">
                 <p>A mention is always appreciated! If you use Taguette for your research, please cite it with the following:</p>
-                <p class="text-center"> Rémi Rampin, Vicky Steeves, & Sarah DeMott. (2019, March 23). Taguette (Version 0.5). Zenodo. <a href="https://doi.org/10.5281/zenodo.2605647">https://doi.org/10.5281/zenodo.2605647</a>.</p>
+                <p class="text-center"> Rémi Rampin, Vicky Steeves, & Sarah DeMott. (2019, June 15). Taguette (Version 0.8). Zenodo. <a href="https://doi.org/10.5281/zenodo.3246958">https://doi.org/10.5281/zenodo.3246958</a>.</p>
                 <p>If you need Bibtex, please use the following:</p>
 <pre><code>@software{Taguette,
   author = {{Rampin, Rémi and Steeves, Vicky and DeMott, Sarah}},
   title = {Taguette},
-  doi = {10.5281/zenodo.2605647},
+  doi = {10.5281/zenodo.3246958},
   url = {https://taguette.org}
-  version = {0.5},
-  date = {2019-03-23},
+  version = {0.8},
+  date = {2019-06-15},
   publisher = {Zenodo},
   language = {en}
 }</code></pre>
               </div>
             </div>
           </div>
-        </div>
 
-      <br>
+          <br>
 
-      <h3>Desktop/Single-user Info</h3>
-        <div id="accordion">
+          <h3>Desktop/Single-user Info</h3>
 
           <div class="card">
-            <div class="card-header" id="single-user">
+            <div class="card-header" id="singleuser">
               <h5 class="mb-0">
-                <a href="#su-mode" data-toggle="collapse" data-target="#su-mode" aria-expanded="true" aria-controls="su-mode"><i class="fas fa-plus"></i> Why do you call the desktop version of Taguette 'single user mode'?</a>
+                <button class="btn btn-link" data-toggle="collapse" data-target="#singleuser-info" aria-expanded="true" aria-controls="singleuser-info">Why do you call the desktop version of Taguette 'single user mode'?</button>
               </h5>
             </div>
-            <div id="su-mode" class="collapse" aria-labelledby="single-user" data-parent="#accordion">
+            <div id="singleuser-info" class="collapse" aria-labelledby="singleuser" data-parent="#accordion">
               <div class="card-body">
                 <p>Simply because you cannot collaborate with others using our desktop version of Taguette! If you want to be able to collaborate, see our <a href="self-host.html">self hosting guide</a> that walks you through how to install Taguette on a server for multi-user collaboration.</p>
               </div>
@@ -201,7 +209,7 @@
           <div class="card">
             <div class="card-header" id="os">
               <h5 class="mb-0">
-                <a href="#os-info" data-toggle="collapse" data-target="#os-info" aria-expanded="true" aria-controls="os-info"><i class="fas fa-plus"></i> Does Taguette work on all operating systems?</a>
+                <button class="btn btn-link" data-toggle="collapse" data-target="#os-info" aria-expanded="true" aria-controls="os-info">Does Taguette work on all operating systems?</button>
               </h5>
             </div>
             <div id="os-info" class="collapse" aria-labelledby="os" data-parent="#accordion">
@@ -212,14 +220,14 @@
           </div>
 
           <div class="card">
-            <div class="card-header" id="data-loc">
+            <div class="card-header" id="dataloc">
               <h5 class="mb-0">
-                <a href="#data-location" class="collapsed" data-toggle="collapse" data-target="#data-location" aria-expanded="false" aria-controls="data-location"><i class="fas fa-plus"></i> When I use Taguette on my personal computer, where is the data?</a>
+                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#dataloc-info" aria-expanded="false" aria-controls="dataloc-info">When I use Taguette on my personal computer, where is the data?</button>
               </h5>
             </div>
-            <div id="data-location" class="collapse" aria-labelledby="data-loc" data-parent="#accordion">
+            <div id="dataloc-info" class="collapse" aria-labelledby="dataloc" data-parent="#accordion">
               <div class="card-body">
-                <p>On macOS and Linux, you can find the data at <code>~/.local/share/taguette/taguette.sqlite3</code>. On Windows, you can find it at: <code>My Documents/Taguette/taguette.sqlite3</code>.</p>
+                <p>All your projects and documents are kept in a single database file. On macOS and Linux, you can find it at <code>~/.local/share/taguette/taguette.sqlite3</code>. On Windows, you can find it at: <code>My Documents/Taguette/taguette.sqlite3</code>.</p>
               </div>
             </div>
           </div>
@@ -227,31 +235,35 @@
           <div class="card">
             <div class="card-header" id="db">
               <h5 class="mb-0">
-                <a href="#db-change" class="collapsed" data-toggle="collapse" data-target="#db-change" aria-expanded="false" aria-controls="db-change"><i class="fas fa-plus"></i> SQLite is ok, but I prefer another database system. Can I change what Taguette uses?</a>
+                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#db-info" aria-expanded="false" aria-controls="db-info">SQLite is ok, but I prefer another database system. Can I change what Taguette uses?</button>
               </h5>
             </div>
-            <div id="db-change" class="collapse" aria-labelledby="db" data-parent="#accordion">
+            <div id="db-info" class="collapse" aria-labelledby="db" data-parent="#accordion">
               <div class="card-body">
-                <p>Yes! On the terminal, use the <code>--database</code> option to change from SQLite to your database system of choice (anything supported by <a href="https://docs.sqlalchemy.org/en/13/core/engines.html">SQLAlchemy</a>!).</p>
+                <p>Yes! On the terminal, use the <code>--database</code> option to change the location of your database or use a different database system. The argument is in the <a href="https://docs.sqlalchemy.org/en/13/core/engines.html">format used by SQLAlchemySQLAlchemy</a>, so for instance:</p>
+                <ul>
+                  <li><code>sqlite:////home/myname/myfile.sqlite3</code> (Unix or MacOS) or <code>sqlite3:///C:\Users\myname\Documents\myfile.sqlite3</code> (Windows)</li>
+                  <li><code>postgresql://username:password@host:port/databasename</code></li>
+                  <li><code>mysql://user:password@host:port/databasename</code></li>
+                  <li>Any of the <a href="https://docs.sqlalchemy.org/en/13/core/engines.html">other backends supported by SQLAlchemy</a></li>
+                </ul>
               </div>
             </div>
           </div>
 
-        </div>
+          <br>
 
-        <br>
+          <h3>Self-hosting/multiuser mode Info</h3>
 
-        <h3>Self-hosting/multiuser mode Info</h3>
-        <div id="accordion">
           <div class="card">
             <div class="card-header" id="server">
               <h5 class="mb-0">
-                <a href="server-install" data-toggle="collapse" data-target="#server-install" aria-expanded="true" aria-controls="server-install"><i class="fas fa-plus"></i> Can I install Taguette on my own server?</a>
+                <button class="btn btn-link" data-toggle="collapse" data-target="#server-info" aria-expanded="true" aria-controls="server-info">Can I install Taguette on my own server?</button>
               </h5>
             </div>
-            <div id="server-install" class="collapse" aria-labelledby="server" data-parent="#accordion">
+            <div id="server-info" class="collapse" aria-labelledby="server" data-parent="#accordion">
               <div class="card-body">
-                <p>Absolutely! We know that putting choice in the hands of our users is what open source is all about 😊 You can install Taguette on your server via Docker or right from source. Both methods and step-by-step instructions can be found on our <a href="self-host.html">self-hosting guide</a>.</p>
+                <p>Absolutely! We know that putting choice in the hands of our users is what open source is all about 😊 You can install Taguette on your server via Docker or right from source. Both methods can be found with step-by-step instructions on our <a href="self-host.html">self-hosting guide</a>.</p>
               </div>
             </div>
           </div>
@@ -259,10 +271,10 @@
           <div class="card">
             <div class="card-header" id="trouble">
               <h5 class="mb-0">
-                <a href="#troubleshoot" class="collapsed" data-toggle="collapse" data-target="#troubleshoot" aria-expanded="false" aria-controls="troubleshoot"><i class="fas fa-plus"></i> I thought I followed the instructions but something went wrong -- what should I look at first?</a>
+                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#trouble-info" aria-expanded="false" aria-controls="trouble-info">I thought I followed the instructions but something went wrong -- what should I look at first?</button>
               </h5>
             </div>
-            <div id="troubleshoot" class="collapse" aria-labelledby="trouble" data-parent="#accordion">
+            <div id="trouble-info" class="collapse" aria-labelledby="trouble" data-parent="#accordion">
               <div class="card-body">
                 <p>Make sure you have <strong>correctly installed all the dependencies</strong> (via our <a href="self-host.html">self-hosting guide</a>) and have also <strong>edited the configuration file</strong>. We have two sample configurations for you to work from as well: <a href="https://gitlab.com/remram44/taguette/blob/master/scripts/dist/server_configs/nginx.conf">nginx</a> and <a href="https://gitlab.com/remram44/taguette/blob/master/scripts/dist/server_configs/apache2.conf">apache2</a>.</p>
 
@@ -271,19 +283,17 @@
             </div>
           </div>
 
-        </div>
+          <br>
 
-        <br>
+          <h3><a href="https://app.taguette.org">app.taguette.org</a> Info</h3>
 
-        <h3><a href="https://app.taguette.org">app.taguette.org</a> Info</h3>
-        <div id="accordion">
           <div class="card">
-            <div class="card-header" id="what-hosted">
+            <div class="card-header" id="app">
               <h5 class="mb-0">
-                <a href="#what-is-hosted" data-toggle="collapse" data-target="#what-is-hosted" aria-expanded="true" aria-controls="what-is-hosted"><i class="fas fa-plus"></i> What is app.taguette.org?</a>
+                <button class="btn btn-link" data-toggle="collapse" data-target="#app-info" aria-expanded="true" aria-controls="app-info">What is app.taguette.org?</button>
               </h5>
             </div>
-            <div id="what-is-hosted" class="collapse" aria-labelledby="what-hosted" data-parent="#accordion">
+            <div id="app-info" class="collapse" aria-labelledby="app" data-parent="#accordion">
               <div class="card-body">
                 <p>It is a version of Taguette hosted on our servers for free use by anyone! We host this from a rented dedicated server from <a href="https://www.ovh.com/world/dedicated-servers/">OVH</a>, and our server's location is in France.</p>
               </div>
@@ -291,12 +301,12 @@
           </div>
 
           <div class="card">
-            <div class="card-header" id="secure">
+            <div class="card-header" id="register">
               <h5 class="mb-0">
-                <a href="#security" class="collapsed" data-toggle="collapse" data-target="#security" aria-expanded="false" aria-controls="security"><i class="fas fa-plus"></i> What do we need to register for an account, and what do you do with our account information?</a>
+                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#register-info" aria-expanded="false" aria-controls="register-info">What do we need to register for an account, and what do you do with our account information?</button>
               </h5>
             </div>
-            <div id="security" class="collapse" aria-labelledby="secure" data-parent="#accordion">
+            <div id="register-info" class="collapse" aria-labelledby="register" data-parent="#accordion">
               <div class="card-body">
                 <p>To use <a href="https://app.taguette.org">app.taguette.org</a>, you need to register with a username and a password. You can provide an email address optionally, which we only use in case you forget your password. We will never sell your information to anyone else, and we will only use it log you into your account.</p>
               </div>
@@ -304,12 +314,12 @@
           </div>
 
           <div class="card">
-            <div class="card-header" id="data-up">
+            <div class="card-header" id="secure">
               <h5 class="mb-0">
-                <a href="#data-upload" class="collapsed" data-toggle="collapse" data-target="#data-upload" aria-expanded="false" aria-controls="data-upload"><i class="fas fa-plus"></i> What type of data should I upload to app.taguette.org?</a>
+                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#secure-info" aria-expanded="false" aria-controls="secure-info">What type of data should I upload to app.taguette.org?</button>
               </h5>
             </div>
-            <div id="data-upload" class="collapse" aria-labelledby="data-up" data-parent="#accordion">
+            <div id="secure-info" class="collapse" aria-labelledby="secure" data-parent="#accordion">
               <div class="card-body">
                 <p>TL;DR: do not upload sensitive data (e.g. patient information, student records) to our hosted version of Taguette.</p>
 
@@ -323,7 +333,7 @@
           <div class="card">
             <div class="card-header" id="backup">
               <h5 class="mb-0">
-                <a href="#backup-info" class="collapsed" data-toggle="collapse" data-target="#backup-info" aria-expanded="false" aria-controls="backup-info"><i class="fas fa-plus"></i> Do you backup the data on app.taguette.org?</a>
+                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#backup-info" aria-expanded="false" aria-controls="backup-info">Do you backup the data on app.taguette.org?</button>
               </h5>
             </div>
             <div id="backup-info" class="collapse" aria-labelledby="backup" data-parent="#accordion">
@@ -332,9 +342,7 @@
               </div>
             </div>
           </div>
-
         </div>
-
       </div>
     </main>
 
@@ -342,27 +350,12 @@
       <hr/>
       <p>Last Updated: 2019-06-09 | Email: <a href="mailto:hi@taguette.org">hi@taguette.org</a> | Tweet us: <a href="https://twitter.com/TaguetteProject">@TaguetteProject</a> | Any issues using Taguette? Tell us on <a href="https://gitlab.com/remram44/taguette">GitLab</a>!</p>
     </footer>
-<i class="fas fa-plus"></i>
+
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="js/jquery-slim.min.js"></script>
     <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
-    <script>
-      $(document).ready(function(){
-          // Add minus icon for collapse element which is open by default
-          $(".collapse.show").each(function(){
-              $(this).prev(".card-header").find(".fas").addClass("fa-minus").removeClass("fa-plus");
-          });
-          
-          // Toggle plus minus icon on show hide of collapse element
-          $(".collapse").on('show.bs.collapse', function(){
-              $(this).prev(".card-header").find(".fas").removeClass("fa-plus").addClass("fa-minus");
-          }).on('hide.bs.collapse', function(){
-              $(this).prev(".card-header").find(".fas").removeClass("fa-minus").addClass("fa-plus");
-          });
-      });
-  </script>
   </body>
 </html>
