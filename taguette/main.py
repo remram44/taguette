@@ -85,7 +85,7 @@ MAIL_SERVER = {{
 }}
 
 # Whether users must explicitly accept cookies before using the website
-COOKIES_PROMPT = True
+COOKIES_PROMPT = False
 
 # Whether new users can create an account
 REGISTRATION_ENABLED = True
