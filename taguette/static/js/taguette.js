@@ -752,7 +752,7 @@ function updateTagsList() {
       '    <a id="tag-link-' + tag.id + '">' + escapeHtml(tag.path) + '</a>' +
       '  </div>' +
       '  <div style="white-space: nowrap;">' +
-      '    <span href="#" class="badge badge-secondary badge-pill" id="tag-' + tag.id + '-count">' + tag.count + '</span>' +
+      '    <span class="badge badge-secondary badge-pill" id="tag-' + tag.id + '-count">' + tag.count + '</span>' +
       '    <a href="javascript:editTag(' + tag.id + ');" class="badge badge-primary badge-pill">' + gettext("edit") + '</a>' +
       '  </div>' +
       '</div>' +
