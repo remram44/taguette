@@ -19,6 +19,19 @@ run_tests_sqlite3:
     paths:
       - htmlcov
 
+run_tests_sqlite3_latest:
+  stage: test
+  image: python:3.6
+  script:
+    - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python && /root/.poetry/bin/poetry config settings.virtualenvs.create false
+    - rm poetry.lock
+    - $HOME/.poetry/bin/poetry install --no-interaction
+    - scripts/update_translations.sh
+    - python tests.py
+  artifacts:
+    paths:
+      - htmlcov
+
 run_tests_postgres:
   stage: test
   image: python:3.6
