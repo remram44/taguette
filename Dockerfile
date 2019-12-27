@@ -3,7 +3,7 @@ FROM python:3.7
 RUN apt-get update && \
     apt-get install -y --no-install-recommends calibre wv && \
     rm -rf /var/lib/apt/lists/*
-RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python && /root/.poetry/bin/poetry config settings.virtualenvs.create false
+RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python && /root/.poetry/bin/poetry config virtualenvs.create false
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 COPY taguette taguette
