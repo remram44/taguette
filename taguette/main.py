@@ -221,7 +221,7 @@ def main():
             if key not in config:
                 print(_("Missing required configuration variable %(var)s") %
                       dict(var=key),
-                      file=sys.stderr)
+                      file=sys.stderr, flush=True)
                 missing = True
         if missing:
             sys.exit(2)
@@ -293,7 +293,7 @@ def main():
         url = 'http://localhost:%d/' % config['PORT']
     print(_("\n    Taguette %(version)s is now running. You can connect to it "
             "using this link:\n\n    %(url)s\n") %
-          dict(url=url, version=__version__))
+          dict(url=url, version=__version__), flush=True)
 
     if args.browser and not args.debug:
         loop.call_later(0.01, webbrowser.open, url)
