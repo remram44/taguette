@@ -41,6 +41,8 @@ include = [
     "taguette/migrations/versions/*.py", "taguette/l10n/*/*/*.mo",
 ]
 
+# When updating dependencies: update 'translation' stage in Dockerfile
+
 [tool.poetry.dependencies]
 python = "^3.5.3"
 # tornado 6.1 will include https://github.com/tornadoweb/tornado/pull/2745 and

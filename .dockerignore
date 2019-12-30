@@ -1,3 +1,7 @@
+# Translation catalogs (built in Dockerfile)
+po/*.mo
+taguette/l10n
+
 # Git
 **/.git
 **/.gitignore
