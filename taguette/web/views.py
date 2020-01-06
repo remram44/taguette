@@ -11,37 +11,40 @@ from urllib.parse import urlunparse
 
 from .. import database
 from .. import validate
-from .base import BaseHandler, _f, send_mail
+from .base import BaseHandler, PromMeasureRequest, _f, send_mail
 
 
 logger = logging.getLogger(__name__)
 
 
-PROM_PAGE = prometheus_client.Counter(
-    'pages_total',
-    "Page requests",
-    ['name'],
+PROM_REQUESTS = PromMeasureRequest(
+    count=prometheus_client.Counter(
+        'pages_total',
+        "Page requests",
+        ['name'],
+    ),
+    time=prometheus_client.Histogram(
+        'page_seconds',
+        "Page request time",
+        ['name'],
+    ),
 )
 
 
 class Index(BaseHandler):
     """Index page, shows welcome message and user's projects.
     """
-    PROM_PAGE.labels('index').inc(0)
-    PROM_PAGE.labels('welcome').inc(0)
-
+    @PROM_REQUESTS.sync('index')
     def get(self):
         if self.current_user is not None:
             if self.get_query_argument('token', None):
                 return self.redirect(self.reverse_url('index'))
             user = self.db.query(database.User).get(self.current_user)
             if user is None:
-                PROM_PAGE.labels('index').inc()
                 logger.warning("User is logged in as non-existent user %r",
                                self.current_user)
                 self.logout()
             else:
-                PROM_PAGE.labels('index').inc()
                 return self.render('index.html',
                                    user=user, projects=user.projects)
         elif not self.application.config['MULTIUSER']:
@@ -53,20 +56,17 @@ class Index(BaseHandler):
                 return self.redirect(self.reverse_url('index'))
             else:
                 return self.render('token_needed.html')
-        PROM_PAGE.labels('welcome').inc()
         return self.render('welcome.html')
 
 
 class CookiesPrompt(BaseHandler):
-    PROM_PAGE.labels('cookies_prompt').inc(0)
-
+    @PROM_REQUESTS.sync('cookies_prompt')
     def get(self):
-        PROM_PAGE.labels('cookies_prompt').inc()
         return self.render('cookies_prompt.html',
                            next=self.get_argument('next', ''))
 
+    @PROM_REQUESTS.sync('cookies_prompt')
     def post(self):
-        PROM_PAGE.labels('cookies_prompt').inc()
         self.set_cookie('cookies_accepted', 'yes', dont_check=True)
         next_ = self.get_argument('next', '')
         if not next_:
@@ -78,10 +78,8 @@ class CookiesPrompt(BaseHandler):
 
 
 class Login(BaseHandler):
-    PROM_PAGE.labels('login').inc(0)
-
+    @PROM_REQUESTS.sync('login')
     def get(self):
-        PROM_PAGE.labels('login').inc()
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         if self.current_user:
@@ -90,8 +88,8 @@ class Login(BaseHandler):
             return self.render('login.html', register=False,
                                next=self.get_argument('next', ''))
 
+    @PROM_REQUESTS.sync('login')
     def post(self):
-        PROM_PAGE.labels('login').inc()
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         login = self.get_body_argument('login')
@@ -120,10 +118,8 @@ class Login(BaseHandler):
 
 
 class Logout(BaseHandler):
-    PROM_PAGE.labels('logout').inc(0)
-
+    @PROM_REQUESTS.sync('logout')
     def get(self):
-        PROM_PAGE.labels('logout').inc()
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         self.logout()
@@ -131,10 +127,8 @@ class Logout(BaseHandler):
 
 
 class Register(BaseHandler):
-    PROM_PAGE.labels('register').inc(0)
-
+    @PROM_REQUESTS.sync('register')
     def get(self):
-        PROM_PAGE.labels('register').inc()
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         if not self.application.config['REGISTRATION_ENABLED']:
@@ -144,8 +138,8 @@ class Register(BaseHandler):
         else:
             return self.render('login.html', register=True)
 
+    @PROM_REQUESTS.sync('register')
     def post(self):
-        PROM_PAGE.labels('register').inc()
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         if not self.application.config['REGISTRATION_ENABLED']:
@@ -184,8 +178,6 @@ class Register(BaseHandler):
 
 
 class Account(BaseHandler):
-    PROM_PAGE.labels('account').inc(0)
-
     def get_languages(self):
         return [
             (loc_code, tornado.locale.get(loc_code).name)
@@ -193,8 +185,8 @@ class Account(BaseHandler):
         ]
 
     @authenticated
+    @PROM_REQUESTS.sync('account')
     def get(self):
-        PROM_PAGE.labels('account').inc()
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         user = self.db.query(database.User).get(self.current_user)
@@ -203,8 +195,8 @@ class Account(BaseHandler):
                            current_language=user.language)
 
     @authenticated
+    @PROM_REQUESTS.sync('account')
     def post(self):
-        PROM_PAGE.labels('account').inc()
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         user = self.db.query(database.User).get(self.current_user)
@@ -236,16 +228,14 @@ class Account(BaseHandler):
 
 
 class AskResetPassword(BaseHandler):
-    PROM_PAGE.labels('reset_password').inc(0)
-
+    @PROM_REQUESTS.sync('reset_password')
     def get(self):
-        PROM_PAGE.labels('reset_password').inc()
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         return self.render('reset_password.html')
 
+    @PROM_REQUESTS.sync('reset_password')
     def post(self):
-        PROM_PAGE.labels('reset_password').inc()
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         email = self.get_body_argument('email')
@@ -295,10 +285,8 @@ class AskResetPassword(BaseHandler):
 
 
 class SetNewPassword(BaseHandler):
-    PROM_PAGE.labels('new_password').inc(0)
-
+    @PROM_REQUESTS.sync('new_password')
     def get(self):
-        PROM_PAGE.labels('new_password').inc()
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         reset_token = self.get_query_argument('reset_token')
@@ -310,8 +298,8 @@ class SetNewPassword(BaseHandler):
             )
         return self.render('new_password.html', reset_token=reset_token)
 
+    @PROM_REQUESTS.sync('new_password')
     def post(self):
-        PROM_PAGE.labels('new_password').inc()
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         reset_token = self.get_body_argument('reset_token')
@@ -346,16 +334,14 @@ class SetNewPassword(BaseHandler):
 
 
 class ProjectAdd(BaseHandler):
-    PROM_PAGE.labels('new_project').inc(0)
-
     @authenticated
+    @PROM_REQUESTS.sync('new_project')
     def get(self):
-        PROM_PAGE.labels('new_project').inc()
         return self.render('project_new.html')
 
     @authenticated
+    @PROM_REQUESTS.sync('new_project')
     def post(self):
-        PROM_PAGE.labels('new_project').inc()
         name = self.get_body_argument('name', '')
         description = self.get_body_argument('description', '')
         try:
@@ -396,11 +382,9 @@ class ProjectAdd(BaseHandler):
 
 
 class ProjectDelete(BaseHandler):
-    PROM_PAGE.labels('delete_project').inc(0)
-
     @authenticated
+    @PROM_REQUESTS.sync('delete_project')
     def get(self, project_id):
-        PROM_PAGE.labels('delete_project').inc()
         project, privileges = self.get_project(project_id)
         if not privileges.can_delete_project():
             self.set_status(403)
@@ -419,8 +403,8 @@ class ProjectDelete(BaseHandler):
                            highlights=highlights)
 
     @authenticated
+    @PROM_REQUESTS.sync('delete_project')
     def post(self, project_id):
-        PROM_PAGE.labels('delete_project').inc()
         project, privileges = self.get_project(project_id)
         if not privileges.can_delete_project():
             raise HTTPError(403)
@@ -432,11 +416,9 @@ class ProjectDelete(BaseHandler):
 
 
 class Project(BaseHandler):
-    PROM_PAGE.labels('project').inc(0)
-
     @authenticated
+    @PROM_REQUESTS.sync('project')
     def get(self, project_id):
-        PROM_PAGE.labels('project').inc()
         project, _ = self.get_project(project_id)
         documents_json = jinja2.Markup(json.dumps(
             {

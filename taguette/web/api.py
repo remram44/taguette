@@ -12,7 +12,7 @@ from .. import convert
 from .. import database
 from .. import extract
 from .. import validate
-from .base import BaseHandler
+from .base import BaseHandler, PromMeasureRequest
 
 
 logger = logging.getLogger(__name__)
@@ -22,10 +22,18 @@ PROM_POLLING_CLIENTS = prometheus_client.Gauge(
     'polling_clients',
     "Number of current polling clients",
 )
-PROM_API = prometheus_client.Counter(
-    'api_total',
-    "API requests",
-    ['name'],
+
+PROM_REQUESTS = PromMeasureRequest(
+    count=prometheus_client.Counter(
+        'api_total',
+        "API requests",
+        ['name'],
+    ),
+    time=prometheus_client.Histogram(
+        'api_seconds',
+        "API request time",
+        ['name'],
+    ),
 )
 
 
@@ -41,11 +49,9 @@ def api_auth(method):
 
 
 class CheckUser(BaseHandler):
-    PROM_API.labels('check_user').inc(0)
-
     @api_auth
+    @PROM_REQUESTS.sync('check_user')
     def post(self):
-        PROM_API.labels('check_user').inc()
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         login = self.get_json()['login']
@@ -61,11 +67,9 @@ class CheckUser(BaseHandler):
 
 
 class ProjectMeta(BaseHandler):
-    PROM_API.labels('project_meta').inc(0)
-
     @api_auth
+    @PROM_REQUESTS.sync('project_meta')
     def post(self, project_id):
-        PROM_API.labels('project_meta').inc()
         project, privileges = self.get_project(project_id)
         if not privileges.can_edit_project_meta():
             self.set_status(403)
@@ -96,11 +100,9 @@ class ProjectMeta(BaseHandler):
 
 
 class DocumentAdd(BaseHandler):
-    PROM_API.labels('document_add').inc(0)
-
     @api_auth
+    @PROM_REQUESTS.async_('document_add')
     async def post(self, project_id):
-        PROM_API.labels('document_add').inc()
         project, privileges = self.get_project(project_id)
         if not privileges.can_add_document():
             self.set_status(403)
@@ -153,12 +155,9 @@ class DocumentAdd(BaseHandler):
 
 
 class DocumentUpdate(BaseHandler):
-    PROM_API.labels('document_update').inc(0)
-    PROM_API.labels('document_delete').inc(0)
-
     @api_auth
+    @PROM_REQUESTS.sync('document_update')
     def post(self, project_id, document_id):
-        PROM_API.labels('document_update').inc()
         document, privileges = self.get_document(project_id, document_id)
         if not privileges.can_edit_document():
             self.set_status(403)
@@ -188,8 +187,8 @@ class DocumentUpdate(BaseHandler):
             return self.send_json({'error': e.message})
 
     @api_auth
+    @PROM_REQUESTS.sync('document_delete')
     def delete(self, project_id, document_id):
-        PROM_API.labels('document_delete').inc()
         document, privileges = self.get_document(project_id, document_id)
         if not privileges.can_delete_document():
             self.set_status(403)
@@ -209,11 +208,9 @@ class DocumentUpdate(BaseHandler):
 
 
 class DocumentContents(BaseHandler):
-    PROM_API.labels('document_contents').inc(0)
-
     @api_auth
+    @PROM_REQUESTS.sync('document_contents')
     def get(self, project_id, document_id):
-        PROM_API.labels('document_contents').inc()
         document, _ = self.get_document(project_id, document_id, True)
         return self.send_json({
             'contents': [
@@ -230,11 +227,9 @@ class DocumentContents(BaseHandler):
 
 
 class TagAdd(BaseHandler):
-    PROM_API.labels('tag_add').inc(0)
-
     @api_auth
+    @PROM_REQUESTS.sync('tag_add')
     def post(self, project_id):
-        PROM_API.labels('tag_add').inc()
         project, privileges = self.get_project(project_id)
         if not privileges.can_add_tag():
             self.set_status(403)
@@ -270,12 +265,9 @@ class TagAdd(BaseHandler):
 
 
 class TagUpdate(BaseHandler):
-    PROM_API.labels('tag_update').inc(0)
-    PROM_API.labels('tag_delete').inc(0)
-
     @api_auth
+    @PROM_REQUESTS.sync('tag_update')
     def post(self, project_id, tag_id):
-        PROM_API.labels('tag_update').inc()
         project, privileges = self.get_project(project_id)
         if not privileges.can_update_tag():
             self.set_status(403)
@@ -314,8 +306,8 @@ class TagUpdate(BaseHandler):
             return self.send_json({'error': e.message})
 
     @api_auth
+    @PROM_REQUESTS.sync('tag_delete')
     def delete(self, project_id, tag_id):
-        PROM_API.labels('tag_delete').inc()
         project, privileges = self.get_project(project_id)
         if not privileges.can_delete_tag():
             self.set_status(403)
@@ -340,11 +332,9 @@ class TagUpdate(BaseHandler):
 
 
 class TagMerge(BaseHandler):
-    PROM_API.labels('tag_merge').inc(0)
-
     @api_auth
+    @PROM_REQUESTS.sync('tag_merge')
     def post(self, project_id):
-        PROM_API.labels('tag_merge').inc()
         project, privileges = self.get_project(project_id)
         if not privileges.can_merge_tags():
             self.set_status(403)
@@ -393,11 +383,9 @@ class TagMerge(BaseHandler):
 
 
 class HighlightAdd(BaseHandler):
-    PROM_API.labels('highlight_add').inc(0)
-
     @api_auth
+    @PROM_REQUESTS.sync('highlight_add')
     def post(self, project_id, document_id):
-        PROM_API.labels('highlight_add').inc()
         document, privileges = self.get_document(project_id, document_id, True)
         if not privileges.can_add_highlight():
             self.set_status(403)
@@ -435,12 +423,9 @@ class HighlightAdd(BaseHandler):
 
 
 class HighlightUpdate(BaseHandler):
-    PROM_API.labels('highlight_update').inc(0)
-    PROM_API.labels('highlight_delete').inc(0)
-
     @api_auth
+    @PROM_REQUESTS.sync('highlight_update')
     def post(self, project_id, document_id, highlight_id):
-        PROM_API.labels('highlight_update').inc()
         document, privileges = self.get_document(project_id, document_id)
         if not privileges.can_add_highlight():
             self.set_status(403)
@@ -503,8 +488,8 @@ class HighlightUpdate(BaseHandler):
         return self.send_json({'id': hl.id})
 
     @api_auth
+    @PROM_REQUESTS.sync('highlight_delete')
     def delete(self, project_id, document_id, highlight_id):
-        PROM_API.labels('highlight_delete').inc()
         document, privileges = self.get_document(project_id, document_id)
         if not privileges.can_delete_highlight():
             self.set_status(403)
@@ -536,11 +521,9 @@ class HighlightUpdate(BaseHandler):
 
 
 class Highlights(BaseHandler):
-    PROM_API.labels('highlights').inc(0)
-
     @api_auth
+    @PROM_REQUESTS.sync('highlights')
     def get(self, project_id, path):
-        PROM_API.labels('highlights').inc()
         project, _ = self.get_project(project_id)
 
         if path:
@@ -581,11 +564,9 @@ class Highlights(BaseHandler):
 
 
 class MembersUpdate(BaseHandler):
-    PROM_API.labels('members_update').inc(0)
-
     @api_auth
+    @PROM_REQUESTS.sync('members_update')
     def patch(self, project_id):
-        PROM_API.labels('members_update').inc()
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         project, privileges = self.get_project(project_id)
@@ -648,8 +629,6 @@ class MembersUpdate(BaseHandler):
 
 
 class ProjectEvents(BaseHandler):
-    PROM_API.labels('events').inc(0)
-
     response_cancelled = False
     polling_clients = set()
     PROM_POLLING_CLIENTS.set_function(
@@ -657,8 +636,8 @@ class ProjectEvents(BaseHandler):
     )
 
     @api_auth
+    @PROM_REQUESTS.async_('events')
     async def get(self, project_id):
-        PROM_API.labels('events').inc()
         ProjectEvents.polling_clients.add(self.request.remote_ip)
         tornado.log.access_log.info(
             "started %s %s (%s)",
