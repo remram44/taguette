@@ -1,7 +1,7 @@
 import uuid
 from xml.sax.xmlreader import AttributesNSImpl
 
-from .. import __version__
+from . import __version__
 
 
 TAGUETTE_NAMESPACE = uuid.UUID('51B2B2B7-27EB-4ECB-9D56-E75B0A0496C2')

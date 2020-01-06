@@ -14,9 +14,8 @@ import xlsxwriter
 from .. import convert
 from .. import database
 from .. import extract
+from .. import refi_qda
 from .base import BaseHandler
-from . import refi_qda
-
 
 logger = logging.getLogger(__name__)
 
