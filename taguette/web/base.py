@@ -1,18 +1,19 @@
 import asyncio
+import contextlib
 import hashlib
 import hmac
 import json
 import logging
-from urllib.parse import urlencode
-
 import jinja2
 import pkg_resources
+from prometheus_async.aio import time as prom_async_time
 import smtplib
 from sqlalchemy.orm import joinedload, undefer, make_transient
 import tornado.ioloop
 from tornado.httpclient import AsyncHTTPClient
 import tornado.locale
 from tornado.web import HTTPError, RequestHandler
+from urllib.parse import urlencode
 
 from .. import __version__ as version
 from .. import database
@@ -275,6 +276,36 @@ def _f(message):
     Marks a string for translation without translating it at run time.
     """
     return message
+
+
+class PromMeasureRequest(object):
+    def __init__(self, count, time):
+        self.count = count
+        self.time = time
+
+    def _wrap(self, name, timer):
+        counter = self.count.labels(name)
+        timer = timer(self.time.labels(name))
+
+        # Initialize count
+        counter.inc(0)
+
+        def decorator(func):
+            @contextlib.wraps(func)
+            def wrapper(*args, **kwargs):
+                # Count requests
+                counter.inc()
+                return func(*args, **kwargs)
+
+            return timer(wrapper)
+
+        return decorator
+
+    def sync(self, name):
+        return self._wrap(name, lambda metric: metric.time())
+
+    def async_(self, name):
+        return self._wrap(name, lambda metric: prom_async_time(metric))
 
 
 def send_mail(msg, config):
