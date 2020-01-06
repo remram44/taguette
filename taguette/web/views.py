@@ -22,6 +22,13 @@ PROM_PAGE = prometheus_client.Counter(
     "Page requests",
     ['name'],
 )
+PROM_PAGE_TIME = prometheus_client.Histogram(
+    'page_seconds',
+    "Page request time",
+    ['name'],
+)
+# Python syntax doesn't allow for multiple parentheses in decorator
+PROM_PAGE_TIME_DEC = lambda name: PROM_PAGE_TIME.labels(name).time()
 
 
 class Index(BaseHandler):
@@ -30,6 +37,7 @@ class Index(BaseHandler):
     PROM_PAGE.labels('index').inc(0)
     PROM_PAGE.labels('welcome').inc(0)
 
+    @PROM_PAGE_TIME_DEC('index')
     def get(self):
         if self.current_user is not None:
             if self.get_query_argument('token', None):
@@ -60,11 +68,13 @@ class Index(BaseHandler):
 class CookiesPrompt(BaseHandler):
     PROM_PAGE.labels('cookies_prompt').inc(0)
 
+    @PROM_PAGE_TIME_DEC('cookies_prompt')
     def get(self):
         PROM_PAGE.labels('cookies_prompt').inc()
         return self.render('cookies_prompt.html',
                            next=self.get_argument('next', ''))
 
+    @PROM_PAGE_TIME_DEC('cookies_prompt')
     def post(self):
         PROM_PAGE.labels('cookies_prompt').inc()
         self.set_cookie('cookies_accepted', 'yes', dont_check=True)
@@ -80,6 +90,7 @@ class CookiesPrompt(BaseHandler):
 class Login(BaseHandler):
     PROM_PAGE.labels('login').inc(0)
 
+    @PROM_PAGE_TIME_DEC('login')
     def get(self):
         PROM_PAGE.labels('login').inc()
         if not self.application.config['MULTIUSER']:
@@ -90,6 +101,7 @@ class Login(BaseHandler):
             return self.render('login.html', register=False,
                                next=self.get_argument('next', ''))
 
+    @PROM_PAGE_TIME_DEC('login')
     def post(self):
         PROM_PAGE.labels('login').inc()
         if not self.application.config['MULTIUSER']:
@@ -122,6 +134,7 @@ class Login(BaseHandler):
 class Logout(BaseHandler):
     PROM_PAGE.labels('logout').inc(0)
 
+    @PROM_PAGE_TIME_DEC('logout')
     def get(self):
         PROM_PAGE.labels('logout').inc()
         if not self.application.config['MULTIUSER']:
@@ -133,6 +146,7 @@ class Logout(BaseHandler):
 class Register(BaseHandler):
     PROM_PAGE.labels('register').inc(0)
 
+    @PROM_PAGE_TIME_DEC('register')
     def get(self):
         PROM_PAGE.labels('register').inc()
         if not self.application.config['MULTIUSER']:
@@ -144,6 +158,7 @@ class Register(BaseHandler):
         else:
             return self.render('login.html', register=True)
 
+    @PROM_PAGE_TIME_DEC('register')
     def post(self):
         PROM_PAGE.labels('register').inc()
         if not self.application.config['MULTIUSER']:
@@ -193,6 +208,7 @@ class Account(BaseHandler):
         ]
 
     @authenticated
+    @PROM_PAGE_TIME_DEC('account')
     def get(self):
         PROM_PAGE.labels('account').inc()
         if not self.application.config['MULTIUSER']:
@@ -203,6 +219,7 @@ class Account(BaseHandler):
                            current_language=user.language)
 
     @authenticated
+    @PROM_PAGE_TIME_DEC('account')
     def post(self):
         PROM_PAGE.labels('account').inc()
         if not self.application.config['MULTIUSER']:
@@ -238,12 +255,14 @@ class Account(BaseHandler):
 class AskResetPassword(BaseHandler):
     PROM_PAGE.labels('reset_password').inc(0)
 
+    @PROM_PAGE_TIME_DEC('reset_password')
     def get(self):
         PROM_PAGE.labels('reset_password').inc()
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         return self.render('reset_password.html')
 
+    @PROM_PAGE_TIME_DEC('reset_password')
     def post(self):
         PROM_PAGE.labels('reset_password').inc()
         if not self.application.config['MULTIUSER']:
@@ -297,6 +316,7 @@ class AskResetPassword(BaseHandler):
 class SetNewPassword(BaseHandler):
     PROM_PAGE.labels('new_password').inc(0)
 
+    @PROM_PAGE_TIME_DEC('new_password')
     def get(self):
         PROM_PAGE.labels('new_password').inc()
         if not self.application.config['MULTIUSER']:
@@ -310,6 +330,7 @@ class SetNewPassword(BaseHandler):
             )
         return self.render('new_password.html', reset_token=reset_token)
 
+    @PROM_PAGE_TIME_DEC('new_password')
     def post(self):
         PROM_PAGE.labels('new_password').inc()
         if not self.application.config['MULTIUSER']:
@@ -349,11 +370,13 @@ class ProjectAdd(BaseHandler):
     PROM_PAGE.labels('new_project').inc(0)
 
     @authenticated
+    @PROM_PAGE_TIME_DEC('new_project')
     def get(self):
         PROM_PAGE.labels('new_project').inc()
         return self.render('project_new.html')
 
     @authenticated
+    @PROM_PAGE_TIME_DEC('new_project')
     def post(self):
         PROM_PAGE.labels('new_project').inc()
         name = self.get_body_argument('name', '')
@@ -399,6 +422,7 @@ class ProjectDelete(BaseHandler):
     PROM_PAGE.labels('delete_project').inc(0)
 
     @authenticated
+    @PROM_PAGE_TIME_DEC('delete_project')
     def get(self, project_id):
         PROM_PAGE.labels('delete_project').inc()
         project, privileges = self.get_project(project_id)
@@ -419,6 +443,7 @@ class ProjectDelete(BaseHandler):
                            highlights=highlights)
 
     @authenticated
+    @PROM_PAGE_TIME_DEC('delete_project')
     def post(self, project_id):
         PROM_PAGE.labels('delete_project').inc()
         project, privileges = self.get_project(project_id)
@@ -435,6 +460,7 @@ class Project(BaseHandler):
     PROM_PAGE.labels('project').inc(0)
 
     @authenticated
+    @PROM_PAGE_TIME_DEC('project')
     def get(self, project_id):
         PROM_PAGE.labels('project').inc()
         project, _ = self.get_project(project_id)

@@ -1,6 +1,7 @@
 import asyncio
 import functools
 import logging
+from prometheus_async.aio import time as prom_async_time
 import prometheus_client
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import aliased
@@ -27,6 +28,14 @@ PROM_API = prometheus_client.Counter(
     "API requests",
     ['name'],
 )
+PROM_API_TIME = prometheus_client.Histogram(
+    'api_seconds',
+    "API request time",
+    ['name'],
+)
+# Python syntax doesn't allow for multiple parentheses in decorator
+PROM_API_TIME_DEC = lambda name: PROM_API_TIME.labels(name).time()
+PROM_API_TIME_ADEC = lambda name: prom_async_time(PROM_API_TIME.labels(name))
 
 
 def api_auth(method):
@@ -44,6 +53,7 @@ class CheckUser(BaseHandler):
     PROM_API.labels('check_user').inc(0)
 
     @api_auth
+    @PROM_API_TIME_DEC('check_user')
     def post(self):
         PROM_API.labels('check_user').inc()
         if not self.application.config['MULTIUSER']:
@@ -64,6 +74,7 @@ class ProjectMeta(BaseHandler):
     PROM_API.labels('project_meta').inc(0)
 
     @api_auth
+    @PROM_API_TIME_DEC('project_meta')
     def post(self, project_id):
         PROM_API.labels('project_meta').inc()
         project, privileges = self.get_project(project_id)
@@ -99,6 +110,7 @@ class DocumentAdd(BaseHandler):
     PROM_API.labels('document_add').inc(0)
 
     @api_auth
+    @PROM_API_TIME_ADEC('document_add')
     async def post(self, project_id):
         PROM_API.labels('document_add').inc()
         project, privileges = self.get_project(project_id)
@@ -157,6 +169,7 @@ class DocumentUpdate(BaseHandler):
     PROM_API.labels('document_delete').inc(0)
 
     @api_auth
+    @PROM_API_TIME_DEC('document_update')
     def post(self, project_id, document_id):
         PROM_API.labels('document_update').inc()
         document, privileges = self.get_document(project_id, document_id)
@@ -188,6 +201,7 @@ class DocumentUpdate(BaseHandler):
             return self.send_json({'error': e.message})
 
     @api_auth
+    @PROM_API_TIME_DEC('document_delete')
     def delete(self, project_id, document_id):
         PROM_API.labels('document_delete').inc()
         document, privileges = self.get_document(project_id, document_id)
@@ -212,6 +226,7 @@ class DocumentContents(BaseHandler):
     PROM_API.labels('document_contents').inc(0)
 
     @api_auth
+    @PROM_API_TIME_DEC('document_contents')
     def get(self, project_id, document_id):
         PROM_API.labels('document_contents').inc()
         document, _ = self.get_document(project_id, document_id, True)
@@ -233,6 +248,7 @@ class TagAdd(BaseHandler):
     PROM_API.labels('tag_add').inc(0)
 
     @api_auth
+    @PROM_API_TIME_DEC('tag_add')
     def post(self, project_id):
         PROM_API.labels('tag_add').inc()
         project, privileges = self.get_project(project_id)
@@ -274,6 +290,7 @@ class TagUpdate(BaseHandler):
     PROM_API.labels('tag_delete').inc(0)
 
     @api_auth
+    @PROM_API_TIME_DEC('tag_update')
     def post(self, project_id, tag_id):
         PROM_API.labels('tag_update').inc()
         project, privileges = self.get_project(project_id)
@@ -314,6 +331,7 @@ class TagUpdate(BaseHandler):
             return self.send_json({'error': e.message})
 
     @api_auth
+    @PROM_API_TIME_DEC('tag_delete')
     def delete(self, project_id, tag_id):
         PROM_API.labels('tag_delete').inc()
         project, privileges = self.get_project(project_id)
@@ -343,6 +361,7 @@ class TagMerge(BaseHandler):
     PROM_API.labels('tag_merge').inc(0)
 
     @api_auth
+    @PROM_API_TIME_DEC('tag_merge')
     def post(self, project_id):
         PROM_API.labels('tag_merge').inc()
         project, privileges = self.get_project(project_id)
@@ -396,6 +415,7 @@ class HighlightAdd(BaseHandler):
     PROM_API.labels('highlight_add').inc(0)
 
     @api_auth
+    @PROM_API_TIME_DEC('highlight_add')
     def post(self, project_id, document_id):
         PROM_API.labels('highlight_add').inc()
         document, privileges = self.get_document(project_id, document_id, True)
@@ -439,6 +459,7 @@ class HighlightUpdate(BaseHandler):
     PROM_API.labels('highlight_delete').inc(0)
 
     @api_auth
+    @PROM_API_TIME_DEC('highlight_update')
     def post(self, project_id, document_id, highlight_id):
         PROM_API.labels('highlight_update').inc()
         document, privileges = self.get_document(project_id, document_id)
@@ -503,6 +524,7 @@ class HighlightUpdate(BaseHandler):
         return self.send_json({'id': hl.id})
 
     @api_auth
+    @PROM_API_TIME_DEC('highlight_delete')
     def delete(self, project_id, document_id, highlight_id):
         PROM_API.labels('highlight_delete').inc()
         document, privileges = self.get_document(project_id, document_id)
@@ -539,6 +561,7 @@ class Highlights(BaseHandler):
     PROM_API.labels('highlights').inc(0)
 
     @api_auth
+    @PROM_API_TIME_DEC('highlights')
     def get(self, project_id, path):
         PROM_API.labels('highlights').inc()
         project, _ = self.get_project(project_id)
@@ -584,6 +607,7 @@ class MembersUpdate(BaseHandler):
     PROM_API.labels('members_update').inc(0)
 
     @api_auth
+    @PROM_API_TIME_DEC('members_update')
     def patch(self, project_id):
         PROM_API.labels('members_update').inc()
         if not self.application.config['MULTIUSER']:
