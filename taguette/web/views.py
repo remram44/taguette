@@ -35,21 +35,19 @@ class Index(BaseHandler):
     """Index page, shows welcome message and user's projects.
     """
     PROM_PAGE.labels('index').inc(0)
-    PROM_PAGE.labels('welcome').inc(0)
 
     @PROM_PAGE_TIME_DEC('index')
     def get(self):
+        PROM_PAGE.labels('index').inc()
         if self.current_user is not None:
             if self.get_query_argument('token', None):
                 return self.redirect(self.reverse_url('index'))
             user = self.db.query(database.User).get(self.current_user)
             if user is None:
-                PROM_PAGE.labels('index').inc()
                 logger.warning("User is logged in as non-existent user %r",
                                self.current_user)
                 self.logout()
             else:
-                PROM_PAGE.labels('index').inc()
                 return self.render('index.html',
                                    user=user, projects=user.projects)
         elif not self.application.config['MULTIUSER']:
@@ -61,7 +59,6 @@ class Index(BaseHandler):
                 return self.redirect(self.reverse_url('index'))
             else:
                 return self.render('token_needed.html')
-        PROM_PAGE.labels('welcome').inc()
         return self.render('welcome.html')
 
 
