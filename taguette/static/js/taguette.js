@@ -748,7 +748,6 @@ function updateTagsList() {
     elem.innerHTML =
       '<div class="d-flex justify-content-between align-items-center">' +
       '  <div class="tag-name">' +
-      '    <a class="expand-marker">&nbsp;</a> ' +
       '    <a id="tag-link-' + tag.id + '">' + escapeHtml(tag.path) + '</a>' +
       '  </div>' +
       '  <div style="white-space: nowrap;">' +
