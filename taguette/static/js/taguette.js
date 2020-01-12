@@ -250,6 +250,15 @@ function hideSpinner() {
   $('#spinner-modal').modal('hide');
 }
 
+// Load templates
+var templates = {};
+(function() {
+  var scripts = document.getElementsByTagName('script');
+  for(var i = 0; i < scripts.length; ++i) {
+    templates[scripts[i].id] = scripts[i].innerHTML;
+  }
+})();
+
 
 /*
  * Selection stuff
