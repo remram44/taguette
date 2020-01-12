@@ -491,7 +491,7 @@ function updateDocumentsList() {
     var elem = document.createElement('li');
     elem.setAttribute('id', 'document-link-' + doc.id);
     elem.className = 'list-group-item document-link';
-    elem.innerHTML =
+    elem.innerHTML = // TODO: TEMPLATE
       '<div class="d-flex justify-content-between align-items-center">' +
       '  <a class="document-link-a">' + escapeHtml(doc.name) + '</a>' +
       '  <a href="javascript:editDocument(' + doc.id + ');" class="badge badge-primary badge-pill">' + gettext("edit") + '</a>' +
@@ -745,6 +745,7 @@ function updateTagsList() {
     if(current_tag !== null && tag.path.substr(0, current_tag.length) == current_tag) {
       elem.classList.add('tag-current');
     }
+    // TODO: TEMPLATE
     elem.innerHTML =
       '<div class="d-flex justify-content-between align-items-center">' +
       '  <div class="tag-name">' +
@@ -785,6 +786,7 @@ function updateTagsList() {
     var tag = entries[i][1];
     var elem = document.createElement('li');
     elem.className = 'tag-name form-check';
+    // TODO: TEMPLATE
     elem.innerHTML =
       '<input type="checkbox" class="form-check-input" value="' + tag.id + '" name="highlight-add-tags" id="highlight-add-tags-' + tag.id + '" />' +
       '<label for="highlight-add-tags-' + tag.id + '" class="form-check-label">' + escapeHtml(tag.path) + '</label>';
@@ -1178,6 +1180,7 @@ var members_displayed = {};
 function _memberRow(login, user) {
   var elem = document.createElement('div');
   elem.className = 'row members-item';
+  // TODO: TEMPLATE
   elem.innerHTML =
     '<div class="col-md-4">' +
     '  <p class="members-item-login">' + login + '</p>' +
@@ -1349,6 +1352,7 @@ var export_button = document.getElementById('export-button');
 
 function loadDocument(document_id) {
   if(document_id === null) {
+    // TODO: TEMPLATE? OR JUST INVISIBLE?
     document_contents.innerHTML = '<p style="font-style: oblique; text-align: center;">' + gettext("Load a document on the left") + '</p>';
     return;
   }
@@ -1451,6 +1455,7 @@ function loadTag(tag_path) {
       document_contents.appendChild(elem);
     }
     if(result.highlights.length == 0) {
+      // TODO: TEMPLATE? OR JUST INVISIBLE?
       document_contents.innerHTML = '<p style="font-style: oblique; text-align: center;">' + gettext("No highlights with this tag yet.") + '</p>';
     }
 
