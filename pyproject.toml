@@ -6,7 +6,7 @@ description = "Document tagger for qualitative analysis"
 license = "BSD-3-Clause"
 
 authors = [
-    "Remi Rampin <remirampin@gmail.com>"
+    "Remi Rampin <remirampin@gmail.com>",
 ]
 
 readme = "README.rst"
@@ -22,7 +22,6 @@ classifiers = [
     "Intended Audience :: End Users/Desktop",
     "Intended Audience :: Science/Research",
     "License :: OSI Approved :: BSD License",
-    "Natural Language :: English",
     "Operating System :: OS Independent",
     "Programming Language :: JavaScript",
     "Programming Language :: Python :: 3 :: Only",
