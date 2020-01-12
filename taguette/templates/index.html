@@ -3,6 +3,9 @@
 
 {% block contents %}
 <div id="messages-div"></div>
+{% if show_messages %}
+<script src="{{ reverse_url('messages.js') }}" async></script>
+{% endif %}
 {% if multiuser %}
 <h1>{% trans user_login=user.login %}Welcome {{ user_login }}{% endtrans %}</h1>
 {% else %}
