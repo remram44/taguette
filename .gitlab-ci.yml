@@ -21,7 +21,7 @@ run_tests_sqlite3:
 
 run_tests_sqlite3_latest:
   stage: test
-  image: python:3.6
+  image: python:3.7
   script:
     - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python && /root/.poetry/bin/poetry config virtualenvs.create false
     - rm poetry.lock
