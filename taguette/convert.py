@@ -397,5 +397,5 @@ def html_to(html, extension):
 
 
 def html_to_plaintext(html):
-    soup = bs4.BeautifulSoup(html)
+    soup = bs4.BeautifulSoup(html, 'html5lib')
     return soup.get_text(' ', strip=True)
