@@ -47,3 +47,13 @@ run_tests_postgres:
     - scripts/update_translations.sh
     - pip install psycopg2-binary
     - python tests.py
+
+run_tests_pypy:
+  stage: test
+  image: pypy:3.6
+  script:
+    - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python && /root/.poetry/bin/poetry config virtualenvs.create false
+    - pypy3 -m venv /tmp/venv && . /tmp/venv/bin/activate
+    - $HOME/.poetry/bin/poetry install --no-interaction
+    - scripts/update_translations.sh
+    - python tests.py
