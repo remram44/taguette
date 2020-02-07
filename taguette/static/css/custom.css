@@ -83,6 +83,11 @@ body {
   background-color: #6c757d !important;
 }
 
+/* Make icon lighter */
+.navbar-dark .navbar-nav .nav-link .fas {
+  opacity: 0.7;
+}
+
 /* Tab navs for project*/
 
 .nav-link {
