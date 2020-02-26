@@ -62,11 +62,24 @@ class UnsupportedFormat(ConversionError):
 PROC_TERM_GRACE = 5  # Wait 5s after SIGTERM before sending SIGKILL
 
 
-async def check_call(cmd):
+async def check_call(cmd, timeout):
     proc = await asyncio.create_subprocess_exec(cmd[0], *cmd[1:])
-    retcode = await proc.wait()
-    if retcode != 0:
-        raise CalledProcessError(retcode, cmd)
+    try:
+        retcode = await asyncio.wait_for(proc.wait(), timeout=timeout)
+    except asyncio.TimeoutError:
+        logger.error(
+            "Process didn't finish before %ds timeout: %r",
+            timeout, cmd,
+        )
+        proc.terminate()
+        try:
+            await asyncio.wait_for(proc.wait(), PROC_TERM_GRACE)
+        except asyncio.TimeoutError:
+            proc.kill()
+        raise asyncio.TimeoutError
+    else:
+        if retcode != 0:
+            raise CalledProcessError(retcode, cmd)
 
 
 # Something to HTML
@@ -117,7 +130,7 @@ def get_html_body(body):
 
 
 @prom_async_time(PROM_CALIBRE_TOHTML_TIME)
-async def calibre_to_html(input_filename, output_dir):
+async def calibre_to_html(input_filename, output_dir, timeout):
     PROM_CALIBRE_TOHTML.inc()
 
     output = []
@@ -129,9 +142,11 @@ async def calibre_to_html(input_filename, output_dir):
         cmd.append('--no-images')
     logger.info("Running: %s", ' '.join(cmd))
     try:
-        await check_call(cmd)
+        await check_call(cmd, timeout)
     except CalledProcessError as e:
         raise ConversionError("Calibre returned %d" % e.returncode)
+    except asyncio.TimeoutError:
+        raise ConversionError("Calibre timed out")
     logger.info("ebook-convert successful")
 
     # Locate OEB manifest
@@ -243,7 +258,7 @@ async def calibre_to_html(input_filename, output_dir):
 
 
 @prom_async_time(PROM_WVWARE_TOHTML_TIME)
-async def wvware_to_html(input_filename, tmp):
+async def wvware_to_html(input_filename, tmp, timeout):
     PROM_WVWARE_TOHTML.inc()
     output_filename = os.path.join(tmp, 'output.html')
 
@@ -254,11 +269,13 @@ async def wvware_to_html(input_filename, tmp):
     cmd = [convert, input_filename, output_filename]
     logger.info("Running: %s", ' '.join(cmd))
     try:
-        await check_call(cmd)
+        await check_call(cmd, timeout)
     except OSError:
         raise ConversionError("Can't call wvHtml")
     except CalledProcessError as e:
         raise ConversionError("wvHtml returned %d" % e.returncode)
+    except asyncio.TimeoutError:
+        raise ConversionError("wvHtml timed out")
     logger.info("wvHtml successful")
 
     # Read output
@@ -269,7 +286,7 @@ async def wvware_to_html(input_filename, tmp):
 HTML_MIMETYPES = {'text/html', 'application/xhtml+xml'}
 
 
-async def to_html(body, content_type, filename):
+async def to_html(body, content_type, filename, timeout):
     logger.info("Converting file %r, type %r", filename, content_type)
 
     ext = os.path.splitext(filename)[1].lower()
@@ -285,7 +302,7 @@ async def to_html(body, content_type, filename):
                 fp.write(body)
 
             # Run wvHtml
-            return await wvware_to_html(input_filename, tmp)
+            return await wvware_to_html(input_filename, tmp, timeout)
         finally:
             shutil.rmtree(tmp)
     else:
@@ -298,14 +315,17 @@ async def to_html(body, content_type, filename):
                 fp.write(body)
 
             # Run Calibre
-            return await calibre_to_html(input_filename,
-                                         os.path.join(tmp, 'output'))
+            return await calibre_to_html(
+                input_filename,
+                os.path.join(tmp, 'output'),
+                timeout,
+            )
         finally:
             shutil.rmtree(tmp)
 
 
-async def to_html_chunks(body, content_type, filename):
-    html = await to_html(body, content_type, filename)
+async def to_html_chunks(body, content_type, filename, timeout):
+    html = await to_html(body, content_type, filename, timeout)
     # TODO: Do chunks
     return html
 
@@ -314,7 +334,7 @@ async def to_html_chunks(body, content_type, filename):
 
 
 @prom_async_time(PROM_CALIBRE_FROMHTML_TIME)
-async def calibre_from_html(html, extension):
+async def calibre_from_html(html, extension, timeout):
     PROM_CALIBRE_FROMHTML.labels(extension).inc()
 
     # Convert file using Calibre
@@ -331,9 +351,11 @@ async def calibre_from_html(html, extension):
                '--page-breaks-before=/']
         logger.info("Running: %s", ' '.join(cmd))
         try:
-            await check_call(cmd)
+            await check_call(cmd, timeout)
         except CalledProcessError as e:
             raise ConversionError("Calibre returned %d" % e.returncode)
+        except asyncio.TimeoutError:
+            raise ConversionError("Calibre timed out")
         logger.info("ebook-convert successful")
         if not os.path.isfile(output_filename):
             raise RuntimeError("output file does not exist")
@@ -356,7 +378,8 @@ async def calibre_from_html(html, extension):
         return reader()
 
 
-def html_to_html(html):
+def html_to_html(html, timeout):
+    _ = timeout
     future = asyncio.get_event_loop().create_future()
     future.set_result([html])
     return future
@@ -365,13 +388,13 @@ def html_to_html(html):
 html_to_extensions = {
     'html': (html_to_html,
              'text/html; charset=utf-8'),
-    'doc': (lambda html: calibre_from_html(html, 'docx'),
+    'doc': (lambda html, timeout: calibre_from_html(html, 'docx', timeout),
             'application/vnd.openxmlformats-officedocument.'
             'wordprocessingml.document; charset=utf-8'),
-    'docx': (lambda html: calibre_from_html(html, 'docx'),
+    'docx': (lambda html, timeout: calibre_from_html(html, 'docx', timeout),
              'application/vnd.openxmlformats-officedocument.'
              'wordprocessingml.document; charset=utf-8'),
-    'pdf': (lambda html: calibre_from_html(html, 'pdf'),
+    'pdf': (lambda html, timeout: calibre_from_html(html, 'pdf', timeout),
             'application/pdf'),
     'rtf': (lambda html: calibre_from_html(html, 'pdf'),
             'application/pdf'),
@@ -380,12 +403,12 @@ for n in html_to_extensions:
     PROM_CALIBRE_FROMHTML.labels(n).inc(0)
 
 
-def html_to(html, extension):
+def html_to(html, extension, timeout):
     try:
         func, mimetype = html_to_extensions[extension]
     except KeyError:
         raise UnsupportedFormat
-    return mimetype, asyncio.ensure_future(func(html))
+    return mimetype, asyncio.ensure_future(func(html, timeout))
 
 
 def html_to_plaintext(html):

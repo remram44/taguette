@@ -42,7 +42,7 @@ class TestConvert(AsyncTestCase):
             b"</body></html>\n"
         )
         with mock.patch('tornado.process.Subprocess', object()):
-            body = await convert.to_html(body, 'text/html', 'test.html')
+            body = await convert.to_html(body, 'text/html', 'test.html', 60)
         self.assertEqual(
             body,
             "<h1>Example</h1><p>This is an example text document.\n"

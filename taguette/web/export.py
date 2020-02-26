@@ -46,7 +46,10 @@ def export_doc(wrapped):
         ext = ext.lower()
         name, html = wrapped(self, *args)
         try:
-            mimetype, contents = convert.html_to(html, ext)
+            mimetype, contents = convert.html_to(
+                html, ext,
+                self.application.config['CONVERT_FROM_HTML_TIMEOUT'],
+            )
         except convert.UnsupportedFormat:
             self.set_status(404)
             self.set_header('Content-Type', 'text/plain')
