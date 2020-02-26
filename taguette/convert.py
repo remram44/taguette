@@ -5,8 +5,8 @@ import logging
 import os
 import prometheus_client
 from prometheus_async.aio import time as prom_async_time
-import signal
 import shutil
+from subprocess import CalledProcessError
 import tempfile
 from xml.etree import ElementTree
 
@@ -59,24 +59,14 @@ class UnsupportedFormat(ConversionError):
     """
 
 
-if hasattr(signal, 'SIGCHLD'):
-    from tornado.process import Subprocess, CalledProcessError
+PROC_TERM_GRACE = 5  # Wait 5s after SIGTERM before sending SIGKILL
 
-    def check_call(cmd):
-        proc = Subprocess(cmd)
-        return proc.wait_for_exit()
-else:
-    import subprocess
-    from subprocess import CalledProcessError
 
-    # Windows doesn't have this, so tornado.process doesn't work
-    # Use Popen with a thread pool
-    def check_call(cmd):
-        return asyncio.get_event_loop().run_in_executor(
-            None,
-            subprocess.check_call,
-            cmd
-        )
+async def check_call(cmd):
+    proc = await asyncio.create_subprocess_exec(cmd[0], *cmd[1:])
+    retcode = await proc.wait()
+    if retcode != 0:
+        raise CalledProcessError(retcode, cmd)
 
 
 # Something to HTML
