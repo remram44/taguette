@@ -105,7 +105,7 @@
           <div class="card">
             <div class="card-header" id="install">
               <h5 class="mb-0">
-                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#install-info" aria-expanded="false" aria-controls=install-info">Where can I install Taguette?</button>
+                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#install-info" aria-expanded="false" aria-controls="install-info">Where can I install Taguette?</button>
               </h5>
             </div>
             <div id="install-info" class="collapse" aria-labelledby="install" data-parent="#accordion">
@@ -357,5 +357,21 @@
     <script src="js/jquery-slim.min.js"></script>
     <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+
+    <script>
+// Expand a section, if we were linked directly to it
+var section = document.getElementById(window.location.hash.substring(1));
+section.querySelector("button").click();
+
+// Use an event listener to update the URL when we expand sections
+var buttons = document.querySelectorAll("div.card h5 button.btn-link");
+for(var i = 0; i < buttons.length; ++i) {
+  buttons[i].addEventListener("click", function() {
+    var target = this.getAttribute("aria-controls");
+    target = target.substring(0, target.length - 5);
+    window.history.replaceState({}, "", "#" + target);
+  });
+}
+    </script>
   </body>
 </html>
