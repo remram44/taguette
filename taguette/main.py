@@ -1,4 +1,5 @@
 import argparse
+import asyncio
 import base64
 import gettext
 import locale
@@ -127,6 +128,17 @@ def main():
     d = pkg_resources.resource_filename('taguette', 'l10n')
     trans = gettext.translation('taguette_main', d, lang, fallback=True)
     _ = trans.gettext
+
+    if sys.platform == 'win32' and sys.version_info >= (3, 8):
+        # https://github.com/tornadoweb/tornado/issues/2608
+        try:
+            from asyncio import WindowsSelectorEventLoopPolicy
+        except ImportError:
+            pass
+        else:
+            policy = asyncio.get_event_loop_policy()
+            if not isinstance(policy, WindowsSelectorEventLoopPolicy):
+                asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())
 
     if sys.platform == 'win32':
         import ctypes.wintypes
