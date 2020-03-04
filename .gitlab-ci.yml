@@ -57,3 +57,12 @@ run_tests_pypy:
     - $HOME/.poetry/bin/poetry install --no-interaction
     - scripts/update_translations.sh
     - python tests.py
+
+run_tests_py38:
+  stage: test
+  image: python:3.8
+  script:
+    - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python && /root/.poetry/bin/poetry config virtualenvs.create false
+    - $HOME/.poetry/bin/poetry install --no-interaction
+    - scripts/update_translations.sh
+    - python tests.py
