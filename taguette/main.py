@@ -184,6 +184,13 @@ def main():
                                "'postgresql://me:pw@localhost/mydb' "
                                "(default: %(default)r)") %
                         dict(default=default_db_show))
+    parser.add_argument('--set-umask', action='store', dest='umask',
+                        default="077",
+                        help=_("Set the file creation mask (umask) on systems "
+                               "that support it."))
+    parser.add_argument('--dont-set-umask', action='store_const', dest='umask',
+                        const=None,
+                        help=_("Don't change umask on startup"))
     parser.set_defaults(func=None)
 
     subparsers = parser.add_subparsers(title=_("additional commands"),
@@ -214,6 +221,13 @@ def main():
                                       "using the `default-config` command"))
 
     args = parser.parse_args()
+
+    if args.umask is not None:
+        if not re.match(r'^[0-7][0-7][0-7]$', args.umask):
+            logger.critical("Invalid umask: %s", args.umask)
+            sys.exit(2)
+        logger.info("Setting umask to %s", args.umask)
+        os.umask(int(args.umask, 8))
 
     if args.func:
         args.func(args)
