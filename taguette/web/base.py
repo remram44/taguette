@@ -146,12 +146,19 @@ class BaseHandler(RequestHandler):
 
     def __init__(self, application, request, **kwargs):
         super(BaseHandler, self).__init__(application, request, **kwargs)
-        self.db = application.DBSession()
+        self._db = None
         self._gettext = None
+
+    @property
+    def db(self):
+        if self._db is None:
+            self._db = self.application.DBSession()
+        return self._db
 
     def on_finish(self):
         super(BaseHandler, self).on_finish()
-        self.db.close()
+        if self._db is not None:
+            self._db.close()
 
     def gettext(self, message, **kwargs):
         trans = self.locale.translate(message)
