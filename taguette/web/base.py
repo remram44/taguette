@@ -157,8 +157,12 @@ class BaseHandler(RequestHandler):
 
     def on_finish(self):
         super(BaseHandler, self).on_finish()
+        self.close_db_connection()
+
+    def close_db_connection(self):
         if self._db is not None:
             self._db.close()
+            self._db = None
 
     def gettext(self, message, **kwargs):
         trans = self.locale.translate(message)
