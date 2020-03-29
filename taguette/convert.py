@@ -166,7 +166,7 @@ async def calibre_to_html(input_filename, output_dir):
         raise ConversionError("Invalid output from Calibre")
 
     size = os.stat(os.path.join(output_dir, manifest)).st_size
-    if size > 5_000_000:
+    if size > 5000000:  # 5 MB
         logger.warning("OPF manifest is %d bytes; aborting", size)
         raise ConversionError("File is too long")
 
@@ -240,7 +240,7 @@ async def calibre_to_html(input_filename, output_dir):
         # Read output
         logger.info("Reading in %r", output_name)
         size += os.stat(output_filename).st_size
-        if size > 1_000_000:
+        if size > 1000000:  # 1 MB
             logger.error("File is %d bytes for a total of %d bytes; aborting",
                          os.stat(output_filename).st_size, size)
             raise ConversionError("File is too long")
