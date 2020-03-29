@@ -387,10 +387,14 @@ class TestMultiuser(MyHTTPTestCase):
             '  var tags = %s;\n'
             '  var members = {"admin": {"privileges": "ADMIN"}};\n'
             '</script>' % (
-                json.dumps({
-                    "1": {"count": 0, "description": "Further review required",
-                          "id": 1, "path": "interesting"},
-                }),
+                json.dumps(
+                    {
+                        "1": {
+                            "count": 0, "id": 1, "path": "interesting",
+                            "description": "Further review required",
+                        },
+                    },
+                    sort_keys=True),
             ),
         )
 
