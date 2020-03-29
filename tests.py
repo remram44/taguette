@@ -387,10 +387,14 @@ class TestMultiuser(MyHTTPTestCase):
             '  var tags = %s;\n'
             '  var members = {"admin": {"privileges": "ADMIN"}};\n'
             '</script>' % (
-                json.dumps({
-                    "1": {"count": 0, "description": "Further review required",
-                          "id": 1, "path": "interesting"},
-                }),
+                json.dumps(
+                    {
+                        "1": {
+                            "count": 0, "id": 1, "path": "interesting",
+                            "description": "Further review required",
+                        },
+                    },
+                    sort_keys=True),
             ),
         )
 
@@ -575,7 +579,7 @@ class TestMultiuser(MyHTTPTestCase):
         # List highlights in project 2 under 'people'
         response = await self.aget('/api/project/2/highlights/people')
         self.assertEqual(response.code, 200)
-        self.assertEqual(json.loads(response.body),
+        self.assertEqual(json.loads(response.body.decode('utf-8')),
                          {'highlights': [
                              {'id': 3, 'document_id': 2, 'tags': [2, 3],
                               'content': "tent"},
@@ -587,7 +591,7 @@ class TestMultiuser(MyHTTPTestCase):
         response = await self.aget('/api/project/2/highlights/interesting.'
                                    'places')
         self.assertEqual(response.code, 200)
-        self.assertEqual(json.loads(response.body),
+        self.assertEqual(json.loads(response.body.decode('utf-8')),
                          {'highlights': [
                              {'id': 2, 'document_id': 2, 'tags': [4],
                               'content': "diff"},
@@ -597,7 +601,7 @@ class TestMultiuser(MyHTTPTestCase):
         response = await self.aget('/api/project/2/highlights/interesting.'
                                    'places')
         self.assertEqual(response.code, 200)
-        self.assertEqual(json.loads(response.body),
+        self.assertEqual(json.loads(response.body.decode('utf-8')),
                          {'highlights': [
                              {'id': 2, 'document_id': 2, 'tags': [4],
                               'content': "diff"},
@@ -606,7 +610,7 @@ class TestMultiuser(MyHTTPTestCase):
         # List all highlights in project 2
         response = await self.aget('/api/project/2/highlights/')
         self.assertEqual(response.code, 200)
-        self.assertEqual(json.loads(response.body),
+        self.assertEqual(json.loads(response.body.decode('utf-8')),
                          {'highlights': [
                              {'id': 2, 'document_id': 2, 'tags': [4],
                               'content': "diff"},
@@ -623,7 +627,7 @@ class TestMultiuser(MyHTTPTestCase):
                                     dict(src=3, dest=2),
                                     fmt='json')
         self.assertEqual(response.code, 200)
-        self.assertEqual(json.loads(response.body), {'id': 2})
+        self.assertEqual(json.loads(response.body.decode('utf-8')), {'id': 2})
         self.assertEqual(
             await poll_proj2,
             {'tag_merge': [{'src': 3, 'dest': 2}], 'id': 11},
@@ -633,7 +637,7 @@ class TestMultiuser(MyHTTPTestCase):
         # List all highlights in project 2
         response = await self.aget('/api/project/2/highlights/')
         self.assertEqual(response.code, 200)
-        self.assertEqual(json.loads(response.body),
+        self.assertEqual(json.loads(response.body.decode('utf-8')),
                          {'highlights': [
                              {'id': 2, 'document_id': 2, 'tags': [4],
                               'content': "diff"},
