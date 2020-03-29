@@ -1,6 +1,18 @@
 Changelog
 =========
 
+0.9.1 (???)
+-----------
+
+Bugfixes:
+* Fix printed link not being flushed, causing it to be inaccessible e.g. running on Docker
+* Fix incompatibility with Python 3.8
+* Close DB connection during long polls, avoiding overflow of connection pool when using PostgreSQL
+
+Enhancements:
+* Set umask to 077 by default (and add corresponding command-line options)
+* Restore Python 3.5 compatibility
+
 0.9 (2019-11-23)
 ----------------
 
@@ -20,7 +32,6 @@ Features:
 * Don't show 403 if user can't change collaborators: show explanation, hide button
 * Add export of highlights to CSV and Excel (.xlsx) formats
 * Support PBKDF2 passwords (Taguette no longer requires 'bcrypt')
-* Set umask to 077 by default (and add corresponding command-line options)
 
 0.8 (2019-06-15)
 ----------------
