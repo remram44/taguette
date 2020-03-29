@@ -663,6 +663,10 @@ class ProjectEvents(BaseHandler):
             self.wait_future = Future()
             self.application.observe_project(project.id, self.wait_future)
             self.db.expire_all()
+
+            # Close DB connection to not overflow the connection pool
+            self.close_db_connection()
+
             try:
                 cmd = await self.wait_future
             except asyncio.CancelledError:
