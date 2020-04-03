@@ -96,11 +96,15 @@ class Login(BaseHandler):
         try:
             login = validate.user_login(login)
         except validate.InvalidFormat:
-            pass
+            logger.info("Login: invalid login")
         else:
             password = self.get_body_argument('password')
             user = self.db.query(database.User).get(login)
-            if user is not None and user.check_password(password):
+            if user is None:
+                logger.info("Login: non-existent user")
+            elif not user.check_password(password):
+                logger.info("Login: invalid password for %r", user.login)
+            else:
                 self.login(user.login)
                 return self._go_to_next()
 
@@ -259,7 +263,7 @@ class AskResetPassword(BaseHandler):
             if path.endswith('/reset_password'):
                 path = path[:-15]
             path = path + '/new_password'
-            reset_link = urlunparse([self.request.protocol,
+            reset_link = urlunparse(['https',
                                      self.request.host,
                                      path,
                                      '',
