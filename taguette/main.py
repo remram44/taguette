@@ -114,13 +114,12 @@ DEFAULT_CONFIG = {
     'MULTIUSER': True,
     'BIND_ADDRESS': '0.0.0.0',
     'REGISTRATION_ENABLED': True,
-    'X_HEADERS': False,
     'DEFAULT_LANGUAGE': 'en_US',
     'CONVERT_FROM_HTML_TIMEOUT': 3 * 60,
     'CONVERT_TO_HTML_TIMEOUT': 3 * 60,
 }
 
-REQUIRED_CONFIG = ['NAME', 'PORT', 'SECRET_KEY', 'DATABASE',
+REQUIRED_CONFIG = ['NAME', 'PORT', 'SECRET_KEY', 'DATABASE', 'X_HEADERS',
                    'EMAIL', 'MAIL_SERVER', 'COOKIES_PROMPT']
 
 
@@ -270,6 +269,7 @@ def main():
             DEFAULT_CONFIG,
             MULTIUSER=False,
             BIND_ADDRESS=args.bind,
+            X_HEADERS=False,
             PORT=int(args.port),
             DATABASE=prepare_db(args.database),
             SECRET_KEY=secret,
