@@ -63,6 +63,7 @@ class User(Base):
     created = Column(DateTime, nullable=False,
                      server_default=functions.now())
     hashed_password = Column(String, nullable=True)
+    password_set_date = Column(DateTime, nullable=True)
     language = Column(String, nullable=True)
     email = Column(String, nullable=True, index=True, unique=True)
     email_sent = Column(DateTime, nullable=True)
@@ -86,6 +87,7 @@ class User(Base):
             )
         else:
             raise ValueError("Unsupported encryption method %r" % method)
+        self.password_set_date = functions.now()
 
     def check_password(self, password):
         if self.hashed_password is None:
