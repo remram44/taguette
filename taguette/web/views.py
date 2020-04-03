@@ -333,7 +333,7 @@ class SetNewPassword(BaseHandler):
             return self.redirect(self.reverse_url('index'))
         except validate.InvalidFormat as e:
             logging.info("Error validating SetNewPassword: %r", e)
-            return self.render('new_password.html', email=email,
+            return self.render('new_password.html', reset_token=reset_token,
                                error=self.gettext(e.message))
 
 
