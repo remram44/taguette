@@ -12,7 +12,7 @@ from urllib.parse import urlunparse
 
 from .. import database
 from .. import validate
-from .base import BaseHandler, PromMeasureRequest, _f, send_mail
+from .base import BaseHandler, PromMeasureRequest, _f
 
 
 logger = logging.getLogger(__name__)
@@ -288,7 +288,7 @@ class AskResetPassword(BaseHandler):
 
             logger.warning("Sending reset password email to %s %s",
                            user.login, user.email)
-            send_mail(msg, self.application.config['MAIL_SERVER'])
+            self.application.send_mail(msg)
             user.email_sent = datetime.utcnow()
             self.db.commit()
         return self.render('reset_password.html', message="Email sent!")

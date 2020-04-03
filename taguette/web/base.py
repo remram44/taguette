@@ -116,6 +116,17 @@ class Application(tornado.web.Application):
         for future in self.event_waiters.pop(project_id, []):
             future.set_result(cmd)
 
+    def send_mail(self, msg):
+        config = self.config['MAIL_SERVER']
+        if config.get('ssl', False):
+            cls = smtplib.SMTP_SSL
+        else:
+            cls = smtplib.SMTP
+        with cls(config['host'], config.get('port', 25)) as smtp:
+            if 'user' in config or 'password' in config:
+                smtp.login(config['user'], config['password'])
+            smtp.send_message(msg)
+
 
 class BaseHandler(RequestHandler):
     """Base class for all request handlers.
@@ -317,14 +328,3 @@ class PromMeasureRequest(object):
 
     def async_(self, name):
         return self._wrap(name, lambda metric: prom_async_time(metric))
-
-
-def send_mail(msg, config):
-    if config.get('ssl', False):
-        cls = smtplib.SMTP_SSL
-    else:
-        cls = smtplib.SMTP
-    with cls(config['host'], config.get('port', 25)) as smtp:
-        if 'user' in config or 'password' in config:
-            smtp.login(config['user'], config['password'])
-        smtp.send_message(msg)
