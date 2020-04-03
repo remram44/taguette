@@ -7,11 +7,12 @@ import re
 from sqlalchemy import create_engine
 from sqlalchemy.orm import close_all_sessions
 import string
+import time
 from tornado.testing import AsyncTestCase, gen_test, AsyncHTTPTestCase, \
     get_async_test_timeout
 import unittest
 from unittest import mock
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlparse
 
 from taguette import convert, database, extract, main, validate, web
 
@@ -650,6 +651,97 @@ class TestMultiuser(MyHTTPTestCase):
         await asyncio.sleep(2)
         self.assertNotDone(poll_proj1)
         self.assertNotDone(poll_proj2)
+
+    def test_reset_password(self):
+        # Accept cookies
+        response = self.post('/cookies', dict())
+        self.assertEqual(response.code, 302)
+        self.assertEqual(response.headers['Location'], '/')
+
+        # Fetch registration page
+        response = self.get('/register')
+        self.assertEqual(response.code, 200)
+
+        # Register
+        response = self.post('/register', dict(login='User',
+                                               password1='hackme',
+                                               password2='hackme',
+                                               email='test@example.com'))
+        self.assertEqual(response.code, 302)
+        self.assertEqual(response.headers['Location'], '/')
+
+        # User exists in database
+        db = self.application.DBSession()
+        self.assertEqual(
+            [
+                (
+                    user.login,
+                    bool(user.hashed_password), bool(user.password_set_date),
+                )
+                for user in db.query(database.User).all()
+            ],
+            [
+                ('admin', True, True),
+                ('user', True, True),
+            ],
+        )
+
+        # Log out
+        response = self.get('/logout')
+        self.assertEqual(response.code, 302)
+        self.assertEqual(response.headers['Location'], '/')
+
+        # Wait so that reset link is more recent than password
+        time.sleep(1)
+
+        # Send reset link
+        self.get('/reset_password')
+        with mock.patch.object(self.application, 'send_mail') as mo:
+            response = self.post('/reset_password',
+                                 dict(email='test@example.com'))
+        self.assertEqual(response.code, 200)
+        msg = mo.call_args[0][0]
+        content = msg.get_payload()[0].get_content()
+        self.assertTrue(content.startswith("Someone has requested "))
+        link = re.search(r'https:\S*', content).group(0)
+        token = urlparse(link).query[12:]
+
+        # Check wrong tokens don't work
+        response = self.get('/new_password?reset_token=wrongtoken')
+        self.assertEqual(response.code, 403)
+        response = self.post(
+            '/new_password',
+            dict(
+                reset_token='wrongtoken',
+                password1='tagada', password2='tagada',
+            ),
+        )
+        self.assertEqual(response.code, 403)
+
+        # Check right token works
+        response = self.get('/new_password?reset_token=' + token)
+        self.assertEqual(response.code, 200)
+        response = self.post(
+            '/new_password',
+            dict(
+                reset_token=token,
+                password1='tagada', password2='tagada',
+            ),
+        )
+        self.assertEqual(response.code, 302)
+        self.assertEqual(response.headers['Location'], '/')
+
+        # Check token doesn't work anymore
+        response = self.post(
+            '/new_password',
+            dict(
+                reset_token=token,
+                password1='tagada', password2='tagada',
+            ),
+        )
+        self.assertEqual(response.code, 403)
+        response = self.get('/new_password?reset_token=' + token)
+        self.assertEqual(response.code, 403)
 
     async def _poll_event(self, proj, from_id):
         response = await self.aget('/api/project/%d/events?from=%d' % (
