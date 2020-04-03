@@ -5,6 +5,7 @@ import logging
 import jinja2
 import prometheus_client
 from sqlalchemy.orm import aliased
+import time
 import tornado.locale
 from tornado.web import authenticated, HTTPError
 from urllib.parse import urlunparse
@@ -255,7 +256,12 @@ class AskResetPassword(BaseHandler):
         elif (user.email_sent is None or
                 user.email_sent + timedelta(days=1) < datetime.utcnow()):
             # Generate a signed token
-            reset_token = self.create_signed_value('reset_token', user.email)
+            reset_token = '%s|%s|%s' % (
+                int(time.time()),
+                user.login,
+                user.email,
+            )
+            reset_token = self.create_signed_value('reset_token', reset_token)
             reset_token = reset_token.decode('utf-8')
 
             # Reset link
@@ -289,16 +295,35 @@ class AskResetPassword(BaseHandler):
 
 
 class SetNewPassword(BaseHandler):
+    def decode_reset_token(self, reset_token):
+        reset_token_clear = self.get_secure_cookie(
+            'reset_token',
+            reset_token,
+            min_version=2,
+            max_age_days=1,
+        )
+        if reset_token_clear is None:
+            raise HTTPError(403, _f("Invalid token"))
+        ts, login, email = reset_token_clear.decode('utf-8').split('|', 2)
+        user = self.db.query(database.User).get(login)
+        if not user or user.email != email:
+            raise HTTPError(403, _f("No user associated with that token"))
+        if user.password_set_date >= datetime.utcfromtimestamp(int(ts)):
+            # Password has been changed after the reset token was created
+            raise HTTPError(403, _f("Password has already been changed"))
+        return user
+
     @PROM_REQUESTS.sync('new_password')
     def get(self):
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         reset_token = self.get_query_argument('reset_token')
-        if self.get_secure_cookie('reset_token', reset_token,
-                                  max_age_days=2) is None:
+        try:
+            self.decode_reset_token(reset_token)
+        except HTTPError as e:
             self.set_status(403)
             return self.finish(
-                self.gettext("This password reset link has expired"),
+                self.gettext(e.log_message),
             )
         return self.render('new_password.html', reset_token=reset_token)
 
@@ -307,20 +332,13 @@ class SetNewPassword(BaseHandler):
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         reset_token = self.get_body_argument('reset_token')
-        email = self.get_secure_cookie(
-            'reset_token',
-            reset_token,
-            min_version=2,
-            max_age_days=1,
-        )
-        if email is None:
-            raise HTTPError(403)
-        email = email.decode('utf-8')
-        user = (
-            self.db.query(database.User).filter(database.User.email == email)
-        ).one_or_none()
-        if not user:
-            raise HTTPError(403)
+        try:
+            user = self.decode_reset_token(reset_token)
+        except HTTPError as e:
+            self.set_status(403)
+            return self.finish(
+                self.gettext(e.log_message),
+            )
         try:
             password1 = self.get_body_argument('password1')
             password2 = self.get_body_argument('password2')
