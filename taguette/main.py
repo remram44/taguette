@@ -96,6 +96,10 @@ REGISTRATION_ENABLED = True
 # Leave this at False if users are connecting to Taguette directly
 X_HEADERS = False
 
+# Time limits for converting documents
+CONVERT_TO_HTML_TIMEOUT = 3 * 60  # 3min for importing document into Taguette
+CONVERT_FROM_HTML_TIMEOUT = 3 * 60  # 3min for exporting from Taguette
+
 # If you want to export metrics using Prometheus, set a port number here
 #PROMETHEUS_LISTEN = "0.0.0.0:9101"
 
@@ -112,6 +116,8 @@ DEFAULT_CONFIG = {
     'REGISTRATION_ENABLED': True,
     'X_HEADERS': False,
     'DEFAULT_LANGUAGE': 'en_US',
+    'CONVERT_FROM_HTML_TIMEOUT': 3 * 60,
+    'CONVERT_TO_HTML_TIMEOUT': 3 * 60,
 }
 
 REQUIRED_CONFIG = ['NAME', 'PORT', 'SECRET_KEY', 'DATABASE',
