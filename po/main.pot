@@ -108,7 +108,7 @@ msgid "Settings"
 msgstr ""
 
 #: taguette/templates/base.html:45
-msgid "Logout"
+msgid "Log out"
 msgstr ""
 
 #. Link to form
