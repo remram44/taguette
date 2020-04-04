@@ -9,9 +9,9 @@
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Taguette 0.7\n"
+"Project-Id-Version: Taguette 0.9\n"
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
-"POT-Creation-Date: 2019-11-23 22:06-0500\n"
+"POT-Creation-Date: 2020-04-03 20:56-0400\n"
 "PO-Revision-Date: 2019-05-08 16:49+0000\n"
 "Last-Translator: CH_ <ch@infobib.de>, 2020\n"
 "Language-Team: German (https://www.transifex.com/remram44/teams/98824/de/)\n"
@@ -118,7 +118,7 @@ msgid "Settings"
 msgstr "Einstellungen"
 
 #: taguette/templates/base.html:45
-msgid "Logout"
+msgid "Log out"
 msgstr "Abmelden"
 
 #. Link to form
@@ -330,24 +330,24 @@ msgstr "Tag löschen"
 msgid "[new highlight]"
 msgstr "[neues Highlight]"
 
-#: taguette/templates/index.html:7
+#: taguette/templates/index.html:10
 #, python-format
 msgid "Welcome %(user_login)s"
 msgstr "Willkommen %(user_login)s"
 
-#: taguette/templates/index.html:9
+#: taguette/templates/index.html:12
 msgid "Welcome!"
 msgstr "Willkommen!"
 
-#: taguette/templates/index.html:11
+#: taguette/templates/index.html:14
 msgid "Here are your projects:"
 msgstr "Hier sind Ihre Projekte:"
 
-#: taguette/templates/index.html:16
+#: taguette/templates/index.html:19
 msgid "You have no projects yet."
 msgstr "Sie haben noch keine Projekte."
 
-#: taguette/templates/index.html:18
+#: taguette/templates/index.html:21
 msgid "Create a project"
 msgstr "Projekt erstellen"
 
@@ -379,11 +379,11 @@ msgid "Welcome"
 msgstr "Willkommen"
 
 #: taguette/templates/welcome.html:7
+#, fuzzy
 msgid ""
-"The <span style=\"font-family:BadScript;\"><a "
-"href=\"https://www.taguette.org/\">TAGUETTE</a></span> project is an attempt"
-" to create an open-source web-based document tagging tool for qualitative "
-"data analysis."
+"<span style=\"font-family:BadScript;\"><a "
+"href=\"https://www.taguette.org/\">TAGUETTE</a></span> is an open-source "
+"web-based document tagging tool for qualitative data analysis."
 msgstr ""
 "Das <span style=\"font-family:BadScript;\"><a "
 "href=\"https://www.taguette.org/\">TAGUETTE</a></span>-Projekt versucht, ein"
@@ -512,24 +512,24 @@ msgstr ""
 msgid "This link will expire in 1 day."
 msgstr "Dieser Link wird nach 1 Tag ungültig."
 
-#: taguette/web/views.py:112
+#: taguette/web/views.py:115
 msgid "Invalid login or password"
 msgstr "Ungültiger Benutzername oder Passwort"
 
-#: taguette/web/views.py:163 taguette/web/views.py:223
-#: taguette/web/views.py:337
+#: taguette/web/views.py:162 taguette/web/views.py:220
+#: taguette/web/views.py:347
 msgid "Passwords do not match"
 msgstr "Passwörter stimmen nicht überein"
 
-#: taguette/web/views.py:165
+#: taguette/web/views.py:164
 msgid "User name is taken"
 msgstr "Der Benutzername ist bereits vergeben"
 
-#: taguette/web/views.py:169
+#: taguette/web/views.py:168
 msgid "Email address is already used"
 msgstr "Diese E-Mail-Adresse wird bereits verwendet"
 
-#: taguette/web/views.py:258
+#: taguette/web/views.py:253
 msgid "This email address is not associated with any user"
 msgstr "Diese E-Mail-Adresse ist nicht mit einem Benutzer verknüpft"
 
@@ -537,21 +537,29 @@ msgstr "Diese E-Mail-Adresse ist nicht mit einem Benutzer verknüpft"
 msgid "Password reset for Taguette"
 msgstr "Passwort für Taguette zurücksetzen"
 
-#: taguette/web/views.py:309
-msgid "This password reset link has expired"
-msgstr "Der Link zum Zurücksetzen des Passworts ist abgelaufen."
+#: taguette/web/views.py:306
+msgid "Invalid token"
+msgstr ""
+
+#: taguette/web/views.py:310
+msgid "No user associated with that token"
+msgstr ""
+
+#: taguette/web/views.py:313
+msgid "Password has already been changed"
+msgstr ""
 
 #. Default tag name
-#: taguette/web/views.py:379
+#: taguette/web/views.py:387
 msgid "interesting"
 msgstr "interessant"
 
 #. Default tag description
-#: taguette/web/views.py:381
+#: taguette/web/views.py:389
 msgid "Further review required"
 msgstr "Weitere Überprüfung nötig"
 
-#: taguette/web/views.py:407
+#: taguette/web/views.py:413
 msgid "You don't have permission to delete this project"
 msgstr "Sie sind nicht berechtigt, dieses Projekt zu löschen."
 
@@ -619,23 +627,23 @@ msgstr "Tag-Pfad ist zu lang"
 msgid "Tag description is too long"
 msgstr "Tag-Beschreibung darf nicht leer sein"
 
-#: taguette/main.py:159
+#: taguette/main.py:176
 msgid "Port number on which to listen"
 msgstr "Port-Nummer die benutzt werden soll"
 
-#: taguette/main.py:161
+#: taguette/main.py:178
 msgid "Address to bind on"
 msgstr "Adresse für die Anbindung"
 
-#: taguette/main.py:163
+#: taguette/main.py:180
 msgid "Open web browser to the application"
 msgstr "Web-Browser für die Anwendung öffnen"
 
-#: taguette/main.py:165
+#: taguette/main.py:182
 msgid "Don't open the web browser"
 msgstr "Web-Browser nicht öffnen"
 
-#: taguette/main.py:170
+#: taguette/main.py:187
 #, python-format
 msgid ""
 "Database location or connection string, for example 'project.db' or "
@@ -644,27 +652,35 @@ msgstr ""
 "Speicherort oder Verbindungslink der Datenbank , zum Beispiel 'project.db' "
 "oder 'postgresql://me:pw@localhost/mydb' (default: %(default)r)"
 
-#: taguette/main.py:177
+#: taguette/main.py:194
+msgid "Set the file creation mask (umask) on systems that support it."
+msgstr ""
+
+#: taguette/main.py:198
+msgid "Don't change umask on startup"
+msgstr ""
+
+#: taguette/main.py:201
 msgid "additional commands"
 msgstr "weitere Befehle"
 
-#: taguette/main.py:181
+#: taguette/main.py:205
 msgid "Manually trigger a database migration"
 msgstr "Datenbank-Migration manuell einleiten"
 
-#: taguette/main.py:190
+#: taguette/main.py:214
 msgid "Print the default server configuration"
 msgstr "Standard-Serverkonfiguratin ausdrucken"
 
-#: taguette/main.py:192
+#: taguette/main.py:216
 msgid "Output to this file rather than stdout"
 msgstr "Schreibe Output in diese Datei statt in den stdout"
 
-#: taguette/main.py:198
+#: taguette/main.py:222
 msgid "Run in server mode, suitable for a multi-user deployment"
 msgstr "Starte in Server-Modus, geeignet für ein Mehrbenutzereinsatz."
 
-#: taguette/main.py:200
+#: taguette/main.py:224
 msgid ""
 "Configuration file for the server. The default configuration can be "
 "generated using the `default-config` command"
@@ -672,12 +688,12 @@ msgstr ""
 "Konfigurations-Datei für den Server. Die Standard-Konfiguration kann mit dem"
 " 'default-config'-Befehl generiert werden."
 
-#: taguette/main.py:222
+#: taguette/main.py:253
 #, python-format
 msgid "Missing required configuration variable %(var)s"
 msgstr "Fehlende benötigte Konfigurations-Variablen %(var)s"
 
-#: taguette/main.py:294
+#: taguette/main.py:326
 #, python-format
 msgid ""
 "\n"
