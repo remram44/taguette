@@ -8,10 +8,12 @@ Bugfixes:
 * Fix printed link not being flushed, causing it to be inaccessible e.g. running on Docker
 * Fix incompatibility with Python 3.8
 * Close DB connection during long polls, avoiding overflow of connection pool when using PostgreSQL
+* Don't allow a password reset link to be used more than once
 
 Enhancements:
 * Set umask to 077 by default (and add corresponding command-line options)
 * Restore Python 3.5 compatibility
+* Add a timeout to document conversion
 
 0.9 (2019-11-23)
 ----------------
