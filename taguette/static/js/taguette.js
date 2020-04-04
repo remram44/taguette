@@ -1589,7 +1589,7 @@ function longPollForEvents() {
     setTimeout(longPollForEvents, 1);
   }, function(error) {
     console.error("Polling failed:", error);
-    if(error == 'Status 403') {
+    if(error == 'Not logged in' || error == 'Status 403') {
       alert(gettext("It appears that you have been logged out."));
       window.location = '/';
     } else if(error == 'Status 404') {
