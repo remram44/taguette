@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Taguette 0.7\n"
+"Project-Id-Version: Taguette 0.9\n"
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
-"POT-Creation-Date: 2019-11-23 22:06-0500\n"
+"POT-Creation-Date: 2020-04-03 20:56-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -313,24 +313,24 @@ msgstr ""
 msgid "[new highlight]"
 msgstr ""
 
-#: taguette/templates/index.html:7
+#: taguette/templates/index.html:10
 #, python-format
 msgid "Welcome %(user_login)s"
 msgstr ""
 
-#: taguette/templates/index.html:9
+#: taguette/templates/index.html:12
 msgid "Welcome!"
 msgstr ""
 
-#: taguette/templates/index.html:11
+#: taguette/templates/index.html:14
 msgid "Here are your projects:"
 msgstr ""
 
-#: taguette/templates/index.html:16
+#: taguette/templates/index.html:19
 msgid "You have no projects yet."
 msgstr ""
 
-#: taguette/templates/index.html:18
+#: taguette/templates/index.html:21
 msgid "Create a project"
 msgstr ""
 
@@ -358,10 +358,9 @@ msgstr ""
 
 #: taguette/templates/welcome.html:7
 msgid ""
-"The <span style=\"font-family:BadScript;\"><a "
-"href=\"https://www.taguette.org/\">TAGUETTE</a></span> project is an "
-"attempt to create an open-source web-based document tagging tool for "
-"qualitative data analysis."
+"<span style=\"font-family:BadScript;\"><a "
+"href=\"https://www.taguette.org/\">TAGUETTE</a></span> is an open-source "
+"web-based document tagging tool for qualitative data analysis."
 msgstr ""
 
 #: taguette/templates/welcome.html:8
@@ -471,24 +470,24 @@ msgstr ""
 msgid "This link will expire in 1 day."
 msgstr ""
 
-#: taguette/web/views.py:112
+#: taguette/web/views.py:115
 msgid "Invalid login or password"
 msgstr ""
 
-#: taguette/web/views.py:163 taguette/web/views.py:223
-#: taguette/web/views.py:337
+#: taguette/web/views.py:162 taguette/web/views.py:220
+#: taguette/web/views.py:347
 msgid "Passwords do not match"
 msgstr ""
 
-#: taguette/web/views.py:165
+#: taguette/web/views.py:164
 msgid "User name is taken"
 msgstr ""
 
-#: taguette/web/views.py:169
+#: taguette/web/views.py:168
 msgid "Email address is already used"
 msgstr ""
 
-#: taguette/web/views.py:258
+#: taguette/web/views.py:253
 msgid "This email address is not associated with any user"
 msgstr ""
 
@@ -496,21 +495,29 @@ msgstr ""
 msgid "Password reset for Taguette"
 msgstr ""
 
-#: taguette/web/views.py:309
-msgid "This password reset link has expired"
+#: taguette/web/views.py:306
+msgid "Invalid token"
+msgstr ""
+
+#: taguette/web/views.py:310
+msgid "No user associated with that token"
+msgstr ""
+
+#: taguette/web/views.py:313
+msgid "Password has already been changed"
 msgstr ""
 
 #. Default tag name
-#: taguette/web/views.py:379
+#: taguette/web/views.py:387
 msgid "interesting"
 msgstr ""
 
 #. Default tag description
-#: taguette/web/views.py:381
+#: taguette/web/views.py:389
 msgid "Further review required"
 msgstr ""
 
-#: taguette/web/views.py:407
+#: taguette/web/views.py:413
 msgid "You don't have permission to delete this project"
 msgstr ""
 
@@ -578,61 +585,69 @@ msgstr ""
 msgid "Tag description is too long"
 msgstr ""
 
-#: taguette/main.py:159
+#: taguette/main.py:176
 msgid "Port number on which to listen"
 msgstr ""
 
-#: taguette/main.py:161
+#: taguette/main.py:178
 msgid "Address to bind on"
 msgstr ""
 
-#: taguette/main.py:163
+#: taguette/main.py:180
 msgid "Open web browser to the application"
 msgstr ""
 
-#: taguette/main.py:165
+#: taguette/main.py:182
 msgid "Don't open the web browser"
 msgstr ""
 
-#: taguette/main.py:170
+#: taguette/main.py:187
 #, python-format
 msgid ""
 "Database location or connection string, for example 'project.db' or "
 "'postgresql://me:pw@localhost/mydb' (default: %(default)r)"
 msgstr ""
 
-#: taguette/main.py:177
-msgid "additional commands"
-msgstr ""
-
-#: taguette/main.py:181
-msgid "Manually trigger a database migration"
-msgstr ""
-
-#: taguette/main.py:190
-msgid "Print the default server configuration"
-msgstr ""
-
-#: taguette/main.py:192
-msgid "Output to this file rather than stdout"
+#: taguette/main.py:194
+msgid "Set the file creation mask (umask) on systems that support it."
 msgstr ""
 
 #: taguette/main.py:198
+msgid "Don't change umask on startup"
+msgstr ""
+
+#: taguette/main.py:201
+msgid "additional commands"
+msgstr ""
+
+#: taguette/main.py:205
+msgid "Manually trigger a database migration"
+msgstr ""
+
+#: taguette/main.py:214
+msgid "Print the default server configuration"
+msgstr ""
+
+#: taguette/main.py:216
+msgid "Output to this file rather than stdout"
+msgstr ""
+
+#: taguette/main.py:222
 msgid "Run in server mode, suitable for a multi-user deployment"
 msgstr ""
 
-#: taguette/main.py:200
+#: taguette/main.py:224
 msgid ""
 "Configuration file for the server. The default configuration can be "
 "generated using the `default-config` command"
 msgstr ""
 
-#: taguette/main.py:222
+#: taguette/main.py:253
 #, python-format
 msgid "Missing required configuration variable %(var)s"
 msgstr ""
 
-#: taguette/main.py:294
+#: taguette/main.py:326
 #, python-format
 msgid ""
 "\n"
