@@ -28,9 +28,6 @@ run_tests_sqlite3_latest:
     - $HOME/.poetry/bin/poetry install --no-interaction
     - scripts/update_translations.sh
     - python tests.py
-  artifacts:
-    paths:
-      - htmlcov
 
 run_tests_postgres:
   stage: test
