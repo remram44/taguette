@@ -103,6 +103,17 @@ function getCookie(name) {
   return r ? r[1] : undefined;
 }
 
+function ApiError(response, message) {
+  if(!message) {
+    message = "Status " + response.status;
+  }
+  this.status = response.status;
+  this.message = message;
+}
+ApiError.prototype.toString = function() {
+  return this.message;
+};
+
 function getJSON(url='', args) {
   if(args) {
     args = '?' + encodeGetParams(args);
@@ -122,17 +133,17 @@ function getJSON(url='', args) {
       .then(
       function(json) {
         if("error" in json) {
-          throw json.error;
+          throw new ApiError(response, json.error);
         } else {
-          throw "Status " + response.status;
+          throw new ApiError(response);
         }
       },
       function() {
-        throw "Status " + response.status;
+        throw new ApiError(response);
       }
       );
     }
-    return response.json().catch(function(error) { throw "Invalid JSON"; });
+    return response.json().catch(function(error) { throw new ApiError(response, "Invalid JSON"); });
   });
 }
 
@@ -153,7 +164,7 @@ function deleteURL(url='', args) {
     }
   ).then(function(response) {
     if(response.status != 204) {
-      throw "Status " + response.status;
+      throw new ApiError(response);
     }
   });
 }
@@ -183,17 +194,17 @@ function postJSON(url='', data={}, args) {
       .then(
       function(json) {
         if("error" in json) {
-          throw json.error;
+          throw new ApiError(response, json.error);
         } else {
-          throw "Status " + response.status;
+          throw new ApiError(response);
         }
       },
       function() {
-        throw "Status " + response.status;
+        throw new ApiError(response);
       }
       );
     }
-    return response.json().catch(function(error) { throw "Invalid JSON"; });
+    return response.json().catch(function(error) { throw new ApiError(response, "Invalid JSON"); });
   });
 }
 
@@ -218,7 +229,7 @@ function patchJSON(url='', data={}, args) {
     }
   ).then(function(response) {
     if(response.status != 204) {
-      throw "Status " + response.status;
+      throw new ApiError(response);
     }
   });
 }
@@ -578,7 +589,6 @@ document.getElementById('document-add-form').addEventListener('submit', function
       console.log("Document upload complete");
     } else {
       console.error("Document upload failed: status", xhr.status);
-      console.error(xhr.response);
       var error = null;
       try {
         error = xhr.response.error;
@@ -998,7 +1008,7 @@ function setHighlight(highlight) {
   } catch(error) {
     console.error(
       "Error setting highlight ", highlight.id, " ", [highlight.start_offset, highlight.end_offset],
-      ": ", error, "\n", error.stack,
+      ":", error,
     );
   }
 }
@@ -1589,10 +1599,10 @@ function longPollForEvents() {
     setTimeout(longPollForEvents, 1);
   }, function(error) {
     console.error("Polling failed:", error);
-    if(error == 'Not logged in' || error == 'Status 403') {
+    if(error instanceof ApiError && error.status == 403) {
       alert(gettext("It appears that you have been logged out."));
       window.location = '/';
-    } else if(error == 'Status 404') {
+    } else if(error instanceof ApiError && error.status == 404) {
       alert(gettext("You can no longer access this project."));
       window.location = '/';
     } else {
