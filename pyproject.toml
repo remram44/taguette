@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "taguette-website"
+version = "0.0"
+description = "Taguette website generator"
+
+license = "MIT"
+
+authors = ["Remi Rampin <r@remirampin.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+jinja2 = "^2.11.1"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
