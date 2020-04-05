@@ -1,127 +1,52 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="An open qualitative research tool">
-    <meta name="author" content="Remi Rampin">
-    <meta name="author" content="Vicky Steeves">
-    <link rel="icon" href="favicon.ico">
-    <link rel="canonical" href="https://www.taguette.org/about.html">
+{% extends "_layout.html" %}
+{% set active_page = 'about' %}
 
-    <title>About Taguette</title>
+{% block title %}{# TRANSLATORS: Page title #}{% trans %}About Taguette{% endtrans %}{% endblock %}
 
-    <!-- Bootswatch Theme -->
-    <link href="css/bootstrap.css" rel="stylesheet">
+{% block contents %}
+<div id="container-body">
 
-    <!-- FontAwesome -->
-    <link href="css/all.css" rel="stylesheet">
+  <h2>About <span style="font-family: BadScript;">TAGUETTE</span></h2>
 
-    <!-- Custom -->
-    <link href="css/custom.css" rel="stylesheet">
+  <p>A spin on the phrase "tag it!", <a href="https://www.taguette.org/">Taguette</a> is a free and open source qualitative research tool (which works on all operating systems!) that allows users to:</p>
 
-  </head>
+  <ul>
+    <li>Import PDFs, Word Docs (.docx), Text files (.txt), HTML, EPUB, MOBI, Open Documents (.odt), and Rich Text Files (.rtf).</li>
+    <li>Highlight words, sentences, or paragraphs and tag them with the codes *you* create.</li>
+    <li>Work collaboratively with other users (if <a href="self-host.html">self-hosting</a> or using <a href="https://app.taguette.org">app.taguette.org</a>).</li>
+    <li>Export tagged documents, highlights for a specific tag, highlights for all tags, and a list of tags with their descriptions.</li>
+  </ul>
 
-  <body>
+  <p>...and much more! You can view our development queue on GitLab here: <a href="https://gitlab.com/remram44/taguette/issues">https://gitlab.com/remram44/taguette/issues</a>. You can always add feature requests, bug reports, or general feedback via GitLab issues. If you are not sure how to do that, feel free to email us your feedback at <a href="mailto:hi@taguette.org">hi@taguette.org</a>.</p>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-      <div class="container">
-        <a class="navbar-brand" href="#" style="font-family: BadScript;">TAGUETTE</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+  <p>If you use Taguette for your research, please cite it with the following:</p>
 
-        <div class="collapse navbar-collapse" id="navbar">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="index.html">Home</a>
-            </li>
-            <li class="nav-item active">
-              <a class="nav-link" href="#">About <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="install.html">Install</a>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="getting-started.html">Getting Started</a>
-                <a class="dropdown-item" href="self-host.html">Self-Host</a>
-                <a class="dropdown-item" href="faq.html">FAQ</a>
-              </div>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="https://app.taguette.org/">Try it <i class="fas fa-external-link-alt"></i></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="https://gitlab.com/remram44/taguette"><i class="fab fa-gitlab"></i> <span class="d-lg-none">GitLab</span></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="https://twitter.com/TaguetteProject"><i class="fab fa-twitter"></i> <span class="d-lg-none">Twitter</span></a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
+  <p class="small text-right">Rémi Rampin, Vicky Steeves, &amp; Sarah DeMott. (2019, November 23). Taguette (Version 0.9). Zenodo. <a href="https://doi.org/10.5281/zenodo.3551632">https://doi.org/10.5281/zenodo.3551632</a></p>
 
-    <main class="container">
-      <div id="container-body">
+  <h3>Why did we make Taguette?</h3>
 
-        <h2>About <span style="font-family: BadScript;">TAGUETTE</span></h2>
+  <p>Qualitative methods generate rich, detailed research materials that leave individuals’ perspectives intact  as well as provide multiple contexts for understanding phenomenon under study. Qualitative methods are used by a wide range of fields, such as anthropology, education, nursing, psychology, sociology, and marketing. Qualitative data has a similarly wide range: observations, interviews, documents, audiovisual materials, and more.</p>
 
-        <p>A spin on the phrase "tag it!", <a href="https://www.taguette.org/">Taguette</a> is a free and open source qualitative research tool (which works on all operating systems!) that allows users to:</p>
+  <p>However - the software options for qualitative researchers are either <strong>far too expensive</strong>, don't allow for the seminal method of highlighting and tagging materials, <em>or actually perform quantitative analysis</em>, just on text.</p>
 
-        <ul>
-          <li>Import PDFs, Word Docs (.docx), Text files (.txt), HTML, EPUB, MOBI, Open Documents (.odt), and Rich Text Files (.rtf).</li>
-          <li>Highlight words, sentences, or paragraphs and tag them with the codes *you* create.</li>
-          <li>Work collaboratively with other users (if <a href="self-host.html">self-hosting</a> or using <a href="https://app.taguette.org">app.taguette.org</a>).</li>
-          <li>Export tagged documents, highlights for a specific tag, highlights for all tags, and a list of tags with their descriptions.</li>
-        </ul>
+  <p><strong>It's not right or fair that qualitative researchers without massive research funds cannot afford the basic software to do their research.</strong></p>
 
-        <p>...and much more! You can view our development queue on GitLab here: <a href="https://gitlab.com/remram44/taguette/issues">https://gitlab.com/remram44/taguette/issues</a>. You can always add feature requests, bug reports, or general feedback via GitLab issues. If you are not sure how to do that, feel free to email us your feedback at <a href="mailto:hi@taguette.org">hi@taguette.org</a>.</p>
+  <p>So, to bolster a fair and equitable entry into qualitative methods, we've made Taguette!</p>
 
-        <p>If you use Taguette for your research, please cite it with the following:</p>
+  <h3 id="team">The Team</h3>
 
-        <p class="small text-right">Rémi Rampin, Vicky Steeves, & Sarah DeMott. (2019, November 23). Taguette (Version 0.9). Zenodo. <a href="https://doi.org/10.5281/zenodo.3551632">https://doi.org/10.5281/zenodo.3551632</a></p>
+  <p>Taguette was developed by Rémi Rampin. Vicky Steeves and Sarah DeMott provided the functional requirements, user needs, and testing in order to influence the development process.</p>
 
-        <h3>Why did we make Taguette?</h3>
-
-        <p>Qualitative methods generate rich, detailed research materials that leave individuals’ perspectives intact  as well as provide multiple contexts for understanding phenomenon under study. Qualitative methods are used by a wide range of fields, such as anthropology, education, nursing, psychology, sociology, and marketing. Qualitative data has a similarly wide range: observations, interviews, documents, audiovisual materials, and more.</p>
-
-        <p>However - the software options for qualitative researchers are either <strong>far too expensive</strong>, don't allow for the seminal method of highlighting and tagging materials, <em>or actually perform quantitative analysis</em>, just on text.</p>
-
-        <p><strong>It's not right or fair that qualitative researchers without massive research funds cannot afford the basic software to do their research.</strong></p>
-
-        <p>So, to bolster a fair and equitable entry into qualitative methods, we've made Taguette!</p>
-
-        <h3 id="team">The Team</h3>
-
-        <p>Taguette was developed by Rémi Rampin. Vicky Steeves and Sarah DeMott provided the functional requirements, user needs, and testing in order to influence the development process.</p>
-
-        <div class="table-responsive-lg">
-        <table class="table table-borderless">
-          <tbody>
-            <tr>
-              <td><a href="https://remirampin.com"><img src="imgs/remi.jpg" alt="Remi Rampin"/><br/>Rémi Rampin</a><br/>Main Dev</td>
-              <td><a href="https://vickysteeves.com"><img src="imgs/vicky.jpg" alt="Vicky Steeves"/><br/>Vicky Steeves</a><br/>Product Manager</td>
-              <td><a href="https://library.harvard.edu/staff/sarah-demott"><img src="imgs/sarah.jpg" alt="Sarah DeMott"/><br/>Sarah DeMott</a><br/>Trainer &amp; User Liaison</td>
-            </tr>
-          </tbody>
-        </table>
-        </div>
-      </div>
-    </main>
-
-    <footer class="container">
-      <hr/>
-      <p>Email: <a href="mailto:hi@taguette.org">hi@taguette.org</a> | Mailing-lists: <a href="https://groups.io/g/taguette">users</a>, <a href="https://groups.io/g/taguette-announce">announce</a> | Twitter: <a href="https://twitter.com/TaguetteProject">@TaguetteProject</a> | Any issue using Taguette? Tell us on <a href="https://gitlab.com/remram44/taguette">GitLab</a>!</p>
-    </footer>
-
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="js/jquery-slim.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-  </body>
-</html>
+  <div class="table-responsive-lg">
+  <table class="table table-borderless">
+    <tbody>
+      <tr>
+        <td><a href="https://remirampin.com"><img src="imgs/remi.jpg" alt="Remi Rampin"/><br/>Rémi Rampin</a><br/>Main Dev</td>
+        <td><a href="https://vickysteeves.com"><img src="imgs/vicky.jpg" alt="Vicky Steeves"/><br/>Vicky Steeves</a><br/>Product Manager</td>
+        <td><a href="https://library.harvard.edu/staff/sarah-demott"><img src="imgs/sarah.jpg" alt="Sarah DeMott"/><br/>Sarah DeMott</a><br/>Trainer &amp; User Liaison</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,131 +1,56 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="An open qualitative research tool">
-    <meta name="author" content="Remi Rampin">
-    <meta name="author" content="Vicky Steeves">
-    <link rel="icon" href="favicon.ico">
-    <link rel="canonical" href="https://www.taguette.org/">
+{% extends "_layout.html" %}
+{% set active_page = 'self-host' %}
 
-    <title>Self Hosting Taguette</title>
+{% block title %}{# TRANSLATORS: Page title #}{% trans %}Self Hosting Taguette{% endtrans %}{% endblock %}
 
-    <!-- Bootswatch Theme -->
-    <link href="css/bootstrap.css" rel="stylesheet">
+{% block contents %}
+<div id="container-body">
 
-    <!-- FontAwesome -->
-    <link href="css/all.css" rel="stylesheet">
+  <h2>Self-hosting <span style="font-family: BadScript;">TAGUETTE</span></h2>
 
-    <!-- Custom -->
-    <link href="css/custom.css" rel="stylesheet">
+  <p>Taguette can be run in two separate ways:</p>
+  <ul>
+    <li>On your machine, after <a href="install.html">installing it</a>. This requires no complex setup, and your data never has to leave your machine!</li>
+    <li>On a server. This is more difficult to setup, but users can then use that installed version with nothing more than their web browser! We host a publicly-available Taguette server at <a href="https://app.taguette.org/">app.taguette.org</a> at the moment, so you can feel free to use that. If you want to deploy your own server for your organization, read on!</li>
+  </ul>
 
-  </head>
+  <h3 id="docker">Using Docker</h3>
 
-  <body>
-
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-      <div class="container">
-        <a class="navbar-brand" href="#" style="font-family: BadScript;">TAGUETTE</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbar">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="index.html">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="about.html">About</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="install.html">Install</a>
-            </li>
-            <li class="nav-item dropdown active">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="getting-started.html">Getting Started</a>
-                <a class="dropdown-item active" href="#">Self-Host <span class="sr-only">(current)</span></a>
-                <a class="dropdown-item" href="faq.html">FAQ</a>
-              </div>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="https://app.taguette.org/">Try it <i class="fas fa-external-link-alt"></i></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="https://gitlab.com/remram44/taguette"><i class="fab fa-gitlab"></i> <span class="d-lg-none">GitLab</span></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="https://twitter.com/TaguetteProject"><i class="fab fa-twitter"></i> <span class="d-lg-none">Twitter</span></a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-
-    <main class="container">
-      <div id="container-body">
-
-        <h2>Self-hosting <span style="font-family: BadScript;">TAGUETTE</span></h2>
-
-        <p>Taguette can be run in two separate ways:</p>
-        <ul>
-          <li>On your machine, after <a href="install.html">installing it</a>. This requires no complex setup, and your data never has to leave your machine!</li>
-          <li>On a server. This is more difficult to setup, but users can then use that installed version with nothing more than their web browser! We host a publicly-available Taguette server at <a href="https://app.taguette.org/">app.taguette.org</a> at the moment, so you can feel free to use that. If you want to deploy your own server for your organization, read on!</li>
-        </ul>
-
-        <h3 id="docker">Using Docker</h3>
-
-        <p>If you so choose, you can simply run the <a href="https://hub.docker.com/r/remram/taguette/"><code>remram/taguette</code> Docker image</a>. You will be prompted for an 'admin' password the first time. You can persist the data by mounting a volume over <code>/data</code>, like so:</p>
-        <pre>docker run -ti --rm remram/taguette default-config >/srv/taguette/taguette.conf
+  <p>If you so choose, you can simply run the <a href="https://hub.docker.com/r/remram/taguette/"><code>remram/taguette</code> Docker image</a>. You will be prompted for an 'admin' password the first time. You can persist the data by mounting a volume over <code>/data</code>, like so:</p>
+  <pre>docker run -ti --rm remram/taguette default-config &gt;/srv/taguette/taguette.conf
 edit /srv/taguette/taguette.conf  # Edit configuration file, see below
 docker run -ti -p 80:7465 -v /srv/taguette:/data --restart=always remram/taguette server /data/taguette.conf</pre>
 
-        <h3 id="native">"Native" installation on a server</h3>
+  <h3 id="native">"Native" installation on a server</h3>
 
-        <p>You need Python 3.5 or better to run Taguette. Simply run <code>pip install taguette</code> to install the software. To be able to import non-HTML documents, you also need Calibre installed (specifically, the <code>ebook-convert</code> command).</p>
+  <p>You need Python 3.5 or better to run Taguette. Simply run <code>pip install taguette</code> to install the software. To be able to import non-HTML documents, you also need Calibre installed (specifically, the <code>ebook-convert</code> command).</p>
 
-        <p>Using a virtual environment is recommended. Example installation on Ubuntu:</p>
+  <p>Using a virtual environment is recommended. Example installation on Ubuntu:</p>
 
-        <pre>apt update
+  <pre>apt update
 apt install calibre python3.5 virtualenv
 virtualenv --python=python3.5 /srv/taguette
 . /srv/taguette/bin/activate
 pip install taguette
-taguette default-config >taguette.conf
+taguette default-config &gt;taguette.conf
 edit taguette.conf  # Edit configuration file, see below
 taguette --no-browser server taguette.conf</pre>
 
-        <p>This will start the server on port 80. In practice, you should configure a webserver (for example <a href="https://nginx.org/">nginx</a> or <a href="https://httpd.apache.org/">Apache</a>, see <a href="https://gitlab.com/remram44/taguette/tree/master/scripts/dist/server_configs">example configuration</a>) to act as a proxy between the users and Taguette, and provide encryption using TLS (for example using <a href="https://letsencrypt.org/">Let's Encrypt</a>, free).</p>
+  <p>This will start the server on port 80. In practice, you should configure a webserver (for example <a href="https://nginx.org/">nginx</a> or <a href="https://httpd.apache.org/">Apache</a>, see <a href="https://gitlab.com/remram44/taguette/tree/master/scripts/dist/server_configs">example configuration</a>) to act as a proxy between the users and Taguette, and provide encryption using TLS (for example using <a href="https://letsencrypt.org/">Let's Encrypt</a>, free).</p>
 
-        <h3 id="config">Configuration file</h3>
+  <h3 id="config">Configuration file</h3>
 
-        <p>In either case, running the server requires a configuration file. This file contains important information, such as email server and addresses, the port number to listen on, whether registration of new accounts is enabled, etc.</p>
-        <p>You might want to change the <code>PORT</code> to <code>80</code>, or better yet configure a webserver (such as <a href="https://nginx.org/">nginx</a> or <a href="https://httpd.apache.org/">Apache</a>, see <a href="https://gitlab.com/remram44/taguette/tree/master/scripts/dist/server_configs">example configuration</a>) to act as a proxy between the users and Taguette, and provide encryption using TLS (for example using <a href="https://letsencrypt.org/">Let's Encrypt</a>, free).</p>
+  <p>In either case, running the server requires a configuration file. This file contains important information, such as email server and addresses, the port number to listen on, whether registration of new accounts is enabled, etc.</p>
+  <p>You might want to change the <code>PORT</code> to <code>80</code>, or better yet configure a webserver (such as <a href="https://nginx.org/">nginx</a> or <a href="https://httpd.apache.org/">Apache</a>, see <a href="https://gitlab.com/remram44/taguette/tree/master/scripts/dist/server_configs">example configuration</a>) to act as a proxy between the users and Taguette, and provide encryption using TLS (for example using <a href="https://letsencrypt.org/">Let's Encrypt</a>, free).</p>
 
-        <h3 id="database">Database</h3>
+  <h3 id="database">Database</h3>
 
-        <p>The <code>DATABASE</code> setting should be a SQLAlchemy connection string. For example, you can use:</p>
-        <ul>
-          <li>a SQLite database file (note the 4 slashes): <code>sqlite:////srv/taguette/taguette.sqlite3</code></li>
-          <li>a PostgreSQL database: <code>postgresql://user:secretpassword@localhost/taguette</code></li>
-          <li>a MySQL or MariaDB database: <code>mysql://user:secretpassword@localhost/taguette</code></li>
-          <li>... or any of the <a href="https://docs.sqlalchemy.org/en/13/core/engines.html">other databases supported by SQLAlchemy</a></li>
-        </ul>
-      </div>
-    </main>
-
-    <footer class="container">
-      <hr/>
-      <p>Email: <a href="mailto:hi@taguette.org">hi@taguette.org</a> | Mailing-lists: <a href="https://groups.io/g/taguette">users</a>, <a href="https://groups.io/g/taguette-announce">announce</a> | Twitter: <a href="https://twitter.com/TaguetteProject">@TaguetteProject</a> | Any issue using Taguette? Tell us on <a href="https://gitlab.com/remram44/taguette">GitLab</a>!</p>
-    </footer>
-
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="js/jquery-slim.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-  </body>
-</html>
+  <p>The <code>DATABASE</code> setting should be a SQLAlchemy connection string. For example, you can use:</p>
+  <ul>
+    <li>a SQLite database file (note the 4 slashes): <code>sqlite:////srv/taguette/taguette.sqlite3</code></li>
+    <li>a PostgreSQL database: <code>postgresql://user:secretpassword@localhost/taguette</code></li>
+    <li>a MySQL or MariaDB database: <code>mysql://user:secretpassword@localhost/taguette</code></li>
+    <li>... or any of the <a href="https://docs.sqlalchemy.org/en/13/core/engines.html">other databases supported by SQLAlchemy</a></li>
+  </ul>
+</div>
+{% endblock %}

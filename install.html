@@ -1,148 +1,73 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="An open qualitative research tool">
-    <meta name="author" content="Remi Rampin">
-    <meta name="author" content="Vicky Steeves">
-    <link rel="icon" href="favicon.ico">
-    <link rel="canonical" href="https://www.taguette.org/install.html">
+{% extends "_layout.html" %}
+{% set active_page = 'install' %}
 
-    <title>Install Taguette</title>
+{% block title %}{# TRANSLATORS: Page title #}{% trans %}Install Taguette{% endtrans %}{% endblock %}
 
-    <!-- Bootswatch Theme -->
-    <link href="css/bootstrap.css" rel="stylesheet">
+{% block contents %}
+<div id="container-body">
 
-    <!-- FontAwesome -->
-    <link href="css/all.css" rel="stylesheet">
+  <h2>Install <span style="font-family: BadScript;">TAGUETTE</span></h2>
 
-    <!-- Custom -->
-    <link href="css/custom.css" rel="stylesheet">
+  <p>Taguette is released under <a href="https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt">the BSD license</a>. You can read about the team behind Taguette on our <a href="about.html#team">About</a> page.</p>
 
-  </head>
+  <p>You are able to use Taguette on our server for free at <a href="https://app.taguette.org">https://app.taguette.org</a> and also install Taguette locally on your computer and/or server (if you'd like to self-host!). Using Taguette on our server (or your own) means that you will be able to collaborate with others while using Taguette on your own computer means you can use it offline and by yourself.</p>
 
-  <body>
+  <h3 id="installers">Installers</h3>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-      <div class="container">
-        <a class="navbar-brand" href="#" style="font-family: BadScript;">TAGUETTE</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+  <p>Taguette works on macOS, Windows, and Linux. The installers for macOS and Windows include Python, Taguette, and Calibre, so you don't need to install anything else. For Linux, the easiest way to install Taguette is to use <code>pip</code>, and those instructions are <a href="#pip">below</a>.</p>
 
-        <div class="collapse navbar-collapse" id="navbar">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="index.html">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="about.html">About</a>
-            </li>
-            <li class="nav-item active">
-              <a class="nav-link" href="#">Install <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="getting-started.html">Getting Started</a>
-                <a class="dropdown-item" href="self-host.html">Self-Host</a>
-                <a class="dropdown-item" href="faq.html">FAQ</a>
-              </div>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="https://app.taguette.org/">Try it <i class="fas fa-external-link-alt"></i></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="https://gitlab.com/remram44/taguette"><i class="fab fa-gitlab"></i> <span class="d-lg-none">GitLab</span></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="https://twitter.com/TaguetteProject"><i class="fab fa-twitter"></i> <span class="d-lg-none">Twitter</span></a>
-            </li>
-          </ul>
+  <ul>
+    <li class="list-unstyled">
+      <details>
+        <summary><strong>On Windows...</strong></summary>
+        <div class="alert alert-dark">
+          <p>Download the EXE file from <a href="https://gitlab.com/remram44/taguette/tags/v0.9">our latest release page</a>.</p>
+          <p>Open it, and click through the installer wizard's steps. A "Taguette" entry will appear in your Start Menu and on your Desktop, if you selected that option.</p>
         </div>
-      </div>
-    </nav>
+      </details>
+    </li>
+    <li class="list-unstyled">
+      <details>
+        <summary><strong>On macOS...</strong></summary>
+        <div class="alert alert-dark">
+          <p>Download the DMG file from <a href="https://gitlab.com/remram44/taguette/tags/v0.9">our latest release page</a>.</p>
+          <p><img src="imgs/mac-01.png"></p>
+          <p>When you open it, you will see a Finder window. You should drag the "Taguette.app" file to the "Applications" folder.</p>
+          <p><img src="imgs/mac-02.png"></p>
+          <p>Then double-click on "Applications", and right-click on "Taguette.app" and choose "Open".</p>
+          <p><img src="imgs/mac-03.png"></p>
+          <p><img src="imgs/mac-04.png"></p>
+          <p>You will only have to do this the first time. After this, you will be able to start Taguette from the Launchpad or Spotlight.</p>
+        </div>
+      </details>
+    </li>
+  </ul>
 
-    <main class="container">
-      <div id="container-body">
+  <p>Once you start the application, you will see a terminal window appear. This is normal! You can ignore it completely and use Taguette from your web browser (<a href="http://localhost:7465/"><code>localhost:7465</code></a> should open automatically). Simply leave the terminal window open until you are done using Taguette, after which you can close that terminal window to stop Taguette.</p>
 
-        <h2>Install <span style="font-family: BadScript;">TAGUETTE</span></h2>
+  <h3 id="pip">Installation using pip</h3>
 
-        <p>Taguette is released under <a href="https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt">the BSD license</a>. You can read about the team behind Taguette on our <a href="about.html#team">About</a> page.</p>
+  <p>You first need to install <a href="https://www.python.org/downloads/">Python 3</a> and <a href="https://calibre-ebook.com/">Calibre</a>, the open source e-book management software. Taguette uses a part of Calibre to convert documents into HTML, allowing you to highlight and tag parts of them.</p>
 
-        <p>You are able to use Taguette on our server for free at <a href="https://app.taguette.org">https://app.taguette.org</a> and also install Taguette locally on your computer and/or server (if you'd like to self-host!). Using Taguette on our server (or your own) means that you will be able to collaborate with others while using Taguette on your own computer means you can use it offline and by yourself.</p>
+  <p>Once you've installed Python, you can install Taguette with its dependencies from the command line with the following:</p>
 
-        <h3 id="installers">Installers</h3>
+  <pre>pip3 install taguette</pre>
 
-        <p>Taguette works on macOS, Windows, and Linux. The installers for macOS and Windows include Python, Taguette, and Calibre, so you don't need to install anything else. For Linux, the easiest way to install Taguette is to use <code>pip</code>, and those instructions are <a href="#pip">below</a>.</p>
+  <p>After which you can simply run <code>taguette</code> in the terminal to get it going. You'll see the command line will still be running. This is ok! Don't worry about the terminal, but do leave it running. A browser window should appear, pointing you to <a href="http://localhost:7465/"><code>localhost:7465</code></a>, and you can begin working on your projects!</p>
 
-        <ul>
-          <li class="list-unstyled">
-            <details>
-              <summary><strong>On Windows...</strong></summary>
-              <div class="alert alert-dark">
-                <p>Download the EXE file from <a href="https://gitlab.com/remram44/taguette/tags/v0.9">our latest release page</a>.</p>
-                <p>Open it, and click through the installer wizard's steps. A "Taguette" entry will appear in your Start Menu and on your Desktop, if you selected that option.</p>
-              </div>
-            </details>
-          </li>
-          <li class="list-unstyled">
-            <details>
-              <summary><strong>On macOS...</strong></summary>
-              <div class="alert alert-dark">
-                <p>Download the DMG file from <a href="https://gitlab.com/remram44/taguette/tags/v0.9">our latest release page</a>.</p>
-                <p><img src="imgs/mac-01.png"></p>
-                <p>When you open it, you will see a Finder window. You should drag the "Taguette.app" file to the "Applications" folder.</p>
-                <p><img src="imgs/mac-02.png"></p>
-                <p>Then double-click on "Applications", and right-click on "Taguette.app" and choose "Open".</p>
-                <p><img src="imgs/mac-03.png"></p>
-                <p><img src="imgs/mac-04.png"></p>
-                <p>You will only have to do this the first time. After this, you will be able to start Taguette from the Launchpad or Spotlight.</p>
-              </div>
-            </details>
-          </li>
-        </ul>
+  <h3 id="long">Development set-up</h3>
 
-        <p>Once you start the application, you will see a terminal window appear. This is normal! You can ignore it completely and use Taguette from your web browser (<a href="http://localhost:7465/"><code>localhost:7465</code></a> should open automatically). Simply leave the terminal window open until you are done using Taguette, after which you can close that terminal window to stop Taguette.</p>
+  <p>You can also install from a local clone of this repository, which will allow you to easily change the sources to suit your needs:</p>
 
-        <h3 id="pip">Installation using pip</h3>
+  <ol>
+    <li>Clone this git repository from the terminal: <code>git clone https://gitlab.com/remram44/taguette.git</code></li>
+    <li>Navigate on the command line to the repository you've just cloned locally, using the <code>cd</code> command. To get help using <code>cd</code>, use <a href="https://swcarpentry.github.io/shell-novice/02-filedir/index.html">this tutorial</a>.</li>
+    <li>Taguette uses <a href="https://poetry.eustace.io/">Poetry</a> for its packaging and dependency management. You will need to <a href="https://poetry.eustace.io/docs/#installation">install Poetry</a></li>
+    <li>Install Taguette and its dependencies by running <code>poetry install</code>. We recommend you run this inside of a <a href="https://docs.python-guide.org/dev/virtualenvs/">virtualenv</a> if possible.</li>
+    <li>You can start taguette in development mode using <code>taguette --debug</code>. This will start Tornado in debug mode, which means in particular that it will auto-restart every time you make changes.</li>
+    <li>Navigate to <a href="http://localhost:7465/"><code>localhost:7465</code></a> to use Taguette!</li>
+  </ol>
 
-        <p>You first need to install <a href="https://www.python.org/downloads/">Python 3</a> and <a href="https://calibre-ebook.com/">Calibre</a>, the open source e-book management software. Taguette uses a part of Calibre to convert documents into HTML, allowing you to highlight and tag parts of them.</p>
-
-        <p>Once you've installed Python, you can install Taguette with its dependencies from the command line with the following:</p>
-
-        <pre>pip3 install taguette</pre>
-
-        <p>After which you can simply run <code>taguette</code> in the terminal to get it going. You'll see the command line will still be running. This is ok! Don't worry about the terminal, but do leave it running. A browser window should appear, pointing you to <a href="http://localhost:7465/"><code>localhost:7465</code></a>, and you can begin working on your projects!</p>
-
-        <h3 id="long">Development set-up</h3>
-
-        <p>You can also install from a local clone of this repository, which will allow you to easily change the sources to suit your needs:</p>
-
-        <ol>
-          <li>Clone this git repository from the terminal: <code>git clone https://gitlab.com/remram44/taguette.git</code></li>
-          <li>Navigate on the command line to the repository you've just cloned locally, using the <code>cd</code> command. To get help using <code>cd</code>, use <a href="https://swcarpentry.github.io/shell-novice/02-filedir/index.html">this tutorial</a>.</li>
-          <li>Taguette uses <a href="https://poetry.eustace.io/">Poetry</a> for its packaging and dependency management. You will need to <a href="https://poetry.eustace.io/docs/#installation">install Poetry</a></li>
-          <li>Install Taguette and its dependencies by running <code>poetry install</code>. We recommend you run this inside of a <a href="https://docs.python-guide.org/dev/virtualenvs/">virtualenv</a> if possible.</li>
-          <li>You can start taguette in development mode using <code>taguette --debug</code>. This will start Tornado in debug mode, which means in particular that it will auto-restart every time you make changes.</li>
-          <li>Navigate to <a href="http://localhost:7465/"><code>localhost:7465</code></a> to use Taguette!</li>
-        </ol>
-
-        <p>Learn about using Taguette at our <a href="getting-started.html">getting started</a> page!</p>
-      </div>
-    </main>
-
-    <footer class="container">
-      <hr/>
-      <p>Email: <a href="mailto:hi@taguette.org">hi@taguette.org</a> | Mailing-lists: <a href="https://groups.io/g/taguette">users</a>, <a href="https://groups.io/g/taguette-announce">announce</a> | Twitter: <a href="https://twitter.com/TaguetteProject">@TaguetteProject</a> | Any issue using Taguette? Tell us on <a href="https://gitlab.com/remram44/taguette">GitLab</a>!</p>
-    </footer>
-
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="js/jquery-slim.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-  </body>
-</html>
+  <p>Learn about using Taguette at our <a href="getting-started.html">getting started</a> page!</p>
+</div>
+{% endblock %}
