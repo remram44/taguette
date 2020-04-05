@@ -68,7 +68,7 @@
       </div>
     </nav>
 
-    <main>
+    <main{% if active_page != 'home' %} class="container"{% endif %}>
 
 {% block contents %}{% endblock %}
 
