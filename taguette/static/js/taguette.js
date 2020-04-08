@@ -1067,8 +1067,8 @@ function selectionChanged() {
       last_char_range.setEnd(current_range.endContainer, current_range.endOffset);
       var rect = last_char_range.getClientRects().item(0);
       var scrollPos = getScrollPos();
-      hlinfo.style.left = (rect.x + rect.width) + 'px';
-      hlinfo.style.top = (rect.y + rect.height + scrollPos.y + 20) + 'px';
+      hlinfo.style.left = ((rect.x || rect.left) + rect.width) + 'px';
+      hlinfo.style.top = ((rect.y || rect.top) + rect.height + scrollPos.y + 20) + 'px';
       hlinfo.style.display = 'block';
     } else {
       // We are in a weird situation where the end of the selection is in
