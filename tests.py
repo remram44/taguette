@@ -151,24 +151,50 @@ class TestMeasure(unittest.TestCase):
     def test_highlight(self):
         """Tests highlighting an HTML document with only ASCII characters."""
         html = '<p><u>Hello</u> there <i>World</i></p>'
+        highlights = [
+            (0, 1, ['tag1']), (2, 3, []),
+            (4, 8, ['tag1', 'tag2']), (10, 14, ['tag2']), (15, 17, ['tag1']),
+        ]
         self.assertEqual(
-            extract.highlight(html, [(0, 1), (2, 3),
-                                     (4, 8), (10, 14), (15, 17)])
+            extract.highlight(html, highlights)
             .replace('<span class="highlight">', '{')
             .replace('</span>', '}'),
             '<p><u>{H}e{l}l{o}</u>{ th}er{e }<i>{Wo}r{ld}</i></p>',
         )
 
+        self.assertEqual(
+            extract.highlight(html, highlights, show_tags=True)
+            .replace('<span class="taglist"> [', '[')
+            .replace(']</span>', ']')
+            .replace('<span class="highlight">', '{')
+            .replace('</span>', '}'),
+            '<p><u>{H}[tag1]e{l}[]l{o}</u>{ th}[tag1, tag2]er{e }' +
+            '<i>{Wo}[tag2]r{ld}[tag1]</i></p>',
+        )
+
     def test_highlight_unicode(self):
         """Tests highlighting an HTML document with unicode characters."""
         html = '<p><u>H\xE9ll\xF6</u> the\xAEe <i>\u1E84o\xAEld</i></p>'
+        highlights = [
+            (0, 1, ['tag1']), (3, 4, []),
+            (6, 10, ['tag1', 'tag2']), (13, 19, ['tag2']), (21, 23, ['tag1']),
+        ]
         self.assertEqual(
-            extract.highlight(html, [(0, 1), (3, 4),
-                                     (6, 10), (13, 19), (21, 23)])
+            extract.highlight(html, highlights)
             .replace('<span class="highlight">', '{')
             .replace('</span>', '}'),
             '<p><u>{H}\xE9{l}l{\xF6}</u>{ th}e\xAE'
             '{e }<i>{\u1E84o}\xAE{ld}</i></p>',
+        )
+
+        self.assertEqual(
+            extract.highlight(html, highlights, show_tags=True)
+            .replace('<span class="taglist"> [', '[')
+            .replace(']</span>', ']')
+            .replace('<span class="highlight">', '{')
+            .replace('</span>', '}'),
+            '<p><u>{H}[tag1]\xE9{l}[]l{\xF6}</u>{ th}[tag1, tag2]e\xAE'
+            '{e }<i>{\u1E84o}[tag2]\xAE{ld}[tag1]</i></p>',
         )
 
 
