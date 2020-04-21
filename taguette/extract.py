@@ -169,14 +169,12 @@ def highlight(html, highlights):
                                 start, end = next(highlights)
                             break
                         elif highlighting:
-                            parent = node.parent
                             char_idx = byte_to_str_index(
                                 node.string,
                                 end - pos,
                             )
                             left = node.string[:char_idx]
                             rest = node.string[char_idx:]
-                            idx = parent.index(node)
                             newnode = NavigableString(left)
                             node.replace_with(newnode)
                             node = newnode
@@ -187,7 +185,7 @@ def highlight(html, highlights):
                             node.replace_with(newnode)
                             newnode.append(node)
                             node = NavigableString(rest)
-                            parent.insert(idx + 1, node)
+                            newnode.insert_after(node)
                             nb -= end - pos
                             pos = end
                             highlighting = False
