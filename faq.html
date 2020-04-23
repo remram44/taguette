@@ -288,8 +288,12 @@
 {% block morejs %}
 <script>
 // Expand a section, if we were linked directly to it
-var section = document.getElementById(window.location.hash.substring(1));
-section.querySelector("button").click();
+if(window.location.hash.length > 0) {
+  var section = document.getElementById(window.location.hash.substring(1));
+  if(section.classList.contains("card-header")) {
+    section.querySelector("button.btn-link").click();
+  }
+}
 
 // Use an event listener to update the URL when we expand sections
 var buttons = document.querySelectorAll("div.card h5 button.btn-link");
