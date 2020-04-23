@@ -13,8 +13,11 @@
           <li class="list-group-item border-0"><a href="#start">Open Taguette</a></li>
           <li class="list-group-item border-0"><a href="#create-proj">Start a project</a></li>
           <li class="list-group-item border-0"><a href="#upload">Upload materials</a></li>
+          <li class="list-group-item border-0"><a href="#lang">Change interface language (server only)</a></li>
           <li class="list-group-item border-0"><a href="#collabs">Add collaborators (server only)</a></li>
           <li class="list-group-item border-0"><a href="#tag">Create tags</a></li>
+          <li class="list-group-item border-0"><a href="#change-tag">Change/delete tags</a></li>
+          <li class="list-group-item border-0"><a href="#merge-tag">Merge tags</a></li>
           <li class="list-group-item border-0"><a href="#highlight">Highlight materials</a></li>
           <li class="list-group-item border-0"><a href="#view">View tagged materials</a></li>
           <li class="list-group-item border-0"><a href="#export">Export options</a></li>
@@ -25,7 +28,7 @@
     <div class="col-lg-9">
       <h2>Getting started with <span style="font-family: BadScript;">TAGUETTE</span></h2>
 
-      <h3 id="start"><i class="far fa-play-circle"></i> Start it up!</h3>
+      <h3 id="start"><i class="far fa-play-circle"></i> Open Taguette</h3>
 
       <p>If you are working on <a href="https://app.taguette.org">app.taguette.org</a>, after you log-in you should see a welcome page where you can create a new project similar to the screenshot below (just 'account' where you see 'single-user mode').</p>
 
@@ -34,7 +37,7 @@
       <img src="imgs/01-welcome.png" class="img-fluid border border-dark">
       <br/><br/>
 
-      <h3 id="create-proj"><i class="fas fa-folder-plus"></i> Creating a new project</h3>
+      <h3 id="create-proj"><i class="fas fa-folder-plus"></i> Start a project</h3>
 
       <p>You will see a page that greets you as the admin and has a button to <strong>Create a project</strong>. Click that button and you'll be prompted to enter a Title and Description for your new project. This can be changed later on if you want.</p>
 
@@ -46,7 +49,7 @@
       <img src="imgs/03-projectInfo.png" class="img-fluid border border-dark">
       <br/><br/>
 
-      <h3 id="upload"><i class="fas fa-upload"></i> Upload your materials</h3>
+      <h3 id="upload"><i class="fas fa-upload"></i> Upload materials</h3>
 
       <p>To get an idea of how to work in Taguette, let's upload a document and get you tagging! In the left pane, click on the <strong>Documents tab</strong>. You should see a button that says <strong>Add a document</strong>. Click that and pick just one document from your computer, either a: <code>.pdf</code>, <code>.docx</code>, <code>.txt</code>, <code>.odt</code>, <code>.md</code>, or <code>.html</code>.</p>
 
@@ -60,16 +63,26 @@
 
       <p>You should then see that file immediately in the Documents tab. If not, just refresh the page and it should be shown then. If you cannot see your document, you might be uploading a file type that Taguette cannot yet handle. Please let us know at <a href="mailto:hi@taguette.org">hi@taguette.org</a>.</p>
 
-       <h3 id="collabs"><i class="fas fa-users"></i> Adding collaborators (server only)</h3>
+      <h3 id="lang"><i class="fas fa-language"></i> Change interface language (server only)</h3>
 
-       <p>If you are working on <a href="https://app.taguette.org">app.taguette.org</a> or hosting Taguette on your own server, you have the option to work with others! In the <strong>Project Info tab</strong> of your Taguette project, you should see a grey button labeled <strong>Manage Collaborators</strong>:</p>
+      <p>If you are working on <a href="https://app.taguette.org">app.taguette.org</a> or hosting Taguette on your own server, you have the option change the language of the interface. In the upper righthand corner, you should see a dropdown menu labeled "Account". Click that dropdown, and then click "Settings." You will see a dropdown menu in your profile settings to change the language that Taguette will be in. By default, it will auto detect a language from your Internet browser.</p>
 
-      <img src="imgs/projectCollab.png" class="img-fluid border border-dark"><br/>
-      &nbsp;
+      <p>If you do not see your language represented in this list, we would encourage you to add a translation via our Transifex project: <a href="https://www.transifex.com/remram44/taguette/">https://www.transifex.com/remram44/taguette/</a> or by sending us a .po file via GitLab, instructions: <a href="https://gitlab.com/remram44/taguette/-/tree/master/po">https://gitlab.com/remram44/taguette/-/tree/master/po</a>.</p>
+
+      <img src="imgs/language.png" class="img-fluid border border-dark">
+      <br/><br/>
+
+      <h3 id="collabs"><i class="fas fa-users"></i> Adding collaborators (server only)</h3>
+
+      <p>If you are working on <a href="https://app.taguette.org">app.taguette.org</a> or hosting Taguette on your own server, you have the option to work with others! In the <strong>Project Info tab</strong> of your Taguette project, you should see a grey button labeled <strong>Manage Collaborators</strong>:</p>
+
+      <img src="imgs/projectCollab.png" class="img-fluid border border-dark">
+      <br/><br/>
 
       <p>Click that and you should get a modal with the option to add and remove collaborators, as well as change their permissions on the project. You must add their Taguette username and pick from the list of permissions, click <strong>Add to project</strong>, and to make sure that you've fully added your collaborator, next click <strong>Save & Close</strong>.</p>
 
-      <img src="imgs/addCollabs.png" class="img-fluid border border-dark"><br/><br/>
+      <img src="imgs/addCollabs.png" class="img-fluid border border-dark">
+      <br/><br/>
 
       <p>You can add collaborators with the following permissions:</p>
 
@@ -127,28 +140,35 @@
 
       <br/>
 
-      <h3 id="tag"><i class="fas fa-tags"></i> Tags</h3>
+      <h3 id="tag"><i class="fas fa-tags"></i> Create Tags</h3>
 
-      <p>Taguette ships with two existing tags (or <em>codes</em>, if you're familiar with qualitative research): <code>interesting</code> and <code>people</code>. These are just there to get you started -- you can add and remove tags as often as you'd like! To view all your existing tags, click the <strong>Highlights</strong> tab in the left pane.</p>
+      <p>Taguette ships with one existing tag (or <em>codes</em>, if you're familiar with qualitative research): <code>interesting</code>. This is just there to get you started -- you can add and remove tags as often as you'd like! To view all your existing tags, click the <strong>Highlights</strong> tab in the left pane. You will see a list of tags you have and a count of the number of times you have highlighted your materials with a given tag.</p>
 
       <img src="imgs/06-viewTags.png" class="img-fluid border border-dark">
       <br/><br/>
 
-      <p>You should see a list of existing tags for the project - again, if you haven't added any yet, you will still see <code>interesting</code> and <code>people</code>. To add your own tags to this project, click <strong>Create a tag</strong>. You will get a popup asking you for the Name and Description of the tag you want to create:</p>
+      <p>You should see a list of existing tags for the project - again, if you haven't added any yet, you will still see <code>interesting</code>. To add your own tags to this project, click <strong>Create a tag</strong>. You will get a popup asking you for the Name and Description of the tag you want to create:</p>
 
       <img src="imgs/07-addTag.png" class="img-fluid border border-dark">
       <br/><br/>
 
       <p>You might have noticed that I used the tag <code>tech.floss</code> and you might be wondering why I used that notation. In Taguette, you can use <em>any punctuation</em> to make hierarchies. So <code>tech.floss</code> lives underneath <code>tech</code>. If I click on <code>tech.floss</code>, then I'll see only materials relating to that tag. If I click on <code>tech</code>, I'll see everything in that tag as we as <code>tech.floss</code> and any other sub-tag.
 
-     <p>After you give the tag a good name and a bit of description about what it means, you should see it added to the list in alphabetical order.</p>
+      <p>After you give the tag a good name and a bit of description about what it means, you should see it added to the list in alphabetical order.</p>
 
-      <p>You can also delete a tag by clicking the <code>edit</code> badge to the right of the name of the tag in the list. This will bring you back to the same popup - you can edit the name of the tag, its description, or you can click the grey <strong>Delete</strong> button next to the blue <strong>Save &amp; Close</strong> button.</p>
+      <h3 id="change-tag"><i class="fas fa-eraser"></i> Delete/change Tags</h3>
+
+      <p>You can also change or delete a tag by clicking the <code>edit</code> badge to the right of the name of the tag in the list. This will bring you back to the same popup - you can edit the name of the tag, its description, or you can click the grey <strong>Delete</strong> button next to the blue <strong>Save &amp; Close</strong> button.</p>
 
       <img src="imgs/08-changeTag.png" class="img-fluid border border-dark">
       <br/><br/>
 
-      <p>Now that you've created a tag of your own, you can move onto highlighting text!</p>
+      <h3 id="merge-tag"><i class="far fa-object-group"></i> Merge Tags</h3>
+
+      <p>If you want to merge one tag into another, you can also do this from the edit window. Click the <code>edit</code> badge to the right of the name of the tag in the list. This will bring you back to the same popup for editing and deleting a tag. Instead, if you click <strong>Merge</strong>, then you will be prompted to select the tag that you want to merge into. Once you select a tag and click <strong>Merge tags</strong>, then all the highlights for the first tag be moved to the second tag.</p>
+
+      <img src="imgs/merge-tag.png" class="img-fluid border border-dark">
+      <br/><br/>
 
       <h3 id="highlight"><i class="fas fa-highlighter"></i> Highlighting</h3>
 
@@ -178,7 +198,7 @@
 
       <h3 id="view"><i class="fas fa-file-invoice"></i> View highlighted &amp; tagged text</h3>
 
-      <p>If you want to see all the highlighted text associated with a given tag, first go to the <strong>Highlights</strong> tab in the left pane. Click a tag, and in the right pane you will see a list of quotes with a blue link to the document where they originated from and all their associated tags with a black badge:</p>
+      <p>If you want to see all the highlighted text associated with a given tag, first go to the <strong>Highlights</strong> tab in the left pane. Click a tag, and in the right pane you will see a list of quotes with a blue link to the document where they originated from and all their associated tags with a black badge. The tag on the left pane will also be highlighted:</p>
 
       <img src="imgs/13-viewQuotes.png" class="img-fluid border border-dark">
       <br/><br/>
@@ -193,19 +213,19 @@
       <img src="imgs/15-viewHighlightedDoc.png" class="img-fluid border border-dark">
       <br/><br/>
 
-      <p>To explore your highlighted document in a different way, you can try clicking on <strong>Backlight</strong> checkbox. You can see it underneath the <strong>Add a document</strong> button. It will grey out all the non-highlighted text to make the highlighted text really pop. We found this to be a nice view for exploring the texts differently:</p>
+      <p>If you hover your mouse over a highlighted section of text, you will see tags in a tooltip to the right of your mouse cursor. To explore your highlighted document in a different way, you can try clicking on <strong>Backlight</strong> checkbox. You can see it underneath the <strong>Add a document</strong> button. It will grey out all the non-highlighted text to make the highlighted text really pop. We found this to be a nice view for exploring the texts differently:</p>
 
       <img src="imgs/16-backlight.png" class="img-fluid border border-dark">
       <br/><br/>
 
       <h3 id="export"><i class="fas fa-file-export"></i> Export Options</h3>
 
-      <p>To export the codebook of your project - this is a list of all the tags that you've created alongside their description - use the dropdown menu in the <strong>Project</strong> tab in the left pane of Taguette, underneath the project description. There is a variety of export options, including <code>CSV</code> (spreadsheet), <code>DOCX</code> (Microsoft Word), and <code>PDF</code>.</p>
+      <p>To export the codebook of your project - this is a list of all the tags that you've created alongside their description - use the dropdown menu in the <strong>Project</strong> tab in the left pane of Taguette, underneath the project description. There is a variety of export options, including <code>QDC</code> (REFI-QDA standard), <code>CSV</code> (spreadsheet), <code>XLSX</code> (Microsoft Excel), <code>DOCX</code> (Microsoft Word), <code>HTML</code>, and <code>PDF</code>.</p>
 
       <img src="imgs/17-exportCodebook.png" class="img-fluid border border-dark">
       <br/><br/>
 
-       <p>To export all the associated highlights for a given tag, first navigate to the <strong>Highlights</strong> tab in the left pane, and click on the tag of the highlights you'd want to export. Then you can use the <strong>Export this view</strong> dropdown menu at the top right in the right pane. You will have a choice of <code>HTML</code> (like for a webpage), <code>DOCX</code> (editable), or <code>PDF</code> (not easily editable). While you will see the document with all the highlights, right now you won't be able to tell from that doc which tags go with the highlights.</p>
+      <p>To export all the associated highlights for a given tag, first navigate to the <strong>Highlights</strong> tab in the left pane, and click on the tag of the highlights you'd want to export. Then you can use the <strong>Export this view</strong> dropdown menu at the top right in the right pane. You will have a choice of <code>HTML</code> (a webpage), <code>CSV</code>, <code>XLSX</code>, <code>DOCX</code> (editable), or <code>PDF</code> (not easily editable). While you will see the document with all the highlights, right now you won't be able to tell from that doc which tags go with the highlights.</p>
 
       <img src="imgs/18-exportTag.png" class="img-fluid border border-dark">
       <br/><br/>
