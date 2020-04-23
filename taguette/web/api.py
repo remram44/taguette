@@ -122,7 +122,7 @@ class DocumentAdd(BaseHandler):
             try:
                 body = await convert.to_html_chunks(
                     file.body, content_type, filename,
-                    self.application.config['CONVERT_TO_HTML_TIMEOUT'],
+                    self.application.config,
                 )
             except convert.ConversionError as err:
                 self.set_status(400)

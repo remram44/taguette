@@ -48,7 +48,7 @@ def export_doc(wrapped):
         try:
             mimetype, contents = convert.html_to(
                 html, ext,
-                self.application.config['CONVERT_FROM_HTML_TIMEOUT'],
+                self.application.config,
             )
         except convert.UnsupportedFormat:
             self.set_status(404)
