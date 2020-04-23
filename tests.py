@@ -24,6 +24,10 @@ else:
 
 
 class TestConvert(AsyncTestCase):
+    config = dict(
+        CONVERT_TO_HTML_TIMEOUT=60,
+    )
+
     @gen_test
     async def test_convert_html(self):
         """Tests converting HTML, using BeautifulSoup and Bleach"""
@@ -42,7 +46,8 @@ class TestConvert(AsyncTestCase):
             b"</body></html>\n"
         )
         with mock.patch('tornado.process.Subprocess', object()):
-            body = await convert.to_html(body, 'text/html', 'test.html', 60)
+            body = await convert.to_html(body, 'text/html', 'test.html',
+                                         self.config)
         self.assertEqual(
             body,
             "<h1>Example</h1><p>This is an example text document.\n"

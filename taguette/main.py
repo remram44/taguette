@@ -117,10 +117,13 @@ DEFAULT_CONFIG = {
     'DEFAULT_LANGUAGE': 'en_US',
     'CONVERT_FROM_HTML_TIMEOUT': 3 * 60,
     'CONVERT_TO_HTML_TIMEOUT': 3 * 60,
+    'OPF_OUT_SIZE_LIMIT': 5000000,  # 5 MB
+    'HTML_OUT_SIZE_LIMIT': 2000000,  # 2 MB
 }
 
 REQUIRED_CONFIG = ['NAME', 'PORT', 'SECRET_KEY', 'DATABASE', 'X_HEADERS',
-                   'EMAIL', 'MAIL_SERVER', 'COOKIES_PROMPT']
+                   'EMAIL', 'MAIL_SERVER', 'COOKIES_PROMPT',
+                   'OPF_OUT_SIZE_LIMIT', 'HTML_OUT_SIZE_LIMIT']
 
 
 def main():
@@ -274,6 +277,7 @@ def main():
             DATABASE=prepare_db(args.database),
             SECRET_KEY=secret,
             COOKIES_PROMPT=False,
+            HTML_OUT_SIZE_LIMIT=5000000,  # 5 MB
         )
 
     if 'PROMETHEUS_LISTEN' in config:
