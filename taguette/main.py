@@ -277,6 +277,7 @@ def main():
             DATABASE=prepare_db(args.database),
             SECRET_KEY=secret,
             COOKIES_PROMPT=False,
+            HTML_OUT_SIZE_LIMIT=5000000,  # 5 MB
         )
 
     if 'PROMETHEUS_LISTEN' in config:
