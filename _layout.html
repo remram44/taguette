@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="An open qualitative research tool">
+    <meta name="author" content="Remi Rampin">
+    <meta name="author" content="Vicky Steeves">
+    <link rel="icon" href="favicon.ico">
+    <link rel="canonical" href="https://www.taguette.org/">
+
+    <title>{% block title %}{% trans %}Taguette{% endtrans %}{% endblock %}</title>
+
+    <!-- Bootswatch Theme -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+
+    <!-- FontAwesome -->
+    <link href="css/all.css" rel="stylesheet">
+
+    <!-- Custom -->
+    <link href="css/custom.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div class="container">
+        <a class="navbar-brand" href="#" style="font-family: BadScript; text-transform: uppercase;">{% trans %}Taguette{% endtrans %}</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbar">
+          <ul class="navbar-nav mr-auto">
+            {%  set sr_current %}
+            <span class="sr-only">
+              {# TRANSLATORS: Screen-reader only indication of the current tab in navbar #}{% trans %}(current){% endtrans %}
+            </span>
+            {% endset %}
+            {% set external_icon %}
+              <i class="fas fa-external-link-alt"></i>
+            {% endset %}
+            {% macro navlink(name, target) %}
+            <li class="nav-item{% if active_page == name %} active{% endif %}">
+              <a class="nav-link" href="{% if active_page == name %}#{% else %}{{ target }}{% endif %}">
+                {{ caller() }}
+                {% if active_page == name %}{{ sr_current }}{% endif %}
+              </a>
+            </li>
+            {% endmacro %}
+            {% call navlink('home', '/') %}{% trans %}Home{% endtrans %}{% endcall %}
+            {% call navlink('about', 'about.html') %}{% trans %}About{% endtrans %}{% endcall %}
+            {% call navlink('install', 'install.html') %}{% trans %}Install{% endtrans %}{% endcall %}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="getting-started.html">Getting Started</a>
+                <a class="dropdown-item" href="self-host.html">Self-Host</a>
+                <a class="dropdown-item" href="faq.html">FAQ</a>
+              </div>
+            </li>
+            {% call navlink('-', 'https://app.taguette.org/') %}{% trans %}Try it {{ external_icon }}{% endtrans%}{% endcall %}
+            {% call navlink('-', 'https://gitlab.com/remram44/taguette') %}<i class="fab fa-gitlab"></i> <span class="d-lg-none">GitLab</span>{% endcall %}
+            {% call navlink('-', 'https://twitter.com/TaguetteProject') %}<i class="fab fa-twitter"></i> <span class="d-lg-none">Twitter</span>{% endcall %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main{% if active_page != 'home' %} class="container"{% endif %}>
+
+{% block contents %}{% endblock %}
+
+    </main>
+
+    <footer class="container">
+      <hr/>
+      <p>Email: <a href="mailto:hi@taguette.org">hi@taguette.org</a> | Mailing-lists: <a href="https://groups.io/g/taguette">users</a>, <a href="https://groups.io/g/taguette-announce">announce</a> | Twitter: <a href="https://twitter.com/TaguetteProject">@TaguetteProject</a> | Any issue using Taguette? Tell us on <a href="https://gitlab.com/remram44/taguette">GitLab</a>!</p>
+    </footer>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="js/jquery-slim.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    {% block morejs %}
+    {% endblock %}
+  </body>
+</html>

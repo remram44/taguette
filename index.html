@@ -1,112 +1,36 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="An open qualitative research tool">
-    <meta name="author" content="Remi Rampin">
-    <meta name="author" content="Vicky Steeves">
-    <link rel="icon" href="favicon.ico">
-    <link rel="canonical" href="https://www.taguette.org/">
+{% extends "_layout.html" %}
+{% set active_page = 'home' %}
 
-    <title>Taguette</title>
+{% block title %}{# TRANSLATORS: Page title #}{% trans %}Taguette{% endtrans %}{% endblock%}
 
-    <!-- Bootswatch Theme -->
-    <link href="css/bootstrap.css" rel="stylesheet">
+{% block contents %}
+<div class="jumbotron">
+  <div class="container">
+    <h1 class="display-3" style="font-family: BadScript;"><span style="color:blue;">TAG</span><span style="color:gray;">UE</span><span style="color:red;">TTE</span><img src="imgs/taguette.png" alt="baguette highlighting document" style="padding-left:0.5em;"></h1>
+    <h3>FEEDING YOUR QUALITATIVE NEEDS</h3>
+    <hr class="my-4"/>
+    <p>Have you ever searched "free qualitative research software" only to be disappointed that nothing lets you tag your materials? Search no more! Taguette is a <strong>free and open source</strong> tool for qualitative research. You can import your research materials, highlight and tag quotes, and export the results!</p>
+    <p><a class="btn btn-primary btn-lg" href="about.html" role="button">Learn more &raquo;</a> <a class="btn btn-info btn-lg" href="https://app.taguette.org" role="button">Try out Taguette on our server <i class="fas fa-external-link-alt"></i></a></p>
+  </div>
+</div>
 
-    <!-- FontAwesome -->
-    <link href="css/all.css" rel="stylesheet">
-
-    <!-- Custom -->
-    <link href="css/custom.css" rel="stylesheet">
-
-  </head>
-
-  <body>
-
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-      <div class="container">
-        <a class="navbar-brand" href="#" style="font-family: BadScript;">TAGUETTE</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbar">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="about.html">About</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="install.html">Install</a>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="getting-started.html">Getting Started</a>
-                <a class="dropdown-item" href="self-host.html">Self-Host</a>
-                <a class="dropdown-item" href="faq.html">FAQ</a>
-              </div>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="https://app.taguette.org/">Try it <i class="fas fa-external-link-alt"></i></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="https://gitlab.com/remram44/taguette"><i class="fab fa-gitlab"></i> <span class="d-lg-none">GitLab</span></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="https://twitter.com/TaguetteProject"><i class="fab fa-twitter"></i> <span class="d-lg-none">Twitter</span></a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-
-    <main>
-
-      <div class="jumbotron">
-        <div class="container">
-          <h1 class="display-3" style="font-family: BadScript;"><span style="color:blue;">TAG</span><span style="color:gray;">UE</span><span style="color:red;">TTE</span><img src="imgs/taguette.png" alt="baguette highlighting document" style="padding-left:0.5em;"></h1>
-          <h3>FEEDING YOUR QUALITATIVE NEEDS</h3>
-          <hr class="my-4"/>
-          <p>Have you ever searched "free qualitative research software" only to be disappointed that nothing lets you tag your materials? Search no more! Taguette is a <strong>free and open source</strong> tool for qualitative research. You can import your research materials, highlight and tag quotes, and export the results!</p>
-          <p><a class="btn btn-primary btn-lg" href="about.html" role="button">Learn more &raquo;</a> <a class="btn btn-info btn-lg" href="https://app.taguette.org" role="button">Try out Taguette on our server <i class="fas fa-external-link-alt"></i></a></p>
-        </div>
-      </div>
-
-      <div class="container">
-        <div class="row">
-          <div class="col-md-4">
-            <h2>Work Locally</h2>
-            <p>Taguette works both on your local computer (macOS, Windows, Linux) and on a server. When running Taguette locally, <strong>your data is as secure as your computer</strong>. That means that if you can have your data on your computer, you can run Taguette with no worries.</p>
-            <p><a class="btn btn-secondary" href="install.html" role="button">Install now &raquo;</a></p>
-          </div>
-          <div class="col-md-4">
-            <h2>Highlight &amp; Tag</h2>
-            <p>Taguette allows you to upload your research materials and tag them, just as you would use different color highlighters with printed paper. You can add new tags, then just select some text, click 'new highlight', and add whatever tag you find to be most relevant!</p>
-            <p><a class="btn btn-secondary" href="getting-started.html#highlight" role="button">Get started &raquo;</a></p>
-          </div>
-          <div class="col-md-4">
-            <h2>Export Results</h2>
-            <p>After you've done your work highlighting materials in Taguette, you can export in a variety of ways -- your codebook, all your highlighted quotes (or ones for a specific tag!), and highlighted documents. It's a good practice to keep an archival copy of your work!</p>
-            <p><a class="btn btn-secondary" href="getting-started.html#export" role="button">View details &raquo;</a></p>
-          </div>
-        </div>
-      </div>
-    </main>
-
-    <footer class="container">
-      <hr/>
-      <p>Email: <a href="mailto:hi@taguette.org">hi@taguette.org</a> | Mailing-lists: <a href="https://groups.io/g/taguette">users</a>, <a href="https://groups.io/g/taguette-announce">announce</a> | Twitter: <a href="https://twitter.com/TaguetteProject">@TaguetteProject</a> | Any issue using Taguette? Tell us on <a href="https://gitlab.com/remram44/taguette">GitLab</a>!</p>
-    </footer>
-
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="js/jquery-slim.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-  </body>
-</html>
+<div class="container">
+  <div class="row">
+    <div class="col-md-4">
+      <h2>Work Locally</h2>
+      <p>Taguette works both on your local computer (macOS, Windows, Linux) and on a server. When running Taguette locally, <strong>your data is as secure as your computer</strong>. That means that if you can have your data on your computer, you can run Taguette with no worries.</p>
+      <p><a class="btn btn-secondary" href="install.html" role="button">Install now &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+      <h2>Highlight &amp; Tag</h2>
+      <p>Taguette allows you to upload your research materials and tag them, just as you would use different color highlighters with printed paper. You can add new tags, then just select some text, click 'new highlight', and add whatever tag you find to be most relevant!</p>
+      <p><a class="btn btn-secondary" href="getting-started.html#highlight" role="button">Get started &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+      <h2>Export Results</h2>
+      <p>After you've done your work highlighting materials in Taguette, you can export in a variety of ways -- your codebook, all your highlighted quotes (or ones for a specific tag!), and highlighted documents. It's a good practice to keep an archival copy of your work!</p>
+      <p><a class="btn btn-secondary" href="getting-started.html#export" role="button">View details &raquo;</a></p>
+    </div>
+  </div>
+</div>
+{% endblock %}

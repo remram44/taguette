@@ -1,10 +1,29 @@
+before_script:
+  - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python && /root/.poetry/bin/poetry config virtualenvs.create false
+  - $HOME/.poetry/bin/poetry install --no-interaction
+
 pages:
   stage: deploy
+  image: python:3.7
   script:
     - mkdir public
-    - "cp -r *.html css imgs js webfonts favicon.ico public/"
+    - $HOME/.poetry/bin/poetry run python generate.py public/
+    - cp -r css imgs js webfonts favicon.ico public/
   artifacts:
     paths:
       - public
   only:
+    - website
+
+pages_test:
+  stage: deploy
+  image: python:3.7
+  script:
+    - mkdir pages
+    - $HOME/.poetry/bin/poetry run python generate.py pages/
+    - cp -r css imgs js webfonts favicon.ico pages/
+  artifacts:
+    paths:
+      - pages
+  except:
     - website
