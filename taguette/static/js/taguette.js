@@ -820,10 +820,10 @@ function updateTagsList() {
 updateTagsList();
 
 function updateTagCount(id, delta) {
+  var tag = tags['' + id];
+  tag.count += delta;
   var elem = document.getElementById('tag-' + id + '-count');
-  var value = parseInt(elem.textContent);
-  value += delta;
-  elem.textContent = value;
+  elem.textContent = tag.count;
 }
 
 var tag_add_modal = document.getElementById('tag-add-modal');
