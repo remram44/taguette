@@ -59,6 +59,8 @@ class Index(BaseHandler):
                 return self.render('token_needed.html')
         return self.render('welcome.html')
 
+    head = get
+
 
 class CookiesPrompt(BaseHandler):
     @PROM_REQUESTS.sync('cookies_prompt')
