@@ -161,9 +161,8 @@ msgid "Highlights"
 msgstr "Marques"
 
 #. Project name field
-#: taguette/templates/project.html:30 taguette/templates/project.html:169
-#: taguette/templates/project.html:201 taguette/templates/project.html:258
-#: taguette/templates/project_new.html:11
+#: taguette/templates/project.html:30 taguette/templates/project.html:201
+#: taguette/templates/project.html:258 taguette/templates/project_new.html:11
 msgid "Name"
 msgstr "Nom"
 
@@ -287,6 +286,10 @@ msgstr "Enregistrer & Fermer"
 #: taguette/templates/project.html:265
 msgid "Cancel"
 msgstr "Annuler"
+
+#: taguette/templates/project.html:169
+msgid "Enter a document name"
+msgstr "Entrer un nom pour le document"
 
 #: taguette/templates/project.html:179
 msgid "Import"
