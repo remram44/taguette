@@ -558,10 +558,6 @@ function basename(filename) {
   return filename;
 }
 
-document.getElementById('document-add-file').addEventListener('change', function(e) {
-  document.getElementById('document-add-name').setAttribute('placeholder', basename(this.value));
-});
-
 document.getElementById('document-add-form').addEventListener('submit', function(e) {
   e.preventDefault();
   console.log("Uploading document...");
