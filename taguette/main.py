@@ -14,6 +14,7 @@ import tornado.ioloop
 from urllib.parse import urlparse
 import webbrowser
 
+import taguette
 from . import __version__
 from .database import migrate
 from .web import make_app
@@ -135,6 +136,7 @@ def main():
     lang = [lang] if lang else []
     d = pkg_resources.resource_filename('taguette', 'l10n')
     trans = gettext.translation('taguette_main', d, lang, fallback=True)
+    taguette._trans = trans
     _ = trans.gettext
 
     if sys.platform == 'win32' and sys.version_info >= (3, 8):
