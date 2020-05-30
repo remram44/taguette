@@ -232,7 +232,8 @@ def main():
 
     if args.umask is not None:
         if not re.match(r'^[0-7][0-7][0-7]$', args.umask):
-            logger.critical("Invalid umask: %s", args.umask)
+            print(_("Invalid umask: %(arg)s") % dict(arg=args.umask),
+                  file=sys.stderr, flush=True)
             sys.exit(2)
         logger.info("Setting umask to %s", args.umask)
         os.umask(int(args.umask, 8))
