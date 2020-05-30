@@ -4,6 +4,7 @@ import base64
 import colorama
 import gettext
 import locale
+import logging
 import os
 import pkg_resources
 import prometheus_client
@@ -132,12 +133,30 @@ REQUIRED_CONFIG = ['NAME', 'PORT', 'SECRET_KEY', 'DATABASE', 'X_HEADERS',
 
 def main():
     colorama.init()
+    chain = [
+        structlog.contextvars.merge_contextvars,
+        structlog.stdlib.add_log_level,
+        structlog.stdlib.add_logger_name,
+        structlog.dev.set_exc_info,
+        structlog.processors.format_exc_info,
+        structlog.processors.TimeStamper(fmt='iso'),
+    ]
+    processor = structlog.dev.ConsoleRenderer()
     structlog.configure(
-        processors=[
-            structlog.contextvars.merge_contextvars,
-            structlog.processors.KeyValueRenderer(),
+        processors=chain + [
+            structlog.stdlib.ProcessorFormatter.wrap_for_formatter
         ],
+        logger_factory=structlog.stdlib.LoggerFactory(),
     )
+    stdlib_handler = logging.StreamHandler()
+    stdlib_handler.setFormatter(structlog.stdlib.ProcessorFormatter(
+        processor=processor,
+        foreign_pre_chain=chain,
+    ))
+    logging.getLogger().addHandler(stdlib_handler)
+    logging.getLogger().setLevel(logging.INFO)
+    logging.captureWarnings(True)
+
     locale.setlocale(locale.LC_ALL, '')
     lang = locale.getlocale()[0]
     lang = [lang] if lang else []
