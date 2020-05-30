@@ -22,6 +22,8 @@ from sqlalchemy.sql import functions
 from sqlalchemy.types import DateTime, Enum, Integer, String, Text
 import sys
 
+import taguette
+
 
 logger = logging.getLogger(__name__)
 
@@ -479,27 +481,31 @@ def connect(db_url):
         current_rev = context.get_current_revision()
         scripts = ScriptDirectory.from_config(alembic_cfg)
         if [current_rev] != scripts.get_heads():
+            logger.warning("Database schema is out of date: %s", current_rev)
+            _ = taguette.trans.gettext
             if db_url.startswith('sqlite:'):
-                logger.warning("The database schema used by Taguette has "
-                               "changed! We will try to update your workspace "
-                               "automatically.")
+                print(_("\n    The database schema used by Taguette has "
+                        "changed! We will try to\n    update your workspace "
+                        "automatically.\n"), file=sys.stderr, flush=True)
                 assert db_url.startswith('sqlite:///')
                 assert os.path.exists(db_url[10:])
                 backup = db_url[10:] + '.bak'
                 shutil.copy2(db_url[10:], backup)
-                logger.warning("A backup copy of your database file has been "
-                               "created. If the update goes horribly wrong, "
-                               "make sure to keep that file, and let us know: "
-                               "%s", backup)
+                logger.warning("Performing automated update, backup file: %s",
+                               backup)
+                print(_("\n    A backup copy of your database file has been "
+                        "created. If the update\n    goes horribly wrong, "
+                        "make sure to keep that file, and let us know:\n    "
+                        "%(backup)s\n") % dict(backup=backup),
+                      file=sys.stderr, flush=True)
                 alembic.command.upgrade(alembic_cfg, 'head')
             else:
-                logger.critical("The database schema used by Taguette has "
-                                "changed! Because you are not using SQLite, "
-                                "we will not attempt a migration "
-                                "automatically; back up your data and use "
-                                "`taguette --database=%s migrate` if you want "
-                                "to proceed.",
-                                db_url)
+                print(_("\n    The database schema used by Taguette has "
+                        "changed! Because you are not using\n    SQLite, we "
+                        "will not attempt a migration automatically; back up "
+                        "your data and\n    use `taguette --database=%(url)s "
+                        "migrate` if you want to proceed.") % dict(url=db_url),
+                      file=sys.stderr, flush=True)
                 sys.exit(3)
         else:
             logger.info("Database is up to date: %s", current_rev)
