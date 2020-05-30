@@ -80,8 +80,8 @@ class ProjectMeta(BaseHandler):
             project.name = obj['name']
             validate.project_description(obj['description'])
             project.description = obj['description']
-            logger.info("Updated project: %r %r",
-                        project.name, project.description)
+            logger.info("Updated project metadata",
+                        name=project.name, description=project.description)
             cmd = database.Command.project_meta(
                 self.current_user,
                 project.id,
@@ -94,7 +94,7 @@ class ProjectMeta(BaseHandler):
             self.application.notify_project(project.id, cmd)
             return self.send_json({})
         except validate.InvalidFormat as e:
-            logger.info("Error validating ProjectMeta: %r", e)
+            logger.info("Error validating ProjectMeta", error=e)
             self.set_status(e.status_code, e.reason)
             return self.send_json({'error': e.message})
 
@@ -144,14 +144,16 @@ class DocumentAdd(BaseHandler):
                     doc,
                 )
                 self.db.add(cmd)
-                logger.info("Document added to project %r: %r %r (%d bytes)",
-                            project.id, doc.id, doc.name, len(doc.contents))
+                logger.info("Document added to project",
+                            project=project.id,
+                            document_id=doc.id, document_name=doc.name,
+                            length=len(doc.contents))
                 self.db.commit()
                 self.db.refresh(cmd)
                 self.application.notify_project(project.id, cmd)
                 return self.send_json({'created': doc.id})
         except validate.InvalidFormat as e:
-            logger.info("Error validating DocumentAdd: %r", e)
+            logger.info("Error validating DocumentAdd", error=e)
             self.set_status(e.status_code, e.reason)
             return self.send_json({'error': e.message})
 
@@ -184,7 +186,7 @@ class DocumentUpdate(BaseHandler):
 
             return self.send_json({'id': document.id})
         except validate.InvalidFormat as e:
-            logger.info("Error validating DocumentUpdate: %r", e)
+            logger.info("Error validating DocumentUpdate", error=e)
             self.set_status(e.status_code, e.reason)
             return self.send_json({'error': e.message})
 
@@ -261,7 +263,7 @@ class TagAdd(BaseHandler):
 
             return self.send_json({'id': tag.id})
         except validate.InvalidFormat as e:
-            logger.info("Error validating TagAdd: %r", e)
+            logger.info("Error validating TagAdd", error=e)
             self.set_status(e.status_code, e.reason)
             return self.send_json({'error': e.message})
 
@@ -303,7 +305,7 @@ class TagUpdate(BaseHandler):
 
             return self.send_json({'id': tag.id})
         except validate.InvalidFormat as e:
-            logger.info("Error validating TagUpdate: %r", e)
+            logger.info("Error validating TagUpdate", error=e)
             self.set_status(e.status_code, e.reason)
             return self.send_json({'error': e.message})
 

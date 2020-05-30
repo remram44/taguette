@@ -446,7 +446,7 @@ Tag.highlights_count = column_property(
 def connect(db_url):
     """Connect to the database using an environment variable.
     """
-    logger.info("Connecting to SQL database %r", db_url)
+    logger.info("Connecting to SQL database", url=db_url)
     kwargs = {}
     if db_url.startswith('sqlite:'):
         kwargs['connect_args'] = {'check_same_thread': False}
@@ -481,7 +481,8 @@ def connect(db_url):
         current_rev = context.get_current_revision()
         scripts = ScriptDirectory.from_config(alembic_cfg)
         if [current_rev] != scripts.get_heads():
-            logger.warning("Database schema is out of date: %s", current_rev)
+            logger.warning("Database schema is out of date",
+                           revision=current_rev)
             _ = taguette.trans.gettext
             if db_url.startswith('sqlite:'):
                 print(_("\n    The database schema used by Taguette has "
@@ -491,8 +492,7 @@ def connect(db_url):
                 assert os.path.exists(db_url[10:])
                 backup = db_url[10:] + '.bak'
                 shutil.copy2(db_url[10:], backup)
-                logger.warning("Performing automated update, backup file: %s",
-                               backup)
+                logger.warning("Performing automated update", backup=backup)
                 print(_("\n    A backup copy of your database file has been "
                         "created. If the update\n    goes horribly wrong, "
                         "make sure to keep that file, and let us know:\n    "
@@ -508,7 +508,7 @@ def connect(db_url):
                       file=sys.stderr, flush=True)
                 sys.exit(3)
         else:
-            logger.info("Database is up to date: %s", current_rev)
+            logger.info("Database is up to date", revision=current_rev)
 
     # Record to Prometheus
     conn.close()

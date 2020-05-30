@@ -46,7 +46,7 @@ def prepare_db(database):
         if os.path.dirname(database):
             os.makedirs(os.path.dirname(database), exist_ok=True)
         db_url = 'sqlite:///' + database
-        logger.info("Turning database path into URL: %s", db_url)
+        logger.info("Turning database path into URL", url=db_url)
     return db_url
 
 
@@ -242,7 +242,7 @@ def main():
             print(_("Invalid umask: %(arg)s") % dict(arg=args.umask),
                   file=sys.stderr, flush=True)
             sys.exit(2)
-        logger.info("Setting umask to %s", args.umask)
+        logger.info("Setting umask", umask=args.umask)
         os.umask(int(args.umask, 8))
 
     if args.func:
@@ -296,7 +296,7 @@ def main():
                 p_addr, p_port = p_port.split(':')
                 p_addr = p_addr or None
             p_port = int(p_port)
-        logger.info("Starting Prometheus exporter on port %d", p_port)
+        logger.info("Starting Prometheus exporter", port=p_port)
         prometheus_client.start_http_server(p_port, p_addr)
 
     try:
@@ -307,10 +307,11 @@ def main():
         ).decode('utf-8').strip()
     except (OSError, subprocess.CalledProcessError):
         version = 'v%s' % __version__
-        logger.info("Not a Git repository, using version=%s", version)
+        logger.info("Not a Git repository, using bundled version number",
+                    version=version)
     else:
-        logger.info("Running from Git repository, using version=%s",
-                    version)
+        logger.info("Running from Git repository, reading Git version",
+                    version=version)
     PROM_VERSION.labels(version).set(1)
 
     if 'SENTRY_DSN' in config:

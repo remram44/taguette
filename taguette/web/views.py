@@ -42,8 +42,8 @@ class Index(BaseHandler):
                 return self.redirect(self.reverse_url('index'))
             user = self.db.query(database.User).get(self.current_user)
             if user is None:
-                logger.warning("User is logged in as non-existent user %r",
-                               self.current_user)
+                logger.warning("User is logged in as non-existent user",
+                               username=self.current_user)
                 self.logout()
             else:
                 return self.render('index.html',
@@ -99,14 +99,14 @@ class Login(BaseHandler):
         try:
             login = validate.user_login(login)
         except validate.InvalidFormat:
-            logger.info("Login: invalid login")
+            logger.info("Login: invalid login", login=login)
         else:
             password = self.get_body_argument('password')
             user = self.db.query(database.User).get(login)
             if user is None:
-                logger.info("Login: non-existent user")
+                logger.info("Login: non-existent user", login=login)
             elif not user.check_password(password):
-                logger.info("Login: invalid password for %r", user.login)
+                logger.info("Login: invalid password", login=user.login)
             else:
                 self.login(user.login)
                 return self._go_to_next()
@@ -175,11 +175,11 @@ class Register(BaseHandler):
                 user.email = email
             self.db.add(user)
             self.db.commit()
-            logger.info("User registered: %r", login)
+            logger.info("User registered", login=login)
             self.set_secure_cookie('user', login)
             return self.redirect(self.reverse_url('index'))
         except validate.InvalidFormat as e:
-            logger.info("Error validating Register: %r", e)
+            logger.info("Error validating Register", error=e)
             return self.render('login.html', register=True,
                                register_error=self.gettext(e.message))
 
@@ -227,7 +227,7 @@ class Account(BaseHandler):
             self.db.commit()
             return self.redirect(self.reverse_url('account'))
         except validate.InvalidFormat as e:
-            logger.info("Error validating Account: %r", e)
+            logger.info("Error validating Account", error=e)
             return self.render('account.html', user=user,
                                languages=self.get_languages(),
                                current_language=user.language,
@@ -288,8 +288,8 @@ class AskResetPassword(BaseHandler):
                                                    link=reset_link),
                                 subtype='html')
 
-            logger.warning("Sending reset password email to %s %s",
-                           user.login, user.email)
+            logger.warning("Sending reset password email",
+                           username=user.login, email=user.email)
             self.application.send_mail(msg)
             user.email_sent = datetime.utcnow()
             self.db.commit()
@@ -347,12 +347,13 @@ class SetNewPassword(BaseHandler):
             validate.user_password(password1)
             if password1 != password2:
                 raise validate.InvalidFormat(_f("Passwords do not match"))
-            logger.info("Password reset: changing password for %r", user.login)
+            logger.info("Password reset: changing password",
+                        username=user.login)
             user.set_password(password1)
             self.db.commit()
             return self.redirect(self.reverse_url('index'))
         except validate.InvalidFormat as e:
-            logger.info("Error validating SetNewPassword: %r", e)
+            logger.info("Error validating SetNewPassword", error=e)
             return self.render('new_password.html', reset_token=reset_token,
                                error=self.gettext(e.message))
 
@@ -394,7 +395,7 @@ class ProjectAdd(BaseHandler):
             self.db.commit()
             return self.redirect(self.reverse_url('project', project.id))
         except validate.InvalidFormat as e:
-            logger.info("Error validating ProjectAdd: %r", e)
+            logger.info("Error validating ProjectAdd", error=e)
             return self.render('project_new.html',
                                name=name, description=description,
                                error=self.gettext(e.message))
@@ -432,8 +433,9 @@ class ProjectDelete(BaseHandler):
         project, privileges = self.get_project(project_id)
         if not privileges.can_delete_project():
             raise HTTPError(403)
-        logger.warning("Deleting project %d %r user=%r",
-                       project.id, project.name, self.current_user)
+        logger.warning("Deleting project",
+                       project_id=project.id, project_name=project.name,
+                       username=self.current_user)
         self.db.delete(project)
         self.db.commit()
         return self.redirect(self.reverse_url('index'))

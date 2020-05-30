@@ -68,8 +68,8 @@ async def check_call(cmd, timeout):
         retcode = await asyncio.wait_for(proc.wait(), timeout=timeout)
     except asyncio.TimeoutError:
         logger.error(
-            "Process didn't finish before %ds timeout: %r",
-            timeout, cmd,
+            "Process didn't finish before timeout",
+            timeout=timeout, command=cmd,
         )
         proc.terminate()
         try:
@@ -141,7 +141,7 @@ async def calibre_to_html(input_filename, output_dir, config):
     cmd_again = [convert, input_filename, output_dir]
     if os.path.splitext(input_filename)[1].lower() == '.pdf':
         cmd.append('--no-images')
-    logger.info("Running: %s", ' '.join(cmd))
+    logger.info("Running Calibre", command=cmd)
     try:
         try:
             await check_call(cmd, config['CONVERT_TO_HTML_TIMEOUT'])
@@ -166,40 +166,41 @@ async def calibre_to_html(input_filename, output_dir, config):
         manifest = 'content.opf'  # All good
     elif len(manifests) > 1 and 'content.opf' in manifests:
         logger.warning("Calibre's output contains multiple OPF "
-                       "manifests! Using content.opf")
+                       "manifests! Using content.opf", manifests=manifests)
         manifest = 'content.opf'
     elif len(manifests) == 1 and manifests[0] != 'content.opf':
         manifest, = manifests
         logger.warning("Unusual name for OPF manifest in Calibre's "
-                       "output: %r", manifest)
+                       "output", manifest=manifest)
     else:
-        logger.error("Multiple OPF manifests in Calibre's output: "
-                     "%r" % manifests)
+        logger.error("Multiple OPF manifests in Calibre's output",
+                     manifests=manifests)
         raise ConversionError("Invalid output from Calibre")
 
     size = os.stat(os.path.join(output_dir, manifest)).st_size
     if size > config['OPF_OUT_SIZE_LIMIT']:
-        logger.warning("OPF manifest is %d bytes; aborting", size)
+        logger.warning("OPF manifest is above size limit; aborting", size=size)
         raise ConversionError("File is too long")
 
     # Open OEB manifest
-    logger.info("Parsing OPF manifest %s", manifest)
+    logger.info("Parsing OPF manifest", manifest=manifest)
     tree = ElementTree.parse(os.path.join(output_dir, manifest))
     root = tree.getroot()
     ns = '{http://www.idpf.org/2007/opf}'
     if root.tag not in ('package', ns + 'package'):
-        logger.error("Invalid root tag in OPF manifest: %r", root.tag)
+        logger.error("Invalid root tag in OPF manifest", tag=root.tag)
         raise ConversionError("Invalid output from Calibre")
     manifests = [tag for tag in root
                  if tag.tag in ('manifest', ns + 'manifest')]
     if len(manifests) != 1:
-        logger.error("OPF has %d <manifest> nodes", len(manifests))
+        logger.error("OPF has multiple <manifest> nodes",
+                     manifests=len(manifests))
         raise ConversionError("Invalid output from Calibre")
     manifest, = manifests
     spines = [tag for tag in root
               if tag.tag in ('spine', ns + 'spine')]
     if len(spines) != 1:
-        logger.error("OPF has %d <spine> nodes", len(spines))
+        logger.error("OPF has multiple <spine> nodes", spines=len(spines))
         raise ConversionError("Invalid output from Calibre")
     spine, = spines
 
@@ -214,12 +215,12 @@ async def calibre_to_html(input_filename, output_dir, config):
             id_ = item.attrib['id']
         except KeyError:
             logger.error("Missing attributes from <item> in OPF "
-                         "manifest. Present: %s",
-                         ', '.join(item.attrib))
+                         "manifest",
+                         attributes=list(item.attrib))
             raise ConversionError("Invalid output from Calibre")
         else:
             items[id_] = name, mimetype
-    logger.info("Read %d items", len(items))
+    logger.info("Read items", items=len(items))
 
     # Read <spine>
     size = 0
@@ -230,31 +231,32 @@ async def calibre_to_html(input_filename, output_dir, config):
             idref = item.attrib['idref']
         except KeyError:
             logger.error("Missing attribute 'idref' from <itemref> in "
-                         "OPF manifest. Present: %s",
-                         ', '.join(item.attrib))
+                         "OPF manifest",
+                         present=list(item.attrib))
             raise ConversionError("Invalid output from Calibre")
         try:
             output_name, output_mimetype = items[idref]
         except KeyError:
-            logger.error("Spine entry references missing item %r",
-                         idref)
+            logger.error("Spine entry references missing item",
+                         missing_item=idref)
             raise ConversionError("Invalid output from Calibre")
         if output_mimetype not in HTML_MIMETYPES:
-            logger.warning("Ignoring item %r, mimetype=%r",
-                           idref, output_mimetype)
+            logger.warning("Ignoring item",
+                           item=idref, mimetype=output_mimetype)
             continue
         output_filename = os.path.join(output_dir, output_name)
         if not os.path.isfile(output_filename):
-            logger.error("Missing file from output dir: %r",
-                         output_name)
+            logger.error("Missing file from output dir",
+                         filename=output_name)
             raise ConversionError("Invalid output from Calibre")
 
         # Read output
-        logger.info("Reading in %r", output_name)
+        logger.info("Reading in output", filename=output_name)
         size += os.stat(output_filename).st_size
         if size > config['HTML_OUT_SIZE_LIMIT']:
             logger.error("File is %d bytes for a total of %d bytes; aborting",
-                         os.stat(output_filename).st_size, size)
+                         file_size=os.stat(output_filename).st_size,
+                         total_size=size)
             raise ConversionError("File is too long")
         with open(output_filename, 'rb') as fp:
             output.append(get_html_body(fp.read()))
@@ -274,7 +276,7 @@ async def wvware_to_html(input_filename, tmp, config):
     if os.environ.get('WVHTML'):
         convert = os.environ['WVHTML']
     cmd = [convert, input_filename, output_filename]
-    logger.info("Running: %s", ' '.join(cmd))
+    logger.info("Running wv", command=cmd)
     try:
         await check_call(cmd, config['CONVERT_TO_HTML_TIMEOUT'])
     except OSError:
@@ -294,7 +296,8 @@ HTML_MIMETYPES = {'text/html', 'application/xhtml+xml'}
 
 
 async def to_html(body, content_type, filename, config):
-    logger.info("Converting file %r, type %r", filename, content_type)
+    logger.info("Converting file to HTML",
+                filename=filename, content_type=content_type)
 
     ext = os.path.splitext(filename)[1].lower()
     if ext in HTML_EXTENSIONS:
@@ -356,7 +359,7 @@ async def calibre_from_html(html, extension, config):
             convert = os.path.join(os.environ['CALIBRE'], convert)
         cmd = [convert, input_filename, output_filename,
                '--page-breaks-before=/']
-        logger.info("Running: %s", ' '.join(cmd))
+        logger.info("Running Calibre", command=cmd)
         try:
             await check_call(cmd, config['CONVERT_FROM_HTML_TIMEOUT'])
         except CalledProcessError as e:

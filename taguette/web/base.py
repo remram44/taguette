@@ -81,7 +81,7 @@ class Application(tornado.web.Application):
         obj = json.loads(response.body.decode('utf-8'))
         self.messages = obj['messages']
         for msg in self.messages:
-            logger.warning("Taguette message: %s", msg['text'])
+            logger.warning("Taguette message", message=msg['text'])
         self.messages_event.set()
 
     @staticmethod
@@ -218,11 +218,11 @@ class BaseHandler(RequestHandler):
                 return tornado.locale.get(user.language)
 
     def login(self, username):
-        logger.info("Logged in as %r", username)
+        logger.info("Logged in", username=username)
         self.set_secure_cookie('user', username)
 
     def logout(self):
-        logger.info("Logged out")
+        logger.info("Logged out", username=self.current_user)
         self.clear_cookie('user')
 
     def render_string(self, template_name, **kwargs):
