@@ -58,6 +58,7 @@ prometheus_client = "*"
 prometheus-async = "*"
 sentry-sdk = "*"
 structlog = "*"
+colorama = "*"
 
 [tool.poetry.dev-dependencies]
 coverage = "*"

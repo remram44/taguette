@@ -3,6 +3,7 @@ import alembic.config
 from alembic.runtime.migration import MigrationContext
 from alembic.script import ScriptDirectory
 import binascii
+import colorama
 import enum
 import hashlib
 import hmac
@@ -485,9 +486,15 @@ def connect(db_url):
                            revision=current_rev)
             _ = taguette.trans.gettext
             if db_url.startswith('sqlite:'):
-                print(_("\n    The database schema used by Taguette has "
-                        "changed! We will try to\n    update your workspace "
-                        "automatically.\n"), file=sys.stderr, flush=True)
+                print(
+                    colorama.Back.RED +
+                    _("\n    The database schema used by Taguette has "
+                      "changed! We will try to\n    update your workspace "
+                      "automatically.\n") +
+                    colorama.Style.RESET_ALL,
+                    file=sys.stderr,
+                    flush=True,
+                )
                 assert db_url.startswith('sqlite:///')
                 assert os.path.exists(db_url[10:])
                 backup = db_url[10:] + '.bak'

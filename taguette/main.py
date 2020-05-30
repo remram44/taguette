@@ -1,6 +1,7 @@
 import argparse
 import asyncio
 import base64
+import colorama
 import gettext
 import locale
 import os
@@ -130,6 +131,7 @@ REQUIRED_CONFIG = ['NAME', 'PORT', 'SECRET_KEY', 'DATABASE', 'X_HEADERS',
 
 
 def main():
+    colorama.init()
     structlog.configure(
         processors=[
             structlog.contextvars.merge_contextvars,
@@ -336,9 +338,14 @@ def main():
         url = 'http://localhost:%d/?token=%s' % (config['PORT'], token)
     else:
         url = 'http://localhost:%d/' % config['PORT']
-    print(_("\n    Taguette %(version)s is now running. You can connect to it "
-            "using this link:\n\n    %(url)s\n") %
-          dict(url=url, version=__version__), flush=True)
+    print(
+        colorama.Fore.YELLOW +
+        _("\n    Taguette %(version)s is now running. You can connect to it "
+          "using this link:\n\n    %(url)s\n") %
+        dict(url=url, version=__version__) +
+        colorama.Style.RESET_ALL,
+        flush=True,
+    )
 
     if args.browser and not args.debug:
         loop.call_later(0.01, webbrowser.open, url)
