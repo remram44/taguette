@@ -57,6 +57,7 @@ XlsxWriter = "~1.2"
 prometheus_client = "*"
 prometheus-async = "*"
 sentry-sdk = "*"
+structlog = "*"
 
 [tool.poetry.dev-dependencies]
 coverage = "*"
