@@ -179,7 +179,7 @@ class Register(BaseHandler):
             self.set_secure_cookie('user', login)
             return self.redirect(self.reverse_url('index'))
         except validate.InvalidFormat as e:
-            logging.info("Error validating Register: %r", e)
+            logger.info("Error validating Register: %r", e)
             return self.render('login.html', register=True,
                                register_error=self.gettext(e.message))
 
@@ -227,7 +227,7 @@ class Account(BaseHandler):
             self.db.commit()
             return self.redirect(self.reverse_url('account'))
         except validate.InvalidFormat as e:
-            logging.info("Error validating Account: %r", e)
+            logger.info("Error validating Account: %r", e)
             return self.render('account.html', user=user,
                                languages=self.get_languages(),
                                current_language=user.language,
@@ -352,7 +352,7 @@ class SetNewPassword(BaseHandler):
             self.db.commit()
             return self.redirect(self.reverse_url('index'))
         except validate.InvalidFormat as e:
-            logging.info("Error validating SetNewPassword: %r", e)
+            logger.info("Error validating SetNewPassword: %r", e)
             return self.render('new_password.html', reset_token=reset_token,
                                error=self.gettext(e.message))
 
@@ -394,7 +394,7 @@ class ProjectAdd(BaseHandler):
             self.db.commit()
             return self.redirect(self.reverse_url('project', project.id))
         except validate.InvalidFormat as e:
-            logging.info("Error validating ProjectAdd: %r", e)
+            logger.info("Error validating ProjectAdd: %r", e)
             return self.render('project_new.html',
                                name=name, description=description,
                                error=self.gettext(e.message))

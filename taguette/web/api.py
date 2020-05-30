@@ -94,7 +94,7 @@ class ProjectMeta(BaseHandler):
             self.application.notify_project(project.id, cmd)
             return self.send_json({})
         except validate.InvalidFormat as e:
-            logging.info("Error validating ProjectMeta: %r", e)
+            logger.info("Error validating ProjectMeta: %r", e)
             self.set_status(e.status_code, e.reason)
             return self.send_json({'error': e.message})
 
@@ -151,7 +151,7 @@ class DocumentAdd(BaseHandler):
                 self.application.notify_project(project.id, cmd)
                 return self.send_json({'created': doc.id})
         except validate.InvalidFormat as e:
-            logging.info("Error validating DocumentAdd: %r", e)
+            logger.info("Error validating DocumentAdd: %r", e)
             self.set_status(e.status_code, e.reason)
             return self.send_json({'error': e.message})
 
@@ -184,7 +184,7 @@ class DocumentUpdate(BaseHandler):
 
             return self.send_json({'id': document.id})
         except validate.InvalidFormat as e:
-            logging.info("Error validating DocumentUpdate: %r", e)
+            logger.info("Error validating DocumentUpdate: %r", e)
             self.set_status(e.status_code, e.reason)
             return self.send_json({'error': e.message})
 
@@ -261,7 +261,7 @@ class TagAdd(BaseHandler):
 
             return self.send_json({'id': tag.id})
         except validate.InvalidFormat as e:
-            logging.info("Error validating TagAdd: %r", e)
+            logger.info("Error validating TagAdd: %r", e)
             self.set_status(e.status_code, e.reason)
             return self.send_json({'error': e.message})
 
@@ -303,7 +303,7 @@ class TagUpdate(BaseHandler):
 
             return self.send_json({'id': tag.id})
         except validate.InvalidFormat as e:
-            logging.info("Error validating TagUpdate: %r", e)
+            logger.info("Error validating TagUpdate: %r", e)
             self.set_status(e.status_code, e.reason)
             return self.send_json({'error': e.message})
 

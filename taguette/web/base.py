@@ -60,7 +60,7 @@ class Application(tornado.web.Application):
 
         if config['MULTIUSER']:
             self.single_user_token = None
-            logging.info("Starting in multi-user mode")
+            logger.info("Starting in multi-user mode")
         else:
             self.single_user_token = hmac.new(
                 cookie_secret.encode('utf-8'),
