@@ -1,9 +1,9 @@
 import gettext
 import jinja2
 import json
-import logging
 from markupsafe import Markup
 import pkg_resources
+import structlog
 from tornado.routing import URLSpec
 from tornado.web import HTTPError
 
@@ -11,7 +11,7 @@ from .base import Application, BaseHandler
 from . import api, export, views
 
 
-logger = logging.getLogger(__name__)
+logger = structlog.get_logger()
 
 
 class RedirectAccount(BaseHandler):

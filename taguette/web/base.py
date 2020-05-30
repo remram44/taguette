@@ -3,12 +3,12 @@ import contextlib
 import hashlib
 import hmac
 import json
-import logging
 import jinja2
 import pkg_resources
 from prometheus_async.aio import time as prom_async_time
 import smtplib
 from sqlalchemy.orm import joinedload, undefer, make_transient
+import structlog
 import tornado.ioloop
 from tornado.httpclient import AsyncHTTPClient
 import tornado.locale
@@ -19,7 +19,7 @@ from .. import __version__ as version
 from .. import database
 
 
-logger = logging.getLogger(__name__)
+logger = structlog.get_logger()
 
 
 class Application(tornado.web.Application):

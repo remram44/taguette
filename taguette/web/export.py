@@ -1,11 +1,11 @@
 import bisect
 import csv
-import logging
 from markupsafe import Markup
 import os
 import prometheus_client
 import shutil
 from sqlalchemy.orm import aliased, joinedload
+import structlog
 import tempfile
 from tornado.web import authenticated
 from xml.sax.saxutils import XMLGenerator
@@ -17,7 +17,7 @@ from .. import extract
 from .. import refi_qda
 from .base import BaseHandler
 
-logger = logging.getLogger(__name__)
+logger = structlog.get_logger()
 
 
 class WriteAdapter(object):

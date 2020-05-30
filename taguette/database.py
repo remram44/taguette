@@ -7,7 +7,6 @@ import enum
 import hashlib
 import hmac
 import json
-import logging
 import os
 import prometheus_client
 import shutil
@@ -20,12 +19,13 @@ from sqlalchemy.orm import column_property, deferred, relationship, \
     sessionmaker
 from sqlalchemy.sql import functions
 from sqlalchemy.types import DateTime, Enum, Integer, String, Text
+import structlog
 import sys
 
 import taguette
 
 
-logger = logging.getLogger(__name__)
+logger = structlog.get_logger()
 
 
 PROM_DATABASE_VERSION = prometheus_client.Gauge('database_version',

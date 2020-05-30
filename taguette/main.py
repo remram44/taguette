@@ -3,11 +3,13 @@ import asyncio
 import base64
 import gettext
 import locale
-import logging
 import os
 import pkg_resources
 import prometheus_client
 import re
+import structlog
+import structlog.contextvars
+import structlog.processors
 import subprocess
 import sys
 import tornado.ioloop
@@ -20,7 +22,7 @@ from .database import migrate
 from .web import make_app
 
 
-logger = logging.getLogger(__name__)
+logger = structlog.get_logger()
 
 PROM_VERSION = prometheus_client.Gauge('version', "Application version",
                                        ['version'])
@@ -128,9 +130,12 @@ REQUIRED_CONFIG = ['NAME', 'PORT', 'SECRET_KEY', 'DATABASE', 'X_HEADERS',
 
 
 def main():
-    logging.root.handlers.clear()
-    logging.basicConfig(level=logging.INFO,
-                        format="%(asctime)s %(levelname)s: %(message)s")
+    structlog.configure(
+        processors=[
+            structlog.contextvars.merge_contextvars,
+            structlog.processors.KeyValueRenderer(),
+        ],
+    )
     locale.setlocale(locale.LC_ALL, '')
     lang = locale.getlocale()[0]
     lang = [lang] if lang else []

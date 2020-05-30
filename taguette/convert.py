@@ -1,17 +1,17 @@
 import asyncio
 import bleach
 import bs4
-import logging
 import os
 import prometheus_client
 from prometheus_async.aio import time as prom_async_time
 import shutil
+import structlog
 from subprocess import CalledProcessError
 import tempfile
 from xml.etree import ElementTree
 
 
-logger = logging.getLogger(__name__)
+logger = structlog.get_logger()
 
 
 BUCKETS = [1.0, 2.0, 3.0, 4.0, 5.0,

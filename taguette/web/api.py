@@ -1,9 +1,9 @@
 import asyncio
 import functools
-import logging
 import prometheus_client
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import aliased
+import structlog
 from tornado.concurrent import Future
 import tornado.log
 from tornado.web import MissingArgumentError, HTTPError
@@ -15,7 +15,7 @@ from .. import validate
 from .base import BaseHandler, PromMeasureRequest
 
 
-logger = logging.getLogger(__name__)
+logger = structlog.get_logger()
 
 
 PROM_POLLING_CLIENTS = prometheus_client.Gauge(

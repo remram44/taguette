@@ -1,10 +1,10 @@
 from datetime import timedelta, datetime
 from email.message import EmailMessage
 import json
-import logging
 import jinja2
 import prometheus_client
 from sqlalchemy.orm import aliased
+import structlog
 import time
 import tornado.locale
 from tornado.web import authenticated, HTTPError
@@ -15,7 +15,7 @@ from .. import validate
 from .base import BaseHandler, PromMeasureRequest, _f
 
 
-logger = logging.getLogger(__name__)
+logger = structlog.get_logger()
 
 
 PROM_REQUESTS = PromMeasureRequest(
