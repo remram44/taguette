@@ -132,16 +132,29 @@ REQUIRED_CONFIG = ['NAME', 'PORT', 'SECRET_KEY', 'DATABASE', 'X_HEADERS',
 
 
 def main():
-    colorama.init()
-    chain = [
-        structlog.contextvars.merge_contextvars,
-        structlog.stdlib.add_log_level,
-        structlog.stdlib.add_logger_name,
-        structlog.dev.set_exc_info,
-        structlog.processors.format_exc_info,
-        structlog.processors.TimeStamper(fmt='iso'),
-    ]
-    processor = structlog.dev.ConsoleRenderer()
+    log_type = os.environ.get('LOGGING', 'console')
+    if log_type == 'json':
+        chain = [
+            structlog.contextvars.merge_contextvars,
+            structlog.stdlib.add_logger_name,
+            structlog.dev.set_exc_info,
+            structlog.processors.format_exc_info,
+        ]
+        processor = structlog.processors.JSONRenderer()
+    elif log_type == 'console':
+        colorama.init()
+        chain = [
+            structlog.contextvars.merge_contextvars,
+            structlog.stdlib.add_log_level,
+            structlog.stdlib.add_logger_name,
+            structlog.dev.set_exc_info,
+            structlog.processors.format_exc_info,
+            structlog.processors.TimeStamper(fmt='iso'),
+        ]
+        processor = structlog.dev.ConsoleRenderer()
+    else:
+        print("Invalid LOGGING variable: use either 'json' or 'console'")
+        sys.exit(2)
     structlog.configure(
         processors=chain + [
             structlog.stdlib.ProcessorFormatter.wrap_for_formatter
@@ -279,14 +292,15 @@ def main():
             DEFAULT_CONFIG,
             **config
         )
-        missing = False
-        for key in REQUIRED_CONFIG:
-            if key not in config:
-                print(_("Missing required configuration variable %(var)s") %
-                      dict(var=key),
-                      file=sys.stderr, flush=True)
-                missing = True
+        missing = [key for key in REQUIRED_CONFIG if key not in config]
         if missing:
+            if log_type == 'console':
+                print(_("Missing required configuration variables: %(vars)s") %
+                      dict(vars=', '.join(missing)),
+                      file=sys.stderr, flush=True)
+            else:
+                logger.critical("Missing required configuration variables",
+                                missing=missing)
             sys.exit(2)
     else:
         if args.debug:
@@ -357,14 +371,15 @@ def main():
         url = 'http://localhost:%d/?token=%s' % (config['PORT'], token)
     else:
         url = 'http://localhost:%d/' % config['PORT']
-    print(
-        colorama.Fore.YELLOW +
-        _("\n    Taguette %(version)s is now running. You can connect to it "
-          "using this link:\n\n    %(url)s\n") %
-        dict(url=url, version=__version__) +
-        colorama.Style.RESET_ALL,
-        flush=True,
-    )
+    if log_type == 'console':
+        print(
+            colorama.Fore.YELLOW +
+            _("\n    Taguette %(version)s is now running. You can connect to "
+              "it using this link:\n\n    %(url)s\n") %
+            dict(url=url, version=__version__) +
+            colorama.Style.RESET_ALL,
+            flush=True,
+        )
 
     if args.browser and not args.debug:
         loop.call_later(0.01, webbrowser.open, url)
