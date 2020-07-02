@@ -1,3 +1,5 @@
+from io import StringIO
+import csv
 import asyncio
 import functools
 import logging
@@ -118,38 +120,77 @@ class DocumentAdd(BaseHandler):
                 raise MissingArgumentError('file')
             content_type = file.content_type
             filename = validate.filename(file.filename)
-
-            try:
-                body = await convert.to_html_chunks(
-                    file.body, content_type, filename,
-                    self.application.config,
-                )
-            except convert.ConversionError as err:
-                self.set_status(400)
-                return self.send_json({
-                    'error': str(err),
-                })
-            else:
-                doc = database.Document(
-                    name=name,
-                    description=description,
-                    filename=filename,
-                    project=project,
-                    contents=body,
-                )
-                self.db.add(doc)
-                self.db.flush()  # Need to flush to get doc.id
-                cmd = database.Command.document_add(
-                    self.current_user,
-                    doc,
-                )
-                self.db.add(cmd)
-                logger.info("Document added to project %r: %r %r (%d bytes)",
-                            project.id, doc.id, doc.name, len(doc.contents))
-                self.db.commit()
-                self.db.refresh(cmd)
-                self.application.notify_project(project.id, cmd)
+            logger.info("File has content type %r", content_type)
+            if content_type == 'text/csv':
+                f = StringIO(file.body.decode('utf-8'))
+                reader = csv.reader(f, delimiter=',')
+                questions = None
+                rows = 0
+                for row in reader:
+                    if not questions:
+                        questions = row
+                    else:
+                        i = 0
+                        body = ""
+                        for answer in row:
+                            question = questions[i]
+                            body += f"<strong>{question}</strong><br><p>{answer}</p><hr/>"
+                            i += 1
+                        
+                        enumerated_name = f"{rows:03}-{name}"
+                        doc = database.Document(
+                            name=enumerated_name,
+                            description=description,
+                            filename=filename,
+                            project=project,
+                            contents=body[:-5]
+                        )
+                        self.db.add(doc)
+                        self.db.flush()  # Need to flush to get doc.id
+                        cmd = database.Command.document_add(
+                            self.current_user,
+                            doc,
+                        )
+                        self.db.add(cmd)
+                        logger.info("Document added to project %r: %r %r (%d bytes)",
+                                    project.id, doc.id, doc.name, len(doc.contents))
+                        self.db.commit()
+                        self.db.refresh(cmd)
+                        self.application.notify_project(project.id, cmd)
+                    rows += 1
                 return self.send_json({'created': doc.id})
+            else:
+                try:
+                    body = await convert.to_html_chunks(
+                        file.body, content_type, filename,
+                        self.application.config,
+                    )
+                except convert.ConversionError as err:
+                    self.set_status(400)
+                    return self.send_json({
+                        'error': str(err),
+                    })
+                else:
+                    doc = database.Document(
+                        name=name,
+                        description=description,
+                        filename=filename,
+                        project=project,
+                        contents=body,
+                    )
+                    self.db.add(doc)
+                    self.db.flush()  # Need to flush to get doc.id
+                    cmd = database.Command.document_add(
+                        self.current_user,
+                        doc,
+                    )
+                    self.db.add(cmd)
+                    logger.info("Document added to project %r: %r %r (%d bytes)",
+                                project.id, doc.id, doc.name, len(doc.contents))
+                    self.db.commit()
+                    self.db.refresh(cmd)
+                    self.application.notify_project(project.id, cmd)
+                    return self.send_json({'created': doc.id})
         except validate.InvalidFormat as e:
             logger.info("Error validating DocumentAdd: %r", e)
             self.set_status(e.status_code, e.reason)
