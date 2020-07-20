@@ -108,7 +108,8 @@ class Application(tornado.web.Application):
 
     def unobserve_project(self, project_id, future):
         assert isinstance(project_id, int)
-        self.event_waiters[project_id].remove(future)
+        if project_id in self.event_waiters:
+            self.event_waiters[project_id].discard(future)
 
     def notify_project(self, project_id, cmd):
         assert isinstance(project_id, int)
