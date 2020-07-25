@@ -111,7 +111,7 @@ class TestPassword(unittest.TestCase):
         return ''.join(password)
 
     def test_bcrypt(self):
-        for _ in range(10):
+        for _ in range(3):
             password = self.random_password()
             user = database.User(login='user')
             user.set_password(password, 'bcrypt')
@@ -122,7 +122,7 @@ class TestPassword(unittest.TestCase):
             self.assertFalse(user.check_password(password[:-1]))
 
     def test_pbkdf2(self):
-        for _ in range(10):
+        for _ in range(3):
             password = self.random_password()
             user = database.User(login='user')
             user.set_password(password)
