@@ -133,67 +133,43 @@ def highlight(html, highlights, show_tags=False):
     highlighting = False
     try:
         start, end, tags = next(highlights)
-        while True:
-            if getattr(node, 'contents', None):
-                node = node.contents[0]
-            else:
-                if isinstance(node, NavigableString):
-                    nb = len(node.string.encode('utf-8'))
-                    while True:
-                        if not highlighting and start == pos:
-                            highlighting = True
-                        elif not highlighting and pos + nb > start:
-                            parent = node.parent
-                            char_idx = byte_to_str_index(
-                                node.string,
-                                start - pos,
-                            )
-                            left = node.string[:char_idx]
-                            right = node.string[char_idx:]
-                            idx = parent.index(node)
-                            node.replace_with(NavigableString(left))
-                            node = NavigableString(right)
-                            parent.insert(idx + 1, node)
-                            nb -= start - pos
-                            pos = start
-                            # Code below will do the actual highlighting
-                            highlighting = True
-                        elif highlighting and pos + nb <= end:
-                            newnode = soup.new_tag(
-                                'span',
-                                attrs={'class': 'highlight'},
-                            )
-                            node.replace_with(newnode)
-                            newnode.append(node)
-                            node = newnode
-                            if pos + nb == end:
-                                if show_tags:
-                                    comment = soup.new_tag(
-                                        'span',
-                                        attrs={'class': 'taglist'},
-                                    )
-                                    comment.string = ' [%s]' % ', '.join(tags)
-                                    newnode.insert_after(comment)
-                                    node = comment
-                                highlighting = False
-                                start, end, tags = next(highlights)
-                            break
-                        elif highlighting:
-                            char_idx = byte_to_str_index(
-                                node.string,
-                                end - pos,
-                            )
-                            left = node.string[:char_idx]
-                            rest = node.string[char_idx:]
-                            newnode = NavigableString(left)
-                            node.replace_with(newnode)
-                            node = newnode
-                            newnode = soup.new_tag(
-                                'span',
-                                attrs={'class': 'highlight'},
-                            )
-                            node.replace_with(newnode)
-                            newnode.append(node)
+    except StopIteration:
+        start = end = tags = None
+
+    while start is not None:
+        if getattr(node, 'contents', None):
+            node = node.contents[0]
+        else:
+            if isinstance(node, NavigableString):
+                nb = len(node.string.encode('utf-8'))
+                while start is not None:
+                    if not highlighting and start == pos:
+                        highlighting = True
+                    elif not highlighting and pos + nb > start:
+                        parent = node.parent
+                        char_idx = byte_to_str_index(
+                            node.string,
+                            start - pos,
+                        )
+                        left = node.string[:char_idx]
+                        right = node.string[char_idx:]
+                        idx = parent.index(node)
+                        node.replace_with(NavigableString(left))
+                        node = NavigableString(right)
+                        parent.insert(idx + 1, node)
+                        nb -= start - pos
+                        pos = start
+                        # Code below will do the actual highlighting
+                        highlighting = True
+                    elif highlighting and pos + nb <= end:
+                        newnode = soup.new_tag(
+                            'span',
+                            attrs={'class': 'highlight'},
+                        )
+                        node.replace_with(newnode)
+                        newnode.append(node)
+                        node = newnode
+                        if pos + nb == end:
                             if show_tags:
                                 comment = soup.new_tag(
                                     'span',
@@ -201,30 +177,63 @@ def highlight(html, highlights, show_tags=False):
                                 )
                                 comment.string = ' [%s]' % ', '.join(tags)
                                 newnode.insert_after(comment)
-                                newnode = comment
-                            node = NavigableString(rest)
-                            newnode.insert_after(node)
-                            nb -= end - pos
-                            pos = end
+                                node = comment
                             highlighting = False
+                            try:
+                                start, end, tags = next(highlights)
+                            except StopIteration:
+                                start = end = tags = None
+                        break
+                    elif highlighting:
+                        char_idx = byte_to_str_index(
+                            node.string,
+                            end - pos,
+                        )
+                        left = node.string[:char_idx]
+                        rest = node.string[char_idx:]
+                        newnode = NavigableString(left)
+                        node.replace_with(newnode)
+                        node = newnode
+                        newnode = soup.new_tag(
+                            'span',
+                            attrs={'class': 'highlight'},
+                        )
+                        node.replace_with(newnode)
+                        newnode.append(node)
+                        if show_tags:
+                            comment = soup.new_tag(
+                                'span',
+                                attrs={'class': 'taglist'},
+                            )
+                            comment.string = ' [%s]' % ', '.join(tags)
+                            newnode.insert_after(comment)
+                            newnode = comment
+                        node = NavigableString(rest)
+                        newnode.insert_after(node)
+                        nb -= end - pos
+                        pos = end
+                        highlighting = False
+                        try:
                             start, end, tags = next(highlights)
-                        else:
-                            break
+                        except StopIteration:
+                            start = end = tags = None
+                    else:
+                        break
 
-                    pos += nb
-                while not node.next_sibling:
-                    if not node.parent:
-                        raise StopIteration
-                    node = node.parent
-                node = node.next_sibling
-    except StopIteration:
-        # Remove everything but body
-        body = soup.body
-        soup.clear()
-        soup.append(body)
+                pos += nb
+            while not node.next_sibling and node.parent:
+                node = node.parent
+            if not node.parent:
+                break
+            node = node.next_sibling
 
-        # Remove the body tag itself to only have the contents
-        soup.body.unwrap()
+    # Remove everything but body
+    body = soup.body
+    soup.clear()
+    soup.append(body)
 
-        # Back to text
-        return str(soup)
+    # Remove the body tag itself to only have the contents
+    soup.body.unwrap()
+
+    # Back to text
+    return str(soup)
