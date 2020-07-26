@@ -164,6 +164,11 @@ class BaseHandler(RequestHandler):
         self._db = None
         self._gettext = None
 
+        if self.application.config['MULTIUSER']:
+            # Use cookie prefix for security
+            # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#Cookie_prefixes
+            self.COOKIE_USER = '__Host-user'
+
     @property
     def db(self):
         if self._db is None:
