@@ -199,10 +199,12 @@ class BaseHandler(RequestHandler):
                    expires=None, path='/', expires_days=None,
                    *, dont_check=False,
                    **kwargs):
-        if (dont_check or
-                not self.application.config['COOKIES_PROMPT'] or
-                self.get_cookie('cookies_accepted') or
-                self.get_cookie('user')):
+        if (
+            dont_check
+            or not self.application.config['COOKIES_PROMPT']
+            or self.get_cookie('cookies_accepted')
+            or self.get_cookie('user')
+        ):
             return super(BaseHandler, self).set_cookie(name, value, **kwargs)
         else:
             self.redirect(

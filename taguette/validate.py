@@ -110,8 +110,10 @@ def filename(name):
     if not name:
         name = '_'
     ext = _not_ascii_re.sub('', ext)
-    if (filename.windows and
-            name.split('.')[0].upper() in _windows_device_files):
+    if (
+        filename.windows
+        and name.split('.')[0].upper() in _windows_device_files
+    ):
         name = '_' + name
     name = name + ext
     return name

@@ -164,9 +164,12 @@ class Register(BaseHandler):
                 raise validate.InvalidFormat(_f("Passwords do not match"))
             if self.db.query(database.User).get(login) is not None:
                 raise validate.InvalidFormat(_f("User name is taken"))
-            if (email and
-                    self.db.query(database.User)
-                    .filter(database.User.email == email).count() > 0):
+            if (
+                email and
+                self.db.query(database.User)
+                    .filter(database.User.email == email)
+                    .count() > 0
+            ):
                 raise validate.InvalidFormat(_f("Email address is already "
                                                 "used"))
             user = database.User(login=login)
@@ -255,8 +258,10 @@ class AskResetPassword(BaseHandler):
                 error=self.gettext("This email address is not associated with "
                                    "any user"),
             )
-        elif (user.email_sent is None or
-                user.email_sent + timedelta(days=1) < datetime.utcnow()):
+        elif (
+            user.email_sent is None
+            or user.email_sent + timedelta(days=1) < datetime.utcnow()
+        ):
             # Generate a signed token
             reset_token = '%s|%s|%s' % (
                 int(time.time()),

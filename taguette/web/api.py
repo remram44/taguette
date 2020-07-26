@@ -344,8 +344,12 @@ class TagMerge(BaseHandler):
         obj = self.get_json()
         tag_src = self.db.query(database.Tag).get(obj['src'])
         tag_dest = self.db.query(database.Tag).get(obj['dest'])
-        if (tag_src is None or tag_src.project_id != project.id or
-                tag_dest is None or tag_dest.project_id != project.id):
+        if (
+            tag_src is None
+            or tag_src.project_id != project.id
+            or tag_dest is None
+            or tag_dest.project_id != project.id
+        ):
             self.set_status(404)
             return self.send_json({'error': "No such tag"})
 

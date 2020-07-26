@@ -13,7 +13,7 @@ run_tests_sqlite3:
     - coverage run --branch --source=taguette tests.py
     - coverage html
     - coverage report | tail -n 1 | grep -o '\([0-9]\+\(\.[0-9]\+\)\?%\)$'
-    - flake8 --ignore=W504 tests.py taguette
+    - flake8 --ignore=W503,W504 tests.py taguette
     - "! find taguette -name '*.py' -exec grep --color 'raise \\(validate\\.\\)\\?InvalidFormat([^_]' {} +"
   artifacts:
     paths:
