@@ -228,7 +228,11 @@ class BaseHandler(RequestHandler):
 
     def login(self, username):
         logger.info("Logged in as %r", username)
-        self.set_secure_cookie(self.COOKIE_USER, username)
+        self.set_secure_cookie(
+            self.COOKIE_USER,
+            username,
+            secure=self.application.config['MULTIUSER'],
+        )
 
     def logout(self):
         logger.info("Logged out")

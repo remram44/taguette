@@ -176,7 +176,7 @@ class Register(BaseHandler):
             self.db.add(user)
             self.db.commit()
             logger.info("User registered: %r", login)
-            self.set_secure_cookie(self.COOKIE_USER, login)
+            self.login(login)
             return self.redirect(self.reverse_url('index'))
         except validate.InvalidFormat as e:
             logger.info("Error validating Register: %r", e)
