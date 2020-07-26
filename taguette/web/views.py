@@ -70,7 +70,7 @@ class CookiesPrompt(BaseHandler):
 
     @PROM_REQUESTS.sync('cookies_prompt')
     def post(self):
-        self.set_cookie('cookies_accepted', 'yes', dont_check=True)
+        self.set_cookie(self.COOKIE_PROMPTED, 'yes', dont_check=True)
         next_ = self.get_argument('next', '')
         if not next_:
             next_ = self.reverse_url('index')
@@ -176,7 +176,7 @@ class Register(BaseHandler):
             self.db.add(user)
             self.db.commit()
             logger.info("User registered: %r", login)
-            self.set_secure_cookie('user', login)
+            self.set_secure_cookie(self.COOKIE_USER, login)
             return self.redirect(self.reverse_url('index'))
         except validate.InvalidFormat as e:
             logger.info("Error validating Register: %r", e)

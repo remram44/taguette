@@ -132,6 +132,9 @@ class Application(tornado.web.Application):
 class BaseHandler(RequestHandler):
     """Base class for all request handlers.
     """
+    COOKIE_USER = 'user'
+    COOKIE_PROMPTED = 'cookies_accepted'
+
     template_env = jinja2.Environment(
         loader=jinja2.FileSystemLoader(
             [pkg_resources.resource_filename('taguette', 'templates')]
@@ -189,7 +192,7 @@ class BaseHandler(RequestHandler):
         return trans
 
     def get_current_user(self):
-        user = self.get_secure_cookie('user')
+        user = self.get_secure_cookie(self.COOKIE_USER)
         if user is not None:
             return user.decode('utf-8')
         else:
@@ -201,8 +204,8 @@ class BaseHandler(RequestHandler):
                    **kwargs):
         if (dont_check or
                 not self.application.config['COOKIES_PROMPT'] or
-                self.get_cookie('cookies_accepted') or
-                self.get_cookie('user')):
+                self.get_cookie(self.COOKIE_PROMPTED) or
+                self.get_cookie(self.COOKIE_USER)):
             return super(BaseHandler, self).set_cookie(name, value, **kwargs)
         else:
             self.redirect(
@@ -220,11 +223,11 @@ class BaseHandler(RequestHandler):
 
     def login(self, username):
         logger.info("Logged in as %r", username)
-        self.set_secure_cookie('user', username)
+        self.set_secure_cookie(self.COOKIE_USER, username)
 
     def logout(self):
         logger.info("Logged out")
-        self.clear_cookie('user')
+        self.clear_cookie(self.COOKIE_USER)
 
     def render_string(self, template_name, **kwargs):
         template = self.template_env.get_template(template_name)
