@@ -16,10 +16,10 @@
 
   <h3 id="docker">Using Docker</h3>
 
-  <p>If you so choose, you can simply run the <a href="https://hub.docker.com/r/remram/taguette/"><code>remram/taguette</code> Docker image</a>. You will be prompted for an 'admin' password the first time. You can persist the data by mounting a volume over <code>/data</code>, like so:</p>
-  <pre>docker run -ti --rm remram/taguette default-config &gt;/srv/taguette/taguette.conf
+  <p>If you so choose, you can simply run the <a href="https://quay.io/repository/remram44/taguette"><code>quay.io/remram44/taguette</code> Docker image</a>. You will be prompted for an 'admin' password the first time. You can persist the data by mounting a volume over <code>/data</code>, like so:</p>
+  <pre>docker run -ti --rm quay.io/remram44/taguette default-config &gt;/srv/taguette/taguette.conf
 edit /srv/taguette/taguette.conf  # Edit configuration file, see below
-docker run -ti -p 80:7465 -v /srv/taguette:/data --restart=always remram/taguette server /data/taguette.conf</pre>
+docker run -ti -p 80:7465 -v /srv/taguette:/data --restart=always quay.io/remram44/taguette server /data/taguette.conf</pre>
 
   <h3 id="native">"Native" installation on a server</h3>
 
