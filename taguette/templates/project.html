@@ -125,7 +125,7 @@
             <form id="members-add">
               <div class="row">
                 <div class="col-md-4 form-group">
-                  <input type="text" class="form-control" id="member-add-name" placeholder="{{ gettext("Username") }}" required />
+                  <input type="text" class="form-control" id="member-add-name" placeholder="{% trans %}Username{% endtrans %}" required />
                 </div>
                 <div class="col-md-4 form-group">
                   <select id="member-add-privileges" class="form-control">
@@ -166,13 +166,13 @@
         <div class="container">
           <div class="row">
             <div class="col-md-6 form-group">
-              <input type="text" class="form-control" id="document-add-name" name="document-add-name" placeholder="{{ gettext("Enter a document name") }}" />
+              <input type="text" class="form-control" id="document-add-name" name="document-add-name" placeholder="{% trans %}Enter a document name{% endtrans %}" />
             </div>
             <div class="col-md-6 form-group">
               <input type="file" class="form-control-file" id="document-add-file" name="document-add-file" required />
             </div>
           </div>
-          <textarea class="form-control mb-3" id="document-add-description" name="document-add-description" placeholder="{{ gettext("Description") }}"></textarea>
+          <textarea class="form-control mb-3" id="document-add-description" name="document-add-description" placeholder="{% trans %}Description{% endtrans %}"></textarea>
         </div>
       </div>
       <div class="modal-footer">
@@ -198,10 +198,10 @@
         <div class="container">
           <div class="row">
             <div class="col-md-6 form-group">
-              <input type="text" class="form-control mb-3" id="document-change-name" name="document-change-name" placeholder="{{ gettext("Name") }}" required />
+              <input type="text" class="form-control mb-3" id="document-change-name" name="document-change-name" placeholder="{% trans %}Name{% endtrans %}" required />
             </div>
           </div>
-          <textarea class="form-control" id="document-change-description" name="document-change-description" placeholder="{{ gettext("Description") }}"></textarea>
+          <textarea class="form-control" id="document-change-description" name="document-change-description" placeholder="{% trans %}Description{% endtrans %}"></textarea>
         </div>
       </div>
       <div class="modal-footer">
@@ -255,8 +255,8 @@
       <div class="modal-body">
         <input type="hidden" id="tag-add-id" />
         <div class="container">
-          <input type="text" class="form-group" id="tag-add-path" name="tag-add-path" placeholder="{{ gettext("Name") }}" required />
-          <textarea class="form-control" id="tag-add-description" name="tag-add-description" placeholder="{{ gettext("Description") }}"></textarea>
+          <input type="text" class="form-group" id="tag-add-path" name="tag-add-path" placeholder="{% trans %}Name{% endtrans %}" required />
+          <textarea class="form-control" id="tag-add-description" name="tag-add-description" placeholder="{% trans %}Description{% endtrans %}"></textarea>
         </div>
       </div>
       <div class="modal-footer">
