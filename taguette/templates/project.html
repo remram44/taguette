@@ -11,13 +11,13 @@
       <!-- Tab selector -->
       <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
-          <a class="nav-link" id="project-tab" data-toggle="tab" href="#project" role="tab" aria-controls="project" aria-selected="true">{# TRANSLATORS: Left pane tab #}{% trans %}Project info{% endtrans %}</a>
+          <a class="nav-link" id="project-tab" data-toggle="tab" href="#project" role="tab" aria-controls="project" aria-selected="true">{# TRANSLATORS: Left pane tab, keep short #}{% trans %}Project info{% endtrans %}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" id="documents-tab" data-toggle="tab" href="#documents" role="tab" aria-controls="documents" aria-selected="false">{# TRANSLATORS: Left pane tab #}{% trans %}Documents{% endtrans %}</a>
+          <a class="nav-link active" id="documents-tab" data-toggle="tab" href="#documents" role="tab" aria-controls="documents" aria-selected="false">{# TRANSLATORS: Left pane tab, keep short #}{% trans %}Documents{% endtrans %}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="tags-tab" data-toggle="tab" href="#tags" role="tab" aria-controls="tags" aria-selected="false">{# TRANSLATORS: Left pane tab #}{% trans %}Highlights{% endtrans %}</a>
+          <a class="nav-link" id="tags-tab" data-toggle="tab" href="#tags" role="tab" aria-controls="tags" aria-selected="false">{# TRANSLATORS: Left pane tab, keep short #}{% trans %}Highlights{% endtrans %}</a>
         </li>
       </ul>
 
@@ -27,11 +27,11 @@
         <div class="tab-pane fade" id="project" role="tabpanel" aria-labelledby="project-tab">
           <form id="project-metadata-form">
             <div class="form-group">
-              <label for="project-name" class="col-sm-2 col-form-label">{# TRANSLATORS: Project name field #}{% trans %}Name{% endtrans %}</label>
+              <label for="project-name" class="col-sm-2 col-form-label">{# TRANSLATORS: Project metadata #}{% trans %}Name{% endtrans %}</label>
               <input type="text" class="form-control" id="project-name" name="project-name" value="{{ project.name }}" required />
             </div>
             <div class="form-group">
-              <label for="project-description" class="col-sm-2 col-form-label">{% trans %}Description{% endtrans %}</label>
+              <label for="project-description" class="col-sm-2 col-form-label">{# TRANSLATORS: Project metadata #}{% trans %}Description{% endtrans %}</label>
               <textarea class="form-control" id="project-description" name="project-description">{{ project.description }}</textarea>
             </div>
           </form>
@@ -125,7 +125,7 @@
             <form id="members-add">
               <div class="row">
                 <div class="col-md-4 form-group">
-                  <input type="text" class="form-control" id="member-add-name" placeholder="{% trans %}Username{% endtrans %}" required />
+                  <input type="text" class="form-control" id="member-add-name" placeholder="{# TRANSLATORS: Project member form placeholder #}{% trans %}Username{% endtrans %}" required />
                 </div>
                 <div class="col-md-4 form-group">
                   <select id="member-add-privileges" class="form-control">
@@ -172,7 +172,7 @@
               <input type="file" class="form-control-file" id="document-add-file" name="document-add-file" required />
             </div>
           </div>
-          <textarea class="form-control mb-3" id="document-add-description" name="document-add-description" placeholder="{% trans %}Description{% endtrans %}"></textarea>
+          <textarea class="form-control mb-3" id="document-add-description" name="document-add-description" placeholder="{# TRANSLATORS: Document add form placeholder #}{% trans %}Description{% endtrans %}"></textarea>
         </div>
       </div>
       <div class="modal-footer">
@@ -198,10 +198,10 @@
         <div class="container">
           <div class="row">
             <div class="col-md-6 form-group">
-              <input type="text" class="form-control mb-3" id="document-change-name" name="document-change-name" placeholder="{% trans %}Name{% endtrans %}" required />
+              <input type="text" class="form-control mb-3" id="document-change-name" name="document-change-name" placeholder="{# TRANSLATORS: Document change form placeholder #}{% trans %}Name{% endtrans %}" required />
             </div>
           </div>
-          <textarea class="form-control" id="document-change-description" name="document-change-description" placeholder="{% trans %}Description{% endtrans %}"></textarea>
+          <textarea class="form-control" id="document-change-description" name="document-change-description" placeholder="{# TRANSLATORS: Document change form placeholder #}{% trans %}Description{% endtrans %}"></textarea>
         </div>
       </div>
       <div class="modal-footer">
@@ -255,7 +255,7 @@
       <div class="modal-body">
         <input type="hidden" id="tag-add-id" />
         <div class="container">
-          <input type="text" class="form-group" id="tag-add-path" name="tag-add-path" placeholder="{% trans %}Name{% endtrans %}" required />
+          <input type="text" class="form-group" id="tag-add-path" name="tag-add-path" placeholder="{# TRANSLATORS: Tag change form #}{% trans %}Name{% endtrans %}" required />
           <textarea class="form-control" id="tag-add-description" name="tag-add-description" placeholder="{% trans %}Description{% endtrans %}"></textarea>
         </div>
       </div>

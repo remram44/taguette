@@ -54,6 +54,7 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
+#. Email address
 #: taguette/templates/account.html:18 taguette/templates/login.html:75
 #: taguette/templates/reset_password.html:15
 msgid "Email"
@@ -129,27 +130,34 @@ msgid ""
 "href=\"mailto:hi@taguette.org\">hi@taguette.org</a>!"
 msgstr ""
 
-#. Left pane tab
+#. Left pane tab, keep short
 #: taguette/templates/project.html:14
 msgid "Project info"
 msgstr ""
 
-#. Left pane tab
+#. Left pane tab, keep short
 #: taguette/templates/project.html:17
 msgid "Documents"
 msgstr ""
 
-#. Left pane tab
+#. Left pane tab, keep short
 #: taguette/templates/project.html:20
 msgid "Highlights"
 msgstr ""
 
-#. Project name field
+#. Project metadata
+#. Document change form placeholder
+#. Tag change form
+#. Document creation form
 #: taguette/templates/project.html:30 taguette/templates/project.html:201
 #: taguette/templates/project.html:258 taguette/templates/project_new.html:11
 msgid "Name"
 msgstr ""
 
+#. Project metadata
+#. Document add form placeholder
+#. Document change form placeholder
+#. Document creation form
 #: taguette/templates/project.html:34 taguette/templates/project.html:175
 #: taguette/templates/project.html:204 taguette/templates/project.html:259
 #: taguette/templates/project_new.html:17
@@ -229,6 +237,7 @@ msgstr ""
 msgid "Add Collaborators"
 msgstr ""
 
+#. Project member form placeholder
 #: taguette/templates/project.html:128
 msgid "Username"
 msgstr ""
