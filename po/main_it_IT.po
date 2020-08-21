@@ -1,5 +1,5 @@
 # Translations template for Taguette.
-# Copyright (C) 2019 Remi Rampin
+# Copyright (C) 2018 Remi Rampin
 # This file is distributed under the same license as the Taguette project.
 # Remi Rampin <r@remirampin.com>, 2018.
 # 
@@ -11,14 +11,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Taguette 0.9\n"
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
-"POT-Creation-Date: 2020-04-03 20:56-0400\n"
+"POT-Creation-Date: 2020-08-21 12:34-0400\n"
 "PO-Revision-Date: 2019-05-08 16:49+0000\n"
 "Last-Translator: Sinisa Obradovic <obradovic.sinisa@protonmail.com>, 2019\n"
 "Language-Team: Italian (https://www.transifex.com/remram44/teams/98824/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.8.0\n"
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -62,6 +62,7 @@ msgstr "Impostazioni account"
 msgid "Login"
 msgstr "Accedi"
 
+#. Email address
 #: taguette/templates/account.html:18 taguette/templates/login.html:75
 #: taguette/templates/reset_password.html:15
 msgid "Email"
@@ -145,27 +146,34 @@ msgstr ""
 "<a href=\"https://gitlab.com/remram44/taguette\">GitLab</a> o <a "
 "href=\"mailto:hi@taguette.org\">hi@taguette.org</a>!"
 
-#. Left pane tab
+#. Left pane tab, keep short
 #: taguette/templates/project.html:14
 msgid "Project info"
 msgstr "Info sul progetto"
 
-#. Left pane tab
+#. Left pane tab, keep short
 #: taguette/templates/project.html:17
 msgid "Documents"
 msgstr "Documenti"
 
-#. Left pane tab
+#. Left pane tab, keep short
 #: taguette/templates/project.html:20
 msgid "Highlights"
 msgstr "Evidenziazioni"
 
-#. Project name field
+#. Project metadata
+#. Document change form placeholder
+#. Tag change form
+#. Document creation form
 #: taguette/templates/project.html:30 taguette/templates/project.html:201
 #: taguette/templates/project.html:258 taguette/templates/project_new.html:11
 msgid "Name"
 msgstr "Nome"
 
+#. Project metadata
+#. Document add form placeholder
+#. Document change form placeholder
+#. Document creation form
 #: taguette/templates/project.html:34 taguette/templates/project.html:175
 #: taguette/templates/project.html:204 taguette/templates/project.html:259
 #: taguette/templates/project_new.html:17
@@ -245,6 +253,7 @@ msgstr "Gestisci Collaboratori"
 msgid "Add Collaborators"
 msgstr "Aggiungi Collaboratori"
 
+#. Project member form placeholder
 #: taguette/templates/project.html:128
 msgid "Username"
 msgstr "Nome utente"
@@ -506,55 +515,80 @@ msgstr ""
 msgid "This link will expire in 1 day."
 msgstr "Questo collegamento scadrà in 1 giorno."
 
-#: taguette/web/views.py:115
+#: taguette/web/views.py:117
 msgid "Invalid login or password"
 msgstr "Nome utente o password non validi"
 
-#: taguette/web/views.py:162 taguette/web/views.py:220
-#: taguette/web/views.py:347
+#: taguette/web/views.py:164 taguette/web/views.py:222
+#: taguette/web/views.py:349
 msgid "Passwords do not match"
 msgstr "Le passwords non corrispondono"
 
-#: taguette/web/views.py:164
+#: taguette/web/views.py:166
 msgid "User name is taken"
 msgstr "Il nome utente è preso"
 
-#: taguette/web/views.py:168
+#: taguette/web/views.py:170
 msgid "Email address is already used"
 msgstr "L'email è già in uso"
 
-#: taguette/web/views.py:253
+#: taguette/web/views.py:255
 msgid "This email address is not associated with any user"
 msgstr "Questo indirizzo email non è associato a nessun utente"
 
-#: taguette/web/views.py:280
+#: taguette/web/views.py:282
 msgid "Password reset for Taguette"
 msgstr "Reimpostazione password per Taguette"
 
-#: taguette/web/views.py:306
+#: taguette/web/views.py:308
 msgid "Invalid token"
 msgstr ""
 
-#: taguette/web/views.py:310
+#: taguette/web/views.py:312
 msgid "No user associated with that token"
 msgstr ""
 
-#: taguette/web/views.py:313
+#: taguette/web/views.py:315
 msgid "Password has already been changed"
 msgstr ""
 
 #. Default tag name
-#: taguette/web/views.py:387
+#: taguette/web/views.py:389
 msgid "interesting"
 msgstr "Interessante"
 
 #. Default tag description
-#: taguette/web/views.py:389
+#: taguette/web/views.py:391
 msgid "Further review required"
 msgstr "Ulteriore revisione richiesta"
 
-#: taguette/web/views.py:413
+#: taguette/web/views.py:415
 msgid "You don't have permission to delete this project"
+msgstr ""
+
+#: taguette/database.py:487
+msgid ""
+"\n"
+"    The database schema used by Taguette has changed! We will try to\n"
+"    update your workspace automatically.\n"
+msgstr ""
+
+#: taguette/database.py:496
+#, python-format
+msgid ""
+"\n"
+"    A backup copy of your database file has been created. If the update\n"
+"    goes horribly wrong, make sure to keep that file, and let us know:\n"
+"    %(backup)s\n"
+msgstr ""
+
+#: taguette/database.py:503
+#, python-format
+msgid ""
+"\n"
+"    The database schema used by Taguette has changed! Because you are not using\n"
+"    SQLite, we will not attempt a migration automatically; back up your data and\n"
+"    use `taguette --database=%(url)s migrate` if you want to proceed."
 msgstr ""
 
 #: taguette/validate.py:21
@@ -621,23 +655,23 @@ msgstr "Il percorso della tag è troppo lungo"
 msgid "Tag description is too long"
 msgstr "La descrizione della tag è troppo lunga"
 
-#: taguette/main.py:176
+#: taguette/main.py:181
 msgid "Port number on which to listen"
 msgstr "Numero di porta sulla quale ascoltare"
 
-#: taguette/main.py:178
+#: taguette/main.py:183
 msgid "Address to bind on"
 msgstr "Indirizzo per legare"
 
-#: taguette/main.py:180
+#: taguette/main.py:185
 msgid "Open web browser to the application"
 msgstr "Aprire il browser Web per l'applicazione"
 
-#: taguette/main.py:182
+#: taguette/main.py:187
 msgid "Don't open the web browser"
 msgstr "Non aprire il browser web"
 
-#: taguette/main.py:187
+#: taguette/main.py:192
 #, python-format
 msgid ""
 "Database location or connection string, for example 'project.db' or "
@@ -646,36 +680,36 @@ msgstr ""
 "Posizione del database o stringa di connessione, per esempio 'project.db' o "
 "'postgresql://me:pw@localhost/mydb' (default: %(default)r)"
 
-#: taguette/main.py:194
+#: taguette/main.py:199
 msgid "Set the file creation mask (umask) on systems that support it."
 msgstr ""
 
-#: taguette/main.py:198
+#: taguette/main.py:203
 msgid "Don't change umask on startup"
 msgstr ""
 
-#: taguette/main.py:201
+#: taguette/main.py:206
 msgid "additional commands"
 msgstr "Comandi aggiuntivi"
 
-#: taguette/main.py:205
+#: taguette/main.py:210
 msgid "Manually trigger a database migration"
 msgstr "Lancia manualmente una migrazione del database"
 
-#: taguette/main.py:214
+#: taguette/main.py:219
 msgid "Print the default server configuration"
 msgstr "Stampa la configurazione del server predefinito"
 
-#: taguette/main.py:216
+#: taguette/main.py:221
 msgid "Output to this file rather than stdout"
 msgstr "Output su questo file anziché su stdout"
 
-#: taguette/main.py:222
+#: taguette/main.py:227
 msgid "Run in server mode, suitable for a multi-user deployment"
 msgstr ""
 "Esecuzione in modalità server, adatta per la distribuzione multiutente"
 
-#: taguette/main.py:224
+#: taguette/main.py:229
 msgid ""
 "Configuration file for the server. The default configuration can be "
 "generated using the `default-config` command"
@@ -683,12 +717,17 @@ msgstr ""
 "File di configurazione per il server. La configurazione predefinita può "
 "essere generata utilizzando il comando `default-config`"
 
-#: taguette/main.py:253
+#: taguette/main.py:237
+#, python-format
+msgid "Invalid umask: %(arg)s"
+msgstr ""
+
+#: taguette/main.py:259
 #, python-format
 msgid "Missing required configuration variable %(var)s"
 msgstr "Variabile di configurazione richiesta mancante %(var)s"
 
-#: taguette/main.py:326
+#: taguette/main.py:333
 #, python-format
 msgid ""
 "\n"
