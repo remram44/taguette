@@ -7,6 +7,7 @@ import re
 from sqlalchemy import create_engine
 from sqlalchemy.orm import close_all_sessions
 import string
+import textwrap
 import time
 from tornado.testing import AsyncTestCase, gen_test, AsyncHTTPTestCase, \
     get_async_test_timeout
@@ -626,7 +627,30 @@ class TestMultiuser(MyHTTPTestCase):
                               'content': "<strong>Opinion</strong>"},
                          ]})
 
-        # TODO: Export
+        # Export to HTML
+        response = await self.aget('/project/2/export/document/2.html')
+        self.assertEqual(response.code, 200)
+        self.assertEqual(
+            response.body.decode('utf-8'),
+            textwrap.dedent('''\
+            <!DOCTYPE html>
+            <html>
+              <head>
+                <meta charset="UTF-8">
+                <style>
+                  .highlight {
+                    background-color: #ff0;
+                  }
+                </style>
+                <title>otherdoc</title>
+              </head>
+              <body>
+                <h1>otherdoc</h1>
+            <span class="highlight">diff</span>erent con<span \
+class="highlight">tent</span>
+              </body>
+            </html>'''),
+        )
 
         # Merge tag 3 into 2
         response = await self.apost('/api/project/2/tag/merge',
