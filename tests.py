@@ -565,8 +565,8 @@ class TestMultiuser(MyHTTPTestCase):
             await poll_proj2,
             {'highlight_add': {'2': [{'id': 3, 'tags': [2, 3],
                                       'start_offset': 13, 'end_offset': 17}]},
-             'id': 9})
-        poll_proj2 = self.poll_event(2, 9)
+             'id': 9, 'tag_count_changes': {'2': 1, '3': 1}})
+        poll_proj2 = await self.poll_event(2, 9)
 
         # Create highlight 4 in document 3
         response = await self.apost('/api/project/2/document/3/highlight/new',
@@ -579,8 +579,8 @@ class TestMultiuser(MyHTTPTestCase):
             await poll_proj2,
             {'highlight_add': {'3': [{'id': 4, 'tags': [3],
                                       'start_offset': 0, 'end_offset': 7}]},
-             'id': 10})
-        poll_proj2 = self.poll_event(2, 10)
+             'id': 10, 'tag_count_changes': {'3': 1}})
+        poll_proj2 = await self.poll_event(2, 10)
 
         # List highlights in project 2 under 'people'
         response = await self.aget('/api/project/2/highlights/people')
