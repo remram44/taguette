@@ -103,6 +103,19 @@ def extract(html, start, end):
     return str(soup)
 
 
+def byte_to_str_index(string, byte_index):
+    """Converts a byte index in the UTF-8 string into a codepoint index.
+
+    If the index falls inside of a codepoint unit, it will be rounded down.
+    """
+    for idx, char in enumerate(string):
+        char_size = len(char.encode('utf-8'))
+        if char_size > byte_index:
+            return idx
+        byte_index -= char_size
+    return len(string)
+
+
 @PROM_HIGHLIGHT_TIME.time()
 def highlight(html, highlights):
     """Highlight part of an HTML documents.
@@ -129,8 +142,12 @@ def highlight(html, highlights):
                             highlighting = True
                         elif not highlighting and pos + nb > start:
                             parent = node.parent
-                            left = node.string[:start - pos]
-                            right = node.string[start - pos:]
+                            char_idx = byte_to_str_index(
+                                node.string,
+                                start - pos,
+                            )
+                            left = node.string[:char_idx]
+                            right = node.string[char_idx:]
                             idx = parent.index(node)
                             node.replace_with(NavigableString(left))
                             node = NavigableString(right)
@@ -153,8 +170,12 @@ def highlight(html, highlights):
                             break
                         elif highlighting:
                             parent = node.parent
-                            left = node.string[:end - pos]
-                            rest = node.string[end - pos:]
+                            char_idx = byte_to_str_index(
+                                node.string,
+                                end - pos,
+                            )
+                            left = node.string[:char_idx]
+                            rest = node.string[char_idx:]
                             idx = parent.index(node)
                             newnode = NavigableString(left)
                             node.replace_with(newnode)
