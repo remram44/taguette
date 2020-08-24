@@ -71,11 +71,14 @@ async def check_call(cmd, timeout):
             "Process didn't finish before %ds timeout: %r",
             timeout, cmd,
         )
-        proc.terminate()
         try:
-            await asyncio.wait_for(proc.wait(), PROC_TERM_GRACE)
-        except asyncio.TimeoutError:
-            proc.kill()
+            proc.terminate()
+            try:
+                await asyncio.wait_for(proc.wait(), PROC_TERM_GRACE)
+            except asyncio.TimeoutError:
+                proc.kill()
+        except ProcessLookupError:
+            pass
         raise asyncio.TimeoutError
     else:
         if retcode != 0:
