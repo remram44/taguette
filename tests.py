@@ -679,13 +679,19 @@ class TestMultiuser(MyHTTPTestCase):
                   .highlight {
                     background-color: #ff0;
                   }
+                  .taglist {
+                    font-style: oblique;
+                    background: #fbb !important;
+                  }
                 </style>
                 <title>otherdoc</title>
               </head>
               <body>
                 <h1>otherdoc</h1>
-            <span class="highlight">diff</span>erent con<span \
-class="highlight">tent</span>
+            <span class="highlight">diff</span>\
+<span class="taglist"> [interesting.places]</span>erent con\
+<span class="highlight">tent</span><span class="taglist"> \
+[interesting, people]</span>
               </body>
             </html>'''),
         )

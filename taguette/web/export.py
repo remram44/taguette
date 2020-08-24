@@ -247,13 +247,24 @@ class ExportDocument(BaseHandler):
         PROM_EXPORT.labels('document', ext.lower()).inc()
         doc, _ = self.get_document(project_id, document_id, True)
 
-        highlights = merge_overlapping_ranges((hl.start_offset, hl.end_offset)
-                                              for hl in doc.highlights)
+        highlights = (
+            self.db.query(database.Highlight)
+            .filter(database.Highlight.document_id == document_id)
+            .order_by(database.Highlight.start_offset)
+            .options(joinedload(database.Highlight.tags))
+        ).all()
+
+        highlights = merge_overlapping_ranges(
+            (hl.start_offset, hl.end_offset, [t.path for t in hl.tags])
+            for hl in highlights
+        )
 
         html = self.render_string(
             'export_document.html',
             name=doc.name,
-            contents=Markup(extract.highlight(doc.contents, highlights)),
+            contents=Markup(
+                extract.highlight(doc.contents, highlights, show_tags=True),
+            ),
         )
         # Drop non-ASCII characters from the name
         name = doc.name.encode('ascii', 'ignore').decode('ascii') or None
