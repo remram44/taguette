@@ -1,4 +1,3 @@
-import bisect
 import csv
 import logging
 from markupsafe import Markup
@@ -207,37 +206,6 @@ class ExportHighlightsDoc(BaseExportHighlights):
         return name, html
 
 
-def merge_overlapping_ranges(ranges):
-    """Merge overlapping ranges in a sequence.
-    """
-    ranges = iter(ranges)
-    try:
-        merged = [next(ranges)]
-    except StopIteration:
-        return []
-
-    for rg in ranges:
-        left = right = bisect.bisect_right(merged, rg)
-        # Merge left
-        while left >= 1 and rg[0] <= merged[left - 1][1]:
-            rg = (min(rg[0], merged[left - 1][0]),
-                  max(rg[1], merged[left - 1][1]))
-            left -= 1
-        # Merge right
-        while (right < len(merged) and
-               merged[right][0] <= rg[1]):
-            rg = (min(rg[0], merged[right][0]),
-                  max(rg[1], merged[right][1]))
-            right += 1
-        # Insert
-        if left == right:
-            merged.insert(left, rg)
-        else:
-            merged[left:right] = [rg]
-
-    return merged
-
-
 class ExportDocument(BaseHandler):
     init_PROM_EXPORT('document')
 
@@ -254,10 +222,10 @@ class ExportDocument(BaseHandler):
             .options(joinedload(database.Highlight.tags))
         ).all()
 
-        highlights = merge_overlapping_ranges(
+        highlights = [
             (hl.start_offset, hl.end_offset, [t.path for t in hl.tags])
             for hl in highlights
-        )
+        ]
 
         html = self.render_string(
             'export_document.html',

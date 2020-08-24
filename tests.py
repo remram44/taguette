@@ -73,34 +73,6 @@ class TestConvert(AsyncTestCase):
         self.assertEqual(validate.filename('/tmp/nul.pdf'), '_nul.pdf')
 
 
-class TestMergeOverlapping(unittest.TestCase):
-    def test_merge_overlapping_ranges(self):
-        """Tests merging overlapping ranges."""
-        self.assertEqual(web.export.merge_overlapping_ranges([]),
-                         [])
-        self.assertEqual(web.export.merge_overlapping_ranges([(1, 3)]),
-                         [(1, 3)])
-        self.assertEqual(web.export.merge_overlapping_ranges([(1, 2), (3, 4)]),
-                         [(1, 2), (3, 4)])
-        self.assertEqual(
-            web.export.merge_overlapping_ranges([
-                (1, 3),
-                (12, 14),
-                (5, 7),
-                (10, 12),
-                (2, 6),
-                (23, 25),
-                (17, 21),
-                (18, 20),
-            ]), [
-                (1, 7),
-                (10, 14),
-                (17, 21),
-                (23, 25),
-            ]
-        )
-
-
 class TestPassword(unittest.TestCase):
     @staticmethod
     def random_password():
