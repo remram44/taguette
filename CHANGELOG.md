@@ -1,19 +1,24 @@
 Changelog
 =========
 
-0.9.1 (???)
------------
+0.9.1 (2020-08-24)
+------------------
 
 Bugfixes:
 * Fix printed link not being flushed, causing it to be inaccessible e.g. running on Docker
 * Fix incompatibility with Python 3.8
 * Close DB connection during long polls, avoiding overflow of connection pool when using PostgreSQL
 * Don't allow a password reset link to be used more than once
+* Fix 'new highlight' button on Microsoft Edge
+* If Calibre fails, run it again without heuristics
+* Fix highlights being off in document export in non-ASCII paragraphs
 
 Enhancements:
 * Set umask to 077 by default (and add corresponding command-line options)
 * Restore Python 3.5 compatibility
 * Add a timeout to document conversion
+* Add Calibre output limits to the config
+* Fix some important messages being routed through log instead of direct to terminal
 
 0.9 (2019-11-23)
 ----------------
