@@ -1358,6 +1358,7 @@ function loadDocument(document_id) {
     document_contents.innerHTML = '<p style="font-style: oblique; text-align: center;">' + gettext("Load a document on the left") + '</p>';
     return;
   }
+  showSpinner();
   getJSON(
     '/api/project/' + project_id + '/document/' + document_id + '/content'
   )
@@ -1409,10 +1410,12 @@ function loadDocument(document_id) {
   .catch(function(error) {
     console.error("Failed to load document:", error);
     alert(gettext("Error loading document!") + "\n\n" + error);
-  });
+  })
+  .then(hideSpinner);
 }
 
 function loadTag(tag_path) {
+  showSpinner();
   getJSON(
     '/api/project/' + project_id + '/highlights/' + encodeURIComponent(tag_path)
   )
@@ -1481,7 +1484,8 @@ function loadTag(tag_path) {
   .catch(function(error) {
     console.error("Failed to load tag highlights:", error);
     alert(gettext("Error loading tag highlights!") + "\n\n" + error);
-  });
+  })
+  .then(hideSpinner);
 }
 
 // Load the document if the URL includes one
