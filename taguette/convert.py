@@ -123,7 +123,7 @@ def get_html_body(body):
               'h1', 'h2', 'h3', 'h4', 'h5',
               'strong', 'em', 'b', 'u',
               'ul', 'ol', 'li'],
-        attributes={'a': ['href', 'title'], 'img': ['src', 'width', 'height']},
+        attributes={'a': ['href', 'title'], 'img': ['src']},
         strip=True,
     )
 
