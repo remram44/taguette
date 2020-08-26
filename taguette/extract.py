@@ -147,29 +147,37 @@ def highlight(html, highlights, show_tags=False):
         event_pos, event_type, tags = next(events)
     except StopIteration:
         event_pos = event_type = tags = None
+    print((event_pos, event_type, tags))
 
     while node is not None:
+        print("pos = %d node = %r" % (pos, node))
         if getattr(node, 'contents', None):
             # Move down
             node = node.contents[0]
+            print("Moved down to %r" % (node,))
             continue
 
         if isinstance(node, NavigableString):
             # Move through text
             nb = len(node.string.encode('utf-8'))
+            print("In text (%d bytes) %r" % (nb, node))
             while event_pos is not None:
+                print("pos = %d node = %r" % (pos, node))
                 if event_pos == pos and event_type == 'start':
                     # Start highlighting at beginning of text node
                     highlighting += 1
+                    print("Event at beginning, set highlighting = %d" % highlighting)
                     try:
                         event_pos, event_type, tags = next(events)
                     except StopIteration:
                         event_pos = None
+                    print((event_pos, event_type, tags))
                 elif pos + nb > event_pos:
                     # Next event falls inside of this text node
                     if event_type == 'start' and highlighting:
                         # Keep highlighting (can't highlight *more*)
                         highlighting += 1
+                        print("Highlight *more* highlighting = %d" % highlighting)
                     elif (
                         event_type == 'end'
                         and not show_tags
@@ -177,8 +185,10 @@ def highlight(html, highlights, show_tags=False):
                     ):
                         # Keep highlighting (no need to put labels)
                         highlighting -= 1
+                        print("Highlight *less* highlighting = %d" % highlighting)
                     else:  # 'end' and (show_tags or highlighting becomes 0)
                         # Split it
+                        print("Splitting")
                         char_idx = byte_to_str_index(
                             node.string,
                             event_pos - pos,
@@ -198,11 +208,14 @@ def highlight(html, highlights, show_tags=False):
                             newnode = span
                         node.replace_with(newnode)
                         node = newnode
+                        print("= %r" % (node,))
 
                         if event_type == 'start':
                             highlighting += 1
+                            print("Set highlighting = %d" % highlighting)
                         else:
                             highlighting -= 1
+                            print("Set highlighting = %d" % highlighting)
                             if show_tags:
                                 # Add tag labels
                                 comment = soup.new_tag(
@@ -212,11 +225,13 @@ def highlight(html, highlights, show_tags=False):
                                 comment.string = ' [%s]' % ', '.join(tags)
                                 node.insert_after(comment)
                                 node = comment
+                                print("+ %r" % (node,))
 
                         # Right part
                         newnode = NavigableString(right)
                         node.insert_after(newnode)
                         node = newnode
+                        print("+ %r" % (node,))
                         nb -= event_pos - pos
                         pos = event_pos
                         # Next loop will highlight right part if needed
@@ -225,8 +240,10 @@ def highlight(html, highlights, show_tags=False):
                         event_pos, event_type, tags = next(events)
                     except StopIteration:
                         event_pos = None
+                    print((event_pos, event_type, tags))
                 elif highlighting:  # and pos + nb <= event_pos:
                     # Highlight whole text node
+                    print("Highlight whole node")
                     newnode = soup.new_tag(
                         'span',
                         attrs={'class': 'highlight'},
@@ -244,10 +261,12 @@ def highlight(html, highlights, show_tags=False):
                             newnode.insert_after(comment)
                             node = comment
                         highlighting -= 1
+                        print("Putting taglist at the end, highlighting = %d" % highlighting)
                         try:
                             event_pos, event_type, tags = next(events)
                         except StopIteration:
                             event_pos = None
+                        print((event_pos, event_type, tags))
                     break
                 else:  # not highlighting and pos + nb <= event_pos
                     # Skip whole text node
