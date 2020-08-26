@@ -7,6 +7,7 @@ import prometheus_client
 from prometheus_async.aio import time as prom_async_time
 import shutil
 from subprocess import CalledProcessError
+import sys
 import tempfile
 from xml.etree import ElementTree
 
@@ -62,27 +63,40 @@ class UnsupportedFormat(ConversionError):
 PROC_TERM_GRACE = 5  # Wait 5s after SIGTERM before sending SIGKILL
 
 
-async def check_call(cmd, timeout):
-    proc = await asyncio.create_subprocess_exec(cmd[0], *cmd[1:])
-    try:
-        retcode = await asyncio.wait_for(proc.wait(), timeout=timeout)
-    except asyncio.TimeoutError:
-        logger.error(
-            "Process didn't finish before %ds timeout: %r",
-            timeout, cmd,
+if sys.platform == 'win32':
+    # Windows only supports subprocesses with the asyncio ProactorEventLoop
+    # However tornado only supports the SelectorEventLoop
+    # https://github.com/tornadoweb/tornado/issues/2608
+    # For now we can't use asyncio subprocesses on Windows
+    import subprocess
+
+    def check_call(cmd, timeout):
+        return asyncio.get_event_loop().run_in_executor(
+            None,
+            lambda: subprocess.check_call(cmd, timeout=timeout),
         )
+else:
+    async def check_call(cmd, timeout):
+        proc = await asyncio.create_subprocess_exec(cmd[0], *cmd[1:])
         try:
-            proc.terminate()
+            retcode = await asyncio.wait_for(proc.wait(), timeout=timeout)
+        except asyncio.TimeoutError:
+            logger.error(
+                "Process didn't finish before %ds timeout: %r",
+                timeout, cmd,
+            )
             try:
-                await asyncio.wait_for(proc.wait(), PROC_TERM_GRACE)
-            except asyncio.TimeoutError:
-                proc.kill()
-        except ProcessLookupError:
-            pass
-        raise asyncio.TimeoutError
-    else:
-        if retcode != 0:
-            raise CalledProcessError(retcode, cmd)
+                proc.terminate()
+                try:
+                    await asyncio.wait_for(proc.wait(), PROC_TERM_GRACE)
+                except asyncio.TimeoutError:
+                    proc.kill()
+            except ProcessLookupError:
+                pass
+            raise asyncio.TimeoutError
+        else:
+            if retcode != 0:
+                raise CalledProcessError(retcode, cmd)
 
 
 # Something to HTML
