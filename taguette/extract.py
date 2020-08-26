@@ -125,81 +125,116 @@ def highlight(html, highlights, show_tags=False):
     :param show_tags: Whether to show the tag names within brackets after each
         highlight
     """
-    highlights = iter(highlights)
+    # Build a list of starting points and ending points
+    starts = []
+    ends = []
+    for hl in highlights:
+        starts.append((hl[0], 'start', []))
+        if len(hl) == 2:
+            ends.append((hl[1], 'end', []))
+        else:
+            ends.append((hl[1], 'end', hl[2]))
+    # This relies on the fact that 'end' < 'start'
+    events = sorted(ends + starts)
+
+    events = iter(events)
     soup = BeautifulSoup(html, 'html5lib')
 
     pos = 0
     node = soup
-    highlighting = False
+    highlighting = 0
     try:
-        start, end, tags = next(highlights)
+        event_pos, event_type, tags = next(events)
     except StopIteration:
-        start = end = tags = None
+        event_pos = event_type = tags = None
 
-    while start is not None:
+    while node is not None:
         if getattr(node, 'contents', None):
+            # Move down
             node = node.contents[0]
-        else:
-            if isinstance(node, NavigableString):
-                nb = len(node.string.encode('utf-8'))
-                while start is not None:
-                    if not highlighting and start == pos:
-                        highlighting = True
-                    elif not highlighting and pos + nb > start:
-                        parent = node.parent
+            continue
+
+        if isinstance(node, NavigableString):
+            # Move through text
+            nb = len(node.string.encode('utf-8'))
+            while event_pos is not None:
+                if event_pos == pos and event_type == 'start':
+                    # Start highlighting at beginning of text node
+                    highlighting += 1
+                    try:
+                        event_pos, event_type, tags = next(events)
+                    except StopIteration:
+                        event_pos = None
+                elif pos + nb > event_pos:
+                    # Next event falls inside of this text node
+                    if event_type == 'start' and highlighting:
+                        # Keep highlighting (can't highlight *more*)
+                        highlighting += 1
+                    elif (
+                        event_type == 'end'
+                        and not show_tags
+                        and highlighting > 1
+                    ):
+                        # Keep highlighting (no need to put labels)
+                        highlighting -= 1
+                    else:  # 'end' and (show_tags or highlighting becomes 0)
+                        # Split it
                         char_idx = byte_to_str_index(
                             node.string,
-                            start - pos,
+                            event_pos - pos,
                         )
                         left = node.string[:char_idx]
                         right = node.string[char_idx:]
-                        idx = parent.index(node)
-                        node.replace_with(NavigableString(left))
-                        node = NavigableString(right)
-                        parent.insert(idx + 1, node)
-                        nb -= start - pos
-                        pos = start
-                        # Code below will do the actual highlighting
-                        highlighting = True
-                    elif highlighting and pos + nb <= end:
-                        newnode = soup.new_tag(
-                            'span',
-                            attrs={'class': 'highlight'},
-                        )
+
+                        # Left part
+                        newnode = NavigableString(left)
+                        if highlighting:
+                            # Optionally highlight left part
+                            span = soup.new_tag(
+                                'span',
+                                attrs={'class': 'highlight'},
+                            )
+                            span.append(newnode)
+                            newnode = span
                         node.replace_with(newnode)
-                        newnode.append(node)
                         node = newnode
-                        if pos + nb == end:
+
+                        if event_type == 'start':
+                            highlighting += 1
+                        else:
+                            highlighting -= 1
                             if show_tags:
+                                # Add tag labels
                                 comment = soup.new_tag(
                                     'span',
                                     attrs={'class': 'taglist'},
                                 )
                                 comment.string = ' [%s]' % ', '.join(tags)
-                                newnode.insert_after(comment)
+                                node.insert_after(comment)
                                 node = comment
-                            highlighting = False
-                            try:
-                                start, end, tags = next(highlights)
-                            except StopIteration:
-                                start = end = tags = None
-                        break
-                    elif highlighting:
-                        char_idx = byte_to_str_index(
-                            node.string,
-                            end - pos,
-                        )
-                        left = node.string[:char_idx]
-                        rest = node.string[char_idx:]
-                        newnode = NavigableString(left)
-                        node.replace_with(newnode)
+
+                        # Right part
+                        newnode = NavigableString(right)
+                        node.insert_after(newnode)
                         node = newnode
-                        newnode = soup.new_tag(
-                            'span',
-                            attrs={'class': 'highlight'},
-                        )
-                        node.replace_with(newnode)
-                        newnode.append(node)
+                        nb -= event_pos - pos
+                        pos = event_pos
+                        # Next loop will highlight right part if needed
+
+                    try:
+                        event_pos, event_type, tags = next(events)
+                    except StopIteration:
+                        event_pos = None
+                elif highlighting:  # and pos + nb <= event_pos:
+                    # Highlight whole text node
+                    newnode = soup.new_tag(
+                        'span',
+                        attrs={'class': 'highlight'},
+                    )
+                    node.replace_with(newnode)
+                    newnode.append(node)
+                    node = newnode
+                    if pos + nb == event_pos and event_type == 'end':
                         if show_tags:
                             comment = soup.new_tag(
                                 'span',
@@ -207,25 +242,26 @@ def highlight(html, highlights, show_tags=False):
                             )
                             comment.string = ' [%s]' % ', '.join(tags)
                             newnode.insert_after(comment)
-                            newnode = comment
-                        node = NavigableString(rest)
-                        newnode.insert_after(node)
-                        nb -= end - pos
-                        pos = end
-                        highlighting = False
+                            node = comment
+                        highlighting -= 1
                         try:
-                            start, end, tags = next(highlights)
+                            event_pos, event_type, tags = next(events)
                         except StopIteration:
-                            start = end = tags = None
-                    else:
-                        break
+                            event_pos = None
+                    break
+                else:  # not highlighting and pos + nb <= event_pos
+                    # Skip whole text node
+                    break
 
-                pos += nb
-            while not node.next_sibling and node.parent:
-                node = node.parent
-            if not node.parent:
-                break
-            node = node.next_sibling
+            pos += nb
+
+        # Move up until there's a sibling
+        while not node.next_sibling and node.parent:
+            node = node.parent
+        if not node.parent:
+            break
+        # Move to next node
+        node = node.next_sibling
 
     # Remove everything but body
     body = soup.body

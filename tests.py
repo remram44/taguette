@@ -147,7 +147,7 @@ class TestMeasure(unittest.TestCase):
 
     def test_highlight_unicode(self):
         """Tests highlighting an HTML document with unicode characters."""
-        html = '<p><u>H\xE9ll\xF6</u> the\xAEe <i>\u1E84o\xAEld</i></p>'
+        html = '<p><u>H\xE9ll\xF6</u> the\xAEe <i>\u1E84o\xAEld</i>!</p>'
         highlights = [
             (0, 1, ['tag1']), (3, 4, []),
             (6, 10, ['tag1', 'tag2']), (13, 19, ['tag2']), (21, 23, ['tag1']),
@@ -157,7 +157,7 @@ class TestMeasure(unittest.TestCase):
             .replace('<span class="highlight">', '{')
             .replace('</span>', '}'),
             '<p><u>{H}\xE9{l}l{\xF6}</u>{ th}e\xAE'
-            '{e }<i>{\u1E84o}\xAE{ld}</i></p>',
+            '{e }<i>{\u1E84o}\xAE{ld}</i>!</p>',
         )
 
         self.assertEqual(
@@ -167,7 +167,7 @@ class TestMeasure(unittest.TestCase):
             .replace('<span class="highlight">', '{')
             .replace('</span>', '}'),
             '<p><u>{H}[tag1]\xE9{l}[]l{\xF6}</u>{ th}[tag1, tag2]e\xAE'
-            '{e }<i>{\u1E84o}[tag2]\xAE{ld}[tag1]</i></p>',
+            '{e }<i>{\u1E84o}[tag2]\xAE{ld}[tag1]</i>!</p>',
         )
 
     def test_highlight_nested(self):
@@ -186,23 +186,23 @@ class TestMeasure(unittest.TestCase):
                 extract.highlight(html, highlights)
                 .replace('<span class="highlight">', '{')
                 .replace('</span>', '}'),
-                '<p><u>{Hel{lo</u> ther{e <i>Wo}r}ld}</i></p>',
+                '<p><u>{Hello}</u>{ there }<i>{World}</i></p>',
             )
 
             expected = {
-                (14, 15, 17): '<p><u>{Hel{lo</u> ther'
-                              '{e <i>Wo}[tag1]r}[]ld}[tag1, tag2]</i></p>',
-                (14, 17, 15): '<p><u>{Hel{lo</u> ther'
-                              '{e <i>Wo}[tag1]r}[tag1, tag2]ld}[]</i></p>',
-                (15, 14, 17): '<p><u>{Hel{lo</u> ther'
-                              '{e <i>Wo}[]r}[tag1]ld}[tag1, tag2]</i></p>',
-                (15, 17, 14): '<p><u>{Hel{lo</u> ther'
-                              '{e <i>Wo}[]r}[tag1, tag2]ld}[tag1]</i></p>',
-                (17, 14, 15): '<p><u>{Hel{lo</u> ther'
-                              '{e <i>Wo}[tag1, tag2]r}[tag1]ld}[]</i></p>',
-                (17, 15, 14): '<p><u>{Hel{lo</u> ther'
-                              '{e <i>Wo}[tag1, tag2]r}[]ld}[tag1]</i></p>',
-            }[tuple(ends)]
+                (14, 15, 17): '<p><u>{Hello}</u>{ ther'
+                              'e }<i>{Wo}[tag1]{r}[]{ld}[tag1, tag2]</i></p>',
+                (14, 17, 15): '<p><u>{Hello}</u>{ ther'
+                              'e }<i>{Wo}[tag1]{r}[tag1, tag2]{ld}[]</i></p>',
+                (15, 14, 17): '<p><u>{Hello}</u>{ ther'
+                              'e }<i>{Wo}[]{r}[tag1]{ld}[tag1, tag2]</i></p>',
+                (15, 17, 14): '<p><u>{Hello}</u>{ ther'
+                              'e }<i>{Wo}[tag1, tag2]{r}[tag1]{ld}[]</i></p>',
+                (17, 14, 15): '<p><u>{Hello}</u>{ ther'
+                              'e }<i>{Wo}[]{r}[tag1, tag2]{ld}[tag1]</i></p>',
+                (17, 15, 14): '<p><u>{Hello}</u>{ ther'
+                              'e }<i>{Wo}[tag1, tag2]{r}[]{ld}[tag1]</i></p>',
+            }[ends]
             self.assertEqual(
                 extract.highlight(html, highlights, show_tags=True)
                 .replace('<span class="taglist"> [', '[')
@@ -210,6 +210,7 @@ class TestMeasure(unittest.TestCase):
                 .replace('<span class="highlight">', '{')
                 .replace('</span>', '}'),
                 expected,
+                "ends=%r" % (ends,),
             )
 
 
