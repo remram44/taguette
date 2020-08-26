@@ -1,3 +1,4 @@
+import asyncio
 import csv
 import logging
 from markupsafe import Markup
@@ -43,7 +44,15 @@ def export_doc(wrapped):
     async def wrapper(self, *args):
         ext = args[-1]
         ext = ext.lower()
-        name, html = wrapped(self, *args)
+
+        # Call wrapped function to get document
+        ret = wrapped(self, *args)
+        if asyncio.isfuture(ret) or asyncio.iscoroutine(ret):
+            name, html = await ret
+        else:
+            name, html = ret
+
+        # Convert using Calibre
         try:
             mimetype, contents = convert.html_to(
                 html, ext,
@@ -53,6 +62,8 @@ def export_doc(wrapped):
             self.set_status(404)
             self.set_header('Content-Type', 'text/plain')
             return self.finish("Unsupported format: %s" % ext)
+
+        # Return document
         self.set_header('Content-Type', mimetype)
         if name:
             self.set_header('Content-Disposition',
@@ -62,6 +73,7 @@ def export_doc(wrapped):
         for chunk in await contents:
             self.write(chunk)
         return self.finish()
+
     return wrapper
 
 
@@ -211,7 +223,7 @@ class ExportDocument(BaseHandler):
 
     @authenticated
     @export_doc
-    def get(self, project_id, document_id, ext):
+    async def get(self, project_id, document_id, ext):
         PROM_EXPORT.labels('document', ext.lower()).inc()
         doc, _ = self.get_document(project_id, document_id, True)
 
@@ -227,12 +239,17 @@ class ExportDocument(BaseHandler):
             for hl in highlights
         ]
 
+        html = await asyncio.get_event_loop().run_in_executor(
+            None,
+            lambda: extract.highlight(
+                doc.contents, highlights,
+                show_tags=True,
+            ),
+        )
         html = self.render_string(
             'export_document.html',
             name=doc.name,
-            contents=Markup(
-                extract.highlight(doc.contents, highlights, show_tags=True),
-            ),
+            contents=Markup(html),
         )
         # Drop non-ASCII characters from the name
         name = doc.name.encode('ascii', 'ignore').decode('ascii') or None
