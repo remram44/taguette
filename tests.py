@@ -1,5 +1,6 @@
 import asyncio
 from http.cookies import SimpleCookie
+import itertools
 import json
 import os
 import random
@@ -168,6 +169,48 @@ class TestMeasure(unittest.TestCase):
             '<p><u>{H}[tag1]\xE9{l}[]l{\xF6}</u>{ th}[tag1, tag2]e\xAE'
             '{e }<i>{\u1E84o}[tag2]\xAE{ld}[tag1]</i></p>',
         )
+
+    def test_highlight_nested(self):
+        """Test highlighting an HTML document when highlights are nested."""
+        html = '<p><u>Hello</u> there <i>World</i></p>'
+
+        # Do all the combinations of nesting orders
+        starts = [0, 3, 10]
+        for ends in itertools.permutations([14, 15, 17]):
+            highlights = [
+                (starts[0], ends[0], ['tag1']), (starts[1], ends[1], []),
+                (starts[2], ends[2], ['tag1', 'tag2']),
+            ]
+
+            self.assertEqual(
+                extract.highlight(html, highlights)
+                .replace('<span class="highlight">', '{')
+                .replace('</span>', '}'),
+                '<p><u>{Hel{lo</u> ther{e <i>Wo}r}ld}</i></p>',
+            )
+
+            expected = {
+                (14, 15, 17): '<p><u>{Hel{lo</u> ther'
+                              '{e <i>Wo}[tag1]r}[]ld}[tag1, tag2]</i></p>',
+                (14, 17, 15): '<p><u>{Hel{lo</u> ther'
+                              '{e <i>Wo}[tag1]r}[tag1, tag2]ld}[]</i></p>',
+                (15, 14, 17): '<p><u>{Hel{lo</u> ther'
+                              '{e <i>Wo}[]r}[tag1]ld}[tag1, tag2]</i></p>',
+                (15, 17, 14): '<p><u>{Hel{lo</u> ther'
+                              '{e <i>Wo}[]r}[tag1, tag2]ld}[tag1]</i></p>',
+                (17, 14, 15): '<p><u>{Hel{lo</u> ther'
+                              '{e <i>Wo}[tag1, tag2]r}[tag1]ld}[]</i></p>',
+                (17, 15, 14): '<p><u>{Hel{lo</u> ther'
+                              '{e <i>Wo}[tag1, tag2]r}[]ld}[tag1]</i></p>',
+            }[tuple(ends)]
+            self.assertEqual(
+                extract.highlight(html, highlights, show_tags=True)
+                .replace('<span class="taglist"> [', '[')
+                .replace(']</span>', ']')
+                .replace('<span class="highlight">', '{')
+                .replace('</span>', '}'),
+                expected,
+            )
 
 
 class MyHTTPTestCase(AsyncHTTPTestCase):
