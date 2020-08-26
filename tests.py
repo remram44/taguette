@@ -1,5 +1,6 @@
 import asyncio
 from http.cookies import SimpleCookie
+import itertools
 import json
 import os
 import random
@@ -73,34 +74,6 @@ class TestConvert(AsyncTestCase):
         self.assertEqual(validate.filename('/tmp/nul.pdf'), '_nul.pdf')
 
 
-class TestMergeOverlapping(unittest.TestCase):
-    def test_merge_overlapping_ranges(self):
-        """Tests merging overlapping ranges."""
-        self.assertEqual(web.export.merge_overlapping_ranges([]),
-                         [])
-        self.assertEqual(web.export.merge_overlapping_ranges([(1, 3)]),
-                         [(1, 3)])
-        self.assertEqual(web.export.merge_overlapping_ranges([(1, 2), (3, 4)]),
-                         [(1, 2), (3, 4)])
-        self.assertEqual(
-            web.export.merge_overlapping_ranges([
-                (1, 3),
-                (12, 14),
-                (5, 7),
-                (10, 12),
-                (2, 6),
-                (23, 25),
-                (17, 21),
-                (18, 20),
-            ]), [
-                (1, 7),
-                (10, 14),
-                (17, 21),
-                (23, 25),
-            ]
-        )
-
-
 class TestPassword(unittest.TestCase):
     @staticmethod
     def random_password():
@@ -151,25 +124,94 @@ class TestMeasure(unittest.TestCase):
     def test_highlight(self):
         """Tests highlighting an HTML document with only ASCII characters."""
         html = '<p><u>Hello</u> there <i>World</i></p>'
+        highlights = [
+            (0, 1, ['tag1']), (2, 3, []),
+            (4, 8, ['tag1', 'tag2']), (10, 14, ['tag2']), (15, 17, ['tag1']),
+        ]
         self.assertEqual(
-            extract.highlight(html, [(0, 1), (2, 3),
-                                     (4, 8), (10, 14), (15, 17)])
+            extract.highlight(html, highlights)
             .replace('<span class="highlight">', '{')
             .replace('</span>', '}'),
             '<p><u>{H}e{l}l{o}</u>{ th}er{e }<i>{Wo}r{ld}</i></p>',
         )
 
+        self.assertEqual(
+            extract.highlight(html, highlights, show_tags=True)
+            .replace('<span class="taglist"> [', '[')
+            .replace(']</span>', ']')
+            .replace('<span class="highlight">', '{')
+            .replace('</span>', '}'),
+            '<p><u>{H}[tag1]e{l}[]l{o}</u>{ th}[tag1, tag2]er{e }' +
+            '<i>{Wo}[tag2]r{ld}[tag1]</i></p>',
+        )
+
     def test_highlight_unicode(self):
         """Tests highlighting an HTML document with unicode characters."""
-        html = '<p><u>H\xE9ll\xF6</u> the\xAEe <i>\u1E84o\xAEld</i></p>'
+        html = '<p><u>H\xE9ll\xF6</u> the\xAEe <i>\u1E84o\xAEld</i>!</p>'
+        highlights = [
+            (0, 1, ['tag1']), (3, 4, []),
+            (6, 10, ['tag1', 'tag2']), (13, 19, ['tag2']), (21, 23, ['tag1']),
+        ]
         self.assertEqual(
-            extract.highlight(html, [(0, 1), (3, 4),
-                                     (6, 10), (13, 19), (21, 23)])
+            extract.highlight(html, highlights)
             .replace('<span class="highlight">', '{')
             .replace('</span>', '}'),
             '<p><u>{H}\xE9{l}l{\xF6}</u>{ th}e\xAE'
-            '{e }<i>{\u1E84o}\xAE{ld}</i></p>',
+            '{e }<i>{\u1E84o}\xAE{ld}</i>!</p>',
         )
+
+        self.assertEqual(
+            extract.highlight(html, highlights, show_tags=True)
+            .replace('<span class="taglist"> [', '[')
+            .replace(']</span>', ']')
+            .replace('<span class="highlight">', '{')
+            .replace('</span>', '}'),
+            '<p><u>{H}[tag1]\xE9{l}[]l{\xF6}</u>{ th}[tag1, tag2]e\xAE'
+            '{e }<i>{\u1E84o}[tag2]\xAE{ld}[tag1]</i>!</p>',
+        )
+
+    def test_highlight_nested(self):
+        """Test highlighting an HTML document when highlights are nested."""
+        html = '<p><u>Hello</u> there <i>World</i></p>'
+
+        # Do all the combinations of nesting orders
+        starts = [0, 3, 10]
+        for ends in itertools.permutations([14, 15, 17]):
+            highlights = [
+                (starts[0], ends[0], ['tag1']), (starts[1], ends[1], []),
+                (starts[2], ends[2], ['tag1', 'tag2']),
+            ]
+
+            self.assertEqual(
+                extract.highlight(html, highlights)
+                .replace('<span class="highlight">', '{')
+                .replace('</span>', '}'),
+                '<p><u>{Hello}</u>{ there }<i>{World}</i></p>',
+            )
+
+            expected = {
+                (14, 15, 17): '<p><u>{Hello}</u>{ ther'
+                              'e }<i>{Wo}[tag1]{r}[]{ld}[tag1, tag2]</i></p>',
+                (14, 17, 15): '<p><u>{Hello}</u>{ ther'
+                              'e }<i>{Wo}[tag1]{r}[tag1, tag2]{ld}[]</i></p>',
+                (15, 14, 17): '<p><u>{Hello}</u>{ ther'
+                              'e }<i>{Wo}[]{r}[tag1]{ld}[tag1, tag2]</i></p>',
+                (15, 17, 14): '<p><u>{Hello}</u>{ ther'
+                              'e }<i>{Wo}[tag1, tag2]{r}[tag1]{ld}[]</i></p>',
+                (17, 14, 15): '<p><u>{Hello}</u>{ ther'
+                              'e }<i>{Wo}[]{r}[tag1, tag2]{ld}[tag1]</i></p>',
+                (17, 15, 14): '<p><u>{Hello}</u>{ ther'
+                              'e }<i>{Wo}[tag1, tag2]{r}[]{ld}[tag1]</i></p>',
+            }[ends]
+            self.assertEqual(
+                extract.highlight(html, highlights, show_tags=True)
+                .replace('<span class="taglist"> [', '[')
+                .replace(']</span>', ']')
+                .replace('<span class="highlight">', '{')
+                .replace('</span>', '}'),
+                expected,
+                "ends=%r" % (ends,),
+            )
 
 
 class MyHTTPTestCase(AsyncHTTPTestCase):
@@ -653,13 +695,19 @@ class TestMultiuser(MyHTTPTestCase):
                   .highlight {
                     background-color: #ff0;
                   }
+                  .taglist {
+                    font-style: oblique;
+                    background: #fbb !important;
+                  }
                 </style>
                 <title>otherdoc</title>
               </head>
               <body>
                 <h1>otherdoc</h1>
-            <span class="highlight">diff</span>erent con<span \
-class="highlight">tent</span>
+            <span class="highlight">diff</span>\
+<span class="taglist"> [interesting.places]</span>erent con\
+<span class="highlight">tent</span><span class="taglist"> \
+[interesting, people]</span>
               </body>
             </html>'''),
         )

@@ -1,4 +1,4 @@
-import bisect
+import asyncio
 import csv
 import logging
 from markupsafe import Markup
@@ -44,7 +44,15 @@ def export_doc(wrapped):
     async def wrapper(self, *args):
         ext = args[-1]
         ext = ext.lower()
-        name, html = wrapped(self, *args)
+
+        # Call wrapped function to get document
+        ret = wrapped(self, *args)
+        if asyncio.isfuture(ret) or asyncio.iscoroutine(ret):
+            name, html = await ret
+        else:
+            name, html = ret
+
+        # Convert using Calibre
         try:
             mimetype, contents = convert.html_to(
                 html, ext,
@@ -54,6 +62,8 @@ def export_doc(wrapped):
             self.set_status(404)
             self.set_header('Content-Type', 'text/plain')
             return self.finish("Unsupported format: %s" % ext)
+
+        # Return document
         self.set_header('Content-Type', mimetype)
         if name:
             self.set_header('Content-Disposition',
@@ -63,6 +73,7 @@ def export_doc(wrapped):
         for chunk in await contents:
             self.write(chunk)
         return self.finish()
+
     return wrapper
 
 
@@ -207,53 +218,38 @@ class ExportHighlightsDoc(BaseExportHighlights):
         return name, html
 
 
-def merge_overlapping_ranges(ranges):
-    """Merge overlapping ranges in a sequence.
-    """
-    ranges = iter(ranges)
-    try:
-        merged = [next(ranges)]
-    except StopIteration:
-        return []
-
-    for rg in ranges:
-        left = right = bisect.bisect_right(merged, rg)
-        # Merge left
-        while left >= 1 and rg[0] <= merged[left - 1][1]:
-            rg = (min(rg[0], merged[left - 1][0]),
-                  max(rg[1], merged[left - 1][1]))
-            left -= 1
-        # Merge right
-        while (right < len(merged) and
-               merged[right][0] <= rg[1]):
-            rg = (min(rg[0], merged[right][0]),
-                  max(rg[1], merged[right][1]))
-            right += 1
-        # Insert
-        if left == right:
-            merged.insert(left, rg)
-        else:
-            merged[left:right] = [rg]
-
-    return merged
-
-
 class ExportDocument(BaseHandler):
     init_PROM_EXPORT('document')
 
     @authenticated
     @export_doc
-    def get(self, project_id, document_id, ext):
+    async def get(self, project_id, document_id, ext):
         PROM_EXPORT.labels('document', ext.lower()).inc()
         doc, _ = self.get_document(project_id, document_id, True)
 
-        highlights = merge_overlapping_ranges((hl.start_offset, hl.end_offset)
-                                              for hl in doc.highlights)
+        highlights = (
+            self.db.query(database.Highlight)
+            .filter(database.Highlight.document_id == document_id)
+            .order_by(database.Highlight.start_offset)
+            .options(joinedload(database.Highlight.tags))
+        ).all()
 
+        highlights = [
+            (hl.start_offset, hl.end_offset, [t.path for t in hl.tags])
+            for hl in highlights
+        ]
+
+        html = await asyncio.get_event_loop().run_in_executor(
+            None,
+            lambda: extract.highlight(
+                doc.contents, highlights,
+                show_tags=True,
+            ),
+        )
         html = self.render_string(
             'export_document.html',
             name=doc.name,
-            contents=Markup(extract.highlight(doc.contents, highlights)),
+            contents=Markup(html),
         )
         # Drop non-ASCII characters from the name
         name = doc.name.encode('ascii', 'ignore').decode('ascii') or None
