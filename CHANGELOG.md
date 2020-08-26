@@ -1,6 +1,16 @@
 Changelog
 =========
 
+0.9.2 (2020-08-26)
+------------------
+
+Bugfixes:
+* Fix document conversion on Windows
+
+Enhancements:
+* Show spinner while loading document or tag view
+* Show the tag names next to each highlight in document export
+
 0.9.1 (2020-08-24)
 ------------------
 
