@@ -149,7 +149,7 @@ class TestMeasure(unittest.TestCase):
                          '<p>R\xE9mi</p>')
 
     def test_highlight(self):
-        """Tests highlighting an HTML document."""
+        """Tests highlighting an HTML document with only ASCII characters."""
         html = '<p><u>Hello</u> there <i>World</i></p>'
         self.assertEqual(
             extract.highlight(html, [(0, 1), (2, 3),
@@ -157,6 +157,18 @@ class TestMeasure(unittest.TestCase):
             .replace('<span class="highlight">', '{')
             .replace('</span>', '}'),
             '<p><u>{H}e{l}l{o}</u>{ th}er{e }<i>{Wo}r{ld}</i></p>',
+        )
+
+    def test_highlight_unicode(self):
+        """Tests highlighting an HTML document with unicode characters."""
+        html = '<p><u>H\xE9ll\xF6</u> the\xAEe <i>\u1E84o\xAEld</i></p>'
+        self.assertEqual(
+            extract.highlight(html, [(0, 1), (3, 4),
+                                     (6, 10), (13, 19), (21, 23)])
+            .replace('<span class="highlight">', '{')
+            .replace('</span>', '}'),
+            '<p><u>{H}\xE9{l}l{\xF6}</u>{ th}e\xAE'
+            '{e }<i>{\u1E84o}\xAE{ld}</i></p>',
         )
 
 
