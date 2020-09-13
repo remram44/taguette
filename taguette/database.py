@@ -646,3 +646,55 @@ def migrate(db_url, revision):
 
     logger.warning("Performing database upgrade")
     alembic.command.upgrade(alembic_cfg, revision)
+
+
+def copy_table(src_db, dest_db, table,
+               pkey, fkeys,
+               *, batch_size=50, condition=None, transform=None):
+    """Copy all data in a table across database connections.
+
+    :param src_db: The SQLAlchemy ``Connection`` or ``Session`` to copy from.
+    :param dest_db: The SQLAlchemy ``Connection`` or ``Session`` to copy into.
+    :param table: The SQLAlchemy ``Table`` we are copying. It should exist on
+        both the source and destination databases.
+    :param pkey: The field in the table that is the primary key and should be
+        reset during the copy (so new values get generated when inserting in
+        the destination and no conflict occurs).
+    :param fkeys: A dictionary associating the name of the fields that are
+        foreign keys to a dictionary mapping the keys.
+    :param transform: Function to apply on each row.
+    """
+    query = table.select()
+    if pkey is not None:
+        query = query.order_by(pkey)
+    if condition is not None:
+        query = query.where(condition)
+    query = src_db.execute(query)
+    assert pkey is None or pkey in query.keys()
+    assert all(field in query.keys() for field in fkeys)
+    mapping = {}
+    batch = query.fetchmany(batch_size)
+    orig_pkey = None  # Avoids warning
+    while batch:
+        for row in batch:
+            row = dict(row.items())
+            # Get primary key, reset it to None
+            if pkey is not None:
+                orig_pkey = row[pkey]
+                row[pkey] = None
+            # Map foreign keys
+            for field, fkey_map in fkeys.items():
+                row[field] = fkey_map[row[field]]
+            # Generic transform
+            if transform is not None:
+                row = transform(row)
+            # Have to insert one-by-one for inserted_primary_key
+            ins = dest_db.execute(
+                table.insert(),
+                row,
+            )
+            # Store new primary key
+            if pkey is not None:
+                mapping[orig_pkey], = ins.inserted_primary_key
+        batch = query.fetchmany(batch_size)
+    return mapping
