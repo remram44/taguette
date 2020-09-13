@@ -113,6 +113,13 @@ class User(Base):
             logger.warning("Password uses unknown encryption method")
             return False
 
+    def __repr__(self):
+        return '<%s.%s %r>' % (
+            self.__class__.__module__,
+            self.__class__.__name__,
+            self.login,
+        )
+
 
 class Project(Base):
     __tablename__ = 'projects'
@@ -131,6 +138,14 @@ class Project(Base):
                         passive_deletes=True)
     groups = relationship('Group', cascade='all,delete-orphan',
                           passive_deletes=True)
+
+    def __repr__(self):
+        return '<%s.%s %r %r>' % (
+            self.__class__.__module__,
+            self.__class__.__name__,
+            self.id,
+            self.name,
+        )
 
 
 class Privileges(enum.Enum):
@@ -182,6 +197,14 @@ class ProjectMember(Base):
     user = relationship('User')
     privileges = Column(Enum(Privileges), nullable=False)
 
+    def __repr__(self):
+        return '<%s.%s project_id=%r user_login=%r>' % (
+            self.__class__.__module__,
+            self.__class__.__name__,
+            self.project_id,
+            self.user_login,
+        )
+
 
 class Document(Base):
     __tablename__ = 'documents'
@@ -199,6 +222,15 @@ class Document(Base):
     group = relationship('Group', secondary='document_groups')
     highlights = relationship('Highlight', cascade='all,delete-orphan',
                               passive_deletes=True)
+
+    def __repr__(self):
+        return '<%s.%s %r %r project_id=%r>' % (
+            self.__class__.__module__,
+            self.__class__.__name__,
+            self.id,
+            self.name,
+            self.project_id,
+        )
 
 
 class Command(Base):
@@ -348,6 +380,20 @@ class Command(Base):
                      'member': member_login}
         )
 
+    def __repr__(self):
+        return (
+            '<%s.%s %r %r user_login=%r project_id=%r document_id=%r type=%r>'
+        ) % (
+            self.__class__.__module__,
+            self.__class__.__name__,
+            self.id,
+            self.date,
+            self.user_login,
+            self.project_id,
+            self.document_id,
+            self.payload.get('type'),
+        )
+
 
 Project.last_event = column_property(
     select(
@@ -374,6 +420,15 @@ class Highlight(Base):
     snippet = Column(Text, nullable=False)
     tags = relationship('Tag', secondary='highlight_tags')
 
+    def __repr__(self):
+        return '<%s.%s %r document_id=%r tags=[%s]>' % (
+            self.__class__.__module__,
+            self.__class__.__name__,
+            self.id,
+            self.document_id,
+            ' '.join(sorted(t.id for t in self.tags)),
+        )
+
 
 class Group(Base):
     __tablename__ = 'groups'
@@ -392,6 +447,15 @@ class Group(Base):
 
     documents = relationship('Document', secondary='document_groups')
 
+    def __repr__(self):
+        return '<%s.%s %r %r project_id=%r>' % (
+            self.__class__.__module__,
+            self.__class__.__name__,
+            self.id,
+            self.path,
+            self.project_id,
+        )
+
 
 class DocumentGroup(Base):
     __tablename__ = 'document_groups'
@@ -401,6 +465,14 @@ class DocumentGroup(Base):
                          primary_key=True)
     group_id = Column(Integer, ForeignKey('groups.id', ondelete='CASCADE'),
                       primary_key=True)
+
+    def __repr__(self):
+        return '<%s.%s document_id=%r group_id=%r>' % (
+            self.__class__.__module__,
+            self.__class__.__name__,
+            self.document_id,
+            self.group_id,
+        )
 
 
 class Tag(Base):
@@ -420,6 +492,15 @@ class Tag(Base):
 
     highlights = relationship('Highlight', secondary='highlight_tags')
 
+    def __repr__(self):
+        return '<%s.%s %r %r project_id=%r>' % (
+            self.__class__.__module__,
+            self.__class__.__name__,
+            self.id,
+            self.path,
+            self.project_id,
+        )
+
 
 class HighlightTag(Base):
     __tablename__ = 'highlight_tags'
@@ -432,6 +513,14 @@ class HighlightTag(Base):
                                         ondelete='CASCADE'),
                     primary_key=True)
     tag = relationship('Tag')
+
+    def __repr__(self):
+        return '<%s.%s highlight_id=%r tag_id=%r>' % (
+            self.__class__.__module__,
+            self.__class__.__name__,
+            self.highlight_id,
+            self.tag_id,
+        )
 
 
 Tag.highlights_count = column_property(
