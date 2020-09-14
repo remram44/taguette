@@ -46,8 +46,8 @@ class MessagesJs(BaseHandler):
             await self.application.messages_event.wait()
         messages = json.dumps(self.application.messages)
         self.set_header('Content-Type', 'text/javascript')
-        return self.render('messages.js',
-                           messages=Markup(messages))
+        return await self.render('messages.js',
+                                 messages=Markup(messages))
 
 
 def make_app(config, debug=False, xsrf_cookies=True):

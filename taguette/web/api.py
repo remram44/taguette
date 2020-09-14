@@ -106,7 +106,7 @@ class DocumentAdd(BaseHandler):
         project, privileges = self.get_project(project_id)
         if not privileges.can_add_document():
             self.set_status(403)
-            return self.send_json({'error': "Unauthorized"})
+            return await self.send_json({'error': "Unauthorized"})
         try:
             name = self.get_body_argument('name')
             validate.document_name(name)
@@ -126,7 +126,7 @@ class DocumentAdd(BaseHandler):
                 )
             except convert.ConversionError as err:
                 self.set_status(400)
-                return self.send_json({
+                return await self.send_json({
                     'error': str(err),
                 })
             else:
@@ -149,11 +149,11 @@ class DocumentAdd(BaseHandler):
                 self.db.commit()
                 self.db.refresh(cmd)
                 self.application.notify_project(project.id, cmd)
-                return self.send_json({'created': doc.id})
+                return await self.send_json({'created': doc.id})
         except validate.InvalidFormat as e:
             logger.info("Error validating DocumentAdd: %r", e)
             self.set_status(e.status_code, e.reason)
-            return self.send_json({'error': e.message})
+            return await self.send_json({'error': e.message})
 
 
 class DocumentUpdate(BaseHandler):
@@ -723,7 +723,7 @@ class ProjectEvents(BaseHandler):
             result['tag_count_changes'] = cmd.tag_count_changes
 
         result['id'] = cmd.id
-        return self.send_json(result)
+        return await self.send_json(result)
 
     def on_connection_close(self):
         self.response_cancelled = True
