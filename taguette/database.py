@@ -3,6 +3,7 @@ import alembic.config
 from alembic.runtime.migration import MigrationContext
 from alembic.script import ScriptDirectory
 import binascii
+from collections import defaultdict
 import contextlib
 from datetime import datetime
 import enum
@@ -648,6 +649,120 @@ def migrate(db_url, revision):
     alembic.command.upgrade(alembic_cfg, revision)
 
 
+def copy_project(
+    src_db, dest_db,
+    project_id, user_login,
+):
+    def copy(model, pkey, fkeys, size, *, condition=None, transform=None):
+        return copy_table(
+            src_db, dest_db,
+            model.__table__, pkey, fkeys,
+            batch_size=size, condition=condition, transform=transform,
+        )
+
+    def insert(model, values):
+        ins = dest_db.execute(
+            model.__table__.insert(),
+            values,
+        )
+        return ins
+
+    # Copy project
+    project = src_db.execute(
+        Project.__table__.select().where(Project.id == project_id)
+    ).fetchone()
+    if project is None:
+        raise KeyError("project ID not found")
+    project = dict(project.items())
+    project.pop('id')
+    new_project_id, = insert(Project, project).inserted_primary_key
+    mapping_project = {project_id: new_project_id}
+
+    # Add member
+    insert(
+        ProjectMember,
+        dict(
+            project_id=new_project_id,
+            user_login=user_login,
+            privileges=Privileges.ADMIN,
+        ),
+    )
+
+    # Copy documents
+    mapping_document = copy(
+        Document, 'id',
+        dict(project_id=mapping_project),
+        2,
+        condition=Document.project_id == project_id,
+    )
+
+    # Copy tags
+    mapping_tags = copy(
+        Tag, 'id',
+        dict(project_id=mapping_project),
+        50,
+        condition=Tag.project_id == project_id,
+    )
+
+    # Copy highlights
+    mapping_highlights = copy(
+        Highlight, 'id',
+        dict(document_id=mapping_document),
+        50,
+        condition=Highlight.document_id.in_(mapping_document.keys()),
+    )
+
+    # Copy highlight tags
+    copy(
+        HighlightTag, None,
+        dict(highlight_id=mapping_highlights, tag_id=mapping_tags),
+        200,
+        condition=HighlightTag.tag_id.in_(mapping_tags.keys()),
+    )
+
+    # Copy commands
+    def transform_command(cmd):
+        payload = cmd['payload']
+
+        def m(mapping, key):
+            payload[key] = mapping.get(payload[key], payload[key])
+
+        if payload['type'] == 'highlight_add':
+            m(mapping_highlights, 'highlight_id')
+            payload['tags'] = [mapping_tags.get(t, t) for t in payload['tags']]
+        elif payload['type'] == 'highlight_delete':
+            m(mapping_highlights, 'highlight_id')
+        elif payload['type'] == 'tag_add':
+            m(mapping_tags, 'tag_id')
+        elif payload['type'] == 'tag_delete':
+            m(mapping_tags, 'tag_id')
+        elif payload['type'] == 'tag_merge':
+            m(mapping_tags, 'src_tag_id')
+            m(mapping_tags, 'dest_tag_id')
+        elif payload['type'] not in Command.TYPES:
+            raise ValueError("Unknown command %r" % payload['type'])
+        return dict(cmd.items(), payload=payload)
+    mapping_document_opt = dict(mapping_document)
+    mapping_document_opt[None] = None
+    copy(
+        Command, 'id',
+        dict(
+            user_login=defaultdict(lambda: user_login),
+            project_id=mapping_project,
+            document_id=mapping_document_opt,
+        ),
+        100,
+        condition=Command.project_id == project_id,
+        transform=transform_command,
+    )
+
+    # TODO: Validate project/documents/tags with validate.py?
+
+    dest_db.commit()
+
+    return new_project_id
+
+
 def copy_table(src_db, dest_db, table,
                pkey, fkeys,
                *, batch_size=50, condition=None, transform=None):
@@ -678,10 +793,11 @@ def copy_table(src_db, dest_db, table,
     while batch:
         for row in batch:
             row = dict(row.items())
-            # Get primary key, reset it to None
+            # Get primary key, remove it
             if pkey is not None:
                 orig_pkey = row[pkey]
-                row[pkey] = None
+                row = dict(row)
+                row.pop(pkey)
             # Map foreign keys
             for field, fkey_map in fkeys.items():
                 row[field] = fkey_map[row[field]]
