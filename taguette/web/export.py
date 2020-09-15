@@ -6,6 +6,7 @@ import tempfile
 from tornado.web import authenticated
 
 from .. import convert
+from .. import database
 from .. import export
 from .base import BaseHandler
 
@@ -250,3 +251,45 @@ class ExportCodebookDoc(BaseHandler):
             locale=self.locale,
         )
         return 'codebook', mimetype, contents
+
+
+class ExportSqlite(BaseHandler):
+    PROM_EXPORT.labels('project', 'sqlite3').inc(0)
+
+    @authenticated
+    async def get(self, project_id):
+        PROM_EXPORT.labels('project', 'sqlite3').inc()
+        project, _ = self.get_project(project_id)
+
+        with tempfile.TemporaryDirectory(
+            prefix='taguette_export_',
+        ) as tmp_dir:
+            filename = os.path.join(tmp_dir, 'db.sqlite3')
+
+            # Connect to database
+            dest_db = database.connect('sqlite:///%s' % filename)()
+
+            # Create user
+            admin = database.User(login='admin')
+            dest_db.add(admin)
+            dest_db.commit()
+
+            # Copy data
+            database.copy_project(
+                self.db, dest_db,
+                project.id, 'admin',
+            )
+            dest_db.commit()
+
+            # Send the file
+            self.set_header('Content-Type', 'application/vnd.sqlite3')
+            self.set_header('Content-Disposition',
+                            'attachment; filename="project.sqlite3"')
+            with open(filename, 'rb') as fp:
+                while True:
+                    chunk = fp.read(4096)
+                    self.write(chunk)
+                    if len(chunk) != 4096:
+                        break
+                    await self.flush()
+                return await self.finish()

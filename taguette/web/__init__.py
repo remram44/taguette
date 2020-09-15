@@ -92,6 +92,8 @@ def make_app(config, debug=False, xsrf_cookies=True):
                     name='project_tag'),
 
             # Export options
+            URLSpec('/project/([0-9]+)/export/project\\.sqlite3',
+                    export.ExportSqlite, name='export_project_sqlite'),
             URLSpec('/project/([0-9]+)/export/codebook\\.qdc',
                     export.ExportCodebookXml, name='export_codebook_qdc'),
             URLSpec('/project/([0-9]+)/export/codebook\\.csv',
