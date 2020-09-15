@@ -1,10 +1,12 @@
 import asyncio
 import functools
+import json
 import logging
 import math
 import prometheus_client
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import aliased, defer, joinedload
+import tempfile
 from tornado.concurrent import Future
 import tornado.log
 from tornado.web import MissingArgumentError, HTTPError
@@ -663,6 +665,80 @@ class MembersUpdate(BaseHandler):
 
         self.set_status(204)
         return self.finish()
+
+
+class ImportProject(BaseHandler):
+    @api_auth
+    @PROM_REQUESTS.sync('project_import')
+    async def post(self):
+        try:
+            file = self.request.files['file'][0]
+        except (KeyError, IndexError):
+            raise MissingArgumentError('file')
+
+        with tempfile.NamedTemporaryFile(
+            'wb',
+            prefix='taguette_import_',
+            suffix='.sqlite3',
+        ) as tmp:
+            # Write the database to temporary file
+            tmp.write(file.body)
+            tmp.flush()
+
+            project_id = self.get_body_argument('project_id', None)
+            if project_id is None:
+                return await self._list_projects(tmp.name)
+            else:
+                try:
+                    project_id = int(project_id)
+                except ValueError:
+                    self.set_status(400)
+                    return await self.send_json({
+                        'error': "Invalid project ID",
+                    })
+                return await self._import_project(tmp.name, project_id)
+
+    async def _list_projects(self, filename):
+        # Connect to the database
+        src_db = database.connect('sqlite:///%s' % filename)()
+
+        # List projects
+        projects = src_db.execute(database.Project.__table__.select())
+        for i, row in enumerate(projects):
+            if i == 0:
+                self.set_header(
+                    'Content-Type', 'application/json; charset=utf-8',
+                )
+                self.write('{"projects": [')
+            else:
+                self.write(',')
+            self.write(json.dumps({
+                'id': row['id'],
+                'name': row['name'],
+            }))
+            if i == 100:
+                await self.flush()
+        return await self.finish(']}')
+
+    async def _import_project(self, filename, project_id):
+        # Connect to the database
+        src_db = database.connect('sqlite:///%s' % filename)()
+
+        # Copy data
+        new_project_id = database.copy_project(
+            src_db, self.db,
+            project_id, self.current_user,
+        )
+        src_db.close()
+
+        # Insert a command for the import
+        self.db.add(
+            database.Command.project_import(self.current_user, new_project_id)
+        )
+
+        self.db.commit()
+
+        return await self.send_json({'project_id': new_project_id})
 
 
 class ProjectEvents(BaseHandler):

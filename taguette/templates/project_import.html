@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Import project | Taguette{% endblock %}
+
+{% block contents %}
+<h1>{% trans %}Import a project{% endtrans %}</h1>
+
+<form class="mt-3" onsubmit="javascript:importProject();return false;">
+  <div class="form-group row">
+    <label for="project-file" class="col-sm-2 col-form-label">{% trans %}File:{% endtrans %}</label>
+    <div class="col-sm-10">
+      <input type="file" class="form-control-file" name="project-file" id="project-file" accept="application/x-sqlite3,.sqlite3" />
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="project" class="col-sm-2 col-form-label">{% trans %}Project:{% endtrans %}</label>
+    <div class="col-sm-10">
+      <select class="form-control" name="project" id="project" disabled>
+        <option>{% trans %}No file selected...{% endtrans %}</option>
+      </select>
+    </div>
+  </div>
+  <p>
+    <input type="submit" class="btn btn-primary" id="submit" value="{% trans %}Import project{% endtrans %}" disabled>
+  </p>
+</form>
+
+<script type="text/javascript" src="{{ reverse_url('trans.js') }}"></script>
+
+<script type="text/javascript">
+var projectFile = document.getElementById('project-file');
+projectFile.addEventListener('change', function() {
+  if(!projectFile.files || !projectFile.files.length) {
+    return;
+  }
+  var file = projectFile.files[0];
+  var form_data = new FormData();
+  form_data.append('file', file);
+  var xsrf = document.cookie.match('\\b' + '_xsrf' + '=([^;]*)\\b')
+  if(xsrf) {
+    form_data.append('_xsrf', xsrf[1]);
+  }
+
+  var xhr = new XMLHttpRequest();
+  xhr.responseType = 'json';
+  xhr.open('POST', '/api/import');
+  xhr.onload = function() {
+    if(xhr.status === 200) {
+      var projectList = document.getElementById('project');
+      projectList.disabled = false;
+      projectList.innerHTML = '';
+      for(var i = 0; i < xhr.response.projects.length; ++i) {
+        var project = xhr.response.projects[i];
+        var elem = document.createElement('option');
+        elem.setAttribute('value', project.id);
+        elem.innerText = '' + project.id + ' - ' + project.name;
+        projectList.appendChild(elem);
+      }
+      document.getElementById('submit').disabled = false;
+    } else {
+      console.error("Project upload failed:", xhr.status);
+      var error = null;
+      try {
+        error = xhr.response.error;
+      } catch(e) {
+      }
+      if(!error) {
+        error = "Status " + xhr.status;
+      }
+      alert(gettext("Project upload failed!") + "\n\n" + error);
+    }
+  };
+  xhr.onerror = function(e) {
+    console.log("Project upload failed:", e);
+    alert(gettext("Project upload failed!"));
+  };
+  xhr.send(form_data);
+});
+
+function importProject() {
+  if(!projectFile.files || !projectFile.files.length) {
+    return;
+  }
+  var file = projectFile.files[0];
+  var form_data = new FormData();
+  form_data.append('project_id', parseInt(document.getElementById('project').value, 10));
+  form_data.append('file', file);
+  var xsrf = document.cookie.match('\\b' + '_xsrf' + '=([^;]*)\\b')
+  if(xsrf) {
+    form_data.append('_xsrf', xsrf[1]);
+  }
+
+  var xhr = new XMLHttpRequest();
+  xhr.responseType = 'json';
+  xhr.open('POST', '/api/import');
+  xhr.onload = function() {
+    if(xhr.status === 200) {
+      var new_project_id = xhr.response.project_id;
+      window.location.href = '/project/' + new_project_id;
+    } else {
+      console.error("Project upload failed:", xhr.status);
+      var error = null;
+      try {
+        error = xhr.response.error;
+      } catch(e) {
+      }
+      if(!error) {
+        error = "Status " + xhr.status;
+      }
+      alert(gettext("Project upload failed!") + "\n\n" + error);
+    }
+  };
+  xhr.onerror = function(e) {
+    console.log("Project upload failed:", e);
+    alert(gettext("Project upload failed!"));
+  };
+  document.getElementById('submit').disabled = true;
+  xhr.send(form_data);
+}
+</script>
+{% endblock %}

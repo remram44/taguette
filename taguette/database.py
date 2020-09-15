@@ -269,7 +269,7 @@ class Command(Base):
 
     TYPES = {'project_meta', 'document_add', 'document_delete',
              'highlight_add', 'highlight_delete', 'tag_add', 'tag_delete',
-             'tag_merge', 'member_add', 'member_remove'}
+             'tag_merge', 'member_add', 'member_remove', 'project_import'}
 
     for n in TYPES:
         PROM_COMMAND.labels(n).inc(0)
@@ -386,6 +386,15 @@ class Command(Base):
             project_id=project_id,
             payload={'type': 'member_remove',  # keep in sync above
                      'member': member_login}
+        )
+
+    @classmethod
+    def project_import(cls, user_login, project_id):
+        assert isinstance(project_id, int)
+        return cls(
+            user_login=user_login,
+            project_id=project_id,
+            payload={'type': 'project_import'}  # keep in sync above
         )
 
     def __repr__(self):

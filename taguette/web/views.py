@@ -444,6 +444,13 @@ class ProjectAdd(BaseHandler):
         super(ProjectAdd, self).render(template_name, **kwargs)
 
 
+class ProjectImport(BaseHandler):
+    @authenticated
+    @PROM_REQUESTS.sync('import_project')
+    def get(self):
+        return self.render('project_import.html', projects=None)
+
+
 class ProjectDelete(BaseHandler):
     @authenticated
     @PROM_REQUESTS.sync('delete_project')
