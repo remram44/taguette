@@ -117,13 +117,13 @@ def make_app(config, debug=False, xsrf_cookies=True):
             URLSpec('/api/project/([0-9]+)/events', api.ProjectEvents),
 
             # Translation catalog and functions
-            URLSpec('/trans.js', TranslationJs, name='trans.js'),
+            URLSpec('/trans\\.js', TranslationJs, name='trans.js'),
 
             # Messages
-            URLSpec('/messages.js', MessagesJs, name='messages.js'),
+            URLSpec('/messages\\.js', MessagesJs, name='messages.js'),
 
             # Well-known URLs
-            URLSpec('/.well-known/change-password', RedirectAccount),
+            URLSpec('/\\.well-known/change-password', RedirectAccount),
         ],
         static_path=pkg_resources.resource_filename('taguette', 'static'),
         login_url='/login',
