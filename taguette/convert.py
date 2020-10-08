@@ -62,6 +62,11 @@ class UnsupportedFormat(ConversionError):
 
 PROC_TERM_GRACE = 5  # Wait 5s after SIGTERM before sending SIGKILL
 
+PROC_MAX_CONCURRENT = 4  # Maximum concurrent conversion processes
+
+
+subprocess_sem = asyncio.Semaphore(PROC_MAX_CONCURRENT)
+
 
 if sys.platform == 'win32':
     # Windows only supports subprocesses with the asyncio ProactorEventLoop
@@ -70,33 +75,35 @@ if sys.platform == 'win32':
     # For now we can't use asyncio subprocesses on Windows
     import subprocess
 
-    def check_call(cmd, timeout):
-        return asyncio.get_event_loop().run_in_executor(
-            None,
-            lambda: subprocess.check_call(cmd, timeout=timeout),
-        )
+    async def check_call(cmd, timeout):
+        async with subprocess_sem:
+            return await asyncio.get_event_loop().run_in_executor(
+                None,
+                lambda: subprocess.check_call(cmd, timeout=timeout),
+            )
 else:
     async def check_call(cmd, timeout):
-        proc = await asyncio.create_subprocess_exec(cmd[0], *cmd[1:])
-        try:
-            retcode = await asyncio.wait_for(proc.wait(), timeout=timeout)
-        except asyncio.TimeoutError:
-            logger.error(
-                "Process didn't finish before %ds timeout: %r",
-                timeout, cmd,
-            )
+        async with subprocess_sem:
+            proc = await asyncio.create_subprocess_exec(cmd[0], *cmd[1:])
             try:
-                proc.terminate()
+                retcode = await asyncio.wait_for(proc.wait(), timeout=timeout)
+            except asyncio.TimeoutError:
+                logger.error(
+                    "Process didn't finish before %ds timeout: %r",
+                    timeout, cmd,
+                )
                 try:
-                    await asyncio.wait_for(proc.wait(), PROC_TERM_GRACE)
-                except asyncio.TimeoutError:
-                    proc.kill()
-            except ProcessLookupError:
-                pass
-            raise asyncio.TimeoutError
-        else:
-            if retcode != 0:
-                raise CalledProcessError(retcode, cmd)
+                    proc.terminate()
+                    try:
+                        await asyncio.wait_for(proc.wait(), PROC_TERM_GRACE)
+                    except asyncio.TimeoutError:
+                        proc.kill()
+                except ProcessLookupError:
+                    pass
+                raise asyncio.TimeoutError
+            else:
+                if retcode != 0:
+                    raise CalledProcessError(retcode, cmd)
 
 
 # Something to HTML
