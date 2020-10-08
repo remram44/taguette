@@ -45,6 +45,10 @@ PROM_CALIBRE_FROMHTML_TIME = prometheus_client.Histogram(
     "Time to convert from HTML using Calibre (calibre_from_html())",
     buckets=BUCKETS,
 )
+PROM_CONVERT_PROCESSES = prometheus_client.Gauge(
+    'convert_processes',
+    "Number of conversion processes currently running",
+)
 
 
 HTML_EXTENSIONS = ('.htm', '.html', '.xhtml')
@@ -65,7 +69,22 @@ PROC_TERM_GRACE = 5  # Wait 5s after SIGTERM before sending SIGKILL
 PROC_MAX_CONCURRENT = 4  # Maximum concurrent conversion processes
 
 
-subprocess_sem = asyncio.Semaphore(PROC_MAX_CONCURRENT)
+class MeasuredSemaphore(asyncio.Semaphore):
+    def __init__(self, value, metric):
+        super(MeasuredSemaphore, self).__init__(value)
+        self._metric = metric
+
+    async def acquire(self):
+        ret = await super(MeasuredSemaphore, self).acquire()
+        self._metric.inc()
+        return ret
+
+    def release(self):
+        super(MeasuredSemaphore, self).release()
+        self._metric.dec()
+
+
+subprocess_sem = MeasuredSemaphore(PROC_MAX_CONCURRENT, PROM_CONVERT_PROCESSES)
 
 
 if sys.platform == 'win32':
