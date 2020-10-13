@@ -82,6 +82,8 @@ def make_app(config, debug=False, xsrf_cookies=True):
                     name='import_project'),
             URLSpec('/project/([0-9]+)/delete', views.ProjectDelete,
                     name='delete_project'),
+            URLSpec('/project/([0-9]+)/import_codebook', views.ImportCodebook,
+                    name='import_codebook'),
 
             # Project view
             URLSpec('/project/([0-9]+)', views.Project, name='project'),

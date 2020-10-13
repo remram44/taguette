@@ -510,6 +510,19 @@ class ProjectDelete(BaseHandler):
         return self.redirect(self.reverse_url('index'))
 
 
+class ImportCodebook(BaseHandler):
+    @authenticated
+    @PROM_REQUESTS.sync('import_codebook')
+    def get(self, project_id):
+        project, privileges = self.get_project(project_id)
+        if not privileges.can_import_codebook():
+            self.set_status(403)
+            return self.finish(self.gettext(
+                "You don't have permission to import a codebook",
+            ))
+        return self.render('project_import_codebook.html', project=project)
+
+
 class Project(BaseHandler):
     @authenticated
     @PROM_REQUESTS.sync('project')
@@ -538,6 +551,7 @@ class Project(BaseHandler):
             self.db.query(database.ProjectMember)
             .filter(database.ProjectMember.project_id == project_id)
         ).all()
+        can_import_codebook = privileges.can_import_codebook()
         can_delete_project = privileges.can_delete_project()
         members_json = Markup(json.dumps(
             {member.user_login: {'privileges': member.privileges.name}
@@ -556,5 +570,6 @@ class Project(BaseHandler):
             ),
             tags=tags_json,
             members=members_json,
+            can_import_codebook=can_import_codebook,
             can_delete_project=can_delete_project,
         )

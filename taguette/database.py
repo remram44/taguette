@@ -183,6 +183,9 @@ class Privileges(enum.Enum):
     can_delete_tag = can_update_tag
     can_merge_tags = can_update_tag
 
+    def can_import_codebook(self):
+        return self == Privileges.ADMIN
+
     def can_add_highlight(self):
         return self in (Privileges.ADMIN, Privileges.MANAGE_DOCS,
                         Privileges.TAG)
