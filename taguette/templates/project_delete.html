@@ -9,7 +9,7 @@
 <p>{% trans %}Are you sure you want to delete this project? It currently has <strong>{{ documents }} documents and {{ highlights }} highlights in {{ tags }} tags</strong>. There is no way to undo.{% endtrans %}</p>
 <form action="{{ reverse_url('delete_project', project.id) }}" method="post">
   {{ xsrf_form_html() }}
-  <div class="form-group ">
+  <div class="form-group">
     <button type="submit" class="btn btn-danger">{% trans %}Delete forever{% endtrans %}</button>
     <a href="{{ reverse_url('project', project.id) }}" class="btn btn-secondary">{% trans %}Go back{% endtrans %}</a>
   </div>

@@ -60,6 +60,10 @@
             </div>
           </div>
 
+          {% if can_import_codebook %}
+          <p><a href="{{ reverse_url('import_codebook', project.id) }}" class="w-100 btn btn-outline-primary" type="button">Import codebook</a></p>
+          {% endif %}
+
           {% if can_delete_project %}
           <p><a href="{{ reverse_url('delete_project', project.id) }}" class="w-100 btn btn-outline-danger">{% trans %}Delete project{% endtrans %}</a></p>
           {% endif %}
