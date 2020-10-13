@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import gettext
 import glob
 import jinja2

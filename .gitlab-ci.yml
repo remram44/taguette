@@ -8,7 +8,7 @@ pages:
   script:
     - scripts/update_translations.sh
     - mkdir public
-    - $HOME/.poetry/bin/poetry run python generate.py public/
+    - $HOME/.poetry/bin/poetry run python scripts/generate.py public/
     - cp -r css imgs js webfonts favicon.ico robots.txt sitemap.xml public/
   artifacts:
     paths:
@@ -22,7 +22,7 @@ pages_test:
   script:
     - scripts/update_translations.sh
     - mkdir pages
-    - $HOME/.poetry/bin/poetry run python generate.py pages/
+    - $HOME/.poetry/bin/poetry run python scripts/generate.py pages/
     - cp -r css imgs js webfonts favicon.ico robots.txt sitemap.xml pages/
   artifacts:
     paths:
