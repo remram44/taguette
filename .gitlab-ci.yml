@@ -6,6 +6,7 @@ pages:
   stage: deploy
   image: python:3.7
   script:
+    - scripts/update_translations.sh
     - mkdir public
     - $HOME/.poetry/bin/poetry run python generate.py public/
     - cp -r css imgs js webfonts favicon.ico robots.txt sitemap.xml public/
@@ -19,6 +20,7 @@ pages_test:
   stage: deploy
   image: python:3.7
   script:
+    - scripts/update_translations.sh
     - mkdir pages
     - $HOME/.poetry/bin/poetry run python generate.py pages/
     - cp -r css imgs js webfonts favicon.ico robots.txt sitemap.xml pages/
