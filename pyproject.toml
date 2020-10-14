@@ -10,6 +10,7 @@ authors = ["Remi Rampin <r@remirampin.com>"]
 [tool.poetry.dependencies]
 python = "^3.6"
 jinja2 = "^2.11.1"
+babel = "^2.6"
 
 [tool.poetry.dev-dependencies]
 
