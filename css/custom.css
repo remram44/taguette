@@ -2,11 +2,13 @@
 
 @font-face {
   font-family: BadScript;
+  font-display: swap;
   src: url(../webfonts/BadScript/BadScript.ttf);
 }
 
 @font-face {
   font-family: Montserrat;
+  font-display: fallback;
   src: url(../webfonts/Montserrat/Montserrat-Light.ttf);
 }
 
