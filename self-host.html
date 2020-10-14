@@ -6,7 +6,7 @@
 {% block contents %}
 <div id="container-body">
 
-  <h2>Self-hosting <span style="font-family: BadScript;">TAGUETTE</span></h2>
+  <h1>Self-hosting <span style="font-family: BadScript;">TAGUETTE</span></h1>
 
   <p>Taguette can be run in two separate ways:</p>
   <ul>
@@ -14,14 +14,14 @@
     <li>On a server. This is more difficult to setup, but users can then use that installed version with nothing more than their web browser! We host a publicly-available Taguette server at <a href="https://app.taguette.org/">app.taguette.org</a> at the moment, so you can feel free to use that. If you want to deploy your own server for your organization, read on!</li>
   </ul>
 
-  <h3 id="docker">Using Docker</h3>
+  <h2 id="docker">Using Docker</h2>
 
   <p>If you so choose, you can simply run the <a href="https://quay.io/repository/remram44/taguette"><code>quay.io/remram44/taguette</code> Docker image</a>. You will be prompted for an 'admin' password the first time. You can persist the data by mounting a volume over <code>/data</code>, like so:</p>
   <pre>docker run -ti --rm quay.io/remram44/taguette default-config &gt;/srv/taguette/taguette.conf
 edit /srv/taguette/taguette.conf  # Edit configuration file, see below
 docker run -ti -p 80:7465 -v /srv/taguette:/data --restart=always quay.io/remram44/taguette server /data/taguette.conf</pre>
 
-  <h3 id="native">"Native" installation on a server</h3>
+  <h2 id="native">"Native" installation on a server</h2>
 
   <p>You need Python 3.5 or better to run Taguette. Simply run <code>pip install taguette</code> to install the software. To be able to import non-HTML documents, you also need Calibre installed (specifically, the <code>ebook-convert</code> command).</p>
 
@@ -38,12 +38,12 @@ taguette --no-browser server taguette.conf</pre>
 
   <p>This will start the server on port 80. In practice, you should configure a webserver (for example <a href="https://nginx.org/">nginx</a> or <a href="https://httpd.apache.org/">Apache</a>, see <a href="https://gitlab.com/remram44/taguette/tree/master/scripts/dist/server_configs">example configuration</a>) to act as a proxy between the users and Taguette, and provide encryption using TLS (for example using <a href="https://letsencrypt.org/">Let's Encrypt</a>, free).</p>
 
-  <h3 id="config">Configuration file</h3>
+  <h2 id="config">Configuration file</h2>
 
   <p>In either case, running the server requires a configuration file. This file contains important information, such as email server and addresses, the port number to listen on, whether registration of new accounts is enabled, etc.</p>
   <p>You might want to change the <code>PORT</code> to <code>80</code>, or better yet configure a webserver (such as <a href="https://nginx.org/">nginx</a> or <a href="https://httpd.apache.org/">Apache</a>, see <a href="https://gitlab.com/remram44/taguette/tree/master/scripts/dist/server_configs">example configuration</a>) to act as a proxy between the users and Taguette, and provide encryption using TLS (for example using <a href="https://letsencrypt.org/">Let's Encrypt</a>, free).</p>
 
-  <h3 id="database">Database</h3>
+  <h2 id="database">Database</h2>
 
   <p>The <code>DATABASE</code> setting should be a SQLAlchemy connection string. For example, you can use:</p>
   <ul>
