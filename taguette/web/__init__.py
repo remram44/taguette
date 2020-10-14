@@ -5,7 +5,7 @@ import logging
 from markupsafe import Markup
 import pkg_resources
 from tornado.routing import URLSpec
-from tornado.web import HTTPError
+from tornado.web import ErrorHandler, HTTPError
 
 from .base import Application, BaseHandler
 from . import api, export, views
@@ -48,6 +48,10 @@ class MessagesJs(BaseHandler):
         self.set_header('Content-Type', 'text/javascript')
         return await self.render('messages.js',
                                  messages=Markup(messages))
+
+
+class CustomErrorHandler(ErrorHandler, BaseHandler):
+    pass
 
 
 def make_app(config, debug=False, xsrf_cookies=True):
@@ -130,4 +134,6 @@ def make_app(config, debug=False, xsrf_cookies=True):
         xsrf_cookies=xsrf_cookies,
         debug=debug,
         config=config,
+        default_handler_class=CustomErrorHandler,
+        default_handler_args={"status_code": 404},
     )
