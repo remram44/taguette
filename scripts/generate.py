@@ -4,6 +4,7 @@ import glob
 import jinja2
 import logging
 import os
+import shutil
 import sys
 
 
@@ -80,6 +81,25 @@ def main():
                     gettext=trans.gettext,
                     ngettext=trans.ngettext,
                 ))
+
+        # Copy static files
+        for name in [
+            'css', 'imgs', 'js', 'webfonts',
+            'favicon.ico', 'robots.txt', 'sitemap.xml',
+        ]:
+            dest = os.path.join(out_dir, name)
+
+            # Remove existing
+            if os.path.isdir(dest):
+                shutil.rmtree(dest)
+            elif os.path.exists(dest):
+                os.remove(dest)
+
+            # Copy
+            if os.path.isdir(name):
+                shutil.copytree(name, dest)
+            else:
+                shutil.copy2(name, dest)
 
 
 if __name__ == '__main__':

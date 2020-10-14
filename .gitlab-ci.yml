@@ -9,7 +9,6 @@ pages:
     - scripts/update_translations.sh
     - mkdir public
     - $HOME/.poetry/bin/poetry run python scripts/generate.py public/
-    - cp -r css imgs js webfonts favicon.ico robots.txt sitemap.xml public/
   artifacts:
     paths:
       - public
@@ -23,7 +22,6 @@ pages_test:
     - scripts/update_translations.sh
     - mkdir pages
     - $HOME/.poetry/bin/poetry run python scripts/generate.py pages/
-    - cp -r css imgs js webfonts favicon.ico robots.txt sitemap.xml pages/
   artifacts:
     paths:
       - pages
