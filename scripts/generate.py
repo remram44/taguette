@@ -28,6 +28,12 @@ class TranslationWrapper(object):
         return message
 
 
+LANGUAGE_NAMES = {
+    None: 'English',
+    'fr': 'French',
+}
+
+
 def main():
     logging.basicConfig(level=logging.INFO)
 
@@ -49,6 +55,17 @@ def main():
         )):
             languages.append(locale)
 
+    all_language_links = []
+    for language in languages:
+        if language is None:
+            language_link = None
+        else:
+            language_link = language.split('_', 1)[0]
+        all_language_links.append({
+            'link': language_link,
+            'name': LANGUAGE_NAMES[language_link],
+        })
+
     for language in languages:
         logger.info(
             "Language: %s",
@@ -56,11 +73,13 @@ def main():
         )
 
         if language is None:
+            language_link = None
             out_dir = out
 
             trans = gettext.NullTranslations()
         else:
-            out_dir = os.path.join(out, language.split('_', 1)[0])
+            language_link = language.split('_', 1)[0]
+            out_dir = os.path.join(out, language_link)
             try:
                 os.mkdir(out_dir)
             except FileExistsError:
@@ -78,6 +97,12 @@ def main():
             template = template_env.get_template(page)
             with open(os.path.join(out_dir, page), 'w') as f_out:
                 f_out.write(template.render(
+                    current_page_link='' if page == 'index.html' else page,
+                    current_language={
+                        'link': language_link,
+                        'name': LANGUAGE_NAMES[language_link],
+                    },
+                    languages=all_language_links,
                     gettext=trans.gettext,
                     ngettext=trans.ngettext,
                 ))
