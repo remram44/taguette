@@ -161,6 +161,9 @@ class BaseHandler(RequestHandler):
         self._db = None
         self._gettext = None
 
+    def set_default_headers(self):
+        self.set_header('Server', 'Taguette/%s' % version)
+
     @property
     def db(self):
         if self._db is None:
