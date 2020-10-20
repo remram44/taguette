@@ -86,7 +86,7 @@ class Login(BaseHandler):
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         if self.current_user:
-            self._go_to_next()
+            return self._go_to_next()
         else:
             return self.render('login.html', register=False,
                                next=self.get_argument('next', ''))
