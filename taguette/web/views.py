@@ -287,11 +287,19 @@ class AskResetPassword(BaseHandler):
             msg['Subject'] = self.gettext("Password reset for Taguette")
             msg['From'] = self.application.config['EMAIL']
             msg['To'] = "{} <{}>".format(user.login, user.email)
-            msg.set_content(self.render_string('email_reset_password.txt',
-                                               link=reset_link))
-            msg.add_alternative(self.render_string('email_reset_password.html',
-                                                   link=reset_link),
-                                subtype='html')
+            msg.set_content(self.render_string(
+                'email_reset_password.txt',
+                link=reset_link,
+                login=user.login,
+            ))
+            msg.add_alternative(
+                self.render_string(
+                    'email_reset_password.html',
+                    link=reset_link,
+                    login=user.login,
+                ),
+                subtype='html',
+            )
 
             logger.warning("Sending reset password email to %s %s",
                            user.login, user.email)
