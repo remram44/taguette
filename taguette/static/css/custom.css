@@ -22,11 +22,6 @@
   color: #216490;
 }
 
-.container-body a:not(.btn, .dropdown, .badge):hover {
-  color: #0f2d41 !important;
-  text-decoration: underline;
-}
-
 /* Change body font */
 body {
   font-family: Montserrat !important;
