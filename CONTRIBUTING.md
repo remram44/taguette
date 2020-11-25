@@ -86,4 +86,4 @@ This CONTRIBUTING.md was adapted from [ProjectPorcupine](https://github.com/Team
 
 # Contact info
 
-You are welcome to chat with us in our [Element room](https://riot.im/app/#/room/#taguette:matrix.org) or contact the maintainers directly at [hi@taguette.org](mailto:hi@taguette.org).
+You are welcome to chat with us in our [Element room](https://app.element.io/#/room/#taguette:matrix.org) or contact the maintainers directly at [hi@taguette.org](mailto:hi@taguette.org).
