@@ -342,6 +342,8 @@ async def to_html(body, content_type, filename, config):
     ext = os.path.splitext(filename)[1].lower()
     if ext in HTML_EXTENSIONS:
         return get_html_body(body)
+    elif not ext:
+        raise ConversionError("This file doesn't have an extension!")
     elif ext == '.doc':
         # Convert file to HTML using WV
         tmp = tempfile.mkdtemp(prefix='taguette_wv_')
