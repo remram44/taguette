@@ -68,15 +68,15 @@ The merge request should automatically update to reflect your changes.
 
 ## Best Practices for Contributing
 
-* Before you start coding, open an issue so that the community can discuss your change to ensure it is in line with the goals of the project and not being worked on by someone else. This allows for discussion and fine tuning of your feature and results in a more succent and focused additions.
+* Before you start coding, open an issue so that the community can discuss your change to ensure it is in line with the goals of the project and not being worked on by someone else. This allows for discussion and fine-tuning of your feature and results in a more succint and focused addition.
     * If you are fixing a small glitch or bug, you may make a MR without opening an issue.
     * If you are adding a large feature, create an issue so that we may give you feedback and agree on what makes the most sense for the project before making your change and submitting a MR (this will make sure you don't have to do major changes down the line).
 
 * Merge requests are eventually merged into the codebase. Please ensure they are:
     * Well tested by the author. It is the author's job to ensure their code works as expected.
-    * Free of unnecessary log calls. Logging important for debugging, but when a MR is made, log calls should only be present when there is an actual error or to record some important piece of information or progress.
+    * Free of unnecessary log calls. Logging is important for debugging, but when a MR is made, log calls should only be present when there is an actual error or to record some important piece of information or progress.
 
-* If your code is untested, log heavy, or incomplete, prefix your MR with "[WIP]", so others know it is still being tested and shouldn't be considered for merging yet. This way we can still give you feedback or help finalize the feature even if it's not ready for prime time.
+* If your code is untested, log-heavy, or incomplete, prefix your MR with "[WIP]", so others know it is still being tested and shouldn't be considered for merging yet. This way we can still give you feedback or help finalize the feature even if it's not ready for prime time.
 
 That's it! Following these guidelines will ensure that your additions are approved quickly and integrated into the project. Thanks for your contribution!
 
@@ -86,4 +86,4 @@ This CONTRIBUTING.md was adapted from [ProjectPorcupine](https://github.com/Team
 
 # Contact info
 
-You are welcome to chat with us on our [Riot channel](https://riot.im/app/#/room/#taguette:matrix.org) or contact the maintainers directly at [hi@taguette.org](mailto:hi@taguette.org).
+You are welcome to chat with us in our [Element room](https://app.element.io/#/room/#taguette:matrix.org) or contact the maintainers directly at [hi@taguette.org](mailto:hi@taguette.org).
