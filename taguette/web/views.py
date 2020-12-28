@@ -306,6 +306,11 @@ class AskResetPassword(BaseHandler):
             self.application.send_mail(msg)
             user.email_sent = datetime.utcnow()
             self.db.commit()
+        else:
+            logger.warning(
+                "NOT Sending reset password email to %s %s (rate limited)",
+                user.login, user.email,
+            )
         return self.render('reset_password.html', message="Email sent!")
 
 
