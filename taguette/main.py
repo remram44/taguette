@@ -71,6 +71,7 @@ SECRET_KEY = "{secret}"
 # This is a SQLAlchemy connection URL; refer to their documentation for info
 # https://docs.sqlalchemy.org/en/latest/core/engines.html
 # If using SQLite3 on Unix, note the 4 slashes for an absolute path
+# (keep 3 before a relative path)
 DATABASE = "sqlite:////non/existent/taguette/database.sqlite3"
 
 # Address to send system emails from
