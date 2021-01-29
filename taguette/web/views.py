@@ -176,7 +176,10 @@ class Register(BaseHandler):
             user.set_password(password1)
             if email:
                 user.email = email
-            if self.get_body_argument('tos', None) != 'accepted':
+            if (
+                self.application.terms_of_service is not None
+                and self.get_body_argument('tos', None) != 'accepted'
+            ):
                 raise validate.InvalidFormat(_f(
                     "Terms of Service must be accepted",
                 ))
@@ -194,15 +197,13 @@ class Register(BaseHandler):
 class TermsOfService(BaseHandler):
     @PROM_REQUESTS.sync('tos')
     def get(self):
-        tos_link = urlunparse([self.request.protocol,
-                               self.request.host,
-                               '/tos',
-                               '',
-                               '',
-                               ''])
-        return self.render('tos.html',
-                           app_host=self.request.host,
-                           tos_link=tos_link)
+        if self.application.terms_of_service:
+            return self.render(
+                'tos.html',
+                tos_text=jinja2.Markup(self.application.terms_of_service),
+            )
+        else:
+            raise HTTPError(404)
 
 
 class Account(BaseHandler):
