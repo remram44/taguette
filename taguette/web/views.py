@@ -176,6 +176,10 @@ class Register(BaseHandler):
             user.set_password(password1)
             if email:
                 user.email = email
+            if self.get_body_argument('tos', None) != 'accepted':
+                raise validate.InvalidFormat(_f(
+                    "Terms of Service must be accepted",
+                ))
             self.db.add(user)
             self.db.commit()
             logger.info("User registered: %r", login)
