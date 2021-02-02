@@ -350,13 +350,34 @@ footer p {
   }
 }
 
-/************** PRINT OVERRIDE *******************/
+/************** GETTING STARTED TOC *******************/
+
+.sidetoc {
+  margin-bottom: 1rem;
+}
 
 @media print {
   .col-print-12 {
     width: 100%;
     max-width: 100%;
     flex: 0 0 100%;
+  }
+
+  .sidetoc {
+    display: none !important;
+  }
+}
+
+.sidetoc .border-dark {
+  border: none !important;
+}
+.sidetoc .list-group-item {
+  padding: 0;
+}
+
+@media (min-width: 992px) {
+  .sidetoc .border-dark {
+    border: 1px solid #343a40 !important;
   }
 }
 
