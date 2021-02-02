@@ -350,6 +350,16 @@ footer p {
   }
 }
 
+/* --------------------PRINT OVERRIDE--------------------------*/
+
+@media print {
+  .col-print-12 {
+    width: 100%;
+    max-width: 100%;
+    flex: 0 0 100%;
+  }
+}
+
 /* --------------------FAQ CARD HEADINGS--------------------------*/
 
 .card-header button.btn.btn-link{
