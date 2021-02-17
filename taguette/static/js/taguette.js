@@ -1528,16 +1528,54 @@ window.onpopstate = function(e) {
  * Long polling
  */
 
+// null: active now
+// Date: inactive since then
+var windowLastActive = new Date();
+if(document.hasFocus()) {
+  windowLastActive = null; // Focused now
+}
+
+window.addEventListener('focus', function() {
+  // We are active as long as we have the focus
+  windowLastActive = null;
+  maybeResumePolling();
+});
+window.addEventListener('mousemove', function() {
+  if(windowLastActive === null) {
+    // If the mouse moved over the window and we're not focused, refresh timer
+    windowLastActive = new Date();
+    maybeResumePolling();
+  }
+});
+window.addEventListener('blur', function() {
+  // We lost focus, start timer
+  windowLastActive = new Date();
+});
+
 var lastPoll = null;
+var polling = true;
+
+function maybeResumePolling() {
+  if(!polling) {
+    longPollForEvents();
+  }
+}
 
 function longPollForEvents() {
+  // If we've been inactive for 10min, pause polling for now
+  if(windowLastActive !== null && (new Date() - windowLastActive < 600000)) {
+    console.log("Browser window inactive, stop polling");
+    polling = false;
+    return;
+  }
+
+  polling = true;
   lastPoll = Date.now();
   getJSON(
     '/api/project/' + project_id + '/events',
     {from: last_event}
   )
   .then(function(result) {
-    console.log("Polling: ", result);
     if('project_meta' in result) {
       setProjectMetadata(result.project_meta);
     }
