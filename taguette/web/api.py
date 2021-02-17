@@ -41,8 +41,7 @@ def api_auth(method):
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
         if not self.current_user:
-            self.set_status(403)
-            return self.send_json({'error': "Not logged in"})
+            return self.send_error_json(403, "Not logged in")
         return method(self, *args, **kwargs)
 
     return wrapper
@@ -72,8 +71,7 @@ class ProjectMeta(BaseHandler):
     def post(self, project_id):
         project, privileges = self.get_project(project_id)
         if not privileges.can_edit_project_meta():
-            self.set_status(403)
-            return self.send_json({'error': "Unauthorized"})
+            return self.send_error_json(403, "Unauthorized")
         try:
             obj = self.get_json()
             validate.project_name(obj['name'])
@@ -95,8 +93,7 @@ class ProjectMeta(BaseHandler):
             return self.send_json({})
         except validate.InvalidFormat as e:
             logger.info("Error validating ProjectMeta: %r", e)
-            self.set_status(e.status_code, e.reason)
-            return self.send_json({'error': e.message})
+            return self.send_error_json(e.status_code, e.message, e.reason)
 
 
 class DocumentAdd(BaseHandler):
@@ -105,8 +102,7 @@ class DocumentAdd(BaseHandler):
     async def post(self, project_id):
         project, privileges = self.get_project(project_id)
         if not privileges.can_add_document():
-            self.set_status(403)
-            return await self.send_json({'error': "Unauthorized"})
+            return await self.send_error_json(403, "Unauthorized")
         try:
             name = self.get_body_argument('name')
             validate.document_name(name)
@@ -125,10 +121,7 @@ class DocumentAdd(BaseHandler):
                     self.application.config,
                 )
             except convert.ConversionError as err:
-                self.set_status(400)
-                return await self.send_json({
-                    'error': str(err),
-                })
+                return await self.send_error_json(400, str(err))
             else:
                 doc = database.Document(
                     name=name,
@@ -152,8 +145,10 @@ class DocumentAdd(BaseHandler):
                 return await self.send_json({'created': doc.id})
         except validate.InvalidFormat as e:
             logger.info("Error validating DocumentAdd: %r", e)
-            self.set_status(e.status_code, e.reason)
-            return await self.send_json({'error': e.message})
+            return await self.send_error_json(
+                e.status_code, e.message,
+                e.reason,
+            )
 
 
 class DocumentUpdate(BaseHandler):
@@ -162,8 +157,7 @@ class DocumentUpdate(BaseHandler):
     def post(self, project_id, document_id):
         document, privileges = self.get_document(project_id, document_id)
         if not privileges.can_edit_document():
-            self.set_status(403)
-            return self.send_json({'error': "Unauthorized"})
+            return self.send_error_json(403, "Unauthorized")
         try:
             obj = self.get_json()
             if obj:
@@ -185,16 +179,14 @@ class DocumentUpdate(BaseHandler):
             return self.send_json({'id': document.id})
         except validate.InvalidFormat as e:
             logger.info("Error validating DocumentUpdate: %r", e)
-            self.set_status(e.status_code, e.reason)
-            return self.send_json({'error': e.message})
+            return self.send_error_json(e.status_code, e.message, e.reason)
 
     @api_auth
     @PROM_REQUESTS.sync('document_delete')
     def delete(self, project_id, document_id):
         document, privileges = self.get_document(project_id, document_id)
         if not privileges.can_delete_document():
-            self.set_status(403)
-            return self.send_json({'error': "Unauthorized"})
+            return self.send_error_json(403, "Unauthorized")
         self.db.delete(document)
         cmd = database.Command.document_delete(
             self.current_user,
@@ -234,8 +226,7 @@ class TagAdd(BaseHandler):
     def post(self, project_id):
         project, privileges = self.get_project(project_id)
         if not privileges.can_add_tag():
-            self.set_status(403)
-            return self.send_json({'error': "Unauthorized"})
+            return self.send_error_json(403, "Unauthorized")
         try:
             obj = self.get_json()
             validate.tag_path(obj['path'])
@@ -248,8 +239,7 @@ class TagAdd(BaseHandler):
                 self.db.flush()  # Need to flush to get tag.id
             except IntegrityError:
                 self.db.rollback()
-                self.set_status(409)
-                return self.finish()
+                return self.send_error_json(409, "Conflict")
             cmd = database.Command.tag_add(
                 self.current_user,
                 tag,
@@ -262,8 +252,7 @@ class TagAdd(BaseHandler):
             return self.send_json({'id': tag.id})
         except validate.InvalidFormat as e:
             logger.info("Error validating TagAdd: %r", e)
-            self.set_status(e.status_code, e.reason)
-            return self.send_json({'error': e.message})
+            return self.send_error_json(e.status_code, e.message, e.reason)
 
 
 class TagUpdate(BaseHandler):
@@ -272,14 +261,12 @@ class TagUpdate(BaseHandler):
     def post(self, project_id, tag_id):
         project, privileges = self.get_project(project_id)
         if not privileges.can_update_tag():
-            self.set_status(403)
-            return self.send_json({'error': "Unauthorized"})
+            return self.send_error_json(403, "Unauthorized")
         try:
             obj = self.get_json()
             tag = self.db.query(database.Tag).get(int(tag_id))
             if tag is None or tag.project_id != project.id:
-                self.set_status(404)
-                return self.send_json({'error': "No such tag"})
+                return self.send_error_json(404, "No such tag")
             if obj:
                 if 'path' in obj:
                     validate.tag_path(obj['path'])
@@ -296,28 +283,24 @@ class TagUpdate(BaseHandler):
                     self.db.commit()
                 except IntegrityError:
                     self.db.rollback()
-                    self.set_status(409)
-                    return self.finish()
+                    return self.send_error_json(409, "Conflict")
                 self.db.refresh(cmd)
                 self.application.notify_project(project.id, cmd)
 
             return self.send_json({'id': tag.id})
         except validate.InvalidFormat as e:
             logger.info("Error validating TagUpdate: %r", e)
-            self.set_status(e.status_code, e.reason)
-            return self.send_json({'error': e.message})
+            return self.send_error_json(e.status_code, e.message, e.reason)
 
     @api_auth
     @PROM_REQUESTS.sync('tag_delete')
     def delete(self, project_id, tag_id):
         project, privileges = self.get_project(project_id)
         if not privileges.can_delete_tag():
-            self.set_status(403)
-            return self.send_json({'error': "Unauthorized"})
+            return self.send_error_json(403, "Unauthorized")
         tag = self.db.query(database.Tag).get(int(tag_id))
         if tag is None or tag.project_id != project.id:
-            self.set_status(404)
-            return self.send_json({'error': "No such tag"})
+            return self.send_error_json(404, "No such tag")
         self.db.delete(tag)
         cmd = database.Command.tag_delete(
             self.current_user,
@@ -339,8 +322,7 @@ class TagMerge(BaseHandler):
     def post(self, project_id):
         project, privileges = self.get_project(project_id)
         if not privileges.can_merge_tags():
-            self.set_status(403)
-            return self.send_json({'error': "Unauthorized"})
+            return self.send_error_json(403, "Unauthorized")
         obj = self.get_json()
         tag_src = self.db.query(database.Tag).get(obj['src'])
         tag_dest = self.db.query(database.Tag).get(obj['dest'])
@@ -350,8 +332,7 @@ class TagMerge(BaseHandler):
             or tag_dest is None
             or tag_dest.project_id != project.id
         ):
-            self.set_status(404)
-            return self.send_json({'error': "No such tag"})
+            return self.send_error_json(404, "No such tag")
 
         # Remove tag from tag_src if it's already in tag_dest
         highlights_in_dest = (
@@ -394,8 +375,7 @@ class HighlightAdd(BaseHandler):
     def post(self, project_id, document_id):
         document, privileges = self.get_document(project_id, document_id, True)
         if not privileges.can_add_highlight():
-            self.set_status(403)
-            return self.send_json({'error': "Unauthorized"})
+            return self.send_error_json(403, "Unauthorized")
         obj = self.get_json()
         start, end = obj['start_offset'], obj['end_offset']
         snippet = extract.extract(document.contents, start, end)
@@ -434,13 +414,11 @@ class HighlightUpdate(BaseHandler):
     def post(self, project_id, document_id, highlight_id):
         document, privileges = self.get_document(project_id, document_id)
         if not privileges.can_add_highlight():
-            self.set_status(403)
-            return self.send_json({'error': "Unauthorized"})
+            return self.send_error_json(403, "Unauthorized")
         obj = self.get_json()
         hl = self.db.query(database.Highlight).get(int(highlight_id))
         if hl is None or hl.document_id != document.id:
-            self.set_status(404)
-            return self.send_json({'error': "No such highlight"})
+            return self.send_error_json(404, "No such highlight")
         if obj:
             if 'start_offset' in obj:
                 hl.start_offset = obj['start_offset']
@@ -498,12 +476,10 @@ class HighlightUpdate(BaseHandler):
     def delete(self, project_id, document_id, highlight_id):
         document, privileges = self.get_document(project_id, document_id)
         if not privileges.can_delete_highlight():
-            self.set_status(403)
-            return self.send_json({'error': "Unauthorized"})
+            return self.send_error_json(403, "Unauthorized")
         hl = self.db.query(database.Highlight).get(int(highlight_id))
         if hl is None or hl.document_id != document.id:
-            self.set_status(404)
-            return self.send_json({'error': "No such highlight"})
+            return self.send_error_json(404, "No such highlight")
         old_tags = list(
             self.db.query(database.HighlightTag)
             .filter(database.HighlightTag.highlight == hl)
@@ -577,8 +553,7 @@ class MembersUpdate(BaseHandler):
             raise HTTPError(404)
         project, privileges = self.get_project(project_id)
         if not privileges.can_edit_members():
-            self.set_status(403)
-            return self.send_json({'error': "Unauthorized"})
+            return self.send_error_json(403, "Unauthorized")
 
         # Get all members
         members = (
@@ -607,9 +582,10 @@ class MembersUpdate(BaseHandler):
                 try:
                     privileges = database.Privileges[user['privileges']]
                 except KeyError:
-                    self.set_status(400)
-                    return self.send_json({'error': "Invalid privileges %r" %
-                                                    user.get('privileges')})
+                    return self.send_error_json(
+                        400,
+                        "Invalid privileges %r" % user.get('privileges'),
+                    )
                 if login in members:
                     members[login].privileges = privileges
                 else:
