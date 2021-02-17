@@ -13,6 +13,7 @@ Enhancements:
 * Pause polling for changes when the window has been inactive for 10 minutes
 * Improve the error message shown when document import fails
 * Add pagination to the highlights view, which greatly improve performances for heavily used tags
+* Update to Tornado 6.1, remove workaround for older versions
 
 0.9.2 (2020-08-26)
 ------------------
