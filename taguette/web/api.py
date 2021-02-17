@@ -379,6 +379,18 @@ class HighlightAdd(BaseHandler):
             return self.send_error_json(403, "Unauthorized")
         obj = self.get_json()
         start, end = obj['start_offset'], obj['end_offset']
+        new_tags = set(obj.get('tags', []))
+
+        # Check the tags exist and are in this project
+        tags = (
+            self.db.query(database.Tag)
+            .filter(database.Tag.id.in_(new_tags))
+            .filter(database.Tag.project_id == document.project_id)
+            .all()
+        )
+        if set(tag.id for tag in tags) != new_tags:
+            return self.send_error_json(400, "Tag not in project")
+
         snippet = extract.extract(document.contents, start, end)
         hl = database.Highlight(document=document,
                                 start_offset=start,
@@ -386,19 +398,20 @@ class HighlightAdd(BaseHandler):
                                 snippet=snippet)
         self.db.add(hl)
         self.db.flush()  # Need to flush to get hl.id
-        new_tags = sorted(set(obj.get('tags', [])))
+
+        # Insert tags in database
         self.db.bulk_insert_mappings(database.HighlightTag, [
             dict(
                 highlight_id=hl.id,
                 tag_id=tag,
             )
-            for tag in new_tags
+            for tag in sorted(new_tags)
         ])
         cmd = database.Command.highlight_add(
             self.current_user,
             document,
             hl,
-            new_tags,
+            sorted(new_tags),
         )
         cmd.tag_count_changes = {tag: 1 for tag in obj.get('tags')}
         self.db.add(cmd)
@@ -435,6 +448,16 @@ class HighlightUpdate(BaseHandler):
                 old_tags = set(hl_tag.tag_id for hl_tag in old_tags)
                 new_tags = set(obj['tags'])
 
+                # Check the tags exist and are in this project
+                tags = (
+                    self.db.query(database.Tag)
+                        .filter(database.Tag.id.in_(new_tags))
+                        .filter(database.Tag.project_id == document.project_id)
+                        .all()
+                )
+                if set(tag.id for tag in tags) != new_tags:
+                    return self.send_error_json(400, "Tag not in project")
+
                 # Update tags in database
                 (
                     self.db.query(database.HighlightTag)
@@ -445,7 +468,7 @@ class HighlightUpdate(BaseHandler):
                         highlight_id=hl.id,
                         tag_id=tag,
                     )
-                    for tag in new_tags
+                    for tag in sorted(new_tags)
                 ])
 
                 # Compute the change in tag counts
