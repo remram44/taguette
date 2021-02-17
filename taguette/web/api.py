@@ -1,6 +1,7 @@
 import asyncio
 import functools
 import logging
+import math
 import prometheus_client
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import aliased
@@ -503,15 +504,24 @@ class HighlightUpdate(BaseHandler):
 
 
 class Highlights(BaseHandler):
+    PAGE_SIZE = 15
+
     @api_auth
     @PROM_REQUESTS.sync('highlights')
     def get(self, project_id, path):
         project, _ = self.get_project(project_id)
+        page = self.get_query_argument('page', '1')
+        try:
+            page = int(page, 10) - 1
+        except (ValueError, OverflowError):
+            page = -1
+        if page < 0:
+            self.send_error_json(404, "Bad page number")
 
         if path:
             tag = aliased(database.Tag)
             hltag = aliased(database.HighlightTag)
-            highlights = (
+            query = (
                 self.db.query(database.Highlight)
                 .join(hltag, hltag.highlight_id == database.Highlight.id)
                 .join(tag, hltag.tag_id == tag.id)
@@ -519,18 +529,26 @@ class Highlights(BaseHandler):
                 .filter(tag.project == project)
                 .order_by(database.Highlight.document_id,
                           database.Highlight.start_offset)
-            ).all()
+            )
         else:
             # Special case to select all highlights: we also need to select
             # highlights that have no tag at all
             document = aliased(database.Document)
-            highlights = (
+            query = (
                 self.db.query(database.Highlight)
                 .join(document, document.id == database.Highlight.document_id)
                 .filter(document.project == project)
                 .order_by(database.Highlight.document_id,
                           database.Highlight.start_offset)
-            ).all()
+            )
+
+        total = query.count()
+        highlights = (
+            query
+            .offset(page * self.PAGE_SIZE)
+            .limit(self.PAGE_SIZE)
+            .all()
+        )
 
         return self.send_json({
             'highlights': [
@@ -542,6 +560,7 @@ class Highlights(BaseHandler):
                 }
                 for hl in highlights
             ],
+            'pages': math.ceil(total / self.PAGE_SIZE),
         })
 
 

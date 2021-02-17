@@ -640,46 +640,54 @@ class TestMultiuser(MyHTTPTestCase):
         # List highlights in project 2 under 'people'
         response = await self.aget('/api/project/2/highlights/people')
         self.assertEqual(response.code, 200)
-        self.assertEqual(json.loads(response.body.decode('utf-8')),
-                         {'highlights': [
-                             {'id': 3, 'document_id': 2, 'tags': [2, 3],
-                              'content': "tent"},
-                             {'id': 4, 'document_id': 3, 'tags': [3],
-                              'content': "<strong>Opinion</strong>"},
-                         ]})
+        self.assertEqual(json.loads(response.body.decode('utf-8')), {
+            'highlights': [
+                {'id': 3, 'document_id': 2, 'tags': [2, 3],
+                 'content': "tent"},
+                {'id': 4, 'document_id': 3, 'tags': [3],
+                 'content': "<strong>Opinion</strong>"},
+            ],
+            'pages': 1,
+        })
 
         # List highlights in project 2 under 'interesting.places'
         response = await self.aget('/api/project/2/highlights/interesting.'
                                    'places')
         self.assertEqual(response.code, 200)
-        self.assertEqual(json.loads(response.body.decode('utf-8')),
-                         {'highlights': [
-                             {'id': 2, 'document_id': 2, 'tags': [4],
-                              'content': "diff"},
-                         ]})
+        self.assertEqual(json.loads(response.body.decode('utf-8')), {
+            'highlights': [
+                {'id': 2, 'document_id': 2, 'tags': [4],
+                 'content': "diff"},
+            ],
+            'pages': 1,
+        })
 
         # List highlights in project 2 under 'interesting'
         response = await self.aget('/api/project/2/highlights/interesting.'
                                    'places')
         self.assertEqual(response.code, 200)
-        self.assertEqual(json.loads(response.body.decode('utf-8')),
-                         {'highlights': [
-                             {'id': 2, 'document_id': 2, 'tags': [4],
-                              'content': "diff"},
-                         ]})
+        self.assertEqual(json.loads(response.body.decode('utf-8')), {
+            'highlights': [
+                {'id': 2, 'document_id': 2, 'tags': [4],
+                 'content': "diff"},
+            ],
+            'pages': 1,
+        })
 
         # List all highlights in project 2
         response = await self.aget('/api/project/2/highlights/')
         self.assertEqual(response.code, 200)
-        self.assertEqual(json.loads(response.body.decode('utf-8')),
-                         {'highlights': [
-                             {'id': 2, 'document_id': 2, 'tags': [4],
-                              'content': "diff"},
-                             {'id': 3, 'document_id': 2, 'tags': [2, 3],
-                              'content': "tent"},
-                             {'id': 4, 'document_id': 3, 'tags': [3],
-                              'content': "<strong>Opinion</strong>"},
-                         ]})
+        self.assertEqual(json.loads(response.body.decode('utf-8')), {
+            'highlights': [
+                {'id': 2, 'document_id': 2, 'tags': [4],
+                 'content': "diff"},
+                {'id': 3, 'document_id': 2, 'tags': [2, 3],
+                 'content': "tent"},
+                {'id': 4, 'document_id': 3, 'tags': [3],
+                 'content': "<strong>Opinion</strong>"},
+            ],
+            'pages': 1,
+        })
 
         # Export to HTML
         response = await self.aget('/project/2/export/document/2.html')
@@ -727,15 +735,17 @@ class TestMultiuser(MyHTTPTestCase):
         # List all highlights in project 2
         response = await self.aget('/api/project/2/highlights/')
         self.assertEqual(response.code, 200)
-        self.assertEqual(json.loads(response.body.decode('utf-8')),
-                         {'highlights': [
-                             {'id': 2, 'document_id': 2, 'tags': [4],
-                              'content': "diff"},
-                             {'id': 3, 'document_id': 2, 'tags': [2],
-                              'content': "tent"},
-                             {'id': 4, 'document_id': 3, 'tags': [2],
-                              'content': "<strong>Opinion</strong>"},
-                         ]})
+        self.assertEqual(json.loads(response.body.decode('utf-8')), {
+            'highlights': [
+                {'id': 2, 'document_id': 2, 'tags': [4],
+                 'content': "diff"},
+                {'id': 3, 'document_id': 2, 'tags': [2],
+                 'content': "tent"},
+                {'id': 4, 'document_id': 3, 'tags': [2],
+                 'content': "<strong>Opinion</strong>"},
+            ],
+            'pages': 1,
+        })
 
         await asyncio.sleep(2)
         self.assertNotDone(poll_proj1)
