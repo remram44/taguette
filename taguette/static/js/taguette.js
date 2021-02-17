@@ -1414,10 +1414,13 @@ function loadDocument(document_id) {
   .then(hideSpinner);
 }
 
-function loadTag(tag_path) {
+function loadTag(tag_path, page) {
+  if(page === undefined) {
+    page = 1;
+  }
   showSpinner();
   getJSON(
-    '/api/project/' + project_id + '/highlights/' + encodeURIComponent(tag_path)
+    '/api/project/' + project_id + '/highlights/' + encodeURIComponent(tag_path) + '?page=' + page
   )
   .then(function(result) {
     console.log("Loaded highlights for tag", tag_path || "''");
@@ -1461,6 +1464,49 @@ function loadTag(tag_path) {
     }
     if(result.highlights.length == 0) {
       document_contents.innerHTML = '<p style="font-style: oblique; text-align: center;">' + gettext("No highlights with this tag yet.") + '</p>';
+    }
+
+    // Pagination controls
+    function makePageLink(page_nb, label, current, enabled) {
+      var item;
+      if(current) {
+        item = document.createElement('li');
+        item.className = 'page-item active';
+        item.innerHTML = '<span class="page-link">' + label + '<span class="sr-only">(current)</span></span>';
+      } else if(!enabled) {
+        item = document.createElement('li');
+        item.className = 'page-item disabled';
+        item.innerHTML = '<span class="page-link">' + label + '</span>';
+      } else {
+        item = document.createElement('li');
+        item.className = 'page-item';
+        var link = document.createElement('a');
+        link.className = 'page-link';
+        link.setAttribute('href', '#');
+        link.innerText = label;
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          loadTag(tag_path, page_nb);
+        });
+        item.appendChild(link);
+      }
+      return item;
+    }
+    if(result.pages > 1 || page !== 1) {
+      if(result.pages === undefined && page !== 1) {
+        result.pages = 1;
+      }
+      pagination = document.createElement('nav');
+      pagination.setAttribute('aria-label', "Page navigation");
+      var pagination_ul = document.createElement('ul');
+      pagination_ul.className = 'pagination justify-content-center';
+      pagination_ul.appendChild(makePageLink(page - 1, "Previous", false, page > 1));
+      for(var i = 1; i <= result.pages; ++i) {
+        pagination_ul.appendChild(makePageLink(i, i, i === page, i !== page));
+      }
+      pagination_ul.appendChild(makePageLink(page + 1, "Next", false, page < result.pages));
+      pagination.appendChild(pagination_ul);
+      document_contents.appendChild(pagination);
     }
 
     updateTagsList();
