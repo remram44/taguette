@@ -1406,6 +1406,9 @@ function loadDocument(document_id) {
         items[i].style.display = 'none';
       }
     }
+
+    // Scroll up
+    window.setTimeout(function() { window.scrollTo(0, 0); }, 0);
   })
   .catch(function(error) {
     console.error("Failed to load document:", error);
@@ -1526,6 +1529,9 @@ function loadTag(tag_path, page) {
         items[i].style.display = 'none';
       }
     }
+
+    // Scroll up
+    window.setTimeout(function() { window.scrollTo(0, 0); }, 0);
   })
   .catch(function(error) {
     console.error("Failed to load tag highlights:", error);
