@@ -591,9 +591,25 @@ class TestMultiuser(MyHTTPTestCase):
         # Create highlight in document 2, using wrong project id
         response = await self.apost('/api/project/1/document/2/highlight/new',
                                     dict(start_offset=0, end_offset=4,
-                                         tags=[2]),
+                                         tags=[]),
                                     fmt='json')
         self.assertEqual(response.code, 404)
+
+        # Create highlight in document 2, using tags that don't exist
+        response = await self.apost('/api/project/2/document/2/highlight/new',
+                                    dict(start_offset=0, end_offset=4,
+                                         tags=[150]),
+                                    fmt='json')
+        self.assertEqual(response.code, 400)
+        self.assertEqual(response.body, b'{"error": "Tag not in project"}')
+
+        # Create highlight in document 2, using tags from project 1
+        response = await self.apost('/api/project/2/document/2/highlight/new',
+                                    dict(start_offset=0, end_offset=4,
+                                         tags=[1]),
+                                    fmt='json')
+        self.assertEqual(response.code, 400)
+        self.assertEqual(response.body, b'{"error": "Tag not in project"}')
 
         # Create highlight 2 in document 2
         response = await self.apost('/api/project/2/document/2/highlight/new',
