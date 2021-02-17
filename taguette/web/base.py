@@ -25,6 +25,7 @@ from urllib.parse import urlencode
 
 from .. import __version__ as version
 from .. import database
+from ..indexer import get_indexer
 
 
 logger = logging.getLogger(__name__)
@@ -161,6 +162,11 @@ class Application(tornado.web.Application):
                 self.terms_of_service = fp.read()
         else:
             self.terms_of_service = None
+
+        if config['FULL_TEXT_SEARCH_INDEX'] is not None:
+            self.indexer = get_indexer(config['FULL_TEXT_SEARCH_INDEX'])
+        else:
+            self.indexer = None
 
         if config['MULTIUSER']:
             self.single_user_token = None
