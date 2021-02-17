@@ -352,6 +352,10 @@ def main():
                xheaders=config.get('X_HEADERS', False))
     loop = tornado.ioloop.IOLoop.current()
 
+    if args.debug:
+        logging.warning("Debug mode is ON")
+        asyncio.get_event_loop().set_debug(True)
+
     token = app.single_user_token
     if token:
         url = 'http://localhost:%d/?token=%s' % (config['PORT'], token)
