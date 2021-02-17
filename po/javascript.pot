@@ -1,21 +1,21 @@
-# Translations template for Taguette.
-# Copyright (C) 2018 Remi Rampin
-# This file is distributed under the same license as the Taguette project.
-# Remi Rampin <r@remirampin.com>, 2018.
+# Translations template for PROJECT.
+# Copyright (C) 2021 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Taguette 0.9\n"
-"Report-Msgid-Bugs-To: hi@taguette.org\n"
-"POT-Creation-Date: 2020-08-21 12:34-0400\n"
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2021-02-17 18:03-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
+"Generated-By: Babel 2.9.0\n"
 
 #: taguette/static/js/taguette.js:452
 msgid "Couldn't update project metadata!"
@@ -119,23 +119,23 @@ msgstr ""
 msgid "Load a document on the left"
 msgstr ""
 
-#: taguette/static/js/taguette.js:1411
+#: taguette/static/js/taguette.js:1415
 msgid "Error loading document!"
 msgstr ""
 
-#: taguette/static/js/taguette.js:1460
+#: taguette/static/js/taguette.js:1469
 msgid "No highlights with this tag yet."
 msgstr ""
 
-#: taguette/static/js/taguette.js:1483
+#: taguette/static/js/taguette.js:1538
 msgid "Error loading tag highlights!"
 msgstr ""
 
-#: taguette/static/js/taguette.js:1599
+#: taguette/static/js/taguette.js:1699
 msgid "It appears that you have been logged out."
 msgstr ""
 
-#: taguette/static/js/taguette.js:1602
+#: taguette/static/js/taguette.js:1702
 msgid "You can no longer access this project."
 msgstr ""
 
