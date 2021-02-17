@@ -195,8 +195,8 @@ async def calibre_to_html(input_filename, output_dir, config):
                 await check_call(cmd_again, config['CONVERT_TO_HTML_TIMEOUT'])
             except asyncio.TimeoutError:
                 raise ConversionError("Calibre timed out")
-    except CalledProcessError as e:
-        raise ConversionError("Calibre returned %d" % e.returncode)
+    except CalledProcessError:
+        raise ConversionError("Calibre couldn't convert that file")
     logger.info("ebook-convert successful")
 
     # Locate OEB manifest
@@ -322,8 +322,8 @@ async def wvware_to_html(input_filename, tmp, config):
         await check_call(cmd, config['CONVERT_TO_HTML_TIMEOUT'])
     except OSError:
         raise ConversionError("Can't call wvHtml")
-    except CalledProcessError as e:
-        raise ConversionError("wvHtml returned %d" % e.returncode)
+    except CalledProcessError:
+        raise ConversionError("wvHtml couldn't convert that file")
     except asyncio.TimeoutError:
         raise ConversionError("wvHtml timed out")
     logger.info("wvHtml successful")
@@ -342,6 +342,8 @@ async def to_html(body, content_type, filename, config):
     ext = os.path.splitext(filename)[1].lower()
     if ext in HTML_EXTENSIONS:
         return get_html_body(body)
+    elif not ext:
+        raise ConversionError("This file doesn't have an extension!")
     elif ext == '.doc':
         # Convert file to HTML using WV
         tmp = tempfile.mkdtemp(prefix='taguette_wv_')
@@ -402,8 +404,8 @@ async def calibre_from_html(html, extension, config):
         logger.info("Running: %s", ' '.join(cmd))
         try:
             await check_call(cmd, config['CONVERT_FROM_HTML_TIMEOUT'])
-        except CalledProcessError as e:
-            raise ConversionError("Calibre returned %d" % e.returncode)
+        except CalledProcessError:
+            raise ConversionError("Calibre couldn't convert that file")
         except asyncio.TimeoutError:
             raise ConversionError("Calibre timed out")
         logger.info("ebook-convert successful")
