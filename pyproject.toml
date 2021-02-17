@@ -44,9 +44,7 @@ include = [
 
 [tool.poetry.dependencies]
 python = "^3.5.3"
-# tornado 6.1 will include https://github.com/tornadoweb/tornado/pull/2745 and
-# require changes to routes
-tornado = ">=5.0,<6.1"
+tornado = ">=6.1"
 sqlalchemy = "~1"
 alembic = "*"
 jinja2 = "*"
