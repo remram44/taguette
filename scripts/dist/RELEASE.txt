@@ -1,6 +1,8 @@
 * Update translations from https://www.transifex.com/remram44/taguette/
 * Run scripts/update_translations.sh
 * Update CHANGELOG and version numbers
+* Push to Zenodo
+  * Update citation in repo, website, GitLab badge
 * Create a signed tag (git tag -s)
 * Build sdist / bdist_wheel, upload to PyPI (with Twine)
 * Build MacOS installer
@@ -15,8 +17,6 @@
   * Build installer using windows-installer.iss
   * Put on OSF
 * Update tag page on GitLab with changelog, links to OSF and PyPI downloads
-* Build Docker image quay.io/remram/taguette (version tag + latest tag), push to quay.io
-* Push to Zenodo
-  * Update citation in repo, website, GitLab badge
+* Build Docker image quay.io/remram44/taguette (version tag + latest tag), push to quay.io
 * Update message files on msg.taguette.org, so users get the notification
 * Update download link on website's install.html
