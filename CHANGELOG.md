@@ -1,6 +1,19 @@
 Changelog
 =========
 
+0.10 (2021-02-17)
+-----------------
+
+Bugfixes:
+* Check that tags exist in the project before adding them to highlights
+
+Enhancements:
+* SEO: Add page titles, robots.txt
+* Remind user of their login in the password reset email
+* Pause polling for changes when the window has been inactive for 10 minutes
+* Improve the error message shown when document import fails
+* Add pagination to the highlights view, which greatly improve performances for heavily used tags
+
 0.9.2 (2020-08-26)
 ------------------
 
