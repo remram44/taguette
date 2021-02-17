@@ -127,6 +127,7 @@ class DocumentAdd(BaseHandler):
             except convert.ConversionError as err:
                 return await self.send_error_json(400, str(err))
             else:
+                # Add to database
                 doc = database.Document(
                     name=name,
                     description=description,
@@ -141,11 +142,25 @@ class DocumentAdd(BaseHandler):
                     doc,
                 )
                 self.db.add(cmd)
+                project_id = project.id
+                doc_id = doc.id
                 logger.info("Document added to project %r: %r %r (%d bytes)",
-                            project.id, doc.id, doc.name, len(doc.contents))
+                            project_id, doc_id, doc.name, len(doc.contents))
                 self.db.commit()
+
+                # Notify
                 self.db.refresh(cmd)
                 self.application.notify_project(project.id, cmd)
+
+                # Index
+                @background_task
+                def update_index():
+                    indexer = await self.application.indexer
+                    indexer.update_document(
+                        project_id, doc_id,
+                        name, description, body,
+                    )
+
                 return await self.send_json({'created': doc.id})
         except validate.InvalidFormat as e:
             logger.info("Error validating DocumentAdd: %r", e)
@@ -165,6 +180,9 @@ class DocumentUpdate(BaseHandler):
         try:
             obj = self.get_json()
             if obj:
+                # Update database
+                if not obj.keys() <= {'name', 'description'}:
+                    raise validate.InvalidFormat(self.gettext("Unknown fields"))
                 if 'name' in obj:
                     validate.document_name(obj['name'])
                     document.name = obj['name']
@@ -175,10 +193,22 @@ class DocumentUpdate(BaseHandler):
                     self.current_user,
                     document,
                 )
+                document_id = document.id
                 self.db.add(cmd)
                 self.db.commit()
+
+                # Notify
                 self.db.refresh(cmd)
                 self.application.notify_project(document.project_id, cmd)
+
+                # Index
+                @background_task
+                def update_index():
+                    indexer = await self.application.indexer
+                    indexer.update_document(
+                        project_id, document_id,
+                        **obj,
+                    )
 
             return self.send_json({'id': document.id})
         except validate.InvalidFormat as e:
@@ -192,15 +222,26 @@ class DocumentUpdate(BaseHandler):
         document, privileges = self.get_document(project_id, document_id)
         if not privileges.can_delete_document():
             return self.send_error_json(403, "Unauthorized")
+
+        # Update database
         self.db.delete(document)
         cmd = database.Command.document_delete(
             self.current_user,
             document,
         )
         self.db.add(cmd)
+        document_id = document.id
         self.db.commit()
+
+        # Notify
         self.db.refresh(cmd)
         self.application.notify_project(document.project_id, cmd)
+
+        # Update index
+        @background_task
+        def update_index():
+            indexer = await self.application.indexer
+            indexer.remove_document(project_id, document_id)
 
         self.set_status(204)
         return self.finish()
