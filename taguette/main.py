@@ -74,6 +74,13 @@ SECRET_KEY = "{secret}"
 # (keep 3 before a relative path)
 DATABASE = "sqlite:////non/existent/taguette/database.sqlite3"
 
+# Full text search index path
+# If you want to use full text search, set this to the path where the index
+# will be created
+# TypeSense needs to be available for this to work
+FULL_TEXT_SEARCH_INDEX = None
+#FULL_TEXT_SEARCH_INDEX = '/tmp/taguette_index
+
 # Address to send system emails from
 EMAIL = "Misconfigured Taguette Server <taguette@example.com>"
 
@@ -132,9 +139,11 @@ DEFAULT_CONFIG = {
     'HTML_OUT_SIZE_LIMIT': 2000000,  # 2 MB
 }
 
-REQUIRED_CONFIG = ['NAME', 'PORT', 'SECRET_KEY', 'DATABASE', 'TOS_FILE',
-                   'X_HEADERS', 'EMAIL', 'MAIL_SERVER', 'COOKIES_PROMPT',
-                   'OPF_OUT_SIZE_LIMIT', 'HTML_OUT_SIZE_LIMIT']
+REQUIRED_CONFIG = [
+    'NAME', 'PORT', 'SECRET_KEY', 'DATABASE', 'FULL_TEXT_SEARCH_INDEX',
+    'TOS_FILE', 'X_HEADERS', 'EMAIL', 'MAIL_SERVER', 'COOKIES_PROMPT',
+    'OPF_OUT_SIZE_LIMIT', 'HTML_OUT_SIZE_LIMIT',
+]
 
 
 def main():
@@ -204,6 +213,8 @@ def main():
                                "'postgresql://me:pw@localhost/mydb' "
                                "(default: %(default)r)") %
                         dict(default=default_db_show))
+    parser.add_argument('--full-text-search-index', action='store',
+                        help=_("Full text search index path"))
     parser.add_argument('--set-umask', action='store', dest='umask',
                         default="077",
                         help=_("Set the file creation mask (umask) on systems "
@@ -298,6 +309,7 @@ def main():
             SQLITE3_IMPORT_ENABLED=True,
             PORT=int(args.port),
             DATABASE=prepare_db(args.database),
+            FULL_TEXT_SEARCH_INDEX=args.full_text_search_index,
             TOS_FILE=None,
             SECRET_KEY=secret,
             COOKIES_PROMPT=False,
