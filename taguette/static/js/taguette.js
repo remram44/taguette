@@ -1541,7 +1541,7 @@ window.addEventListener('focus', function() {
   maybeResumePolling();
 });
 window.addEventListener('mousemove', function() {
-  if(windowLastActive === null) {
+  if(windowLastActive !== null) {
     // If the mouse moved over the window and we're not focused, refresh timer
     windowLastActive = new Date();
     maybeResumePolling();
