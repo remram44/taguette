@@ -155,7 +155,7 @@ class Register(BaseHandler):
             login = self.get_body_argument('login')
             password1 = self.get_body_argument('password1')
             password2 = self.get_body_argument('password2')
-            login = validate.user_login(login)
+            login = validate.user_login(login, new=True)
             validate.user_password(password1)
             email = self.get_body_argument('email', '')
             if email:

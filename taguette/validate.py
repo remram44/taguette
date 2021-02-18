@@ -28,20 +28,23 @@ def project_description(description):
         raise InvalidFormat(_f("Project description is too long"))
 
 
-ALLOWED_LOGIN_CHARACTERS = (
+ALLOWED_LOGIN_CHARACTERS_NEW = (
     string.ascii_lowercase + string.digits +
-    '.+@_-'
+    '._-'
+)
+ALLOWED_LOGIN_CHARACTERS = (
+    ALLOWED_LOGIN_CHARACTERS_NEW + '+@ '
 )
 
 
-def user_login(login):
+def user_login(login, new=False):
     if not login:
         raise InvalidFormat(_f("User login cannot be empty"))
-    if len(login) > 20:
+    if len(login) > (20 if new else 25):
         raise InvalidFormat(_f("User login is too long"))
     login = login.lower()
-    if any(c not in ALLOWED_LOGIN_CHARACTERS
-           for c in login):
+    chars = ALLOWED_LOGIN_CHARACTERS_NEW if new else ALLOWED_LOGIN_CHARACTERS
+    if any(c not in chars for c in login):
         raise InvalidFormat(_f("User login contains forbidden characters"))
     return login
 
