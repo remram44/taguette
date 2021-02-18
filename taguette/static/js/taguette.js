@@ -1503,11 +1503,30 @@ function loadTag(tag_path, page) {
       pagination.setAttribute('aria-label', "Page navigation");
       var pagination_ul = document.createElement('ul');
       pagination_ul.className = 'pagination justify-content-center';
+      var min_page = Math.max(2, page - 2);
+      var max_page = Math.min(result.pages - 1, page + 2);
+
+      // Previous button
       pagination_ul.appendChild(makePageLink(page - 1, "Previous", false, page > 1));
-      for(var i = 1; i <= result.pages; ++i) {
+      // Page 1
+      pagination_ul.appendChild(makePageLink(1, 1, 1 === page, 1 !== page));
+      // "..." between 1 and other pages, if appropriate
+      if(min_page > 2) {
+        pagination_ul.appendChild(makePageLink(page, "...", false, false));
+      }
+      // Other pages
+      for(var i = min_page; i <= max_page; ++i) {
         pagination_ul.appendChild(makePageLink(i, i, i === page, i !== page));
       }
+      // "..." between other pages and last page, if appropriate
+      if(max_page < result.pages - 1) {
+        pagination_ul.appendChild(makePageLink(page, "...", false, false));
+      }
+      // Last page
+      pagination_ul.appendChild(makePageLink(result.pages, result.pages, result.pages === page, result.pages !== page));
+      // Next button
       pagination_ul.appendChild(makePageLink(page + 1, "Next", false, page < result.pages));
+
       pagination.appendChild(pagination_ul);
       document_contents.appendChild(pagination);
     }
