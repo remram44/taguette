@@ -527,7 +527,7 @@ class HighlightUpdate(BaseHandler):
 
 
 class Highlights(BaseHandler):
-    PAGE_SIZE = 15
+    PAGE_SIZE = 50
 
     @api_auth
     @PROM_REQUESTS.sync('highlights')
