@@ -230,7 +230,7 @@ class ExportDocument(BaseHandler):
 
         highlights = (
             self.db.query(database.Highlight)
-            .filter(database.Highlight.document_id == document_id)
+            .filter(database.Highlight.document_id == doc.id)
             .order_by(database.Highlight.start_offset)
             .options(joinedload(database.Highlight.tags))
         ).all()

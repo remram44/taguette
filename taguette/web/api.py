@@ -207,6 +207,14 @@ class DocumentContents(BaseHandler):
     @PROM_REQUESTS.sync('document_contents')
     def get(self, project_id, document_id):
         document, _ = self.get_document(project_id, document_id, True)
+
+        highlights = (
+            self.db.query(database.Highlight)
+            .filter(database.Highlight.document_id == document.id)
+            .order_by(database.Highlight.start_offset)
+            .options(joinedload(database.Highlight.tags))
+        ).all()
+
         return self.send_json({
             'contents': [
                 {'offset': 0, 'contents': document.contents},
@@ -216,7 +224,7 @@ class DocumentContents(BaseHandler):
                  'start_offset': hl.start_offset,
                  'end_offset': hl.end_offset,
                  'tags': [t.id for t in hl.tags]}
-                for hl in document.highlights
+                for hl in highlights
             ],
         })
 
