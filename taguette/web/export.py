@@ -86,7 +86,7 @@ class BaseExportHighlights(BaseHandler):
             hltag = aliased(database.HighlightTag)
             highlights = (
                 self.db.query(database.Highlight)
-                .options(joinedload(database.Highlight.document))
+                .options(joinedload(database.Highlight.tags))
                 .join(hltag, hltag.highlight_id == database.Highlight.id)
                 .join(tag, hltag.tag_id == tag.id)
                 .filter(tag.path.startswith(path))
@@ -101,6 +101,7 @@ class BaseExportHighlights(BaseHandler):
             document = aliased(database.Document)
             highlights = (
                 self.db.query(database.Highlight)
+                .options(joinedload(database.Highlight.tags))
                 .join(document, document.id == database.Highlight.document_id)
                 .filter(document.project == project)
                 .order_by(database.Highlight.document_id,
