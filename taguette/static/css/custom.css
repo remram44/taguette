@@ -201,7 +201,12 @@ textarea.form-control {
   resize: none;
 }
 
+/* Wrap long tag names and long doc names */
 .tag-name {
+  word-break: break-all;
+}
+
+a.document-link-a {
   word-break: break-all;
 }
 
