@@ -4,7 +4,7 @@ import logging
 import math
 import prometheus_client
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import aliased
+from sqlalchemy.orm import aliased, joinedload
 from tornado.concurrent import Future
 import tornado.log
 from tornado.web import MissingArgumentError, HTTPError
@@ -546,6 +546,7 @@ class Highlights(BaseHandler):
             hltag = aliased(database.HighlightTag)
             query = (
                 self.db.query(database.Highlight)
+                .options(joinedload(database.Highlight.tags))
                 .join(hltag, hltag.highlight_id == database.Highlight.id)
                 .join(tag, hltag.tag_id == tag.id)
                 .filter(tag.path.startswith(path))
@@ -559,6 +560,7 @@ class Highlights(BaseHandler):
             document = aliased(database.Document)
             query = (
                 self.db.query(database.Highlight)
+                .options(joinedload(database.Highlight.tags))
                 .join(document, document.id == database.Highlight.document_id)
                 .filter(document.project == project)
                 .order_by(database.Highlight.document_id,
