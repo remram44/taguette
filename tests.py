@@ -679,13 +679,14 @@ class TestMultiuser(MyHTTPTestCase):
         })
 
         # List highlights in project 2 under 'interesting'
-        response = await self.aget('/api/project/2/highlights/interesting.'
-                                   'places')
+        response = await self.aget('/api/project/2/highlights/interesting')
         self.assertEqual(response.code, 200)
         self.assertEqual(json.loads(response.body.decode('utf-8')), {
             'highlights': [
                 {'id': 2, 'document_id': 2, 'tags': [4],
                  'content': "diff"},
+                {'id': 3, 'document_id': 2, 'tags': [2, 3],
+                 'content': "tent"},
             ],
             'pages': 1,
         })
