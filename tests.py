@@ -407,6 +407,30 @@ class TestMultiuser(MyHTTPTestCase):
 
     @gen_test(timeout=30)
     async def test_projects(self):
+        # project 1               project 2
+        # ---------               ---------
+        # create
+        # (tag 1 'interesting')
+        #                         create
+        #                         (tag 2 'interesting')
+        #                         tag 3 'people'
+        #                         tag 4 'interesting.places'
+        # doc 1
+        #                         doc 2
+        # hl 1 doc=1 tags=[1]
+        #                         change project metadata
+        #                         doc 3
+        #                         hl 2 doc=2 tags=[4]
+        #                         hl 3 doc=2 tags=[2, 3]
+        #                         hl 4 doc=3 tags=[3]
+        #                         highlights 'people*': [3, 4]
+        #                         highlights 'interesting.places*': [2]
+        #                         highlights 'interesting*': [2, 3]
+        #                         highlights: [2, 3, 4]
+        #                         export doc 2
+        #                         merge tag 3 -> 2
+        #                         highlights: [2, 3, 4]
+
         # Accept cookies
         response = await self.apost('/cookies', dict())
         self.assertEqual(response.code, 302)
