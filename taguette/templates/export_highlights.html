@@ -15,13 +15,13 @@
     {%- else %}
     <h1>{% trans %}Taguette highlights{% endtrans %}</h1>
     {% endif %}
-{% for hl in highlights %}
-    {{ hl.snippet |safe }}
+{% for id, snippet, document, tags in highlights %}
+    {{ snippet |safe }}
     <p>
-      {% trans doc=hl.document.name %}<strong>Document:</strong> {{ doc }}{% endtrans %}
+      {% trans doc=document %}<strong>Document:</strong> {{ doc }}{% endtrans %}
       <strong>{% trans %}Tags:{% endtrans %}</strong>
-      {%- for tag in hl.tags %}
-        {{ tag.path }}
+      {%- for tag in tags %}
+        {{ tag }}
         {%- if not loop.last %},{% endif %}
       {%- endfor %}
     </p>

@@ -5,7 +5,8 @@ from markupsafe import Markup
 import os
 import prometheus_client
 import shutil
-from sqlalchemy.orm import aliased, joinedload
+import sqlalchemy
+from sqlalchemy.orm import joinedload
 import tempfile
 from tornado.web import authenticated
 from xml.sax.saxutils import XMLGenerator
@@ -78,36 +79,114 @@ def export_doc(wrapped):
 
 
 class BaseExportHighlights(BaseHandler):
+    _stream_closed = False
+
+    def on_connection_close(self):
+        self._stream_closed = True
+        super(BaseExportHighlights).on_connection_close()
+
     def get_highlights_for_export(self, project_id, path):
         project, _ = self.get_project(project_id)
 
         if path:
-            tag = aliased(database.Tag)
-            hltag = aliased(database.HighlightTag)
-            highlights = (
-                self.db.query(database.Highlight)
-                .options(joinedload(database.Highlight.tags))
-                .join(hltag, hltag.highlight_id == database.Highlight.id)
-                .join(tag, hltag.tag_id == tag.id)
-                .filter(tag.path.startswith(path))
-                .filter(tag.project == project)
-                .order_by(database.Highlight.document_id,
-                          database.Highlight.start_offset)
-            ).all()
+            t_highlight = database.Highlight.__table__
+            t_highlight_tag = database.HighlightTag.__table__
+            t_tag = database.Tag.__table__
+            t_document = database.Document.__table__
+            # Join with tags a second time to find highlights that match the
+            # given path, while returning all tags for those highlights
+            t_highlight_tag_m = database.HighlightTag.__table__.alias()
+            t_tag_m = database.Tag.__table__.alias()
+            query = (
+                sqlalchemy.select([
+                    t_highlight.c.id,
+                    t_highlight.c.snippet,
+                    t_document.c.name,
+                    t_tag.c.path,
+                ])
+                .select_from(
+                    t_highlight
+                    .join(
+                        t_highlight_tag,
+                        t_highlight.c.id == t_highlight_tag.c.highlight_id,
+                    )
+                    .join(
+                        t_tag,
+                        t_tag.c.id == t_highlight_tag.c.tag_id,
+                    )
+                    .join(
+                        t_highlight_tag_m,
+                        t_highlight.c.id == t_highlight_tag_m.c.highlight_id,
+                    )
+                    .join(
+                        t_tag_m,
+                        t_tag_m.c.id == t_highlight_tag_m.c.tag_id,
+                    )
+                    .join(
+                        t_document,
+                        t_document.c.id == t_highlight.c.document_id,
+                    )
+                )
+                .where(t_tag_m.c.path.startswith(path))
+                .where(t_document.c.project_id == project.id)
+                .order_by(
+                    t_highlight.c.document_id,
+                    t_highlight.c.start_offset,
+                    t_highlight.c.id,
+                )
+            )
             name = None
         else:
             # Special case to select all highlights: we also need to select
-            # highlights that have no tag at all
-            document = aliased(database.Document)
-            highlights = (
-                self.db.query(database.Highlight)
-                .options(joinedload(database.Highlight.tags))
-                .join(document, document.id == database.Highlight.document_id)
-                .filter(document.project == project)
-                .order_by(database.Highlight.document_id,
-                          database.Highlight.start_offset)
-            ).all()
+            # highlights that have no tag at all, so the startswith() condition
+            # would not work
+            t_highlight = database.Highlight.__table__
+            t_highlight_tag = database.HighlightTag.__table__
+            t_tag = database.Tag.__table__
+            t_document = database.Document.__table__
+            query = (
+                sqlalchemy.select([
+                    t_highlight.c.id,
+                    t_highlight.c.snippet,
+                    t_document.c.name,
+                    t_tag.c.path,
+                ])
+                .select_from(
+                    t_highlight
+                    .join(
+                        t_highlight_tag,
+                        t_highlight.c.id == t_highlight_tag.c.highlight_id,
+                    )
+                    .join(
+                        t_tag,
+                        t_tag.c.id == t_highlight_tag.c.tag_id,
+                    )
+                    .join(
+                        t_document,
+                        t_document.c.id == t_highlight.c.document_id,
+                    )
+                )
+                .where(t_document.c.project_id == project.id)
+                .order_by(
+                    t_highlight.c.document_id,
+                    t_highlight.c.start_offset,
+                    t_highlight.c.id,
+                )
+            )
             name = 'all_tags'
+
+        highlights = []
+        for row in self.db.execute(query).fetchall():
+            highlight_id, snippet, document, tag_path = row
+            if highlights and highlights[-1][0] == highlight_id:
+                highlights[-1][3].append(tag_path)
+            else:
+                highlights.append((
+                    highlight_id,
+                    snippet,
+                    document,
+                    [] if tag_path is None else [tag_path],
+                ))
 
         return name, highlights
 
@@ -129,17 +208,13 @@ class ExportHighlightsCsv(BaseExportHighlights):
             self.set_header('Content-Disposition', 'attachment')
         writer = csv.writer(WriteAdapter(self.write))
         writer.writerow(['id', 'document', 'tag', 'content'])
-        for hl in highlights:
-            tags = hl.tags
-            assert all(isinstance(t, database.Tag) for t in tags)
-            if tags:
-                tags = [t.path for t in tags]
-            else:
+        for id, snippet, document, tags in highlights:
+            if not tags:
                 tags = ['']
             for tag_path in tags:
                 writer.writerow([
-                    hl.id, hl.document.name, tag_path,
-                    convert.html_to_plaintext(hl.snippet),
+                    id, document, tag_path,
+                    convert.html_to_plaintext(snippet),
                 ])
         return self.finish()
 
@@ -178,18 +253,14 @@ class ExportHighlightsXlsx(BaseExportHighlights):
             sheet.set_column(2, 2, 15.0)
             sheet.set_column(3, 3, 80.0)
             row = 1
-            for hl in highlights:
-                tags = hl.tags
-                assert all(isinstance(t, database.Tag) for t in tags)
-                if tags:
-                    tags = [t.path for t in tags]
-                else:
+            for id, snippet, document, tags in highlights:
+                if not tags:
                     tags = ['']
                 for tag_path in tags:
-                    sheet.write(row, 0, str(hl.id))
-                    sheet.write(row, 1, hl.document.name)
+                    sheet.write(row, 0, str(id))
+                    sheet.write(row, 1, document)
                     sheet.write(row, 2, tag_path)
-                    sheet.write(row, 3, convert.html_to_plaintext(hl.snippet))
+                    sheet.write(row, 3, convert.html_to_plaintext(snippet))
                     row += 1
             workbook.close()
             with open(filename, 'rb') as fp:
