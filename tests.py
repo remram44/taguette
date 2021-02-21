@@ -730,7 +730,7 @@ class TestMultiuser(MyHTTPTestCase):
             'pages': 1,
         })
 
-        # Export to HTML
+        # Export document 2 to HTML
         response = await self.aget('/project/2/export/document/2.html')
         self.assertEqual(response.code, 200)
         self.assertEqual(
@@ -759,6 +759,48 @@ class TestMultiuser(MyHTTPTestCase):
 [interesting, people]</span>
               </body>
             </html>'''),
+        )
+
+        # Export highlights in project 2 under 'interesting'
+        response = await self.aget('/project/2/export/highlights/'
+                                   'interesting.html')
+        self.assertEqual(response.code, 200)
+        self.maxDiff = None  # FIXME: DEBUG DEBUG DEBUG
+        self.assertEqual(
+            response.body.decode('utf-8'),
+            textwrap.dedent('''\
+                <!DOCTYPE html>
+                <html>
+                  <head>
+                    <meta charset="UTF-8">
+                    <title></title>
+                    <style>
+                      h1 {
+                        margin-bottom: 1em;
+                      }
+                    </style>
+                  </head>
+                  <body>
+                    <h1>Taguette highlights: interesting</h1>
+
+                    diff
+                    <p>
+                      <strong>Document:</strong> otherdoc
+                      <strong>Tags:</strong>
+                        interesting.places
+                    </p>
+                    <hr>
+
+                    tent
+                    <p>
+                      <strong>Document:</strong> otherdoc
+                      <strong>Tags:</strong>
+                        interesting,
+                        people
+                    </p>
+
+                  </body>
+                </html>'''),
         )
 
         # Merge tag 3 into 2
