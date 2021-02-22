@@ -1,6 +1,14 @@
 Changelog
 =========
 
+0.10.1 (2021-02-22)
+-------------------
+
+Bugfixes:
+* Limit the number of page buttons
+* SQL query performance improvements
+* Force long document names to wrap (like long tag names)
+
 0.10 (2021-02-17)
 -----------------
 
