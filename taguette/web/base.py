@@ -12,6 +12,7 @@ from sqlalchemy.orm import joinedload, undefer, make_transient
 import tornado.ioloop
 from tornado.httpclient import AsyncHTTPClient
 import tornado.locale
+import tornado.iostream
 from tornado.web import HTTPError, RequestHandler
 from urllib.parse import urlencode
 
@@ -321,6 +322,12 @@ class BaseHandler(RequestHandler):
     def send_error_json(self, status, message, reason=None):
         self.set_status(status, reason)
         return self.send_json({'error': message})
+
+    def log_exception(self, typ, value, tb):
+        if isinstance(value, tornado.iostream.StreamClosedError):
+            pass
+        else:
+            super(BaseHandler, self).log_exception(typ, value, tb)
 
 
 def _f(message):
