@@ -59,10 +59,15 @@ def export_doc(wrapped):
                 html, ext,
                 self.application.config,
             )
+            contents = await contents
         except convert.UnsupportedFormat:
             self.set_status(404)
             self.set_header('Content-Type', 'text/plain')
             return await self.finish("Unsupported format: %s" % ext)
+        except convert.ConversionError as e:
+            self.set_status(500)
+            self.set_header('Content-Type', 'text/plain')
+            return await self.finish("Conversion error: %s" % e)
 
         # Return document
         self.set_header('Content-Type', mimetype)
@@ -71,8 +76,9 @@ def export_doc(wrapped):
                             'attachment; filename="%s.%s"' % (name, ext))
         else:
             self.set_header('Content-Disposition', 'attachment')
-        for chunk in await contents:
+        for chunk in contents:
             self.write(chunk)
+
         return await self.finish()
 
     return wrapper
