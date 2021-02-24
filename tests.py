@@ -765,7 +765,6 @@ class TestMultiuser(MyHTTPTestCase):
         response = await self.aget('/project/2/export/highlights/'
                                    'interesting.html')
         self.assertEqual(response.code, 200)
-        self.maxDiff = None  # FIXME: DEBUG DEBUG DEBUG
         self.assertEqual(
             response.body.decode('utf-8'),
             textwrap.dedent('''\
