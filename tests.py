@@ -808,10 +808,10 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(
             response.body.decode('utf-8'),
             textwrap.dedent('''\
-                tag,description
-                interesting,Further review required
-                people,People of interest
-                interesting.places,
+                tag,description,number of highlights
+                interesting,Further review required,1
+                people,People of interest,2
+                interesting.places,,1
                 ''').replace('\n', '\r\n'),
         )
 
@@ -836,12 +836,15 @@ class TestMultiuser(MyHTTPTestCase):
                     <h1>Taguette Codebook</h1>
 
                       <h2>interesting</h2>
+                      <p class="number">1 highlight</p>
                       <p>Further review required</p>
 
                       <h2>people</h2>
+                      <p class="number">2 highlights</p>
                       <p>People of interest</p>
 
                       <h2>interesting.places</h2>
+                      <p class="number">1 highlight</p>
                       <p></p>
 
                   </body>

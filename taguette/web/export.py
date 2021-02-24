@@ -363,9 +363,9 @@ class ExportCodebookCsv(BaseHandler):
         self.set_header('Content-Disposition',
                         'attachment; filename="codebook.csv"')
         writer = csv.writer(WriteAdapter(self.write))
-        writer.writerow(['tag', 'description'])
+        writer.writerow(['tag', 'description', 'number of highlights'])
         for tag in tags:
-            writer.writerow([tag.path, tag.description])
+            writer.writerow([tag.path, tag.description, tag.highlights_count])
         return self.finish()
 
 
@@ -392,11 +392,13 @@ class ExportCodebookXlsx(BaseHandler):
 
             sheet.write(0, 0, 'tag', header)
             sheet.write(0, 1, 'description', header)
+            sheet.write(0, 2, 'number of highlights', header)
             sheet.set_column(0, 0, 30.0)
             sheet.set_column(1, 1, 80.0)
             for row, tag in enumerate(tags, start=1):
                 sheet.write(row, 0, tag.path)
                 sheet.write(row, 1, tag.description)
+                sheet.write(row, 2, tag.highlights_count)
             workbook.close()
             with open(filename, 'rb') as fp:
                 chunk = fp.read(4096)
