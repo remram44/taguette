@@ -85,12 +85,6 @@ def export_doc(wrapped):
 
 
 class BaseExportHighlights(BaseHandler):
-    _stream_closed = False
-
-    def on_connection_close(self):
-        self._stream_closed = True
-        super(BaseExportHighlights).on_connection_close()
-
     def get_highlights_for_export(self, project_id, path):
         project, _ = self.get_project(project_id)
 
