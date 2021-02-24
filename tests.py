@@ -808,10 +808,10 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(
             response.body.decode('utf-8'),
             textwrap.dedent('''\
-                tag,description
-                interesting,Further review required
-                people,People of interest
-                interesting.places,
+                tag,description,number of highlights
+                interesting,Further review required,1
+                people,People of interest,2
+                interesting.places,,1
                 ''').replace('\n', '\r\n'),
         )
 
