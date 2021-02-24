@@ -4,7 +4,7 @@ stages:
 
 run_tests_sqlite3:
   stage: test
-  image: python:3.7
+  image: python:3.8
   script:
     - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.4 && /root/.poetry/bin/poetry config virtualenvs.create false
     - $HOME/.poetry/bin/poetry install --no-interaction
@@ -21,7 +21,7 @@ run_tests_sqlite3:
 
 run_tests_sqlite3_latest:
   stage: test
-  image: python:3.7
+  image: python:3.8
   script:
     - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.4 && /root/.poetry/bin/poetry config virtualenvs.create false
     - rm poetry.lock
@@ -31,7 +31,7 @@ run_tests_sqlite3_latest:
 
 run_tests_postgres:
   stage: test
-  image: python:3.7
+  image: python:3.8
   services:
     - postgres:latest
   variables:
