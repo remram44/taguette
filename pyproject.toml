@@ -60,7 +60,7 @@ sentry-sdk = "*"
 coverage = "*"
 flake8 = "*"
 readme_renderer = "*"
-babel = "^2.6"
+babel = "^2.6" # Keep babel and pytz in sync with Dockerfile
 bcrypt = "*"
 
 [tool.poetry.scripts]
