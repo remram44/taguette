@@ -802,6 +802,52 @@ class TestMultiuser(MyHTTPTestCase):
                 </html>'''),
         )
 
+        # Export codebook of project 2 to CSV
+        response = await self.aget('/project/2/export/codebook.csv')
+        self.assertEqual(response.code, 200)
+        self.assertEqual(
+            response.body.decode('utf-8'),
+            textwrap.dedent('''\
+                tag,description
+                interesting,Further review required
+                people,People of interest
+                interesting.places,
+                ''').replace('\n', '\r\n'),
+        )
+
+        # Export codebook of project 2 to HTML
+        response = await self.aget('/project/2/export/codebook.html')
+        self.assertEqual(response.code, 200)
+        self.assertEqual(
+            response.body.decode('utf-8'),
+            textwrap.dedent('''\
+                <!DOCTYPE html>
+                <html>
+                  <head>
+                    <meta charset="UTF-8">
+                    <style>
+                      .highlight {
+                        background-color: #ff0;
+                      }
+                    </style>
+                    <title>Taguette Codebook</title>
+                  </head>
+                  <body>
+                    <h1>Taguette Codebook</h1>
+
+                      <h2>interesting</h2>
+                      <p>Further review required</p>
+
+                      <h2>people</h2>
+                      <p>People of interest</p>
+
+                      <h2>interesting.places</h2>
+                      <p></p>
+
+                  </body>
+                </html>'''),
+        )
+
         # Merge tag 3 into 2
         response = await self.apost('/api/project/2/tag/merge',
                                     dict(src=3, dest=2),
