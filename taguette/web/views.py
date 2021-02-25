@@ -342,8 +342,9 @@ class SetNewPassword(BaseHandler):
             self.decode_reset_token(reset_token)
         except HTTPError as e:
             self.set_status(403)
-            return self.finish(
-                self.gettext(e.log_message),
+            return self.render(
+                'login.html', register=False,
+                login_error=self.gettext(e.log_message),
             )
         return self.render('new_password.html', reset_token=reset_token)
 
@@ -356,8 +357,9 @@ class SetNewPassword(BaseHandler):
             user = self.decode_reset_token(reset_token)
         except HTTPError as e:
             self.set_status(403)
-            return self.finish(
-                self.gettext(e.log_message),
+            return self.render(
+                'login.html', register=False,
+                login_error=self.gettext(e.log_message),
             )
         try:
             password1 = self.get_body_argument('password1')
