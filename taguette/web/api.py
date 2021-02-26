@@ -214,6 +214,7 @@ class DocumentContents(BaseHandler):
             .filter(database.Highlight.document_id == document.id)
             .order_by(database.Highlight.start_offset)
             .options(joinedload(database.Highlight.tags))
+            .options(defer('tags.highlights_count'))
         ).all()
 
         return self.send_json({
