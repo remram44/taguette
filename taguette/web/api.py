@@ -4,7 +4,7 @@ import logging
 import math
 import prometheus_client
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import aliased, joinedload
+from sqlalchemy.orm import aliased, defer, joinedload
 from tornado.concurrent import Future
 import tornado.log
 from tornado.web import MissingArgumentError, HTTPError
@@ -210,6 +210,7 @@ class DocumentContents(BaseHandler):
 
         highlights = (
             self.db.query(database.Highlight)
+            .options(defer('snippet'))
             .filter(database.Highlight.document_id == document.id)
             .order_by(database.Highlight.start_offset)
             .options(joinedload(database.Highlight.tags))
