@@ -3,6 +3,7 @@ import alembic.config
 from alembic.runtime.migration import MigrationContext
 from alembic.script import ScriptDirectory
 import binascii
+from datetime import datetime
 import enum
 import hashlib
 import hmac
@@ -63,7 +64,7 @@ class User(Base):
 
     login = Column(String, primary_key=True)
     created = Column(DateTime, nullable=False,
-                     server_default=functions.now())
+                     default=lambda: datetime.utcnow())
     hashed_password = Column(String, nullable=True)
     password_set_date = Column(DateTime, nullable=True)
     language = Column(String, nullable=True)
@@ -89,7 +90,7 @@ class User(Base):
             )
         else:
             raise ValueError("Unsupported encryption method %r" % method)
-        self.password_set_date = functions.now()
+        self.password_set_date = datetime.utcnow()
 
     def check_password(self, password):
         if self.hashed_password is None:
@@ -128,7 +129,7 @@ class Project(Base):
     name = Column(String, nullable=False)
     description = Column(Text, nullable=False)
     created = Column(DateTime, nullable=False,
-                     server_default=functions.now())
+                     default=lambda: datetime.utcnow())
     members = relationship('User', secondary='project_members')
     commands = relationship('Command', cascade='all,delete-orphan',
                             passive_deletes=True)
@@ -214,7 +215,7 @@ class Document(Base):
     description = Column(Text, nullable=False)
     filename = Column(String, nullable=True)
     created = Column(DateTime, nullable=False,
-                     server_default=functions.now())
+                     default=lambda: datetime.utcnow())
     project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
                         nullable=False, index=True)
     project = relationship('Project', back_populates='documents')
@@ -238,7 +239,7 @@ class Command(Base):
 
     id = Column(Integer, primary_key=True)
     date = Column(DateTime, nullable=False,
-                  server_default=functions.now(), index=True)
+                  default=datetime.utcnow(), index=True)
     user_login = Column(String,
                         ForeignKey('users.login', onupdate='CASCADE'),
                         nullable=False)
