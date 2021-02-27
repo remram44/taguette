@@ -894,8 +894,8 @@ class TestMultiuser(MyHTTPTestCase):
 
         # Register
         response = self.post('/register', dict(login='User',
-                                               password1='hackme',
-                                               password2='hackme',
+                                               password1='pass1',
+                                               password2='pass1',
                                                email='test@example.com'))
         self.assertEqual(response.code, 302)
         self.assertEqual(response.headers['Location'], '/')
@@ -907,12 +907,14 @@ class TestMultiuser(MyHTTPTestCase):
                 (
                     user.login,
                     bool(user.hashed_password), bool(user.password_set_date),
+                    user.check_password('pass1'),
+                    user.check_password('pass2'),
                 )
                 for user in db.query(database.User).all()
             ],
             [
-                ('admin', True, True),
-                ('user', True, True),
+                ('admin', True, True, False, False),
+                ('user', True, True, True, False),
             ],
         )
 
@@ -943,7 +945,7 @@ class TestMultiuser(MyHTTPTestCase):
             '/new_password',
             dict(
                 reset_token='wrongtoken',
-                password1='tagada', password2='tagada',
+                password1='pass3', password2='pass3',
             ),
         )
         self.assertEqual(response.code, 403)
@@ -955,18 +957,36 @@ class TestMultiuser(MyHTTPTestCase):
             '/new_password',
             dict(
                 reset_token=token,
-                password1='tagada', password2='tagada',
+                password1='pass2', password2='pass2',
             ),
         )
         self.assertEqual(response.code, 302)
         self.assertEqual(response.headers['Location'], '/')
+
+        # User exists in database
+        db = self.application.DBSession()
+        self.assertEqual(
+            [
+                (
+                    user.login,
+                    bool(user.hashed_password), bool(user.password_set_date),
+                    user.check_password('pass1'),
+                    user.check_password('pass2'),
+                )
+                for user in db.query(database.User).all()
+            ],
+            [
+                ('admin', True, True, False, False),
+                ('user', True, True, False, True),
+            ],
+        )
 
         # Check token doesn't work anymore
         response = self.post(
             '/new_password',
             dict(
                 reset_token=token,
-                password1='tagada', password2='tagada',
+                password1='pass4', password2='pass4',
             ),
         )
         self.assertEqual(response.code, 403)
