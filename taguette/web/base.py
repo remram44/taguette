@@ -1,10 +1,12 @@
 import asyncio
 import contextlib
+import functools
 import hashlib
 import hmac
 import json
 import logging
 import jinja2
+import os
 import pkg_resources
 from prometheus_async.aio import time as prom_async_time
 import smtplib
@@ -21,6 +23,77 @@ from .. import database
 
 
 logger = logging.getLogger(__name__)
+
+
+class PseudoLocale(tornado.locale.Locale):
+    def __init__(self):
+        super().__init__('qps-ploc')
+
+    CHARS = {
+        'A': '\u00c5', 'B': '\u0181', 'C': '\u00c7', 'D': '\u00d0',
+        'E': '\u00c9', 'F': '\u0191', 'G': '\u011c', 'H': '\u0124',
+        'I': '\u00ce', 'J': '\u0134', 'K': '\u0136', 'L': '\u013b',
+        'M': '\u1e40', 'N': '\u00d1', 'O': '\u00d6', 'P': '\u00de',
+        'Q': '\u01ea', 'R': '\u0154', 'S': '\u0160', 'T': '\u0162',
+        'U': '\u00db', 'V': '\u1e7c', 'W': '\u0174', 'X': '\u1e8a',
+        'Y': '\u00dd', 'Z': '\u017d', 'a': '\u00e5', 'b': '\u0180',
+        'c': '\u00e7', 'd': '\u00f0', 'e': '\u00e9', 'f': '\u0192',
+        'g': '\u011d', 'h': '\u0125', 'i': '\u00ee', 'j': '\u0135',
+        'k': '\u0137', 'l': '\u013c', 'm': '\u0271', 'n': '\u00f1',
+        'o': '\u00f6', 'p': '\u00fe', 'q': '\u01eb', 'r': '\u0155',
+        's': '\u0161', 't': '\u0163', 'u': '\u00fb', 'v': '\u1e7d',
+        'w': '\u0175', 'x': '\u1e8b', 'y': '\u00fd', 'z': '\u017e',
+        ' ': '\u2003',
+    }
+
+    @functools.lru_cache()
+    def mangle(self, text):
+        out = []
+        i = 0
+        while i < len(text):
+            if text[i] == '{' and text[i + 1] == '{':
+                # Jinja2 variable
+                j = i + 2
+                while text[j] != '}':
+                    j += 1
+                j += 1
+                out.append(text[i:j + 1])
+                i = j
+            elif text[i] == '%' and text[i + 1] == '(':
+                # Python variable
+                j = i + 2
+                while text[j] != ')':
+                    j += 1
+                j += 1
+                assert text[j] in 'srdf'
+                out.append(text[i:j + 1])
+                i = j
+            elif text[i] == '<':
+                # HTML tag
+                j = i + 1
+                while text[j] != '>':
+                    j += 1
+                out.append(text[i:j + 1])
+                i = j
+            else:
+                out.append(self.CHARS.get(text[i], text[i]))
+            i += 1
+
+        return ''.join(out)
+
+    def translate(self, message, plural_message=None, count=None):
+        if plural_message is not None:
+            assert count is not None
+            return '[%s (n=%d)]' % (
+                self.mangle(plural_message),
+                count,
+            )
+        else:
+            assert count is None
+            return '[%s]' % self.mangle(message)
+
+    def pgettext(self, context, message, plural_message=None, count=None):
+        return self.translate(message, plural_message, count)
 
 
 class Application(tornado.web.Application):
@@ -239,11 +312,17 @@ class BaseHandler(RequestHandler):
             )
             raise HTTPError(302)
 
-    def get_user_locale(self):
-        if self.current_user is not None:
-            user = self.db.query(database.User).get(self.current_user)
-            if user is not None and user.language is not None:
-                return tornado.locale.get(user.language)
+    if os.environ.get('TAGUETTE_TEST_LOCALE') == 'y':
+        _pseudolocale = PseudoLocale()
+
+        def get_user_locale(self):
+            return self._pseudolocale
+    else:
+        def get_user_locale(self):
+            if self.current_user is not None:
+                user = self.db.query(database.User).get(self.current_user)
+                if user is not None and user.language is not None:
+                    return tornado.locale.get(user.language)
 
     def login(self, username):
         logger.info("Logged in as %r", username)
