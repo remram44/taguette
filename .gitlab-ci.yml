@@ -21,7 +21,7 @@ pages_test:
   script:
     - scripts/update_translations.sh
     - mkdir pages
-    - $HOME/.poetry/bin/poetry run python scripts/generate.py pages/
+    - TAGUETTE_TEST_LOCALE=y $HOME/.poetry/bin/poetry run python scripts/generate.py pages/
   artifacts:
     paths:
       - pages

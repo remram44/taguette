@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import functools
 import gettext
 import glob
 import jinja2
@@ -28,9 +29,76 @@ class TranslationWrapper(object):
         return message
 
 
+class PseudoTranslation(object):
+    CHARS = {
+        'A': '\u00c5', 'B': '\u0181', 'C': '\u00c7', 'D': '\u00d0',
+        'E': '\u00c9', 'F': '\u0191', 'G': '\u011c', 'H': '\u0124',
+        'I': '\u00ce', 'J': '\u0134', 'K': '\u0136', 'L': '\u013b',
+        'M': '\u1e40', 'N': '\u00d1', 'O': '\u00d6', 'P': '\u00de',
+        'Q': '\u01ea', 'R': '\u0154', 'S': '\u0160', 'T': '\u0162',
+        'U': '\u00db', 'V': '\u1e7c', 'W': '\u0174', 'X': '\u1e8a',
+        'Y': '\u00dd', 'Z': '\u017d', 'a': '\u00e5', 'b': '\u0180',
+        'c': '\u00e7', 'd': '\u00f0', 'e': '\u00e9', 'f': '\u0192',
+        'g': '\u011d', 'h': '\u0125', 'i': '\u00ee', 'j': '\u0135',
+        'k': '\u0137', 'l': '\u013c', 'm': '\u0271', 'n': '\u00f1',
+        'o': '\u00f6', 'p': '\u00fe', 'q': '\u01eb', 'r': '\u0155',
+        's': '\u0161', 't': '\u0163', 'u': '\u00fb', 'v': '\u1e7d',
+        'w': '\u0175', 'x': '\u1e8b', 'y': '\u00fd', 'z': '\u017e',
+        ' ': '\u2003',
+    }
+
+    @functools.lru_cache()
+    def mangle(self, text):
+        out = []
+        i = 0
+        while i < len(text):
+            if text[i] == '{' and text[i + 1] == '{':
+                # Jinja2 variable
+                j = i + 2
+                while text[j] != '}':
+                    j += 1
+                j += 1
+                out.append(text[i:j + 1])
+                i = j
+            elif text[i] == '%' and text[i + 1] == '(':
+                # Python variable
+                j = i + 2
+                while text[j] != ')':
+                    j += 1
+                j += 1
+                assert text[j] in 'srdf'
+                out.append(text[i:j + 1])
+                i = j
+            elif text[i] == '<':
+                # HTML tag
+                j = i + 1
+                while text[j] != '>':
+                    j += 1
+                out.append(text[i:j + 1])
+                i = j
+            else:
+                out.append(self.CHARS.get(text[i], text[i]))
+            i += 1
+
+        return ''.join(out)
+
+    def gettext(self, message, **kwargs):
+        message = self.mangle(message)
+        if kwargs:
+            message = message % kwargs
+        return '[%s]' % message
+
+    def ngettext(self, singular, plural, n, **kwargs):
+        message = self.mangle(plural)
+        if kwargs:
+            message = message % kwargs
+        return '[%s (n=%d)]' % (message, n)
+
+
 LANGUAGE_NAMES = {
     None: 'English',
     'fr': 'French',
+    'qps-ploc': 'Pseudo-locale',
 }
 
 
@@ -76,7 +144,10 @@ def main():
             language_link = None
             out_dir = out
 
-            trans = gettext.NullTranslations()
+            if os.environ.get('TAGUETTE_TEST_LOCALE') == 'y':
+                trans = PseudoTranslation()
+            else:
+                trans = gettext.NullTranslations()
         else:
             language_link = language.split('_', 1)[0]
             out_dir = os.path.join(out, language_link)
