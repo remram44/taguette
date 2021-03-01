@@ -8,36 +8,39 @@
   <div class="row">
     <div class="col-lg-3 sidetoc">
       <div class="sticky-top">
-        <p>Explore the guide:</p>
+        <p>{# TRANSLATORS: Navigation menu #}{% trans %}Explore the guide:{% endtrans %}</p>
         <ul class="list-group border border-dark">
-          <li class="list-group-item border-0"><a href="#start">Open Taguette</a></li>
-          <li class="list-group-item border-0"><a href="#create-proj">Start a project</a></li>
-          <li class="list-group-item border-0"><a href="#upload">Upload materials</a></li>
-          <li class="list-group-item border-0"><a href="#lang">Change interface language (server only)</a></li>
-          <li class="list-group-item border-0"><a href="#collabs">Add collaborators (server only)</a></li>
-          <li class="list-group-item border-0"><a href="#tag">Create tags</a></li>
-          <li class="list-group-item border-0"><a href="#change-tag">Change/delete tags</a></li>
-          <li class="list-group-item border-0"><a href="#merge-tag">Merge tags</a></li>
-          <li class="list-group-item border-0"><a href="#highlight">Highlight materials</a></li>
-          <li class="list-group-item border-0"><a href="#view">View tagged materials</a></li>
-          <li class="list-group-item border-0"><a href="#export">Export options</a></li>
+          <li class="list-group-item border-0"><a href="#start">{% trans %}Open Taguette{% endtrans %}</a></li>
+          <li class="list-group-item border-0"><a href="#create-proj">{% trans %}Start a project{% endtrans %}</a></li>
+          <li class="list-group-item border-0"><a href="#upload">{% trans %}Upload materials{% endtrans %}</a></li>
+          <li class="list-group-item border-0"><a href="#lang">{% trans %}Change interface language (server only){% endtrans %}</a></li>
+          <li class="list-group-item border-0"><a href="#collabs">{% trans %}Add collaborators (server only){% endtrans %}</a></li>
+          <li class="list-group-item border-0"><a href="#tag">{% trans %}Create tags{% endtrans %}</a></li>
+          <li class="list-group-item border-0"><a href="#change-tag">{% trans %}Change/delete tags{% endtrans %}</a></li>
+          <li class="list-group-item border-0"><a href="#merge-tag">{% trans %}Merge tags{% endtrans %}</a></li>
+          <li class="list-group-item border-0"><a href="#highlight">{% trans %}Highlight materials{% endtrans %}</a></li>
+          <li class="list-group-item border-0"><a href="#view">{% trans %}View tagged materials{% endtrans %}</a></li>
+          <li class="list-group-item border-0"><a href="#export">{% trans %}Export options{% endtrans %}</a></li>
         </ul>
       </div>
     </div>
 
     <div class="col-lg-9 col-print-12">
-      <h1>Getting started with <span style="font-family: BadScript;">TAGUETTE</span></h1>
+      <h1>{% trans %}Getting started with <span style="font-family: BadScript;">TAGUETTE</span>{% endtrans %}</h1>
 
-      <h2 id="start" class="mt-4"><i class="far fa-play-circle"></i> Open Taguette</h2>
+      <h2 id="start" class="mt-4">{% trans %}<i class="far fa-play-circle"></i> Open Taguette{% endtrans %}</h2>
 
+      {% trans %}
       <p>If you are working on <a href="https://app.taguette.org">app.taguette.org</a>, after you log-in you should see a welcome page where you can create a new project similar to the screenshot below (just 'account' where you see 'single-user mode').</p>
 
       <p>If you've downloaded and installed Taguette on your computer, you should be able to double-click on the Taguette icon and start it up! You'll see the command line will pop up and be running. This is ok! Don't worry about the terminal but do leave it running. If you exit the terminal, Taguette will stop. Taguette should automatically pop up in your web browser, but if for some reason it doesn't, navigate to <a href="http://localhost:7465"><code>localhost:7465</code></a> to begin working on your projects! It should look something like this:</p>
 
       <img src="imgs/01-welcome.png" width="1125" height="341" class="img-fluid border border-dark">
+      {% endtrans %}
 
-      <h2 id="create-proj" class="mt-4"><i class="fas fa-folder-plus"></i> Start a project</h2>
+      <h2 id="create-proj" class="mt-4">{% trans %}<i class="fas fa-folder-plus"></i> Start a project{% endtrans %}</h2>
 
+      {% trans %}
       <p>You will see a page that greets you as the admin and has a button to <strong>Create a project</strong>. Click that button and you'll be prompted to enter a Title and Description for your new project. This can be changed later on if you want.</p>
 
       <img src="imgs/02-createProj.png" width="1164" height="365" class="img-fluid border border-dark mb-2">
@@ -45,9 +48,11 @@
       <p>Upon clicking <strong>Create</strong>, you'll be taken the <strong>Project View</strong>, which has a left and a right pane. The left pane contains the information about your project information ('Project Info'), uploaded materials ('Documents'), and tags ('Highlights') as tabs. You can go between these tabs as you like. The right pane will render documents and will be the area where you'll do the highlighting and tagging.</p>
 
       <img src="imgs/03-projectInfo.png" width="1160" height="278" class="img-fluid border border-dark mb-2">
+      {% endtrans %}
 
-      <h2 id="upload" class="mt-4"><i class="fas fa-upload"></i> Upload materials</h2>
+      <h2 id="upload" class="mt-4">{% trans %}<i class="fas fa-upload"></i> Upload materials{% endtrans %}</h2>
 
+      {% trans %}
       <p>To get an idea of how to work in Taguette, let's upload a document and get you tagging! In the left pane, click on the <strong>Documents tab</strong>. You should see a button that says <strong>Add a document</strong>. Click that and pick just one document from your computer, either a: <code>.pdf</code>, <code>.docx</code>, <code>.txt</code>, <code>.odt</code>, <code>.md</code>, or <code>.html</code>.</p>
 
       <img src="imgs/04-viewDocs.png" width="1160" height="206" class="img-fluid border border-dark mb-2">
@@ -57,17 +62,21 @@
       <img src="imgs/05-uploadDoc.png" width="797" height="327" class="img-fluid border border-dark mb-2">
 
       <p>You should then see that file immediately in the Documents tab. If not, just refresh the page and it should be shown then. If you cannot see your document, you might be uploading a file type that Taguette cannot yet handle. Please let us know at <a href="mailto:hi@taguette.org">hi@taguette.org</a>.</p>
+      {% endtrans %}
 
-      <h2 id="lang" class="mt-4"><i class="fas fa-language"></i> Change interface language (server only)</h2>
+      <h2 id="lang" class="mt-4">{% trans %}<i class="fas fa-language"></i> Change interface language (server only){% endtrans %}</h2>
 
+      {% trans %}
       <p>If you are working on <a href="https://app.taguette.org">app.taguette.org</a> or hosting Taguette on your own server, you have the option change the language of the interface. In the upper righthand corner, you should see a dropdown menu labeled "Account". Click that dropdown, and then click "Settings." You will see a dropdown menu in your profile settings to change the language that Taguette will be in. By default, it will auto detect a language from your Internet browser.</p>
 
       <p>If you do not see your language represented in this list, we would encourage you to add a translation via our Transifex project: <a href="https://www.transifex.com/remram44/taguette/">https://www.transifex.com/remram44/taguette/</a> or by sending us a .po file via GitLab, instructions: <a href="https://gitlab.com/remram44/taguette/-/tree/master/po">https://gitlab.com/remram44/taguette/-/tree/master/po</a>.</p>
 
       <img src="imgs/language.png" width="1151" height="519" class="img-fluid border border-dark mb-2">
+      {% endtrans %}
 
-      <h2 id="collabs" class="mt-4"><i class="fas fa-users"></i> Adding collaborators (server only)</h2>
+      <h2 id="collabs" class="mt-4">{% trans %}<i class="fas fa-users"></i> Adding collaborators (server only){% endtrans %}</h2>
 
+      {% trans %}
       <p>If you are working on <a href="https://app.taguette.org">app.taguette.org</a> or hosting Taguette on your own server, you have the option to work with others! In the <strong>Project Info tab</strong> of your Taguette project, you should see a grey button labeled <strong>Manage Collaborators</strong>:</p>
 
       <img src="imgs/projectCollab.png" width="473" height="478" class="img-fluid border border-dark mb-2">
@@ -77,22 +86,23 @@
       <img src="imgs/addCollabs.png" width="8010" height="338" class="img-fluid border border-dark mb-2">
 
       <p>You can add collaborators with the following permissions:</p>
+      {% endtrans %}
 
       <table id="levels" class="table table-bordered table-hover table-responsive">
         <thead>
           <tr>
-            <th>Permission level</th>
-            <th>View project</th>
-            <th>Change highlights</th>
-            <th>Change tags</th>
-            <th>Add/delete documents</th>
-            <th>Change collaborators</th>
-            <th>Delete project</th>
+            <th>{% trans %}Permission level{% endtrans %}</th>
+            <th>{% trans %}View project{% endtrans %}</th>
+            <th>{% trans %}Change highlights{% endtrans %}</th>
+            <th>{% trans %}Change tags{% endtrans %}</th>
+            <th>{% trans %}Add/delete documents{% endtrans %}</th>
+            <th>{% trans %}Change collaborators{% endtrans %}</th>
+            <th>{% trans %}Delete project{% endtrans %}</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <th>Full permission</th>
+            <th>{# TRANSLATORS: Has to match the permission level name in the app #}{% trans %}Full permission{% endtrans %}</th>
             <td>X</td>
             <td>X</td>
             <td>X</td>
@@ -101,7 +111,7 @@
             <td>X</td>
           </tr>
           <tr>
-            <th>Can't change collaborators/delete project</th>
+            <th>{# TRANSLATORS: Has to match the permission level name in the app #}{% trans %}Can't change collaborators/delete project{% endtrans %}</th>
             <td>X</td>
             <td>X</td>
             <td>X</td>
@@ -110,7 +120,7 @@
             <td></td>
           </tr>
           <tr>
-            <th>View and make changes</th>
+            <th>{# TRANSLATORS: Has to match the permission level name in the app #}{% trans %}View and make changes{% endtrans %}</th>
             <td>X</td>
             <td>X</td>
             <td>X</td>
@@ -119,7 +129,7 @@
             <td></td>
           </tr>
           <tr>
-            <th>View Only</th>
+            <th>{# TRANSLATORS: Has to match the permission level name in the app #}{% trans %}View Only{% endtrans %}</th>
             <td>X</td>
             <td></td>
             <td></td>
@@ -130,8 +140,9 @@
         </tbody>
       </table>
 
-      <h2 id="tag" class="mt-4"><i class="fas fa-tags"></i> Create Tags</h2>
+      <h2 id="tag" class="mt-4">{% trans %}<i class="fas fa-tags"></i> Create Tags{% endtrans %}</h2>
 
+      {% trans %}
       <p>Taguette ships with one existing tag (or <em>codes</em>, if you're familiar with qualitative research): <code>interesting</code>. This is just there to get you started -- you can add and remove tags as often as you'd like! To view all your existing tags, click the <strong>Highlights</strong> tab in the left pane. You will see a list of tags you have and a count of the number of times you have highlighted your materials with a given tag.</p>
 
       <img src="imgs/06-viewTags.png" width="1514" height="558" class="img-fluid border border-dark mb-2">
@@ -143,21 +154,27 @@
       <p>You might have noticed that I used the tag <code>tech.floss</code> and you might be wondering why I used that notation. In Taguette, you can use <em>any punctuation</em> to make hierarchies. So <code>tech.floss</code> lives underneath <code>tech</code>. If I click on <code>tech.floss</code>, then I'll see only materials relating to that tag. If I click on <code>tech</code>, I'll see everything in that tag as we as <code>tech.floss</code> and any other sub-tag.
 
       <p>After you give the tag a good name and a bit of description about what it means, you should see it added to the list in alphabetical order.</p>
+      {% endtrans %}
 
-      <h2 id="change-tag" class="mt-4"><i class="fas fa-eraser"></i> Delete/change Tags</h2>
+      <h2 id="change-tag" class="mt-4">{% trans %}<i class="fas fa-eraser"></i> Delete/change Tags{% endtrans %}</h2>
 
+      {% trans %}
       <p>You can also change or delete a tag by clicking the <code>edit</code> badge to the right of the name of the tag in the list. This will bring you back to the same popup - you can edit the name of the tag, its description, or you can click the grey <strong>Delete</strong> button next to the blue <strong>Save &amp; Close</strong> button.</p>
 
       <img src="imgs/08-changeTag.png" width="493" height="288" class="img-fluid border border-dark mb-2">
+      {% endtrans %}
 
-      <h2 id="merge-tag" class="mt-4"><i class="far fa-object-group"></i> Merge Tags</h2>
+      <h2 id="merge-tag" class="mt-4">{% trans %}<i class="far fa-object-group"></i> Merge Tags{% endtrans %}</h2>
 
+      {% trans %}
       <p>If you want to merge one tag into another, you can also do this from the edit window. Click the <code>edit</code> badge to the right of the name of the tag in the list. This will bring you back to the same popup for editing and deleting a tag. Instead, if you click <strong>Merge</strong>, then you will be prompted to select the tag that you want to merge into. Once you select a tag and click <strong>Merge tags</strong>, then all the highlights for the first tag be moved to the second tag.</p>
 
       <img src="imgs/merge-tag.png" width="498" height="310" class="img-fluid border border-dark mb-2">
+      {% endtrans %}
 
-      <h2 id="highlight" class="mt-4"><i class="fas fa-highlighter"></i> Highlighting</h2>
+      <h2 id="highlight" class="mt-4">{% trans %}<i class="fas fa-highlighter"></i> Highlighting{% endtrans %}</h2>
 
+      {% trans %}
       <p>Once uploaded, you should see the document in the 'Documents' tab. Click on it and you should see the contents of your document in the right pane. Once you see the text in the right pane, we can start highlighting it!</p>
 
       <img src="imgs/09-viewDocContents.png" width="1160" height="281" class="img-fluid border border-dark mb-2">
@@ -177,9 +194,11 @@
       <p>Once you make your tag, you'll be dropped back into the popup above where you should select a tag for the highlighted text. After you've checked off which tags you'd like to associate with the highlighted text, click <strong>Save &amp; Close</strong>, and the text you've just tagged should now be highlighted with the color associated with the tag (e.g. bright yellow).</p>
 
       <p>If you've accidentally tagged a section of text you didn't want to, you can delete it by clicking on the highlighted text. This will give you the same pop-up window that you used to tag it. Next to the save button, there is a red button called <strong>Delete highlight</strong>. Click that, and the tags will be removed from the text. It should no longer be highlighted.</p>
+      {% endtrans %}
 
-      <h2 id="view" class="mt-4"><i class="fas fa-file-invoice"></i> View highlighted &amp; tagged text</h2>
+      <h2 id="view" class="mt-4">{% trans %}<i class="fas fa-file-invoice"></i> View highlighted &amp; tagged text{% endtrans %}</h2>
 
+      {% trans %}
       <p>If you want to see all the highlighted text associated with a given tag, first go to the <strong>Highlights</strong> tab in the left pane. Click a tag, and in the right pane you will see a list of quotes with a blue link to the document where they originated from and all their associated tags with a black badge. The tag on the left pane will also be highlighted:</p>
 
       <img src="imgs/13-viewQuotes.png" width="1879" height="646" class="img-fluid border border-dark mb-2">
@@ -195,9 +214,11 @@
       <p>If you hover your mouse over a highlighted section of text, you will see tags in a tooltip to the right of your mouse cursor. To explore your highlighted document in a different way, you can try clicking on <strong>Backlight</strong> checkbox. You can see it underneath the <strong>Add a document</strong> button. It will grey out all the non-highlighted text to make the highlighted text really pop. We found this to be a nice view for exploring the texts differently:</p>
 
       <img src="imgs/16-backlight.png" width="1160" height="236" class="img-fluid border border-dark mb-2">
+      {% endtrans %}
 
-      <h2 id="export" class="mt-4"><i class="fas fa-file-export"></i> Export Options</h2>
+      <h2 id="export" class="mt-4">{% trans %}<i class="fas fa-file-export"></i> Export Options{% endtrans %}</h2>
 
+      {% trans %}
       <p>To export the codebook of your project - this is a list of all the tags that you've created alongside their description - use the dropdown menu in the <strong>Project</strong> tab in the left pane of Taguette, underneath the project description. There is a variety of export options, including <code>QDC</code> (REFI-QDA standard), <code>CSV</code> (spreadsheet), <code>XLSX</code> (Microsoft Excel), <code>DOCX</code> (Microsoft Word), <code>HTML</code>, and <code>PDF</code>.</p>
 
       <img src="imgs/17-exportCodebook.png" width="462" height="610" class="img-fluid border border-dark mb-2">
@@ -225,6 +246,7 @@
       <p>While you will see the document with all the highlights, right now you won't be able to tell which tags go with the highlights, but we are working on that feature to make this export more useful. This is how it looks with the <code>DOCX</code> export:</p>
 
       <img src="imgs/23-exportDocEXs.png" width="1160" height="542" class="img-fluid border border-dark mb-2">
+      {% endtrans %}
     </div>
   </div>
 </div>

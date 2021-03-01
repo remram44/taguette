@@ -6,23 +6,28 @@
 {% block contents %}
 <div id="container-body">
 
-  <h1>Self-hosting <span style="font-family: BadScript;">TAGUETTE</span></h1>
+  <h1>{% trans %}Self-hosting <span style="font-family: BadScript;">TAGUETTE</span>{% endtrans %}</h1>
 
+  {% trans %}
   <p>Taguette can be run in two separate ways:</p>
   <ul>
     <li>On your machine, after <a href="install.html">installing it</a>. This requires no complex setup, and your data never has to leave your machine!</li>
     <li>On a server. This is more difficult to setup, but users can then use that installed version with nothing more than their web browser! We host a publicly-available Taguette server at <a href="https://app.taguette.org/">app.taguette.org</a> at the moment, so you can feel free to use that. If you want to deploy your own server for your organization, read on!</li>
   </ul>
+  {% endtrans %}
 
-  <h2 id="docker">Using Docker</h2>
+  <h2 id="docker">{% trans %}Using Docker{% endtrans %}</h2>
 
+  {% trans %}
   <p>If you so choose, you can simply run the <a href="https://quay.io/repository/remram44/taguette"><code>quay.io/remram44/taguette</code> Docker image</a>. You will be prompted for an 'admin' password the first time. You can persist the data by mounting a volume over <code>/data</code>, like so:</p>
   <pre>docker run -ti --rm quay.io/remram44/taguette default-config &gt;/srv/taguette/taguette.conf
 edit /srv/taguette/taguette.conf  # Edit configuration file, see below
 docker run -ti -p 80:7465 -v /srv/taguette:/data --restart=always quay.io/remram44/taguette server /data/taguette.conf</pre>
+  {% endtrans %}
 
-  <h2 id="native">"Native" installation on a server</h2>
+  <h2 id="native">{% trans %}"Native" installation on a server{% endtrans %}</h2>
 
+  {% trans %}
   <p>You need Python 3.5 or better to run Taguette. Simply run <code>pip install taguette</code> to install the software. To be able to import non-HTML documents, you also need Calibre installed (specifically, the <code>ebook-convert</code> command).</p>
 
   <p>Using a virtual environment is recommended. Example installation on Ubuntu:</p>
@@ -36,19 +41,26 @@ taguette default-config &gt;taguette.conf
 edit taguette.conf  # Edit configuration file, see below
 taguette --no-browser server taguette.conf</pre>
 
-  <h2 id="config">Configuration file</h2>
+  {% endtrans %}
 
+  <h2 id="config">{% trans %}Configuration file{% endtrans %}</h2>
+
+  {% trans %}
   <p>In either case, running the server requires a configuration file. This file contains important information, such as email server and addresses, the port number to listen on, whether registration of new accounts is enabled, etc.</p>
   <p>You can make Taguette print a configuration file for you to edit using <code>taguette default-config</code>.</p>
   <p>You might want to change the <code>PORT</code> to <code>80</code>, or better yet configure a webserver to act as a proxy, see below.</p>
+  {% endtrans %}
 
-  <h2 id="proxy">Using a proxy server</h2>
+  <h2 id="proxy">{% trans %}Using a proxy server{% endtrans %}</h2>
 
+  {% trans %}
   <p>For performance or security reasons, or simply because you want to host multiple sites on your machine, you might want to put a webserver (such as <a href="https://nginx.org/">nginx</a> or <a href="https://httpd.apache.org/">Apache</a>) in front of Taguette. That server will then simply relay connections to Taguette (a setup we call reverse proxy). You can use it to provide encryption using TLS (recommended) for example using <a href="https://letsencrypt.org/">Let's Encrypt</a>, free.</p>
   <p>To help with this this, we provide <a href="https://gitlab.com/remram44/taguette/tree/master/scripts/dist/server_configs">example configuration files</a> that you can use.</p>
+  {% endtrans %}
 
-  <h2 id="database">Database</h2>
+  <h2 id="database">{% trans %}Database{% endtrans %}</h2>
 
+  {% trans %}
   <p>The <code>DATABASE</code> setting should be a SQLAlchemy connection string. For example, you can use:</p>
   <ul>
     <li>a SQLite database file (note the 4 slashes): <code>sqlite:////srv/taguette/taguette.sqlite3</code></li>
@@ -56,5 +68,6 @@ taguette --no-browser server taguette.conf</pre>
     <li>a MySQL or MariaDB database: <code>mysql://user:secretpassword@localhost/taguette</code></li>
     <li>... or any of the <a href="https://docs.sqlalchemy.org/en/13/core/engines.html">other databases supported by SQLAlchemy</a></li>
   </ul>
+  {% endtrans %}
 </div>
 {% endblock %}

@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="{{ current_language.link }}">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Taguette is a free an opensource text tagging tool for qualitative data analysis and qualitative research">
+    <meta name="description" content="{# TRANSLATORS: HTML description #}{% trans %}Taguette is a free an opensource text tagging tool for qualitative data analysis and qualitative research{% endtrans %}">
     <meta name="author" content="Remi Rampin">
     <meta name="author" content="Vicky Rampin">
     <link rel="icon" href="favicon.ico">
@@ -13,7 +13,7 @@
     <link rel="preload" href="webfonts/fa-regular-400.woff2">
     <link rel="preload" href="webfonts/fa-solid-900.woff2">
 
-    <title>{% block title %}{% trans %}Taguette, the free and opensource qualitative data analysis tool{% endtrans %}{% endblock %}</title>
+    <title>{% block title %}{# TRANSLATORS: Page title #}{% trans %}Taguette, the free and opensource qualitative data analysis tool{% endtrans %}{% endblock %}</title>
 
     <!-- Bootswatch Theme -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -57,11 +57,11 @@
             {% call navlink('about', 'about.html') %}{% trans %}About{% endtrans %}{% endcall %}
             {% call navlink('install', 'install.html') %}{% trans %}Install{% endtrans %}{% endcall %}
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{% trans %}Guides{% endtrans %}</a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="getting-started.html">Getting Started</a>
-                <a class="dropdown-item" href="self-host.html">Self-Host</a>
-                <a class="dropdown-item" href="faq.html">FAQ</a>
+                <a class="dropdown-item" href="getting-started.html">{% trans %}Getting Started{% endtrans %}</a>
+                <a class="dropdown-item" href="self-host.html">{% trans %}Self-Host{% endtrans %}</a>
+                <a class="dropdown-item" href="faq.html">{% trans %}FAQ{% endtrans %}</a>
               </div>
             </li>
             {% call navlink('-', 'https://app.taguette.org/') %}{% trans %}Try it {{ external_icon }}{% endtrans%}{% endcall %}
@@ -80,7 +80,8 @@
 
     <footer class="container">
       <hr/>
-      <p>Email: <a href="mailto:hi@taguette.org">hi@taguette.org</a> | Mailing-lists: <a href="https://groups.io/g/taguette">users</a>, <a href="https://groups.io/g/taguette-announce">announce</a> | Twitter: <a href="https://twitter.com/TaguetteProject">@TaguetteProject</a> | Any issue using Taguette? Tell us on <a href="https://gitlab.com/remram44/taguette">GitLab</a>!</p>
+      <p>{% trans %}Email: <a href="mailto:hi@taguette.org">hi@taguette.org</a> | Mailing-lists: <a href="https://groups.io/g/taguette">users</a>, <a href="https://groups.io/g/taguette-announce">announce</a> | Twitter: <a href="https://twitter.com/TaguetteProject">@TaguetteProject</a> | Any issue using Taguette? Tell us on <a href="https://gitlab.com/remram44/taguette">GitLab</a>!{% endtrans %}</p>
+      <p>Change language: {% for lang in languages %}{% if lang.link != current_language.link %}<a href="{% if current_language.link %}../{% endif %}{% if lang.link %}{{ lang.link }}/{% endif %}{{ current_page_link }}">{{ lang.name }}</a> {% endif %}{% endfor %}</p>
     </footer>
 
     <!-- Bootstrap core JavaScript

@@ -6,23 +6,23 @@
 {% block contents %}
 <div id="container-body">
 
-  <h1>Frequently Asked Questions</h1>
+  <h1>{% trans %}Frequently Asked Questions{% endtrans %}</h1>
 
-  <p>This is a non-exhaustive list of FAQs for Taguette &mdash; if you feel something else should be covered in this guide, please email us at <a href="mailto:hi@taguette.org">hi@taguette.org</a>.</p>
+  <p>{% trans %}This is a non-exhaustive list of FAQs for Taguette &mdash; if you feel something else should be covered in this guide, please email us at <a href="mailto:hi@taguette.org">hi@taguette.org</a>.{% endtrans %}</p>
 
   <div id="accordion" class="accordion">
 
-    <h3>General info</h3>
+    <h3>{% trans %}General info{% endtrans %}</h3>
 
     <div class="card">
       <div class="card-header" id="pronounce">
         <h5 class="mb-0">
-          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#pronounce-info" aria-expanded="false" aria-controls="pronounce-info">How do you pronounce Taguette?</button>
+          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#pronounce-info" aria-expanded="false" aria-controls="pronounce-info">{% trans %}How do you pronounce Taguette?{% endtrans %}</button>
         </h5>
       </div>
       <div id="pronounce-info" class="collapse" aria-labelledby="pronounce" data-parent="#accordion">
         <div class="card-body">
-          <p>It's pronounced like 'baguette' just with a 't' instead of a 'b' at the start! <code>/tæˈɡɛt/</code></p>
+          <p>{% trans %}It's pronounced like 'baguette' just with a 't' instead of a 'b' at the start! <code>/tæˈɡɛt/</code>{% endtrans %}</p>
         </div>
       </div>
     </div>
@@ -30,13 +30,15 @@
     <div class="card">
       <div class="card-header" id="cost">
         <h5 class="mb-0">
-          <button class="btn btn-link" data-toggle="collapse" data-target="#cost-info" aria-expanded="true" aria-controls="cost-info">How much does it cost?</button>
+          <button class="btn btn-link" data-toggle="collapse" data-target="#cost-info" aria-expanded="true" aria-controls="cost-info">{% trans %}How much does it cost?{% endtrans %}</button>
         </h5>
       </div>
       <div id="cost-info" class="collapse" aria-labelledby="cost" data-parent="#accordion">
         <div class="card-body">
+          {% trans %}
           <p>It's free!</p>
           <p>Taguette costs nothing, either to use on your own machine or install on a server. It is published under an open license (BSD), which you can read here: <a href="https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt">gitlab.com/remram44/taguette/blob/master/LICENSE.txt</a>.</p>
+          {% endtrans %}
         </div>
       </div>
     </div>
@@ -44,12 +46,12 @@
     <div class="card">
       <div class="card-header" id="install">
         <h5 class="mb-0">
-          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#install-info" aria-expanded="false" aria-controls="install-info">Where can I install Taguette?</button>
+          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#install-info" aria-expanded="false" aria-controls="install-info">{% trans %}Where can I install Taguette?{% endtrans %}</button>
         </h5>
       </div>
       <div id="install-info" class="collapse" aria-labelledby="install" data-parent="#accordion">
         <div class="card-body">
-          <p>You can install Taguette on your own personal computer running macOS, Windows, or Linux &mdash; full instructions and download links can be found on our <a href="install.html">installation guide</a>. You can also install Taguette on a server if you need to collaborate with others &mdash; get a walkthrough on this process on our <a href="self-host.html">self-host guide</a>.</p>
+          <p>{% trans %}You can install Taguette on your own personal computer running macOS, Windows, or Linux &mdash; full instructions and download links can be found on our <a href="install.html">installation guide</a>. You can also install Taguette on a server if you need to collaborate with others &mdash; get a walkthrough on this process on our <a href="self-host.html">self-host guide</a>.{% endtrans %}</p>
         </div>
       </div>
     </div>
@@ -57,12 +59,12 @@
     <div class="card">
       <div class="card-header" id="learn">
         <h5 class="mb-0">
-          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#learn-info" aria-expanded="false" aria-controls="learn-info">How do I learn to use Taguette?</button>
+          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#learn-info" aria-expanded="false" aria-controls="learn-info">{% trans %}How do I learn to use Taguette?{% endtrans %}</button>
         </h5>
       </div>
       <div id="learn-info" class="collapse" aria-labelledby="learn" data-parent="#accordion">
         <div class="card-body">
-          <p>You could begin over at our <a href="getting-started.html">getting started guide</a>, which walks through all the current functionality of Taguette with screenshots. We also have a few presentations walkthroughs of Taguette's full capabilities that are hosted on the Open Science Framework here: <a href="https://osf.io/xdszm/files/">osf.io/xdszm/files/</a>. Please make sure to look at the date for each presentation and pick the most recent one!</p>
+          <p>{% trans %}You could begin over at our <a href="getting-started.html">getting started guide</a>, which walks through all the current functionality of Taguette with screenshots. We also have a few presentations walkthroughs of Taguette's full capabilities that are hosted on the Open Science Framework here: <a href="https://osf.io/xdszm/files/">osf.io/xdszm/files/</a>. Please make sure to look at the date for each presentation and pick the most recent one!{% endtrans %}</p>
         </div>
       </div>
     </div>
@@ -70,13 +72,15 @@
     <div class="card">
       <div class="card-header" id="help">
         <h5 class="mb-0">
-          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#help-info" aria-expanded="false" aria-controls="help-info">Where can I get support for Taguette?</button>
+          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#help-info" aria-expanded="false" aria-controls="help-info">{% trans %}Where can I get support for Taguette?{% endtrans %}</button>
         </h5>
       </div>
       <div id="help-info" class="collapse" aria-labelledby="help" data-parent="#accordion">
         <div class="card-body">
+          {% trans %}
           <p>Feel free to shoot us an email over at <a href="mailto:hi@taguette.org">hi@taguette.org</a> with your problem or question, and we will do our best to get back to you quickly &mdash; though please note we are not working on Taguette full-time, so give us a few days (though we will try to be as quick as possible!).</p>
           <p>If you run into a bug or problem while using Taguette, or if you have a feature request, feel free to open an issue on GitLab, where Taguette's development takes place: <a href="https://gitlab.com/remram44/taguette/-/issues">gitlab.com/remram44/taguette/-/issues</a> or email us with that as well if you are not comfortable with GitLab.</p>
+          {% endtrans %}
         </div>
       </div>
     </div>
@@ -84,11 +88,12 @@
     <div class="card">
       <div class="card-header" id="formats">
         <h5 class="mb-0">
-          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#formats-info" aria-expanded="false" aria-controls="formats-info">Which file formats can I use with Taguette?</button>
+          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#formats-info" aria-expanded="false" aria-controls="formats-info">{% trans %}Which file formats can I use with Taguette?{% endtrans %}</button>
         </h5>
       </div>
       <div id="formats-info" class="collapse" aria-labelledby="formats" data-parent="#accordion">
         <div class="card-body mb-0">
+          {% trans %}
           <p>Taguette uses <a href="https://calibre-ebook.com/">Calibre</a> to convert documents to HTML, so you can use all the formats it supports, including:</p>
           <ul>
             <li>Ebook formats (AZW, MOBI, EPUB)</li>
@@ -99,6 +104,7 @@
             <li>HTML</li>
           </ul>
           <p>See also <a href="https://manual.calibre-ebook.com/faq.html#what-formats-does-calibre-support-conversion-to-from">their own FAQ entry</a> on the subject.</p>
+          {% endtrans %}
         </div>
       </div>
     </div>
@@ -106,11 +112,12 @@
     <div class="card">
       <div class="card-header" id="cite">
         <h5 class="mb-0">
-          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#cite-info" aria-expanded="false" aria-controls="cite-info">I used Taguette for research and I want to cite you/give you credit &mdash; how can I do that?</button>
+          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#cite-info" aria-expanded="false" aria-controls="cite-info">{% trans %}I used Taguette for research and I want to cite you/give you credit &mdash; how can I do that?{% endtrans %}</button>
         </h5>
       </div>
       <div id="cite-info" class="collapse" aria-labelledby="cite" data-parent="#accordion">
         <div class="card-body mb-0">
+          {% trans %}
           <p>A mention is always appreciated! If you use Taguette for your research, please cite it with the following:</p>
           <p class="text-center">Rémi Rampin, Vicky Rampin, &amp; Sarah DeMott. (2021, February 17). Taguette (Version 0.10.1). Zenodo. <a href="https://doi.org/10.5281/zenodo.4560784">https://doi.org/10.5281/zenodo.4560784</a>.</p>
           <p>If you need Bibtex, please use the following:</p>
@@ -124,23 +131,24 @@
   publisher = {Zenodo},
   language = {en}
 }{% endraw %}</code></pre>
+          {% endtrans %}
         </div>
       </div>
     </div>
 
     <br>
 
-    <h3>Desktop/Single-user Info</h3>
+    <h3>{% trans %}Desktop/Single-user Info{% endtrans %}</h3>
 
     <div class="card">
       <div class="card-header" id="singleuser">
         <h5 class="mb-0">
-          <button class="btn btn-link" data-toggle="collapse" data-target="#singleuser-info" aria-expanded="true" aria-controls="singleuser-info">Why do you call the desktop version of Taguette 'single user mode'?</button>
+          <button class="btn btn-link" data-toggle="collapse" data-target="#singleuser-info" aria-expanded="true" aria-controls="singleuser-info">{% trans %}Why do you call the desktop version of Taguette 'single user mode'?{% endtrans %}</button>
         </h5>
       </div>
       <div id="singleuser-info" class="collapse" aria-labelledby="singleuser" data-parent="#accordion">
         <div class="card-body">
-          <p>Simply because you cannot collaborate with others using our desktop version of Taguette! If you want to be able to collaborate, see our <a href="self-host.html">self-hosting guide</a> that walks you through how to install Taguette on a server for multi-user collaboration.</p>
+          <p>{% trans %}Simply because you cannot collaborate with others using our desktop version of Taguette! If you want to be able to collaborate, see our <a href="self-host.html">self-hosting guide</a> that walks you through how to install Taguette on a server for multi-user collaboration.{% endtrans %}</p>
         </div>
       </div>
     </div>
@@ -148,12 +156,12 @@
     <div class="card">
       <div class="card-header" id="os">
         <h5 class="mb-0">
-          <button class="btn btn-link" data-toggle="collapse" data-target="#os-info" aria-expanded="true" aria-controls="os-info">Does Taguette work on all operating systems?</button>
+          <button class="btn btn-link" data-toggle="collapse" data-target="#os-info" aria-expanded="true" aria-controls="os-info">{% trans %}Does Taguette work on all operating systems?{% endtrans %}</button>
         </h5>
       </div>
       <div id="os-info" class="collapse" aria-labelledby="os" data-parent="#accordion">
         <div class="card-body">
-          <p>Yes! You can install Taguette on macOS, Windows, and Linux.</p>
+          <p>{% trans %}Yes! You can install Taguette on macOS, Windows, and Linux.{% endtrans %}</p>
         </div>
       </div>
     </div>
@@ -161,12 +169,12 @@
     <div class="card">
       <div class="card-header" id="dataloc">
         <h5 class="mb-0">
-          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#dataloc-info" aria-expanded="false" aria-controls="dataloc-info">When I use Taguette on my personal computer, where is the data?</button>
+          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#dataloc-info" aria-expanded="false" aria-controls="dataloc-info">{% trans %}When I use Taguette on my personal computer, where is the data?{% endtrans %}</button>
         </h5>
       </div>
       <div id="dataloc-info" class="collapse" aria-labelledby="dataloc" data-parent="#accordion">
         <div class="card-body">
-          <p>All your projects and documents are kept in a single database file. On macOS and Linux, you can find it at <code>~/.local/share/taguette/taguette.sqlite3</code>. On Windows, you can find it at: <code>My Documents/Taguette/taguette.sqlite3</code>.</p>
+          <p>{% trans %}All your projects and documents are kept in a single database file. On macOS and Linux, you can find it at <code>~/.local/share/taguette/taguette.sqlite3</code>. On Windows, you can find it at: <code>My Documents/Taguette/taguette.sqlite3</code>.{% endtrans %}</p>
         </div>
       </div>
     </div>
@@ -174,11 +182,12 @@
     <div class="card">
       <div class="card-header" id="db">
         <h5 class="mb-0">
-          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#db-info" aria-expanded="false" aria-controls="db-info">SQLite is ok, but I prefer another database system. Can I change what Taguette uses?</button>
+          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#db-info" aria-expanded="false" aria-controls="db-info">{% trans %}SQLite is ok, but I prefer another database system. Can I change what Taguette uses?{% endtrans %}</button>
         </h5>
       </div>
       <div id="db-info" class="collapse" aria-labelledby="db" data-parent="#accordion">
         <div class="card-body">
+          {% trans %}
           <p>Yes! On the terminal, use the <code>--database</code> option to change the location of your database or use a different database system. The argument is in the <a href="https://docs.sqlalchemy.org/en/13/core/engines.html">format used by SQLAlchemy</a>, so for instance:</p>
           <ul>
             <li><code>sqlite:////home/myname/myfile.sqlite3</code> (Unix or MacOS) or <code>sqlite3:///C:\Users\myname\Documents\myfile.sqlite3</code> (Windows)</li>
@@ -186,23 +195,24 @@
             <li><code>mysql://user:password@host:port/databasename</code></li>
             <li>Any of the <a href="https://docs.sqlalchemy.org/en/13/core/engines.html">other backends supported by SQLAlchemy</a></li>
           </ul>
+          {% endtrans %}
         </div>
       </div>
     </div>
 
     <br>
 
-    <h3>Self-hosting/multiuser mode Info</h3>
+    <h3>{% trans %}Self-hosting/multiuser mode Info{% endtrans %}</h3>
 
     <div class="card">
       <div class="card-header" id="server">
         <h5 class="mb-0">
-          <button class="btn btn-link" data-toggle="collapse" data-target="#server-info" aria-expanded="true" aria-controls="server-info">Can I install Taguette on my own server?</button>
+          <button class="btn btn-link" data-toggle="collapse" data-target="#server-info" aria-expanded="true" aria-controls="server-info">{% trans %}Can I install Taguette on my own server?{% endtrans %}</button>
         </h5>
       </div>
       <div id="server-info" class="collapse" aria-labelledby="server" data-parent="#accordion">
         <div class="card-body">
-          <p>Absolutely! We know that putting choice in the hands of our users is what open source is all about 😊 You can install Taguette on your server via Docker or right from the source. Both methods can be found with step-by-step instructions on our <a href="self-host.html">self-hosting guide</a>.</p>
+          <p>{% trans %}Absolutely! We know that putting choice in the hands of our users is what open source is all about 😊 You can install Taguette on your server via Docker or right from the source. Both methods can be found with step-by-step instructions on our <a href="self-host.html">self-hosting guide</a>.{% endtrans %}</p>
         </div>
       </div>
     </div>
@@ -210,31 +220,33 @@
     <div class="card">
       <div class="card-header" id="trouble">
         <h5 class="mb-0">
-          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#trouble-info" aria-expanded="false" aria-controls="trouble-info">I thought I followed the instructions but something went wrong -- what should I look at first?</button>
+          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#trouble-info" aria-expanded="false" aria-controls="trouble-info">{% trans %}I thought I followed the instructions but something went wrong -- what should I look at first?{% endtrans %}</button>
         </h5>
       </div>
       <div id="trouble-info" class="collapse" aria-labelledby="trouble" data-parent="#accordion">
         <div class="card-body">
+          {% trans %}
           <p>Make sure you have <strong>correctly installed all the dependencies</strong> (via our <a href="self-host.html">self-hosting guide</a>) and have also <strong>edited the configuration file</strong>. We have two sample configurations for you to work from as well: <a href="https://gitlab.com/remram44/taguette/blob/master/scripts/dist/server_configs/nginx.conf">nginx</a> and <a href="https://gitlab.com/remram44/taguette/blob/master/scripts/dist/server_configs/apache2.conf">apache2</a>.</p>
 
           <p>If you can't quite figure out what happened, either <a href="https://gitlab.com/remram44/taguette/issues">submit an issue on GitLab</a>, or email us at <a href="mailto:hi@taguette.org">hi@taguette.org</a>.</p>
+          {% endtrans %}
         </div>
       </div>
     </div>
 
     <br>
 
-    <h3><a href="https://app.taguette.org">app.taguette.org</a> Info</h3>
+    <h3>{% set hosted_app_link %}<a href="https://app.taguette.org">app.taguette.org</a>{% endset %}{% trans %}{{ hosted_app_link }} Info{% endtrans %}</h3>
 
     <div class="card">
       <div class="card-header" id="app">
         <h5 class="mb-0">
-          <button class="btn btn-link" data-toggle="collapse" data-target="#app-info" aria-expanded="true" aria-controls="app-info">What is app.taguette.org?</button>
+            <button class="btn btn-link" data-toggle="collapse" data-target="#app-info" aria-expanded="true" aria-controls="app-info">{% trans %}What is app.taguette.org?{% endtrans %}</button>
         </h5>
       </div>
       <div id="app-info" class="collapse" aria-labelledby="app" data-parent="#accordion">
         <div class="card-body">
-          <p>It is a version of Taguette hosted on our servers for free use by anyone! We host this from a rented dedicated server from <a href="https://www.ovhcloud.com/en/bare-metal/">OVH</a>, and our server's location is in France.</p>
+            <p>{# TRANSLATORS: About app.taguette.org #}{% trans %}It is a version of Taguette hosted on our servers for free use by anyone! We host this from a rented dedicated server from <a href="https://www.ovhcloud.com/en/bare-metal/">OVH</a>, and our server's location is in France.{% endtrans %}</p>
         </div>
       </div>
     </div>
@@ -242,12 +254,12 @@
     <div class="card">
       <div class="card-header" id="register">
         <h5 class="mb-0">
-          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#register-info" aria-expanded="false" aria-controls="register-info">What do we need to register for an account, and what do you do with our account information?</button>
+          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#register-info" aria-expanded="false" aria-controls="register-info">{% trans %}What do we need to register for an account, and what do you do with our account information?{% endtrans %}</button>
         </h5>
       </div>
       <div id="register-info" class="collapse" aria-labelledby="register" data-parent="#accordion">
         <div class="card-body">
-          <p>To use <a href="https://app.taguette.org">app.taguette.org</a>, you need to register with a username and a password. You can provide an email address optionally, which we only use in case you forget your password. We will never sell your information to anyone else, and we will only use it to log you into your account.</p>
+          <p>{% trans %}To use <a href="https://app.taguette.org">app.taguette.org</a>, you need to register with a username and a password. You can provide an email address optionally, which we only use in case you forget your password. We will never sell your information to anyone else, and we will only use it to log you into your account.{% endtrans %}</p>
         </div>
       </div>
     </div>
@@ -255,16 +267,18 @@
     <div class="card">
       <div class="card-header" id="secure">
         <h5 class="mb-0">
-          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#secure-info" aria-expanded="false" aria-controls="secure-info">What type of data should I upload to app.taguette.org?</button>
+          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#secure-info" aria-expanded="false" aria-controls="secure-info">{% trans %}What type of data should I upload to app.taguette.org?{% endtrans %}</button>
         </h5>
       </div>
       <div id="secure-info" class="collapse" aria-labelledby="secure" data-parent="#accordion">
         <div class="card-body">
+          {% trans %}
           <p>TL;DR: do not upload sensitive data (e.g. patient information, student records) to our hosted version of Taguette.</p>
 
           <p>A good reference for what data could be safely uploaded into <a href="https://app.taguette.org">app.taguette.org</a> is the U.S. Health and Human Services <a href="https://www.hhs.gov/ohrp/regulations-and-policy/decision-charts/index.html#c2">Institutional Review Board exemption decision chart</a> -- if the data is exempt under this chart, it's most likely OK to upload to our hosted version of Taguette. If you're in a country outside the U.S., please refer to the ethics or human subject research boards of your country for exact information.</p>
 
           <p> If you need to work collaboratively on sensitive data, then we would recommend reaching out to information technology at your organization and asking about a secure server in which they could install Taguette. If you are an independent researcher or do not have an IT unit at your institution that can do this for you, we would recommend procuring a secure server and installing Taguette there using our <a href="self-host.html">self-hosting guide</a>. Taguette can run well in many cloud hosting providers' free tiers (depending on the size of your data), and many of these providers have addendums to cover sensitive data (which may or may not incur a cost).</p>
+          {% endtrans %}
         </div>
       </div>
     </div>
@@ -272,12 +286,12 @@
     <div class="card">
       <div class="card-header" id="backup">
         <h5 class="mb-0">
-          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#backup-info" aria-expanded="false" aria-controls="backup-info">Do you back up the data on app.taguette.org?</button>
+          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#backup-info" aria-expanded="false" aria-controls="backup-info">{% trans %}Do you back up the data on app.taguette.org?{% endtrans %}</button>
         </h5>
       </div>
       <div id="backup-info" class="collapse" aria-labelledby="backup" data-parent="#accordion">
         <div class="card-body">
-          <p>Yes, we back up <a href="https://app.taguette.org">app.taguette.org</a> daily and keep those backups for a year. We send backups to a bucket in Amazon Web Services, in encrypted form only.</p>
+          <p>{% trans %}Yes, we back up <a href="https://app.taguette.org">app.taguette.org</a> daily and keep those backups for a year. We send backups to a bucket in Amazon Web Services, in encrypted form only.{% endtrans %}</p>
         </div>
       </div>
     </div>
