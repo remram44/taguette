@@ -13,6 +13,10 @@
     <link rel="preload" href="webfonts/fa-regular-400.woff2">
     <link rel="preload" href="webfonts/fa-solid-900.woff2">
 
+    {% for lang in languages %}{% if lang.link != current_language.link %}
+    <link rel="alternate" href="{% if current_language.link %}../{% endif %}{% if lang.link %}{{ lang.link }}/{% endif %}{{ current_page_link }}" hreflang="{{ lang.link or "en" }}">
+    {% endif %}{% endfor %}
+
     <title>{% block title %}{# TRANSLATORS: Page title #}{% trans %}Taguette, the free and opensource qualitative data analysis tool{% endtrans %}{% endblock %}</title>
 
     <!-- Bootswatch Theme -->
