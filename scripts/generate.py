@@ -6,6 +6,7 @@ import jinja2
 import logging
 import os
 import shutil
+import subprocess
 import sys
 
 
@@ -104,6 +105,21 @@ LANGUAGE_NAMES = {
 
 def main():
     logging.basicConfig(level=logging.INFO)
+
+    # Build .mo files
+    for filename in os.listdir('po'):
+        if filename.startswith('website_') and filename.endswith('.po'):
+            code = filename[8:-3]
+            directory = os.path.join('l10n', code, 'LC_MESSAGES')
+            os.makedirs(directory, exist_ok=True)
+            subprocess.check_call([
+                'pybabel',
+                'compile',
+                '-i',
+                os.path.join('po', filename),
+                '-o',
+                os.path.join(directory, 'taguette_website.mo'),
+            ])
 
     out = sys.argv[1]
 
