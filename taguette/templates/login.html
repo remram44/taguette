@@ -80,6 +80,17 @@
           <small>{% trans %}Optional. <em>We will not share your email with anyone. This is only used in case you forget your password.</em>{% endtrans %}</small>
         </div>
       </div>
+      {% if tos %}
+      <div class="form-group row">
+        <label for="register-tos" class="col-sm-2 col-form-label">{% trans %}Terms of service{% endtrans %}</label>
+        <div class="col-sm-10">
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" id="register-tos" name="tos" value="accepted" required>
+            <label class="form-check-label" for="register-tos">{% trans url=reverse_url('tos') %}I accept the <a href="{{ url }}">terms of service</a>{% endtrans %}</label>
+          </div>
+        </div>
+      </div>
+      {% endif %}
       <div class="form-group row">
         <div class="col-sm-10 offset-sm-2">
           <button type="submit" name="register" class="btn btn-primary">{# TRANSLATORS: Submit button #}{% trans %}Register{% endtrans %}</button>

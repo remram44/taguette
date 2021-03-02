@@ -176,6 +176,13 @@ class Register(BaseHandler):
             user.set_password(password1)
             if email:
                 user.email = email
+            if (
+                self.application.terms_of_service is not None
+                and self.get_body_argument('tos', None) != 'accepted'
+            ):
+                raise validate.InvalidFormat(_f(
+                    "Terms of Service must be accepted",
+                ))
             self.db.add(user)
             self.db.commit()
             logger.info("User registered: %r", login)
@@ -185,6 +192,18 @@ class Register(BaseHandler):
             logger.info("Error validating Register: %r", e)
             return self.render('login.html', register=True,
                                register_error=self.gettext(e.message))
+
+
+class TermsOfService(BaseHandler):
+    @PROM_REQUESTS.sync('tos')
+    def get(self):
+        if self.application.terms_of_service:
+            return self.render(
+                'tos.html',
+                tos_text=jinja2.Markup(self.application.terms_of_service),
+            )
+        else:
+            raise HTTPError(404)
 
 
 class Account(BaseHandler):

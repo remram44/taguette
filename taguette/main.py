@@ -77,6 +77,11 @@ DATABASE = "sqlite:////non/existent/taguette/database.sqlite3"
 # Address to send system emails from
 EMAIL = "Misconfigured Taguette Server <taguette@example.com>"
 
+# Terms of service (HTML file)
+TOS_FILE = 'tos.html'
+# If set to None, no terms of service link will be displayed anywhere
+#TOS_FILE = None
+
 # Default language
 DEFAULT_LANGUAGE = 'en_US'
 
@@ -123,8 +128,8 @@ DEFAULT_CONFIG = {
     'HTML_OUT_SIZE_LIMIT': 2000000,  # 2 MB
 }
 
-REQUIRED_CONFIG = ['NAME', 'PORT', 'SECRET_KEY', 'DATABASE', 'X_HEADERS',
-                   'EMAIL', 'MAIL_SERVER', 'COOKIES_PROMPT',
+REQUIRED_CONFIG = ['NAME', 'PORT', 'SECRET_KEY', 'DATABASE', 'TOS_FILE',
+                   'X_HEADERS', 'EMAIL', 'MAIL_SERVER', 'COOKIES_PROMPT',
                    'OPF_OUT_SIZE_LIMIT', 'HTML_OUT_SIZE_LIMIT']
 
 
@@ -279,6 +284,7 @@ def main():
             X_HEADERS=False,
             PORT=int(args.port),
             DATABASE=prepare_db(args.database),
+            TOS_FILE=None,
             SECRET_KEY=secret,
             COOKIES_PROMPT=False,
             HTML_OUT_SIZE_LIMIT=5000000,  # 5 MB

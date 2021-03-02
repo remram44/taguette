@@ -63,6 +63,7 @@ def make_app(config, debug=False, xsrf_cookies=True):
             URLSpec('/login', views.Login, name='login'),
             URLSpec('/logout', views.Logout, name='logout'),
             URLSpec('/register', views.Register, name='register'),
+            URLSpec('/tos', views.TermsOfService, name='tos'),
             URLSpec('/account', views.Account, name='account'),
             URLSpec('/reset_password', views.AskResetPassword,
                     name='reset_password'),

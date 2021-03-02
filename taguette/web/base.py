@@ -132,9 +132,17 @@ class Application(tornado.web.Application):
             self._set_password(admin)
             db.commit()
 
+        if config['TOS_FILE']:
+            with open(config['TOS_FILE']) as fp:
+                self.terms_of_service = fp.read()
+        else:
+            self.terms_of_service = None
+
         if config['MULTIUSER']:
             self.single_user_token = None
             logger.info("Starting in multi-user mode")
+            if not self.terms_of_service:
+                logger.warning("Not terms of service set")
         else:
             self.single_user_token = hmac.new(
                 cookie_secret.encode('utf-8'),
@@ -339,6 +347,7 @@ class BaseHandler(RequestHandler):
             current_user=self.current_user,
             multiuser=self.application.config['MULTIUSER'],
             register_enabled=self.application.config['REGISTRATION_ENABLED'],
+            tos=self.application.terms_of_service is not None,
             show_messages=self.current_user == 'admin',
             version=version,
             gettext=self.gettext,
