@@ -505,7 +505,7 @@ function updateDocumentsList() {
     elem.innerHTML =
       '<div class="d-flex justify-content-between align-items-center">' +
       '  <a class="document-link-a">' + escapeHtml(doc.name) + '</a>' +
-      '  <a href="javascript:editDocument(' + doc.id + ');" class="badge badge-primary badge-pill">' + gettext("edit") + '</a>' +
+      '  <a href="javascript:editDocument(' + doc.id + ');" class="btn btn-primary btn-sm">' + gettext("Edit") + '</a>' +
       '</div>';
     documents_list.insertBefore(elem, before);
     var links = elem.getElementsByTagName('a');
@@ -758,7 +758,7 @@ function updateTagsList() {
       '  </div>' +
       '  <div style="white-space: nowrap;">' +
       '    <span class="badge badge-secondary badge-pill" id="tag-' + tag.id + '-count">' + tag.count + '</span>' +
-      '    <a href="javascript:editTag(' + tag.id + ');" class="badge badge-primary badge-pill">' + gettext("edit") + '</a>' +
+      '    <a href="javascript:editTag(' + tag.id + ');" class="btn btn-primary btn-sm">' + gettext("Edit") + '</a>' +
       '  </div>' +
       '</div>' +
       '<ul class="sublist"></div>';

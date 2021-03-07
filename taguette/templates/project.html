@@ -40,12 +40,12 @@
 
           {% if multiuser %}
 
-          <p><a href="javascript:showMembers()" class="btn btn-outline-secondary" role="button">{% trans %}Manage collaborators{% endtrans %}</a></p>
+          <p><a href="javascript:showMembers()" class="w-100 btn btn-outline-secondary" role="button">{% trans %}Manage collaborators{% endtrans %}</a></p>
 
           {% endif %}
 
           <div class="dropdown mb-3">
-            <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdown-codebook" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button class="w-100 btn btn-outline-primary dropdown-toggle" type="button" id="dropdown-codebook" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               {% trans %}Export codebook{% endtrans %}
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdown-codebook">
@@ -59,25 +59,33 @@
           </div>
 
           {% if can_delete_project %}
-          <p><a href="{{ reverse_url('delete_project', project.id) }}" class="btn btn-outline-danger">{% trans %}Delete project{% endtrans %}</a></p>
+          <p><a href="{{ reverse_url('delete_project', project.id) }}" class="w-100 btn btn-outline-danger">{% trans %}Delete project{% endtrans %}</a></p>
           {% endif %}
         </div>
 
         <!-- List of documents -->
         <div class="tab-pane fade show active" id="documents" role="tabpanel" aria-labelledby="documents-tab">
+          <div class="row">
+            <div class="col-md-12">
+              <button class="btn btn-primary float-right mb-3"><a href="javascript:createDocument()">{% trans %}Add a document{% endtrans %}</a></button>
+            </div>
+          </div>
           <ul class="list-group list-group-flush" id="documents-list">
             <li class="list-group-item disabled">{% trans %}Loading...{% endtrans %}</li>
-            <li class="list-group-item list-group-item-primary special-item-button"><a href="javascript:createDocument()">{% trans %}Add a document{% endtrans %}</a></li>
           </ul>
           <input type="checkbox" id="backlight" class="mt-3" /> <label for="backlight">{% trans %}Backlight{% endtrans %}</label>
         </div>
 
         <!-- List of tags -->
         <div class="tab-pane fade" id="tags" role="tabpanel" aria-labelledby="tags-tab">
+          <div class="row">
+            <div class="col-md-12 mb-3">
+              <button id="load-all-tags" class="btn btn-primary float-right ml-2"><a href="/project/{{ project.id }}/highlights/">{% trans %}See all highlights{% endtrans %}</a></button>
+              <button class="btn btn-primary float-right"><a href="javascript:createTag()">{% trans %}Create a tag{% endtrans %}</a></button>
+            </div>
+          </div>
           <ul class="list-group list-group-flush" id="tags-list">
             <li class="list-group-item disabled">{% trans %}Loading...{% endtrans %}</li>
-            <li id="load-all-tags" class="list-group-item list-group-item-secondary special-item-button"><a href="/project/{{ project.id }}/highlights/">{% trans %}See all highlights{% endtrans %}</a></li>
-            <li class="list-group-item list-group-item-primary special-item-button"><a href="javascript:createTag()">{% trans %}Create a tag{% endtrans %}</a></li>
           </ul>
         </div>
 
