@@ -760,8 +760,7 @@ function updateTagsList() {
       '    <span class="badge badge-secondary badge-pill" id="tag-' + tag.id + '-count">' + tag.count + '</span>' +
       '    <a href="javascript:editTag(' + tag.id + ');" class="btn btn-primary btn-sm">' + gettext("Edit") + '</a>' +
       '  </div>' +
-      '</div>' +
-      '<ul class="sublist"></div>';
+      '</div>';
     tags_list.insertBefore(elem, before);
     linkTag(document.getElementById('tag-link-' + tag.id), tag.path);
   }
