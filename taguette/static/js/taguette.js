@@ -1634,7 +1634,7 @@ function maybeResumePolling() {
 
 function longPollForEvents() {
   // If we've been inactive for 10min, pause polling for now
-  if(windowLastActive !== null && (new Date() - windowLastActive < 600000)) {
+  if(windowLastActive !== null && (new Date() - windowLastActive > 600000)) {
     console.log("Browser window inactive, stop polling");
     polling = false;
     return;
