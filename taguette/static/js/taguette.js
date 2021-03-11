@@ -253,6 +253,48 @@ if(window.TextEncoder) {
   }
 }
 
+window.addEventListener('load', function() {
+  // https://css-tricks.com/snippets/jquery/draggable-without-jquery-ui/
+  (function($) {
+    $.fn.drags = function(opt) {
+      opt = $.extend({handle:"",cursor:"move"}, opt);
+      if(opt.handle === "") {
+          var $el = this;
+      } else {
+          var $el = this.find(opt.handle);
+      }
+
+      return $el.css('cursor', opt.cursor).on("mousedown", function(e) {
+        if(opt.handle === "") {
+          var $drag = $(this).addClass('draggable');
+        } else {
+          var $drag = $(this).addClass('active-handle').parent().addClass('draggable');
+        }
+        var z_idx = $drag.css('z-index'),
+            drg_h = $drag.outerHeight(),
+            drg_w = $drag.outerWidth(),
+            pos_y = $drag.offset().top + drg_h - e.pageY,
+            pos_x = $drag.offset().left + drg_w - e.pageX;
+        $drag.css('z-index', 1000).parents().on("mousemove", function(e) {
+          $('.draggable').offset({
+            top:e.pageY + pos_y - drg_h,
+            left:e.pageX + pos_x - drg_w
+          }).on("mouseup", function() {
+            $(this).removeClass('draggable').css('z-index', z_idx);
+          });
+        });
+        e.preventDefault(); // disable selection
+      }).on("mouseup", function() {
+        if(opt.handle === "") {
+          $(this).removeClass('draggable');
+        } else {
+          $(this).removeClass('active-handle').parent().removeClass('draggable');
+        }
+      });
+    }
+  })(jQuery);
+});
+
 function showSpinner() {
   $('#spinner-modal').modal('show');
 }
@@ -1081,7 +1123,7 @@ function createHighlight(selection) {
   document.getElementById('highlight-add-start').value = selection[0];
   document.getElementById('highlight-add-end').value = selection[1];
   document.getElementById('highlight-add-form').reset();
-  $(highlight_add_modal).modal();
+  $(highlight_add_modal).modal().drags({handle: '.modal-header'});
 }
 
 function editHighlight(e) {
@@ -1094,7 +1136,7 @@ function editHighlight(e) {
   for(var i = 0; i < hl_tags.length; ++i) {
     document.getElementById('highlight-add-tags-' + hl_tags[i]).checked = true;
   }
-  $(highlight_add_modal).modal();
+  $(highlight_add_modal).modal().drags({handle: '.modal-header'});
 }
 
 // Save highlight button
