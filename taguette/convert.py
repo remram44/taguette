@@ -62,6 +62,8 @@ class ConversionError(ValueError):
 class UnsupportedFormat(ConversionError):
     """This format is not supported.
     """
+    def __init__(self, msg="Unsupported file format",):
+        super(UnsupportedFormat, self).__init__(msg)
 
 
 PROC_TERM_GRACE = 5  # Wait 5s after SIGTERM before sending SIGKILL
@@ -194,7 +196,7 @@ async def calibre_to_html(input_filename, output_dir, config):
             try:
                 await check_call(cmd_again, config['CONVERT_TO_HTML_TIMEOUT'])
             except asyncio.TimeoutError:
-                raise ConversionError("Calibre timed out")
+                raise ConversionError("Calibre took too long and was stopped")
     except CalledProcessError:
         raise ConversionError("Calibre couldn't convert that file")
     logger.info("ebook-convert successful")
@@ -223,7 +225,7 @@ async def calibre_to_html(input_filename, output_dir, config):
     size = os.stat(os.path.join(output_dir, manifest)).st_size
     if size > config['OPF_OUT_SIZE_LIMIT']:
         logger.warning("OPF manifest is %d bytes; aborting", size)
-        raise ConversionError("File is too long")
+        raise ConversionError("Output manifest is too long")
 
     # Open OEB manifest
     logger.info("Parsing OPF manifest %s", manifest)
@@ -298,7 +300,7 @@ async def calibre_to_html(input_filename, output_dir, config):
         if size > config['HTML_OUT_SIZE_LIMIT']:
             logger.error("File is %d bytes for a total of %d bytes; aborting",
                          os.stat(output_filename).st_size, size)
-            raise ConversionError("File is too long")
+            raise ConversionError("Output file is too long")
         with open(output_filename, 'rb') as fp:
             output.append(get_html_body(fp.read()))
     # TODO: Store media files
@@ -321,11 +323,11 @@ async def wvware_to_html(input_filename, tmp, config):
     try:
         await check_call(cmd, config['CONVERT_TO_HTML_TIMEOUT'])
     except OSError:
-        raise ConversionError("Can't call wvHtml")
+        raise ConversionError("Can't call wvHtml to convert Word 97 file")
     except CalledProcessError:
         raise ConversionError("wvHtml couldn't convert that file")
     except asyncio.TimeoutError:
-        raise ConversionError("wvHtml timed out")
+        raise ConversionError("wvHtml took too long and was stopped")
     logger.info("wvHtml successful")
 
     # Read output
@@ -407,10 +409,10 @@ async def calibre_from_html(html, extension, config):
         except CalledProcessError:
             raise ConversionError("Calibre couldn't convert that file")
         except asyncio.TimeoutError:
-            raise ConversionError("Calibre timed out")
+            raise ConversionError("Calibre took too long and was stopped")
         logger.info("ebook-convert successful")
         if not os.path.isfile(output_filename):
-            raise RuntimeError("output file does not exist")
+            raise RuntimeError("Output file does not exist")
     except Exception:
         shutil.rmtree(tmp)
         raise
