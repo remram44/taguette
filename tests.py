@@ -15,6 +15,7 @@ from tornado.testing import AsyncTestCase, gen_test, AsyncHTTPTestCase, \
 import unittest
 from unittest import mock
 from urllib.parse import urlencode, urlparse
+from xml.etree import ElementTree
 
 from taguette import convert, database, extract, main, validate, web
 
@@ -23,6 +24,20 @@ if 'TAGUETTE_TEST_DB' in os.environ:
     DATABASE_URI = os.environ['TAGUETTE_TEST_DB']
 else:
     DATABASE_URI = 'sqlite://'
+
+
+def _compare_xml(e1, e2):
+    assert e1.tag == e2.tag
+    assert e1.attrib == e2.attrib
+    for c1, c2 in itertools.zip_longest(e1, e2):
+        assert c1 is not None and c2 is not None
+        _compare_xml(c1, c2)
+
+
+def compare_xml(str1, str2):
+    et1 = ElementTree.fromstring(str1)
+    et2 = ElementTree.fromstring(str2)
+    _compare_xml(et1, et2)
 
 
 class TestConvert(AsyncTestCase):
@@ -908,7 +923,7 @@ class TestMultiuser(MyHTTPTestCase):
             response.headers['Content-Type'],
             'text/xml; charset=utf-8',
         )
-        self.assertEqual(
+        compare_xml(
             response.body.decode('utf-8'),
             '<?xml version="1.0" encoding="utf-8"?>\n'
             + '<CodeBook xmlns="urn:QDA-XML:codebook:1.0" origin="Taguette 0.1'
