@@ -735,6 +735,10 @@ class TestMultiuser(MyHTTPTestCase):
         response = await self.aget('/project/2/export/document/2.html')
         self.assertEqual(response.code, 200)
         self.assertEqual(
+            response.headers['Content-Type'],
+            'text/html; charset=utf-8',
+        )
+        self.assertEqual(
             response.body.decode('utf-8'),
             textwrap.dedent('''\
             <!DOCTYPE html>
@@ -762,7 +766,16 @@ class TestMultiuser(MyHTTPTestCase):
             </html>'''),
         )
 
-        # Export highlights in project 2 under 'interesting'
+        # Export document 2 to unknown format
+        response = await self.aget('/project/2/export/document/2.dat')
+        self.assertEqual(response.code, 404)
+        self.assertEqual(response.headers['Content-Type'], 'text/plain')
+        self.assertEqual(
+            response.body.decode('utf-8'),
+            'Unsupported format: dat',
+        )
+
+        # Export highlights in project 2 under 'interesting' to HTML
         response = await self.aget('/project/2/export/highlights/'
                                    'interesting.html')
         self.assertEqual(response.code, 200)
@@ -803,9 +816,27 @@ class TestMultiuser(MyHTTPTestCase):
                 </html>'''),
         )
 
+        # Export highlights in project 2 under 'interesting' to CSV
+        response = await self.aget('/project/2/export/highlights/'
+                                   'interesting.csv')
+        self.assertEqual(response.code, 200)
+        self.assertEqual(
+            response.body.decode('utf-8'),
+            textwrap.dedent('''\
+            id,document,tag,content
+            2,otherdoc,interesting.places,diff
+            3,otherdoc,interesting,tent
+            3,otherdoc,people,tent
+            ''').replace('\n', '\r\n'),
+        )
+
         # Export codebook of project 2 to CSV
         response = await self.aget('/project/2/export/codebook.csv')
         self.assertEqual(response.code, 200)
+        self.assertEqual(
+            response.headers['Content-Type'],
+            'text/csv; charset=utf-8',
+        )
         self.assertEqual(
             response.body.decode('utf-8'),
             textwrap.dedent('''\
@@ -850,6 +881,24 @@ class TestMultiuser(MyHTTPTestCase):
 
                   </body>
                 </html>'''),
+        )
+
+        # Export codebook of project 2 to REFI-QDA
+        response = await self.aget('/project/2/export/codebook.qdc')
+        self.assertEqual(response.code, 200)
+        self.assertEqual(
+            response.headers['Content-Type'],
+            'text/xml; charset=utf-8',
+        )
+        self.assertEqual(
+            response.body.decode('utf-8'),
+            '<?xml version="1.0" encoding="utf-8"?>\n'
+            + '<CodeBook xmlns="urn:QDA-XML:codebook:1.0" origin="Taguette 0.1'
+            + '0.1"><Codes><Code guid="0D62985D-B147-5D01-A9B5-CAE5DCD98342" n'
+            + 'ame="interesting" isCodable="true"/><Code guid="DFE5C38E-9449-5'
+            + '959-A1F7-E3D895CFA87F" name="people" isCodable="true"/><Code gu'
+            + 'id="725F0645-9CD3-598A-8D2B-EC3D39AB3C3F" name="interesting.pla'
+            + 'ces" isCodable="true"/></Codes><Sets/></CodeBook>',
         )
 
         # Merge tag 3 into 2
