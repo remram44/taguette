@@ -406,6 +406,11 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(response.code, 302)
         self.assertEqual(response.headers['Location'], '/project/1')
 
+        # Check redirect to account
+        response = self.get('/.well-known/change-password')
+        self.assertEqual(response.code, 301)
+        self.assertEqual(response.headers['Location'], '/account')
+
     @gen_test(timeout=30)
     async def test_projects(self):
         # project 1               project 2
