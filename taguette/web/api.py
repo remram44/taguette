@@ -624,14 +624,15 @@ class MembersUpdate(BaseHandler):
             if login == self.current_user:
                 logger.warning("User tried to change own privileges")
                 continue
-            if not user_info and login in members:
-                self.db.delete(members[login])
-                cmd = database.Command.member_remove(
-                    self.current_user, project.id,
-                    login,
-                )
-                self.db.add(cmd)
-                commands.append(cmd)
+            if not user_info:
+                if login in members:
+                    self.db.delete(members[login])
+                    cmd = database.Command.member_remove(
+                        self.current_user, project.id,
+                        login,
+                    )
+                    self.db.add(cmd)
+                    commands.append(cmd)
             else:
                 try:
                     privileges = database.Privileges[user_info['privileges']]
