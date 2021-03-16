@@ -619,12 +619,12 @@ class MembersUpdate(BaseHandler):
         # Go over the JSON patch and update
         obj = self.get_json()
         commands = []
-        for login, user in obj.items():
+        for login, user_info in obj.items():
             login = validate.user_login(login)
             if login == self.current_user:
                 logger.warning("User tried to change own privileges")
                 continue
-            if not user and login in members:
+            if not user_info and login in members:
                 self.db.delete(members[login])
                 cmd = database.Command.member_remove(
                     self.current_user, project.id,
@@ -634,11 +634,11 @@ class MembersUpdate(BaseHandler):
                 commands.append(cmd)
             else:
                 try:
-                    privileges = database.Privileges[user['privileges']]
+                    privileges = database.Privileges[user_info['privileges']]
                 except KeyError:
                     return self.send_error_json(
                         400,
-                        "Invalid privileges %r" % user.get('privileges'),
+                        "Invalid privileges %r" % user_info.get('privileges'),
                     )
                 if login in members:
                     members[login].privileges = privileges
