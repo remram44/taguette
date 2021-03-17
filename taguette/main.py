@@ -207,7 +207,10 @@ def main():
     parser.add_argument('--dont-set-umask', action='store_const', dest='umask',
                         const=None,
                         help=_("Don't change umask on startup"))
-    parser.set_defaults(func=None)
+    parser.set_defaults(
+        func=None,  # Function to run instead of default, e.g. migrate, server
+        func1=None,  # Run immediately, e.g. before anything is logged
+    )
 
     subparsers = parser.add_subparsers(title=_("additional commands"),
                                        metavar='', dest='cmd')
@@ -226,7 +229,7 @@ def main():
     parser_config.add_argument('--output', '-o', action='store', nargs=1,
                                help=_("Output to this file rather than "
                                       "stdout"))
-    parser_config.set_defaults(func=lambda args: default_config(args.output))
+    parser_config.set_defaults(func1=lambda args: default_config(args.output))
 
     parser_server = subparsers.add_parser(
         'server',
@@ -237,6 +240,10 @@ def main():
                                       "using the `default-config` command"))
 
     args = parser.parse_args()
+
+    if args.func1:
+        args.func1(args)
+        sys.exit(0)
 
     if args.umask is not None:
         if not re.match(r'^[0-7][0-7][0-7]$', args.umask):
