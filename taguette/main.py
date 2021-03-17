@@ -260,8 +260,10 @@ def main():
     if args.cmd == 'server':
         # Set configuration from config file
         config = {}
-        with open(args.config_file) as fp:
-            exec(fp.read(), config)
+        config_file = os.path.abspath(args.config_file)
+        with open(config_file) as fp:
+            code = compile(fp.read(), config_file, 'exec')
+        exec(code, config)
         config = dict(
             DEFAULT_CONFIG,
             **config
