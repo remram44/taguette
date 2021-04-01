@@ -49,6 +49,10 @@ PROM_CONVERT_PROCESSES = prometheus_client.Gauge(
     'convert_processes',
     "Number of conversion processes currently running",
 )
+PROM_CONVERT_QUEUE = prometheus_client.Gauge(
+    'convert_queue',
+    "Number of conversions waiting to run",
+)
 
 
 HTML_EXTENSIONS = ('.htm', '.html', '.xhtml')
@@ -72,21 +76,28 @@ PROC_MAX_CONCURRENT = 4  # Maximum concurrent conversion processes
 
 
 class MeasuredSemaphore(asyncio.Semaphore):
-    def __init__(self, value, metric):
+    def __init__(self, value, metric_acquired, metric_waiting):
         super(MeasuredSemaphore, self).__init__(value)
-        self._metric = metric
+        self._metric_acquired = metric_acquired
+        self._metric_waiting = metric_waiting
 
     async def acquire(self):
+        self._metric_waiting.inc()
         ret = await super(MeasuredSemaphore, self).acquire()
-        self._metric.inc()
+        self._metric_waiting.dec()
+        self._metric_acquired.inc()
         return ret
 
     def release(self):
         super(MeasuredSemaphore, self).release()
-        self._metric.dec()
+        self._metric_acquired.dec()
 
 
-subprocess_sem = MeasuredSemaphore(PROC_MAX_CONCURRENT, PROM_CONVERT_PROCESSES)
+subprocess_sem = MeasuredSemaphore(
+    PROC_MAX_CONCURRENT,
+    PROM_CONVERT_PROCESSES,
+    PROM_CONVERT_QUEUE,
+)
 
 
 if sys.platform == 'win32':
