@@ -8,6 +8,8 @@ Create Date: 2020-04-03 15:54:14.870029
 from alembic import op
 import sqlalchemy as sa
 
+from taguette.database import no_sqlite_pragma_check
+
 
 # revision identifiers, used by Alembic.
 revision = 'b23f3b7a638e'
@@ -17,8 +19,10 @@ depends_on = None
 
 
 def upgrade():
-    op.add_column('users',
-                  sa.Column('password_set_date', sa.DateTime(), nullable=True))
+    op.add_column(
+        'users',
+        sa.Column('password_set_date', sa.DateTime(), nullable=True),
+    )
 
     # Set the password set time to now if a password is set
     op.execute(
@@ -30,5 +34,6 @@ def upgrade():
 
 
 def downgrade():
-    with op.batch_alter_table('users', schema=None) as batch_op:
-        batch_op.drop_column('password_set_date')
+    with no_sqlite_pragma_check():
+        with op.batch_alter_table('users', schema=None) as batch_op:
+            batch_op.drop_column('password_set_date')

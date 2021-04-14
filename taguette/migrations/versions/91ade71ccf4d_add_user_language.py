@@ -8,6 +8,8 @@ Create Date: 2019-05-09 14:02:38.185065
 from alembic import op
 import sqlalchemy as sa
 
+from taguette.database import no_sqlite_pragma_check
+
 
 # revision identifiers, used by Alembic.
 revision = '91ade71ccf4d'
@@ -17,10 +19,13 @@ depends_on = None
 
 
 def upgrade():
-    op.add_column('users',
-                  sa.Column('language', sa.String(), nullable=True))
+    op.add_column(
+        'users',
+        sa.Column('language', sa.String(), nullable=True),
+    )
 
 
 def downgrade():
-    with op.batch_alter_table('users') as batch_op:
-        batch_op.drop_column('language')
+    with no_sqlite_pragma_check():
+        with op.batch_alter_table('users') as batch_op:
+            batch_op.drop_column('language')

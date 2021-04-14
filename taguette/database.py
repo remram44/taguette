@@ -3,6 +3,7 @@ import alembic.config
 from alembic.runtime.migration import MigrationContext
 from alembic.script import ScriptDirectory
 import binascii
+import contextlib
 from datetime import datetime
 import enum
 import hashlib
@@ -533,6 +534,25 @@ Tag.highlights_count = column_property(
 )
 
 
+def set_sqlite_pragma(dbapi_connection, connection_record):
+    if set_sqlite_pragma.enabled:
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA foreign_keys=ON")
+        cursor.close()
+
+
+set_sqlite_pragma.enabled = True
+
+
+@contextlib.contextmanager
+def no_sqlite_pragma_check():
+    taguette.database.set_sqlite_pragma.enabled = False
+    try:
+        yield
+    finally:
+        taguette.database.set_sqlite_pragma.enabled = True
+
+
 def connect(db_url):
     """Connect to the database using an environment variable.
     """
@@ -544,11 +564,11 @@ def connect(db_url):
     # logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
     if db_url.startswith('sqlite:'):
-        @sqlalchemy.event.listens_for(sqlalchemy.engine.Engine, "connect")
-        def set_sqlite_pragma(dbapi_connection, connection_record):
-            cursor = dbapi_connection.cursor()
-            cursor.execute("PRAGMA foreign_keys=ON")
-            cursor.close()
+        sqlalchemy.event.listen(
+            sqlalchemy.engine.Engine,
+            "connect",
+            set_sqlite_pragma,
+        )
 
     alembic_cfg = alembic.config.Config()
     alembic_cfg.set_main_option('script_location', 'taguette:migrations')

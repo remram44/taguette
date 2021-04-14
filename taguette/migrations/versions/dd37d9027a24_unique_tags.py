@@ -8,6 +8,8 @@ Create Date: 2018-11-10 21:45:13.844011
 from alembic import op
 from sqlalchemy.orm import Session
 
+from taguette.database import no_sqlite_pragma_check
+
 
 # revision identifiers, used by Alembic.
 revision = 'dd37d9027a24'
@@ -42,19 +44,27 @@ def upgrade():
     session.commit()
 
     # Add the indexes
-    with op.batch_alter_table('tags') as batch_op:
-        batch_op.create_index(batch_op.f('ix_tags_path'), ['path'],
-                              unique=True)
+    with no_sqlite_pragma_check():
+        with op.batch_alter_table('tags') as batch_op:
+            batch_op.create_index(
+                batch_op.f('ix_tags_path'),
+                ['path'],
+                unique=True,
+            )
 
-    # We assume no one created those, table is unused so far
-    with op.batch_alter_table('groups') as batch_op:
-        batch_op.create_index(batch_op.f('ix_groups_path'), ['path'],
-                              unique=True)
+        # We assume no one created those, table is unused so far
+        with op.batch_alter_table('groups') as batch_op:
+            batch_op.create_index(
+                batch_op.f('ix_groups_path'),
+                ['path'],
+                unique=True,
+            )
 
 
 def downgrade():
-    with op.batch_alter_table('groups') as batch_op:
-        batch_op.drop_index(batch_op.f('ix_groups_path'))
+    with no_sqlite_pragma_check():
+        with op.batch_alter_table('groups') as batch_op:
+            batch_op.drop_index(batch_op.f('ix_groups_path'))
 
-    with op.batch_alter_table('tags') as batch_op:
-        batch_op.drop_index(batch_op.f('ix_tags_path'))
+        with op.batch_alter_table('tags') as batch_op:
+            batch_op.drop_index(batch_op.f('ix_tags_path'))
