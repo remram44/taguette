@@ -194,18 +194,18 @@ async def calibre_to_html(input_filename, output_dir, config):
     if os.environ.get('CALIBRE'):
         convert = os.path.join(os.environ['CALIBRE'], convert)
     cmd = [convert, input_filename, output_dir, '--enable-heuristics']
-    cmd_again = [convert, input_filename, output_dir]
     if os.path.splitext(input_filename)[1].lower() == '.pdf':
         cmd.append('--no-images')
-    logger.info("Running: %s", ' '.join(cmd))
+    cmd_heuristics = cmd + ['--enable-heuristics']
+    logger.info("Running: %s", ' '.join(cmd_heuristics))
     try:
         try:
-            await check_call(cmd, config['CONVERT_TO_HTML_TIMEOUT'])
+            await check_call(cmd_heuristics, config['CONVERT_TO_HTML_TIMEOUT'])
         except asyncio.TimeoutError:
             logger.error("Calibre timed out, trying again without "
                          "heuristics...")
             try:
-                await check_call(cmd_again, config['CONVERT_TO_HTML_TIMEOUT'])
+                await check_call(cmd, config['CONVERT_TO_HTML_TIMEOUT'])
             except asyncio.TimeoutError:
                 raise ConversionError("Calibre took too long and was stopped")
     except CalledProcessError:
