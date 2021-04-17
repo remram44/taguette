@@ -1,6 +1,22 @@
 Changelog
 =========
 
+0.11 (???)
+----------
+
+Bugfixes:
+* Fix timezone issues on some SQL backends (PostgreSQL, not SQLite). Could cause recorded times to be wrong, and in some cases password reset links could be used multiple times
+* Fix the activity detection used to pause/resume polling
+* Fix default-config command outputing logs about umask, which could be piped into the new config file (for example when using Docker with `-t`)
+* Fix migrations on SQLite failing because of foreign key constraints when recreating tables
+
+Enhancements:
+* Show more details when document export or import fails
+* Show the number of highlights per tag in exported codebooks
+* Performance improvement of getting a document or tag with many highlights
+* Add terms of service, which you can optionally set in your own instance
+* Made document/highlights/codebook exporting functions available under `taguette.export`, for use in scripts and notebooks
+
 0.10.1 (2021-02-22)
 -------------------
 
