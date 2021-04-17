@@ -6,14 +6,15 @@ import pkg_resources
 import sqlalchemy
 from markupsafe import Markup
 from sqlalchemy.orm import joinedload
+import uuid
 import xlsxwriter
 from xml.sax.saxutils import XMLGenerator
+from xml.sax.xmlreader import AttributesNSImpl
 
 from . import __version__ as version
 from . import convert
 from . import database
 from . import extract
-from . import refi_qda
 
 
 template_env = jinja2.Environment(
@@ -268,6 +269,9 @@ async def highlighted_document(db, document, ext, *, config, locale):
     return mimetype, contents
 
 
+TAGUETTE_NAMESPACE = uuid.UUID('51B2B2B7-27EB-4ECB-9D56-E75B0A0496C2')
+
+
 def codebook_xml(tags, file):
     """Export a codebook in REFI-QDA format for the given tags.
     """
@@ -283,7 +287,35 @@ def codebook_xml(tags, file):
         )
         output.startDocument()
         output.startPrefixMapping(None, 'urn:QDA-XML:codebook:1.0')
-        refi_qda.write_codebook(tags, output)
+        output.startElementNS(
+            (None, 'CodeBook'), 'CodeBook',
+            AttributesNSImpl({(None, 'origin'): 'Taguette %s' % version},
+                             {(None, 'origin'): 'origin'}),
+        )
+        output.startElementNS(
+            (None, 'Codes'), 'Codes',
+            AttributesNSImpl({}, {}),
+        )
+        for tag in tags:
+            guid = uuid.uuid5(TAGUETTE_NAMESPACE, tag.path)
+            guid = str(guid).upper()
+            output.startElementNS(
+                (None, 'Code'), 'Code',
+                AttributesNSImpl({(None, 'guid'): guid,
+                                  (None, 'name'): tag.path,
+                                  (None, 'isCodable'): 'true'},
+                                 {(None, 'guid'): 'guid',
+                                  (None, 'name'): 'name',
+                                  (None, 'isCodable'): 'isCodable'}),
+            )
+            output.endElementNS((None, 'Code'), 'Code')
+        output.endElementNS((None, 'Codes'), 'Codes')
+        output.startElementNS(
+            (None, 'Sets'), 'Sets',
+            AttributesNSImpl({}, {}),
+        )
+        output.endElementNS((None, 'Sets'), 'Sets')
+        output.endElementNS((None, 'CodeBook'), 'CodeBook')
         output.endPrefixMapping(None)
         output.endDocument()
 
