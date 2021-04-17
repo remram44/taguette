@@ -142,7 +142,7 @@ class Application(tornado.web.Application):
             self.single_user_token = None
             logger.info("Starting in multi-user mode")
             if not self.terms_of_service:
-                logger.warning("Not terms of service set")
+                logger.warning("No terms of service set")
         else:
             self.single_user_token = hmac.new(
                 cookie_secret.encode('utf-8'),
