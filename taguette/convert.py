@@ -470,7 +470,7 @@ for n in html_to_extensions:
 
 def html_to(html, extension, config):
     try:
-        func, mimetype = html_to_extensions[extension]
+        func, mimetype = html_to_extensions[extension.lower()]
     except KeyError:
         raise UnsupportedFormat
     return mimetype, asyncio.ensure_future(func(html, config))
