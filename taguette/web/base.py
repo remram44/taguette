@@ -417,6 +417,23 @@ class BaseHandler(RequestHandler):
         else:
             super(BaseHandler, self).log_exception(typ, value, tb)
 
+    def write_error(self, status_code, **kwargs):
+        if self.settings.get('serve_traceback'):
+            # Debug mode
+            super(BaseHandler, self).write_error(status_code, **kwargs)
+        elif status_code == 404:
+            self.render(
+                'error.html',
+                error_title="Error 404",
+                error_message="This page does not exist.",
+            )
+        else:
+            self.render(
+                'error.html',
+                error_title="Error %d" % status_code,
+                error_message=self._reason,
+            )
+
 
 def _f(message):
     """Pass-through translation function.
