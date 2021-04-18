@@ -1,7 +1,7 @@
-# Translations template for PROJECT.
-# Copyright (C) 2021 ORGANIZATION
-# This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+# Translations template for Taguette.
+# Copyright (C) 2018 Remi Rampin and Taguette contributors
+# This file is distributed under the same license as the Taguette project.
+# Remi Rampin <remi@rampin.org>, 2018.
 #
 #, fuzzy
 msgid ""

@@ -4,7 +4,7 @@ More info: https://manual.calibre-ebook.com/faq.html#how-is-calibre-licensed
 
 -----
 
-Copyright (C) 2018, Remi Rampin
+Copyright (C) 2018, Remi Rampin and Taguette contributors
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
