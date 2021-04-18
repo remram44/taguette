@@ -1,7 +1,7 @@
 # Translations template for the Taguette website.
-# Copyright (C) 2018 Remi Rampin
+# Copyright (C) 2018 Remi Rampin, Vicky Rampin, and contributors
 # This file is distributed under the same license as the Taguette project.
-# Remi Rampin <r@remirampin.com>, 2018.
+# Remi Rampin <remi@rampin.org>, 2018.
 # 
 # Translators:
 # Rémi Rampin <remirampin@gmail.com>, 2021
@@ -10,14 +10,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-02-28 13:25-0500\n"
+"POT-Creation-Date: 2021-04-18 14:20-0400\n"
 "PO-Revision-Date: 2021-03-01 04:12+0000\n"
 "Last-Translator: Rémi Rampin <remirampin@gmail.com>, 2021\n"
 "Language-Team: French (https://www.transifex.com/remram44/teams/98824/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
+"Generated-By: Babel 2.9.0\n"
 "Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
@@ -30,55 +30,55 @@ msgstr ""
 "Taguette est un logiciel d'analyse de contenu qualitatif gratuit et libre"
 
 #. Page title
-#: _layout.html:16 faq.html:4 index.html:4
+#: _layout.html:20 faq.html:4 index.html:4
 msgid "Taguette, the free and opensource qualitative data analysis tool"
 msgstr ""
 "Taguette, le logiciel d'analyse de contenu qualitatif gratuit et libre"
 
-#: _layout.html:33
+#: _layout.html:37
 msgid "Taguette"
 msgstr "Taguette"
 
 #. Screen-reader only indication of the current tab in navbar
-#: _layout.html:42
+#: _layout.html:46
 msgid "(current)"
 msgstr "(actuel)"
 
-#: _layout.html:56
+#: _layout.html:60
 msgid "Home"
 msgstr "Accueil"
 
-#: _layout.html:57
+#: _layout.html:61
 msgid "About"
 msgstr "À propos"
 
-#: _layout.html:58
+#: _layout.html:62
 msgid "Install"
 msgstr "Installation"
 
-#: _layout.html:60
+#: _layout.html:64
 msgid "Guides"
 msgstr "Guides"
 
-#: _layout.html:62
+#: _layout.html:66
 msgid "Getting Started"
 msgstr "Prise en main"
 
-#: _layout.html:63
+#: _layout.html:67
 msgid "Self-Host"
 msgstr "Héberger soi-même"
 
 #. Page title
-#: _layout.html:64 faq.html:4
+#: _layout.html:68 faq.html:4
 msgid "FAQ"
 msgstr "FÀQ"
 
-#: _layout.html:67
+#: _layout.html:71
 #, python-format
 msgid "Try it %(external_icon)s"
-msgstr "Lancer %(external_icon)s"
+msgstr "Utiliser en ligne %(external_icon)s"
 
-#: _layout.html:83
+#: _layout.html:87
 msgid ""
 "Email: <a href=\"mailto:hi@taguette.org\">hi@taguette.org</a> | Mailing-"
 "lists: <a href=\"https://groups.io/g/taguette\">users</a>, <a "
@@ -144,7 +144,7 @@ msgstr "Pourquoi avons-nous créé Taguette ?"
 #: about.html:30
 msgid ""
 "\n"
-"  <p>Qualitative methods generate rich, detailed research materials that leave individuals’ perspectives intact  as well as provide multiple contexts for understanding phenomenon under study. Qualitative methods are used by a wide range of fields, such as anthropology, education, nursing, psychology, sociology, and marketing. Qualitative data has a similarly wide range: observations, interviews, documents, audiovisual materials, and more.</p>\n"
+"  <p>Qualitative methods generate rich, detailed research materials that leave individuals’ perspectives intact as well as provide multiple contexts for understanding phenomenon under study. Qualitative methods are used by a wide range of fields, such as anthropology, education, nursing, psychology, sociology, and marketing. Qualitative data has a similarly wide range: observations, interviews, documents, audiovisual materials, and more.</p>\n"
 "\n"
 "  <p>However - the software options for qualitative researchers are either <strong>far too expensive</strong>, don't allow for the seminal method of highlighting and tagging materials, <em>or actually perform quantitative analysis</em>, just on text.</p>\n"
 "\n"
@@ -307,32 +307,23 @@ msgstr ""
 
 #: faq.html:120
 msgid ""
-"\n"
-"          <p>A mention is always appreciated! If you use Taguette for your research, please cite it with the following:</p>\n"
-"          <p class=\"text-center\">Rémi Rampin, Vicky Rampin, &amp; Sarah DeMott. (2021, February 17). Taguette (Version 0.10.1). Zenodo. <a href=\"https://doi.org/10.5281/zenodo.4560784\">https://doi.org/10.5281/zenodo.4560784</a>.</p>\n"
-"          <p>If you need Bibtex, please use the following:</p>\n"
-"<pre><code>@software{Taguette,\n"
-"  author = {{Rampin, Rémi and Rampin, Vicky and DeMott, Sarah}},\n"
-"  title = {Taguette},\n"
-"  doi = {10.5281/zenodo.4560784},\n"
-"  url = {https://www.taguette.org}\n"
-"  version = {0.10.1},\n"
-"  date = {2021-02-17},\n"
-"  publisher = {Zenodo},\n"
-"  language = {en}\n"
-"}</code></pre>\n"
-"          "
+"A mention is always appreciated! If you use Taguette for your research, "
+"please cite it with the following:"
 msgstr ""
 
-#: faq.html:141
+#: faq.html:122
+msgid "If you need Bibtex, please use the following:"
+msgstr ""
+
+#: faq.html:139
 msgid "Desktop/Single-user Info"
 msgstr "Version personnelle"
 
-#: faq.html:146
+#: faq.html:144
 msgid "Why do you call the desktop version of Taguette 'single user mode'?"
 msgstr "Pourquoi vous appelez la version ordinateur de Taguette \"personnelle\" ?"
 
-#: faq.html:151
+#: faq.html:149
 msgid ""
 "Simply because you cannot collaborate with others using our desktop version "
 "of Taguette! If you want to be able to collaborate, see our <a href=\"self-"
@@ -340,21 +331,21 @@ msgid ""
 "Taguette on a server for multi-user collaboration."
 msgstr ""
 
-#: faq.html:159
+#: faq.html:157
 msgid "Does Taguette work on all operating systems?"
 msgstr "Est-ce que Taguette marche sur tous les systèmes d'exploitation ?"
 
-#: faq.html:164
+#: faq.html:162
 msgid "Yes! You can install Taguette on macOS, Windows, and Linux."
 msgstr "Oui ! Vous pouvez installer Taguette sur macOS, Windows et Linux."
 
-#: faq.html:172
+#: faq.html:170
 msgid "When I use Taguette on my personal computer, where is the data?"
 msgstr ""
 "Quand j'utilise Taguette sur mon ordinateur personnel, où se trouvent les "
 "données ?"
 
-#: faq.html:177
+#: faq.html:175
 msgid ""
 "All your projects and documents are kept in a single database file. On macOS"
 " and Linux, you can find it at "
@@ -362,7 +353,7 @@ msgid ""
 "find it at: <code>My Documents/Taguette/taguette.sqlite3</code>."
 msgstr ""
 
-#: faq.html:185
+#: faq.html:183
 msgid ""
 "SQLite is ok, but I prefer another database system. Can I change what "
 "Taguette uses?"
@@ -370,7 +361,7 @@ msgstr ""
 "SQLite c'est bien, mais je prèfère un autre logiciel de base de données. "
 "Puis-je changer sur que Taguette utilise ?"
 
-#: faq.html:190
+#: faq.html:188
 msgid ""
 "\n"
 "          <p>Yes! On the terminal, use the <code>--database</code> option to change the location of your database or use a different database system. The argument is in the <a href=\"https://docs.sqlalchemy.org/en/13/core/engines.html\">format used by SQLAlchemy</a>, so for instance:</p>\n"
@@ -383,15 +374,15 @@ msgid ""
 "          "
 msgstr ""
 
-#: faq.html:205
+#: faq.html:203
 msgid "Self-hosting/multiuser mode Info"
 msgstr "Héberger soi-même/mode multi-utilisateur"
 
-#: faq.html:210
+#: faq.html:208
 msgid "Can I install Taguette on my own server?"
 msgstr "Puis-je installer Taguette sur mon propre serveur ?"
 
-#: faq.html:215
+#: faq.html:213
 msgid ""
 "Absolutely! We know that putting choice in the hands of our users is what "
 "open source is all about 😊 You can install Taguette on your server via "
@@ -399,7 +390,7 @@ msgid ""
 " instructions on our <a href=\"self-host.html\">self-hosting guide</a>."
 msgstr ""
 
-#: faq.html:223
+#: faq.html:221
 msgid ""
 "I thought I followed the instructions but something went wrong -- what "
 "should I look at first?"
@@ -407,7 +398,7 @@ msgstr ""
 "Je pensais avoir suivi les instructions mais quelque chose est allé de "
 "travers -- où regarder en premier ?"
 
-#: faq.html:228
+#: faq.html:226
 msgid ""
 "\n"
 "          <p>Make sure you have <strong>correctly installed all the dependencies</strong> (via our <a href=\"self-host.html\">self-hosting guide</a>) and have also <strong>edited the configuration file</strong>. We have two sample configurations for you to work from as well: <a href=\"https://gitlab.com/remram44/taguette/blob/master/scripts/dist/server_configs/nginx.conf\">nginx</a> and <a href=\"https://gitlab.com/remram44/taguette/blob/master/scripts/dist/server_configs/apache2.conf\">apache2</a>.</p>\n"
@@ -416,17 +407,17 @@ msgid ""
 "          "
 msgstr ""
 
-#: faq.html:239
+#: faq.html:237
 #, python-format
 msgid "%(hosted_app_link)s Info"
 msgstr "À propos de %(hosted_app_link)s"
 
-#: faq.html:244
+#: faq.html:242
 msgid "What is app.taguette.org?"
 msgstr "C'est quoi app.taguette.org ?"
 
 #. About app.taguette.org
-#: faq.html:249
+#: faq.html:247
 msgid ""
 "It is a version of Taguette hosted on our servers for free use by anyone! We"
 " host this from a rented dedicated server from <a "
@@ -438,13 +429,13 @@ msgstr ""
 "nous louons chez <a href=\"https://www.ovhcloud.com/en/bare-metal/\">OVH</a>"
 " et notre serveur est situé en France."
 
-#: faq.html:257
+#: faq.html:255
 msgid ""
 "What do we need to register for an account, and what do you do with our "
 "account information?"
 msgstr ""
 
-#: faq.html:262
+#: faq.html:260
 msgid ""
 "To use <a href=\"https://app.taguette.org\">app.taguette.org</a>, you need "
 "to register with a username and a password. You can provide an email address"
@@ -453,11 +444,11 @@ msgid ""
 "you into your account."
 msgstr ""
 
-#: faq.html:270
+#: faq.html:268
 msgid "What type of data should I upload to app.taguette.org?"
 msgstr ""
 
-#: faq.html:275
+#: faq.html:273
 msgid ""
 "\n"
 "          <p>TL;DR: do not upload sensitive data (e.g. patient information, student records) to our hosted version of Taguette.</p>\n"
@@ -468,11 +459,11 @@ msgid ""
 "          "
 msgstr ""
 
-#: faq.html:289
+#: faq.html:287
 msgid "Do you back up the data on app.taguette.org?"
 msgstr "Est-ce que vous sauvegardez les données de app.taguette.org ?"
 
-#: faq.html:294
+#: faq.html:292
 msgid ""
 "Yes, we back up <a href=\"https://app.taguette.org\">app.taguette.org</a> "
 "daily and keep those backups for a year. We send backups to a bucket in "
@@ -539,7 +530,7 @@ msgstr ""
 #: getting-started.html:29
 msgid ""
 "Getting started with <span style=\"font-family: BadScript;\">TAGUETTE</span>"
-msgstr "Commencer avec <span style=\"font-family: BadScript;\">TAGUETTE</span>"
+msgstr "Commenter avec <span style=\"font-family: BadScript;\">TAGUETTE</span>"
 
 #: getting-started.html:31
 msgid "<i class=\"far fa-play-circle\"></i> Open Taguette"
@@ -949,31 +940,33 @@ msgstr ""
 "instructions sont <a href=\"#pip\">plus bas</a>."
 
 #. Popup for Windows installation instructions
-#: install.html:24
+#: install.html:25
 msgid "On Windows..."
 msgstr "Sur Windows..."
 
-#: install.html:26
+#: install.html:27
+#, python-format
 msgid ""
 "\n"
-"          <p>Download the EXE file from <a href=\"https://gitlab.com/remram44/taguette/-/tags/v0.10.1\">our latest release page</a>.</p>\n"
+"          <p>Download the EXE file from <a href=\"%(download_page)s\">our latest release page</a>.</p>\n"
 "          <p>Open it, and click through the installer wizard's steps. A \"Taguette\" entry will appear in your Start Menu and on your Desktop, if you selected that option.</p>\n"
 "          "
 msgstr ""
 "\n"
-"          <p>Téléchargez le fichier EXE depuis <a href=\"https://gitlab.com/remram44/taguette/-/tags/v0.10.1\">la page de notre dernière version</a>.</p>\n"
-"          <p>Ouvrez-le et cliquez votre chemin à travers le programme d'installation. Une option \"Taguette\" apparaîtra dans votre menu \"démarrer\" et sur votre bureau, si vous avez sélectionné cette option.</p>\n"
+"          <p>Téléchargez le ficher EXE depuis <a href=\"%(download_page)s\">la page de notre dernière version</a>.</p>\n"
+"          <p>Ouvrez-le et cliquez votre chemin à travers le programme d'installation. Un bouton \"Taguette\" apparaîtra dans votre menu \"démarrer\" et sur votre bureau, si vous avez sélectionné cette option.</p>\n"
 "          "
 
 #. Popup for MacOS installation instructions
-#: install.html:35
+#: install.html:36
 msgid "On macOS..."
 msgstr "Sur macOS..."
 
-#: install.html:37
+#: install.html:38
+#, python-format
 msgid ""
 "\n"
-"          <p>Download the DMG file from <a href=\"https://gitlab.com/remram44/taguette/-/tags/v0.10.1\">our latest release page</a>.</p>\n"
+"          <p>Download the DMG file from <a href=\"%(download_page)s\">our latest release page</a>.</p>\n"
 "          <p><img src=\"imgs/mac-01.png\" width=\"543\" height=\"158\"/></p>\n"
 "          <p>When you open it, you will see a Finder window. You should drag the \"Taguette.app\" file to the \"Applications\" folder.</p>\n"
 "          <p><img src=\"imgs/mac-02.png\" width=\"543\" height=\"158\"/></p>\n"
@@ -984,17 +977,17 @@ msgid ""
 "          "
 msgstr ""
 "\n"
-"          <p>Téléchargez le ficher DMG depuis <a href=\"https://gitlab.com/remram44/taguette/-/tags/v0.10.1\">la page de notre dernière version</a>.</p>\n"
+"          <p>Téléchargez le fichier DMG depuis <a href=\"%(download_page)s\">la page de notre dernière version</a>.</p>\n"
 "          <p><img src=\"imgs/mac-01.png\" width=\"543\" height=\"158\"/></p>\n"
 "          <p>Quand vous l'ouvrez, vous verrez une fenêtre Finder s'ouvrir. Glissez-déposez le fichier \"Taguette.app\" dans le dossier \"Applications\".</p>\n"
 "          <p><img src=\"imgs/mac-02.png\" width=\"543\" height=\"158\"/></p>\n"
-"          <p>Ensuite, double-cliquez sur \"Applications' et faites un clic droit sur \"Taguette.app\" puis choisissez \"Ouvrir\".</p>\n"
+"          <p>Ensuite, double-cliquez sur \"Applications\" et faites un clic droit sur \"Taguette.app\" puis choisissez \"Ouvrir\".</p>\n"
 "          <p><img src=\"imgs/mac-03.png\" width=\"780\" height=\"238\"/></p>\n"
 "          <p><img src=\"imgs/mac-04.png\" width=\"491\" height=\"163\"></p>\n"
 "          <p>Cette dernière opération n'est nécessaire que la première fois. Vous pourrez ensuite ouvrir Taguette depuis le Launchpad ou Spotlight.</p>\n"
 "          "
 
-#: install.html:52
+#: install.html:53
 msgid ""
 "Once you start the application, you will see a terminal window appear. This "
 "is normal! You can ignore it completely and use Taguette from your web "
@@ -1011,11 +1004,11 @@ msgstr ""
 " jusqu'à ce que vous ayez fini d'utiliser Taguette, après quoi vous pouvez "
 "fermer cette fenêtre pour arrêter Taguette."
 
-#: install.html:54
+#: install.html:55
 msgid "Installation using pip"
 msgstr "Installation avec pip"
 
-#: install.html:56
+#: install.html:57
 msgid ""
 "\n"
 "  <p>You first need to install <a href=\"https://www.python.org/downloads/\">Python 3</a> and <a href=\"https://calibre-ebook.com/\">Calibre</a>, the open source e-book management software. Taguette uses a part of Calibre to convert documents into HTML, allowing you to highlight and tag parts of them.</p>\n"
@@ -1027,12 +1020,21 @@ msgid ""
 "  <p>After which you can simply run <code>taguette</code> in the terminal to get it going. You'll see the command line will still be running. This is ok! Don't worry about the terminal, but do leave it running. A browser window should appear, pointing you to <a href=\"http://localhost:7465/\"><code>localhost:7465</code></a>, and you can begin working on your projects!</p>\n"
 "  "
 msgstr ""
+"\n"
+"  <p>Vous devez tout d'abord installer <a href=\"https://www.python.org/downloads/\">Python 3</a> et <a href=\"https://calibre-ebook.com/\">Calibre</a>, le logiciel libre de gestion de livres numériques. Taguette uses utilise une partie de Calibre pour convertir des documents en HTML, ce qui vous permet de les marquer et tagger dans Taguette.</p>\n"
+"\n"
+"  <p>Une fois que vous avez installé Python, vous pouvez installer Taguette avec ses dépendances logicielles depuis la ligne de commandes comme suit :</p>\n"
+"\n"
+"  <pre>pip3 install taguette</pre>\n"
+"\n"
+"  <p>Après quoi vous pouvez simplement entrer <code>taguette</code> dans le terminal pour lancer l'application. Vous verrez que l'activité continue dans le terminal. C'est normal ! Ne vous inquiétez pas du terminal, mais laissez-le ouvert. Une fenêtre de navigateur devrait apparaître, dirigée vers <a href=\"http://localhost:7465/\"><code>localhost:7465</code></a>, et vous pouvez commencer à travailler sur vos projets !</p>\n"
+"  "
 
-#: install.html:66
+#: install.html:67
 msgid "Development set-up"
 msgstr "Configuration pour le développement"
 
-#: install.html:68
+#: install.html:69
 msgid ""
 "\n"
 "  <p>You can also install from a local clone of this repository, which will allow you to easily change the sources to suit your needs:</p>\n"
@@ -1048,14 +1050,27 @@ msgid ""
 "  </ol>\n"
 "  "
 msgstr ""
+"\n"
+"  <p>Vous pouvez aussi installer depuis un clone de ce dépôt, ce qui vous permettra de modifier les sources facilement pour correspondre à vos besoins :</p>\n"
+"\n"
+"  <ol>\n"
+"    <li>Clonez ce dépôt git depuis le terminal : <code>git clone https://gitlab.com/remram44/taguette.git</code></li>\n"
+"    <li>Naviguez en utilisant la ligne de commande vers le dépôt que vous venez de cloner localement, en utilisant la commande <code>cd</code>. Pour plus d'information sur l'utilisation de <code>cd</code>, référez-vous à <a href=\"https://swcarpentry.github.io/shell-novice/02-filedir/index.html\">ce tutoriel</a>.</li>\n"
+"    <li>Taguette utilise <a href=\"https://python-poetry.org/\">Poetry</a> pour son empaquetage et la gestion de ses dépendances logicielles. Vous devrez <a href=\"https://python-poetry.org/docs/#installation\">installer Poetry</a></li>\n"
+"    <li>Installez Taguette et ses dépendances en entrant <code>poetry install</code>. Il est recommendé d'utiliser <a href=\"https://docs.python-guide.org/dev/virtualenvs/\">virtualenv</a> si possible.</li>\n"
+"    <li>Compilez les traductions en entrant <code>scripts/update_translations.sh</code>.</li>\n"
+"    <li>Vous pouvez lancer Taguette en mode développement en entrant <code>taguette --debug</code>. Ceci initialisera Tornado en mode de débogage, ce qui signifie en particulier qu'il redémarrera à chaque fois que vous faites un changement.</li>\n"
+"    <li>Naviguez vers <a href=\"http://localhost:7465/\"><code>localhost:7465</code></a> pour utiliser Taguette !</li>\n"
+"  </ol>\n"
+"  "
 
-#: install.html:82
+#: install.html:83
 msgid ""
 "Learn about using Taguette at our <a href=\"getting-started.html\">getting "
 "started</a> page!"
 msgstr ""
 "Pour en savoir plus sur son utilisation, voir notre page <a href=\"getting-"
-"started.html\">commencer avec Taguette</a> !"
+"started.html\">prise en main</a> !"
 
 #. Page title
 #: self-host.html:4
@@ -1089,7 +1104,7 @@ msgstr "En utilisant Docker"
 msgid ""
 "\n"
 "  <p>If you so choose, you can simply run the <a href=\"https://quay.io/repository/remram44/taguette\"><code>quay.io/remram44/taguette</code> Docker image</a>. You will be prompted for an 'admin' password the first time. You can persist the data by mounting a volume over <code>/data</code>, like so:</p>\n"
-"  <pre>docker run -ti --rm quay.io/remram44/taguette default-config &gt;/srv/taguette/taguette.conf\n"
+"  <pre>docker run --rm quay.io/remram44/taguette default-config &gt;/srv/taguette/taguette.conf\n"
 "edit /srv/taguette/taguette.conf  # Edit configuration file, see below\n"
 "docker run -ti -p 80:7465 -v /srv/taguette:/data --restart=always quay.io/remram44/taguette server /data/taguette.conf</pre>\n"
 "  "
@@ -1125,7 +1140,7 @@ msgstr "Fichier de configuration"
 #: self-host.html:48
 msgid ""
 "\n"
-"  <p>In either case, running the server requires a configuration file. This file contains important information, such as email server and addresses, the port number to listen on, whether registration of new accounts is enabled, etc.</p>\n"
+"  <p>In either case, running the server requires a configuration file. This file contains important information, such as email server and addresses, the port number to listen on, which database to use, whether registration of new accounts is enabled, etc.</p>\n"
 "  <p>You can make Taguette print a configuration file for you to edit using <code>taguette default-config</code>.</p>\n"
 "  <p>You might want to change the <code>PORT</code> to <code>80</code>, or better yet configure a webserver to act as a proxy, see below.</p>\n"
 "  "
