@@ -1,59 +1,78 @@
-# Translations template for PROJECT.
-# Copyright (C) 2020 ORGANIZATION
-# This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+# Translations template for the Taguette website.
+# Copyright (C) 2018 Remi Rampin, Vicky Rampin, and contributors
+# This file is distributed under the same license as the Taguette project.
+# Remi Rampin <remi@rampin.org>, 2018.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-10-13 22:20-0400\n"
+"POT-Creation-Date: 2021-04-18 14:20-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
+"Generated-By: Babel 2.9.0\n"
 
 #. HTML description
 #: _layout.html:6
-msgid "An open qualitative research tool"
+msgid ""
+"Taguette is a free an opensource text tagging tool for qualitative data "
+"analysis and qualitative research"
 msgstr ""
 
 #. Page title
-#: _layout.html:12 faq.html:4 index.html:4
+#: _layout.html:20 faq.html:4 index.html:4
 msgid "Taguette, the free and opensource qualitative data analysis tool"
 msgstr ""
 
-#: _layout.html:29
+#: _layout.html:37
 msgid "Taguette"
 msgstr ""
 
 #. Screen-reader only indication of the current tab in navbar
-#: _layout.html:38
+#: _layout.html:46
 msgid "(current)"
 msgstr ""
 
-#: _layout.html:52
+#: _layout.html:60
 msgid "Home"
 msgstr ""
 
-#: _layout.html:53
+#: _layout.html:61
 msgid "About"
 msgstr ""
 
-#: _layout.html:54
+#: _layout.html:62
 msgid "Install"
 msgstr ""
 
-#: _layout.html:63
+#: _layout.html:64
+msgid "Guides"
+msgstr ""
+
+#: _layout.html:66
+msgid "Getting Started"
+msgstr ""
+
+#: _layout.html:67
+msgid "Self-Host"
+msgstr ""
+
+#. Page title
+#: _layout.html:68 faq.html:4
+msgid "FAQ"
+msgstr ""
+
+#: _layout.html:71
 #, python-format
 msgid "Try it %(external_icon)s"
 msgstr ""
 
-#: _layout.html:79
+#: _layout.html:87
 msgid ""
 "Email: <a href=\"mailto:hi@taguette.org\">hi@taguette.org</a> | Mailing-"
 "lists: <a href=\"https://groups.io/g/taguette\">users</a>, <a "
@@ -114,7 +133,7 @@ msgstr ""
 msgid ""
 "\n"
 "  <p>Qualitative methods generate rich, detailed research materials that "
-"leave individuals’ perspectives intact  as well as provide multiple "
+"leave individuals’ perspectives intact as well as provide multiple "
 "contexts for understanding phenomenon under study. Qualitative methods "
 "are used by a wide range of fields, such as anthropology, education, "
 "nursing, psychology, sociology, and marketing. Qualitative data has a "
@@ -141,7 +160,7 @@ msgstr ""
 
 #: about.html:42
 msgid ""
-"Taguette was developed by Rémi Rampin. Vicky Steeves and Sarah DeMott "
+"Taguette was developed by Rémi Rampin. Vicky Rampin and Sarah DeMott "
 "provided the functional requirements, user needs, and testing in order to"
 " influence the development process."
 msgstr ""
@@ -156,11 +175,6 @@ msgstr ""
 
 #: about.html:50
 msgid "Trainer &amp; User Liaison"
-msgstr ""
-
-#. Page title
-#: faq.html:4
-msgid "FAQ"
 msgstr ""
 
 #: faq.html:9
@@ -287,36 +301,23 @@ msgstr ""
 
 #: faq.html:120
 msgid ""
-"\n"
-"          <p>A mention is always appreciated! If you use Taguette for "
-"your research, please cite it with the following:</p>\n"
-"          <p class=\"text-center\"> Rémi Rampin, Vicky Steeves, &amp; "
-"Sarah DeMott. (2020, August 26). Taguette (Version 0.9.2). Zenodo. <a "
-"href=\"https://doi.org/10.5281/zenodo.4002742\">https://doi.org/10.5281/zenodo.4002742</a>.</p>"
-"\n"
-"          <p>If you need Bibtex, please use the following:</p>\n"
-"<pre><code>@software{Taguette,\n"
-"  author = {{Rampin, Rémi and Steeves, Vicky and DeMott, Sarah}},\n"
-"  title = {Taguette},\n"
-"  doi = {10.5281/10.5281/zenodo.4002742},\n"
-"  url = {https://www.taguette.org}\n"
-"  version = {0.9.2},\n"
-"  date = {2020-08-26},\n"
-"  publisher = {Zenodo},\n"
-"  language = {en}\n"
-"}</code></pre>\n"
-"          "
+"A mention is always appreciated! If you use Taguette for your research, "
+"please cite it with the following:"
 msgstr ""
 
-#: faq.html:141
+#: faq.html:122
+msgid "If you need Bibtex, please use the following:"
+msgstr ""
+
+#: faq.html:139
 msgid "Desktop/Single-user Info"
 msgstr ""
 
-#: faq.html:146
+#: faq.html:144
 msgid "Why do you call the desktop version of Taguette 'single user mode'?"
 msgstr ""
 
-#: faq.html:151
+#: faq.html:149
 msgid ""
 "Simply because you cannot collaborate with others using our desktop "
 "version of Taguette! If you want to be able to collaborate, see our <a "
@@ -324,19 +325,19 @@ msgid ""
 " to install Taguette on a server for multi-user collaboration."
 msgstr ""
 
-#: faq.html:159
+#: faq.html:157
 msgid "Does Taguette work on all operating systems?"
 msgstr ""
 
-#: faq.html:164
+#: faq.html:162
 msgid "Yes! You can install Taguette on macOS, Windows, and Linux."
 msgstr ""
 
-#: faq.html:172
+#: faq.html:170
 msgid "When I use Taguette on my personal computer, where is the data?"
 msgstr ""
 
-#: faq.html:177
+#: faq.html:175
 msgid ""
 "All your projects and documents are kept in a single database file. On "
 "macOS and Linux, you can find it at "
@@ -344,13 +345,13 @@ msgid ""
 "can find it at: <code>My Documents/Taguette/taguette.sqlite3</code>."
 msgstr ""
 
-#: faq.html:185
+#: faq.html:183
 msgid ""
 "SQLite is ok, but I prefer another database system. Can I change what "
 "Taguette uses?"
 msgstr ""
 
-#: faq.html:190
+#: faq.html:188
 msgid ""
 "\n"
 "          <p>Yes! On the terminal, use the <code>--database</code> option"
@@ -375,15 +376,15 @@ msgid ""
 "          "
 msgstr ""
 
-#: faq.html:205
+#: faq.html:203
 msgid "Self-hosting/multiuser mode Info"
 msgstr ""
 
-#: faq.html:210
+#: faq.html:208
 msgid "Can I install Taguette on my own server?"
 msgstr ""
 
-#: faq.html:215
+#: faq.html:213
 msgid ""
 "Absolutely! We know that putting choice in the hands of our users is what"
 " open source is all about 😊 You can install Taguette on your server via "
@@ -392,13 +393,13 @@ msgid ""
 "guide</a>."
 msgstr ""
 
-#: faq.html:223
+#: faq.html:221
 msgid ""
 "I thought I followed the instructions but something went wrong -- what "
 "should I look at first?"
 msgstr ""
 
-#: faq.html:228
+#: faq.html:226
 msgid ""
 "\n"
 "          <p>Make sure you have <strong>correctly installed all the "
@@ -417,31 +418,31 @@ msgid ""
 "          "
 msgstr ""
 
-#: faq.html:239
+#: faq.html:237
 #, python-format
 msgid "%(hosted_app_link)s Info"
 msgstr ""
 
-#: faq.html:244
+#: faq.html:242
 msgid "What is app.taguette.org?"
 msgstr ""
 
 #. About app.taguette.org
-#: faq.html:249
+#: faq.html:247
 msgid ""
 "It is a version of Taguette hosted on our servers for free use by anyone!"
 " We host this from a rented dedicated server from <a "
-"href=\"https://www.ovh.com/world/dedicated-servers/\">OVH</a>, and our "
+"href=\"https://www.ovhcloud.com/en/bare-metal/\">OVH</a>, and our "
 "server's location is in France."
 msgstr ""
 
-#: faq.html:257
+#: faq.html:255
 msgid ""
 "What do we need to register for an account, and what do you do with our "
 "account information?"
 msgstr ""
 
-#: faq.html:262
+#: faq.html:260
 msgid ""
 "To use <a href=\"https://app.taguette.org\">app.taguette.org</a>, you "
 "need to register with a username and a password. You can provide an email"
@@ -450,11 +451,11 @@ msgid ""
 "it to log you into your account."
 msgstr ""
 
-#: faq.html:270
+#: faq.html:268
 msgid "What type of data should I upload to app.taguette.org?"
 msgstr ""
 
-#: faq.html:275
+#: faq.html:273
 msgid ""
 "\n"
 "          <p>TL;DR: do not upload sensitive data (e.g. patient "
@@ -482,11 +483,11 @@ msgid ""
 "          "
 msgstr ""
 
-#: faq.html:289
+#: faq.html:287
 msgid "Do you back up the data on app.taguette.org?"
 msgstr ""
 
-#: faq.html:294
+#: faq.html:292
 msgid ""
 "Yes, we back up <a href=\"https://app.taguette.org\">app.taguette.org</a>"
 " daily and keep those backups for a year. We send backups to a bucket in "
@@ -577,8 +578,8 @@ msgid ""
 "href=\"http://localhost:7465\"><code>localhost:7465</code></a> to begin "
 "working on your projects! It should look something like this:</p>\n"
 "\n"
-"      <img src=\"imgs/01-welcome.png\" class=\"img-fluid border border-"
-"dark\">\n"
+"      <img src=\"imgs/01-welcome.png\" width=\"1125\" height=\"341\" "
+"class=\"img-fluid border border-dark\">\n"
 "      "
 msgstr ""
 
@@ -594,8 +595,8 @@ msgid ""
 " be prompted to enter a Title and Description for your new project. This "
 "can be changed later on if you want.</p>\n"
 "\n"
-"      <img src=\"imgs/02-createProj.png\" class=\"img-fluid border "
-"border-dark mb-2\">\n"
+"      <img src=\"imgs/02-createProj.png\" width=\"1164\" height=\"365\" "
+"class=\"img-fluid border border-dark mb-2\">\n"
 "\n"
 "      <p>Upon clicking <strong>Create</strong>, you'll be taken the "
 "<strong>Project View</strong>, which has a left and a right pane. The "
@@ -605,8 +606,8 @@ msgid ""
 "right pane will render documents and will be the area where you'll do the"
 " highlighting and tagging.</p>\n"
 "\n"
-"      <img src=\"imgs/03-projectInfo.png\" class=\"img-fluid border "
-"border-dark mb-2\">\n"
+"      <img src=\"imgs/03-projectInfo.png\" width=\"1160\" height=\"278\" "
+"class=\"img-fluid border border-dark mb-2\">\n"
 "      "
 msgstr ""
 
@@ -625,8 +626,8 @@ msgid ""
 "<code>.txt</code>, <code>.odt</code>, <code>.md</code>, or "
 "<code>.html</code>.</p>\n"
 "\n"
-"      <img src=\"imgs/04-viewDocs.png\" class=\"img-fluid border border-"
-"dark mb-2\">\n"
+"      <img src=\"imgs/04-viewDocs.png\" width=\"1160\" height=\"206\" "
+"class=\"img-fluid border border-dark mb-2\">\n"
 "\n"
 "      <p>Just one file to be uploaded. You'll be prompted to give the new"
 " document a Name (should be something human-readable, required) and "
@@ -634,8 +635,8 @@ msgid ""
 "a document and at least given it a name, click the "
 "<strong>Import</strong> button.</p>\n"
 "\n"
-"      <img src=\"imgs/05-uploadDoc.png\" class=\"img-fluid border border-"
-"dark mb-2\">\n"
+"      <img src=\"imgs/05-uploadDoc.png\" width=\"797\" height=\"327\" "
+"class=\"img-fluid border border-dark mb-2\">\n"
 "\n"
 "      <p>You should then see that file immediately in the Documents tab. "
 "If not, just refresh the page and it should be shown then. If you cannot "
@@ -668,8 +669,8 @@ msgid ""
 "href=\"https://gitlab.com/remram44/taguette/-/tree/master/po\">https://gitlab.com/remram44/taguette/-/tree/master/po</a>.</p>"
 "\n"
 "\n"
-"      <img src=\"imgs/language.png\" class=\"img-fluid border border-dark"
-" mb-2\">\n"
+"      <img src=\"imgs/language.png\" width=\"1151\" height=\"519\" class"
+"=\"img-fluid border border-dark mb-2\">\n"
 "      "
 msgstr ""
 
@@ -687,8 +688,8 @@ msgid ""
 "should see a grey button labeled <strong>Manage "
 "Collaborators</strong>:</p>\n"
 "\n"
-"      <img src=\"imgs/projectCollab.png\" class=\"img-fluid border "
-"border-dark mb-2\">\n"
+"      <img src=\"imgs/projectCollab.png\" width=\"473\" height=\"478\" "
+"class=\"img-fluid border border-dark mb-2\">\n"
 "\n"
 "      <p>Click that and you should get a modal with the option to add and"
 " remove collaborators, as well as change their permissions on the "
@@ -697,8 +698,8 @@ msgid ""
 " you've fully added your collaborator, next click <strong>Save & "
 "Close</strong>.</p>\n"
 "\n"
-"      <img src=\"imgs/addCollabs.png\" class=\"img-fluid border border-"
-"dark mb-2\">\n"
+"      <img src=\"imgs/addCollabs.png\" width=\"8010\" height=\"338\" "
+"class=\"img-fluid border border-dark mb-2\">\n"
 "\n"
 "      <p>You can add collaborators with the following permissions:</p>\n"
 "      "
@@ -767,8 +768,8 @@ msgid ""
 "tags you have and a count of the number of times you have highlighted "
 "your materials with a given tag.</p>\n"
 "\n"
-"      <img src=\"imgs/06-viewTags.png\" class=\"img-fluid border border-"
-"dark mb-2\">\n"
+"      <img src=\"imgs/06-viewTags.png\" width=\"1514\" height=\"558\" "
+"class=\"img-fluid border border-dark mb-2\">\n"
 "\n"
 "      <p>You should see a list of existing tags for the project - again, "
 "if you haven't added any yet, you will still see "
@@ -776,8 +777,8 @@ msgid ""
 "<strong>Create a tag</strong>. You will get a popup asking you for the "
 "Name and Description of the tag you want to create:</p>\n"
 "\n"
-"      <img src=\"imgs/07-addTag.png\" class=\"img-fluid border border-"
-"dark mb-2\">\n"
+"      <img src=\"imgs/07-addTag.png\" width=\"499\" height=\"292\" class"
+"=\"img-fluid border border-dark mb-2\">\n"
 "\n"
 "      <p>You might have noticed that I used the tag "
 "<code>tech.floss</code> and you might be wondering why I used that "
@@ -807,8 +808,8 @@ msgid ""
 " tag, its description, or you can click the grey <strong>Delete</strong> "
 "button next to the blue <strong>Save &amp; Close</strong> button.</p>\n"
 "\n"
-"      <img src=\"imgs/08-changeTag.png\" class=\"img-fluid border border-"
-"dark mb-2\">\n"
+"      <img src=\"imgs/08-changeTag.png\" width=\"493\" height=\"288\" "
+"class=\"img-fluid border border-dark mb-2\">\n"
 "      "
 msgstr ""
 
@@ -828,8 +829,8 @@ msgid ""
 "tags</strong>, then all the highlights for the first tag be moved to the "
 "second tag.</p>\n"
 "\n"
-"      <img src=\"imgs/merge-tag.png\" class=\"img-fluid border border-"
-"dark mb-2\">\n"
+"      <img src=\"imgs/merge-tag.png\" width=\"498\" height=\"310\" class"
+"=\"img-fluid border border-dark mb-2\">\n"
 "      "
 msgstr ""
 
@@ -845,30 +846,30 @@ msgid ""
 "right pane. Once you see the text in the right pane, we can start "
 "highlighting it!</p>\n"
 "\n"
-"      <img src=\"imgs/09-viewDocContents.png\" class=\"img-fluid border "
-"border-dark mb-2\">\n"
+"      <img src=\"imgs/09-viewDocContents.png\" width=\"1160\" "
+"height=\"281\" class=\"img-fluid border border-dark mb-2\">\n"
 "\n"
 "      <p>Select some text by left-clicking and dragging it over the text "
 "you'd like to highlight. Once you let go of your left-click, a pop-up "
 "that says <strong>new highlight</strong> will appear next to the "
 "highlighted text. </p>\n"
 "\n"
-"      <img src=\"imgs/10-highlightText.png\" class=\"img-fluid border "
-"border-dark mb-2\">\n"
+"      <img src=\"imgs/10-highlightText.png\" width=\"1025\" "
+"height=\"100\" class=\"img-fluid border border-dark mb-2\">\n"
 "\n"
 "      <p>Click that pop-up, and you will get a list of existing tags from"
 " which to choose. You can select one or more tags to apply to the "
 "highlighted text.</p>\n"
 "\n"
-"      <img src=\"imgs/11-addHighlight.png\" class=\"img-fluid border "
-"border-dark mb-2\">\n"
+"      <img src=\"imgs/11-addHighlight.png\" width=\"499\" height=\"418\" "
+"class=\"img-fluid border border-dark mb-2\">\n"
 "\n"
 "      <p>If you want to add a tag instead of using one that already "
 "exists, then simply click <strong>Create a tag</strong>, and you'll be "
 "sent to the same popup where made tags earlier.</p>\n"
 "\n"
-"      <img src=\"imgs/12-createNewFromHL.png\" class=\"img-fluid border "
-"border-dark mb-2\">\n"
+"      <img src=\"imgs/12-createNewFromHL.png\" width=\"511\" "
+"height=\"419\" class=\"img-fluid border border-dark mb-2\">\n"
 "\n"
 "      <p>Once you make your tag, you'll be dropped back into the popup "
 "above where you should select a tag for the highlighted text. After "
@@ -900,8 +901,8 @@ msgid ""
 " associated tags with a black badge. The tag on the left pane will also "
 "be highlighted:</p>\n"
 "\n"
-"      <img src=\"imgs/13-viewQuotes.png\" class=\"img-fluid border "
-"border-dark mb-2\">\n"
+"      <img src=\"imgs/13-viewQuotes.png\" width=\"1879\" height=\"646\" "
+"class=\"img-fluid border border-dark mb-2\">\n"
 "\n"
 "      <p>If you want to see all the highlighted text for <em>all "
 "documents</em> and <em>all tags</em>, click <strong>See all "
@@ -909,16 +910,16 @@ msgid ""
 " the document where they originated from and all their associated tags "
 "with a black badge:</p>\n"
 "\n"
-"      <img src=\"imgs/14-seeAllHighlights.png\" class=\"img-fluid border "
-"border-dark mb-2\">\n"
+"      <img src=\"imgs/14-seeAllHighlights.png\" width=\"1160\" "
+"height=\"370\" class=\"img-fluid border border-dark mb-2\">\n"
 "\n"
 "      <p>You can also view the document with all its highlights by "
 "navigating to the <strong>Documents</strong> tab in the left pane. Then "
 "just click on the document you wish to view, and if you've highlighted "
 "it, you should see:</p>\n"
 "\n"
-"      <img src=\"imgs/15-viewHighlightedDoc.png\" class=\"img-fluid "
-"border border-dark mb-2\">\n"
+"      <img src=\"imgs/15-viewHighlightedDoc.png\" width=\"1160\" "
+"height=\"187\" class=\"img-fluid border border-dark mb-2\">\n"
 "\n"
 "      <p>If you hover your mouse over a highlighted section of text, you "
 "will see tags in a tooltip to the right of your mouse cursor. To explore "
@@ -928,8 +929,8 @@ msgid ""
 "highlighted text to make the highlighted text really pop. We found this "
 "to be a nice view for exploring the texts differently:</p>\n"
 "\n"
-"      <img src=\"imgs/16-backlight.png\" class=\"img-fluid border border-"
-"dark mb-2\">\n"
+"      <img src=\"imgs/16-backlight.png\" width=\"1160\" height=\"236\" "
+"class=\"img-fluid border border-dark mb-2\">\n"
 "      "
 msgstr ""
 
@@ -949,8 +950,8 @@ msgid ""
 "<code>DOCX</code> (Microsoft Word), <code>HTML</code>, and "
 "<code>PDF</code>.</p>\n"
 "\n"
-"      <img src=\"imgs/17-exportCodebook.png\" class=\"img-fluid border "
-"border-dark mb-2\">\n"
+"      <img src=\"imgs/17-exportCodebook.png\" width=\"462\" "
+"height=\"610\" class=\"img-fluid border border-dark mb-2\">\n"
 "\n"
 "      <p>To export all the associated highlights for a given tag, first "
 "navigate to the <strong>Highlights</strong> tab in the left pane, and "
@@ -962,16 +963,16 @@ msgid ""
 "with all the highlights, right now you won't be able to tell from that "
 "doc which tags go with the highlights.</p>\n"
 "\n"
-"      <img src=\"imgs/18-exportTag.png\" class=\"img-fluid border border-"
-"dark mb-2\">\n"
+"      <img src=\"imgs/18-exportTag.png\" width=\"1887\" height=\"627\" "
+"class=\"img-fluid border border-dark mb-2\">\n"
 "\n"
 "      <p>You will see all the highlighted text for the particular tag "
 "with information about each highlight right underneath it -- which "
 "document it came from, and which tags are associated with it. This is how"
 " it looks with the <code>DOCX</code> export:</p>\n"
 "\n"
-"      <img src=\"imgs/19-exportTagEX.png\" class=\"img-fluid border "
-"border-dark mb-2\">\n"
+"      <img src=\"imgs/19-exportTagEX.png\" width=\"1160\" height=\"513\" "
+"class=\"img-fluid border border-dark mb-2\">\n"
 "\n"
 "      <p>To export all the tags with all associated highlights, first "
 "navigate to the <strong>Highlights</strong> tab in the left pane, and "
@@ -980,16 +981,16 @@ msgid ""
 "right pane. Again, you will have a choice of <code>HTML</code>, "
 "<code>DOCX</code>, or <code>PDF</code>.</p>\n"
 "\n"
-"      <img src=\"imgs/20-exportAllTags.png\" class=\"img-fluid border "
-"border-dark mb-2\">\n"
+"      <img src=\"imgs/20-exportAllTags.png\" width=\"1160\" "
+"height=\"370\" class=\"img-fluid border border-dark mb-2\">\n"
 "\n"
 "      <p>You will see all the highlighted text for all tags with "
 "information about it -- which document it came from, and which tags are "
 "associated with it. This is how it looks with the <code>DOCX</code> "
 "export:</p>\n"
 "\n"
-"      <img src=\"imgs/21-exportAllTagEX.png\" class=\"img-fluid border "
-"border-dark mb-2\">\n"
+"      <img src=\"imgs/21-exportAllTagEX.png\" width=\"1160\" "
+"height=\"528\" class=\"img-fluid border border-dark mb-2\">\n"
 "\n"
 "      <p>To export the document that you've highlighted, first navigate "
 "to the <strong>Documents</strong> tab in the left pane, and click on the "
@@ -998,16 +999,16 @@ msgid ""
 "Again, you will have a choice of <code>HTML</code>, <code>DOCX</code>, or"
 " <code>PDF</code>.</p>\n"
 "\n"
-"      <img src=\"imgs/22-exportDoc.png\" class=\"img-fluid border border-"
-"dark mb-2\">\n"
+"      <img src=\"imgs/22-exportDoc.png\" width=\"1160\" height=\"499\" "
+"class=\"img-fluid border border-dark mb-2\">\n"
 "\n"
 "      <p>While you will see the document with all the highlights, right "
 "now you won't be able to tell which tags go with the highlights, but we "
 "are working on that feature to make this export more useful. This is how "
 "it looks with the <code>DOCX</code> export:</p>\n"
 "\n"
-"      <img src=\"imgs/23-exportDocEXs.png\" class=\"img-fluid border "
-"border-dark mb-2\">\n"
+"      <img src=\"imgs/23-exportDocEXs.png\" width=\"1160\" height=\"542\""
+" class=\"img-fluid border border-dark mb-2\">\n"
 "      "
 msgstr ""
 
@@ -1125,16 +1126,16 @@ msgid ""
 msgstr ""
 
 #. Popup for Windows installation instructions
-#: install.html:24
+#: install.html:25
 msgid "On Windows..."
 msgstr ""
 
-#: install.html:26
+#: install.html:27
+#, python-format
 msgid ""
 "\n"
-"          <p>Download the EXE file from <a "
-"href=\"https://gitlab.com/remram44/taguette/-/tags/v0.9.2\">our latest "
-"release page</a>.</p>\n"
+"          <p>Download the EXE file from <a href=\"%(download_page)s\">our"
+" latest release page</a>.</p>\n"
 "          <p>Open it, and click through the installer wizard's steps. A "
 "\"Taguette\" entry will appear in your Start Menu and on your Desktop, if"
 " you selected that option.</p>\n"
@@ -1142,30 +1143,34 @@ msgid ""
 msgstr ""
 
 #. Popup for MacOS installation instructions
-#: install.html:35
+#: install.html:36
 msgid "On macOS..."
 msgstr ""
 
-#: install.html:37
+#: install.html:38
+#, python-format
 msgid ""
 "\n"
-"          <p>Download the DMG file from <a "
-"href=\"https://gitlab.com/remram44/taguette/-/tags/v0.9.2\">our latest "
-"release page</a>.</p>\n"
-"          <p><img src=\"imgs/mac-01.png\"></p>\n"
+"          <p>Download the DMG file from <a href=\"%(download_page)s\">our"
+" latest release page</a>.</p>\n"
+"          <p><img src=\"imgs/mac-01.png\" width=\"543\" "
+"height=\"158\"/></p>\n"
 "          <p>When you open it, you will see a Finder window. You should "
 "drag the \"Taguette.app\" file to the \"Applications\" folder.</p>\n"
-"          <p><img src=\"imgs/mac-02.png\"></p>\n"
+"          <p><img src=\"imgs/mac-02.png\" width=\"543\" "
+"height=\"158\"/></p>\n"
 "          <p>Then double-click on \"Applications\", and right-click on "
 "\"Taguette.app\" and choose \"Open\".</p>\n"
-"          <p><img src=\"imgs/mac-03.png\"></p>\n"
-"          <p><img src=\"imgs/mac-04.png\"></p>\n"
+"          <p><img src=\"imgs/mac-03.png\" width=\"780\" "
+"height=\"238\"/></p>\n"
+"          <p><img src=\"imgs/mac-04.png\" width=\"491\" "
+"height=\"163\"></p>\n"
 "          <p>You will only have to do this the first time. After this, "
 "you will be able to start Taguette from the Launchpad or Spotlight.</p>\n"
 "          "
 msgstr ""
 
-#: install.html:52
+#: install.html:53
 msgid ""
 "Once you start the application, you will see a terminal window appear. "
 "This is normal! You can ignore it completely and use Taguette from your "
@@ -1176,11 +1181,11 @@ msgid ""
 "stop Taguette."
 msgstr ""
 
-#: install.html:54
+#: install.html:55
 msgid "Installation using pip"
 msgstr ""
 
-#: install.html:56
+#: install.html:57
 msgid ""
 "\n"
 "  <p>You first need to install <a "
@@ -1203,11 +1208,11 @@ msgid ""
 "  "
 msgstr ""
 
-#: install.html:66
+#: install.html:67
 msgid "Development set-up"
 msgstr ""
 
-#: install.html:68
+#: install.html:69
 msgid ""
 "\n"
 "  <p>You can also install from a local clone of this repository, which "
@@ -1240,7 +1245,7 @@ msgid ""
 "  "
 msgstr ""
 
-#: install.html:82
+#: install.html:83
 msgid ""
 "Learn about using Taguette at our <a href=\"getting-"
 "started.html\">getting started</a> page!"
@@ -1287,7 +1292,7 @@ msgid ""
 " Docker image</a>. You will be prompted for an 'admin' password the first"
 " time. You can persist the data by mounting a volume over "
 "<code>/data</code>, like so:</p>\n"
-"  <pre>docker run -ti --rm quay.io/remram44/taguette default-config "
+"  <pre>docker run --rm quay.io/remram44/taguette default-config "
 "&gt;/srv/taguette/taguette.conf\n"
 "edit /srv/taguette/taguette.conf  # Edit configuration file, see below\n"
 "docker run -ti -p 80:7465 -v /srv/taguette:/data --restart=always "
@@ -1319,44 +1324,53 @@ msgid ""
 "edit taguette.conf  # Edit configuration file, see below\n"
 "taguette --no-browser server taguette.conf</pre>\n"
 "\n"
-"  <p>This will start the server on port 80. In practice, you should "
-"configure a webserver (for example <a "
-"href=\"https://nginx.org/\">nginx</a> or <a "
-"href=\"https://httpd.apache.org/\">Apache</a>, see <a "
-"href=\"https://gitlab.com/remram44/taguette/tree/master/scripts/dist/server_configs\">example"
-" configuration</a>) to act as a proxy between the users and Taguette, and"
-" provide encryption using TLS (for example using <a "
-"href=\"https://letsencrypt.org/\">Let's Encrypt</a>, free).</p>\n"
 "  "
 msgstr ""
 
-#: self-host.html:47
+#: self-host.html:46
 msgid "Configuration file"
 msgstr ""
 
-#: self-host.html:49
+#: self-host.html:48
 msgid ""
 "\n"
 "  <p>In either case, running the server requires a configuration file. "
 "This file contains important information, such as email server and "
-"addresses, the port number to listen on, whether registration of new "
-"accounts is enabled, etc.</p>\n"
+"addresses, the port number to listen on, which database to use, whether "
+"registration of new accounts is enabled, etc.</p>\n"
+"  <p>You can make Taguette print a configuration file for you to edit "
+"using <code>taguette default-config</code>.</p>\n"
 "  <p>You might want to change the <code>PORT</code> to <code>80</code>, "
-"or better yet configure a webserver (such as <a "
-"href=\"https://nginx.org/\">nginx</a> or <a "
-"href=\"https://httpd.apache.org/\">Apache</a>, see <a "
-"href=\"https://gitlab.com/remram44/taguette/tree/master/scripts/dist/server_configs\">example"
-" configuration</a>) to act as a proxy between the users and Taguette, and"
-" provide encryption using TLS (for example using <a "
-"href=\"https://letsencrypt.org/\">Let's Encrypt</a>, free).</p>\n"
+"or better yet configure a webserver to act as a proxy, see below.</p>\n"
 "  "
 msgstr ""
 
 #: self-host.html:54
-msgid "Database"
+msgid "Using a proxy server"
 msgstr ""
 
 #: self-host.html:56
+msgid ""
+"\n"
+"  <p>For performance or security reasons, or simply because you want to "
+"host multiple sites on your machine, you might want to put a webserver "
+"(such as <a href=\"https://nginx.org/\">nginx</a> or <a "
+"href=\"https://httpd.apache.org/\">Apache</a>) in front of Taguette. That"
+" server will then simply relay connections to Taguette (a setup we call "
+"reverse proxy). You can use it to provide encryption using TLS "
+"(recommended) for example using <a "
+"href=\"https://letsencrypt.org/\">Let's Encrypt</a>, free.</p>\n"
+"  <p>To help with this this, we provide <a "
+"href=\"https://gitlab.com/remram44/taguette/tree/master/scripts/dist/server_configs\">example"
+" configuration files</a> that you can use.</p>\n"
+"  "
+msgstr ""
+
+#: self-host.html:61
+msgid "Database"
+msgstr ""
+
+#: self-host.html:63
 msgid ""
 "\n"
 "  <p>The <code>DATABASE</code> setting should be a SQLAlchemy connection "
