@@ -1,5 +1,6 @@
 import aiohttp
 import asyncio
+import contextlib
 from datetime import datetime
 import functools
 import itertools
@@ -9,6 +10,7 @@ import random
 import re
 import sqlalchemy
 from sqlalchemy.orm import close_all_sessions
+import subprocess
 import string
 import tempfile
 import textwrap
@@ -276,14 +278,37 @@ class MyHTTPTestCase(AsyncHTTPTestCase):
             timeout=3,
         )
 
-    def _fetch(self, url, method='GET', **kwargs):
+    @contextlib.asynccontextmanager
+    async def _fetch(self, url, method='GET', validate_html=None, **kwargs):
+        if validate_html is None:
+            validate_html = not url.startswith('/api')
+
         # Copied from tornado.testing.AsyncHTTPTestCase.fetch()
         if not url.lower().startswith(('http://', 'https://')):
             url = self.get_url(url)
-        return getattr(self.http_client, method.lower())(url, **kwargs)
+        func = getattr(self.http_client, method.lower())
+        response = await func(url, **kwargs)
 
-    def aget(self, url):
-        return self._fetch(url, allow_redirects=False)
+        # Validate HTML
+        if validate_html and not (300 <= response.status < 400):
+            with tempfile.NamedTemporaryFile('wb') as tmp:
+                tmp.write(await response.read())
+                tmp.flush()
+                subprocess.check_call([
+                    'tidy', '-errors', '-quiet',
+                    '--drop-empty-elements', 'no',
+                    tmp.name,
+                ])
+
+        async with response as res:
+            yield res
+
+    def aget(self, url, validate_html=None):
+        return self._fetch(
+            url,
+            allow_redirects=False,
+            validate_html=validate_html,
+        )
 
     def apost(self, url, **kwargs):
         cookies = self.http_client.cookie_jar.filter_cookies(self.get_url('/'))
@@ -814,7 +839,10 @@ class TestMultiuser(MyHTTPTestCase):
             )
 
         # Export document 2 to unknown format
-        async with self.aget('/project/2/export/document/2.dat') as response:
+        async with self.aget(
+            '/project/2/export/document/2.dat',
+            validate_html=False,
+        ) as response:
             self.assertEqual(response.status, 404)
             self.assertEqual(response.headers['Content-Type'], 'text/plain')
             self.assertEqual(
@@ -867,6 +895,7 @@ class TestMultiuser(MyHTTPTestCase):
         # Export highlights in project 2 under 'interesting' to CSV
         async with self.aget(
             '/project/2/export/highlights/interesting.csv',
+            validate_html=False,
         ) as response:
             self.assertEqual(response.status, 200)
             self.assertEqual(
@@ -880,7 +909,10 @@ class TestMultiuser(MyHTTPTestCase):
             )
 
         # Export codebook of project 2 to CSV
-        async with self.aget('/project/2/export/codebook.csv') as response:
+        async with self.aget(
+            '/project/2/export/codebook.csv',
+            validate_html=False,
+        ) as response:
             self.assertEqual(response.status, 200)
             self.assertEqual(
                 response.headers['Content-Type'],
@@ -933,7 +965,10 @@ class TestMultiuser(MyHTTPTestCase):
             )
 
         # Export codebook of project 2 to REFI-QDA
-        async with self.aget('/project/2/export/codebook.qdc') as response:
+        async with self.aget(
+            '/project/2/export/codebook.qdc',
+            validate_html=False,
+        ) as response:
             self.assertEqual(response.status, 200)
             self.assertEqual(
                 response.headers['Content-Type'],
@@ -1416,7 +1451,10 @@ class TestMultiuser(MyHTTPTestCase):
 
         # Export project
         db2_path = os.path.join(tmp, 'db.sqlite3')
-        async with self.aget('/project/2/export/project.sqlite3') as response:
+        async with self.aget(
+            '/project/2/export/project.sqlite3',
+            validate_html=False,
+        ) as response:
             self.assertEqual(response.status, 200)
             self.assertEqual(response.headers['Content-Type'],
                              'application/vnd.sqlite3')
