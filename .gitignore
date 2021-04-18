@@ -1,3 +1,9 @@
+# SQLite database files
+*.sqlite3
+
+# Configuration file
+taguette.conf
+
 # Python
 *.py[co]
 .ipynb_checkpoints
