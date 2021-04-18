@@ -18,13 +18,14 @@
 
   <p>{% trans %}Taguette works on macOS, Windows, and Linux. The installers for macOS and Windows include Python, Taguette, and Calibre, so you don't need to install anything else. For Linux, the easiest way to install Taguette is to use <code>pip</code>, and those instructions are <a href="#pip">below</a>.{% endtrans %}</p>
 
+  {% set download_page %}https://gitlab.com/remram44/taguette/-/tags/v0.10.1{% endset %}
   <ul>
     <li class="list-unstyled">
       <details>
         <summary><strong>{# TRANSLATORS: Popup for Windows installation instructions #}{% trans %}On Windows...{% endtrans %}</strong></summary>
         <div class="alert alert-dark">
           {% trans %}
-          <p>Download the EXE file from <a href="https://gitlab.com/remram44/taguette/-/tags/v0.10.1">our latest release page</a>.</p>
+          <p>Download the EXE file from <a href="{{ download_page }}">our latest release page</a>.</p>
           <p>Open it, and click through the installer wizard's steps. A "Taguette" entry will appear in your Start Menu and on your Desktop, if you selected that option.</p>
           {% endtrans %}
         </div>
@@ -35,7 +36,7 @@
           <summary><strong>{# TRANSLATORS: Popup for MacOS installation instructions #}{% trans %}On macOS...{% endtrans %}</strong></summary>
         <div class="alert alert-dark">
           {% trans %}
-          <p>Download the DMG file from <a href="https://gitlab.com/remram44/taguette/-/tags/v0.10.1">our latest release page</a>.</p>
+          <p>Download the DMG file from <a href="{{ download_page }}">our latest release page</a>.</p>
           <p><img src="imgs/mac-01.png" width="543" height="158"/></p>
           <p>When you open it, you will see a Finder window. You should drag the "Taguette.app" file to the "Applications" folder.</p>
           <p><img src="imgs/mac-02.png" width="543" height="158"/></p>
