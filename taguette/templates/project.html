@@ -67,7 +67,7 @@
         <div class="tab-pane fade show active" id="documents" role="tabpanel" aria-labelledby="documents-tab">
           <div class="row">
             <div class="col-md-12">
-              <button class="btn btn-primary float-right mb-3"><a href="javascript:createDocument()">{% trans %}Add a document{% endtrans %}</a></button>
+              <a class="btn btn-primary float-right mb-3" href="javascript:createDocument()">{% trans %}Add a document{% endtrans %}</a>
             </div>
           </div>
           <ul class="list-group list-group-flush" id="documents-list">
@@ -80,8 +80,8 @@
         <div class="tab-pane fade" id="tags" role="tabpanel" aria-labelledby="tags-tab">
           <div class="row">
             <div class="col-md-12 mb-3">
-              <button id="load-all-tags" class="btn btn-primary float-right ml-2"><a href="/project/{{ project.id }}/highlights/">{% trans %}See all highlights{% endtrans %}</a></button>
-              <button class="btn btn-primary float-right"><a href="javascript:createTag()">{% trans %}Create a tag{% endtrans %}</a></button>
+              <a id="load-all-tags" class="btn btn-primary float-right ml-2" href="/project/{{ project.id }}/highlights/">{% trans %}See all highlights{% endtrans %}</a>
+              <a class="btn btn-primary float-right" href="javascript:createTag()">{% trans %}Create a tag{% endtrans %}</a>
             </div>
           </div>
           <ul class="list-group list-group-flush" id="tags-list">
