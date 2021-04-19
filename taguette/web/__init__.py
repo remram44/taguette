@@ -5,7 +5,7 @@ import logging
 from markupsafe import Markup
 import pkg_resources
 from tornado.routing import URLSpec
-from tornado.web import ErrorHandler, HTTPError
+from tornado.web import HTTPError
 
 from .base import Application, BaseHandler
 from . import api, export, views
@@ -50,8 +50,17 @@ class MessagesJs(BaseHandler):
                                  messages=Markup(messages))
 
 
-class CustomErrorHandler(ErrorHandler, BaseHandler):
-    pass
+class Error404(BaseHandler):
+    def initialize(self):
+        self.set_status(404)
+
+    def prepare(self):
+        self.render(
+            'error.html',
+            error_title="Error 404",
+            error_message="This page does not exist.",
+        )
+        raise HTTPError(404)
 
 
 def make_app(config, debug=False, xsrf_cookies=True):
@@ -135,6 +144,5 @@ def make_app(config, debug=False, xsrf_cookies=True):
         xsrf_cookies=xsrf_cookies,
         debug=debug,
         config=config,
-        default_handler_class=CustomErrorHandler,
-        default_handler_args={"status_code": 404},
+        default_handler_class=Error404,
     )
