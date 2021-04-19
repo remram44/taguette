@@ -571,7 +571,7 @@ def connect(db_url):
 
     if db_url.startswith('sqlite:'):
         sqlalchemy.event.listen(
-            sqlalchemy.engine.Engine,
+            engine,
             "connect",
             set_sqlite_pragma,
         )
