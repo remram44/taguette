@@ -700,7 +700,7 @@ class ImportProject(BaseHandler):
 
     async def _list_projects(self, filename):
         # Connect to the database
-        src_db = database.connect('sqlite:///%s' % filename)()
+        src_db = database.connect('sqlite:///%s' % filename, external=True)()
 
         # List projects
         projects = src_db.execute(database.Project.__table__.select())
@@ -722,7 +722,7 @@ class ImportProject(BaseHandler):
 
     async def _import_project(self, filename, project_id):
         # Connect to the database
-        src_db = database.connect('sqlite:///%s' % filename)()
+        src_db = database.connect('sqlite:///%s' % filename, external=True)()
 
         # Copy data
         new_project_id = database.copy_project(

@@ -625,7 +625,7 @@ def no_sqlite_pragma_check():
         taguette.database.set_sqlite_pragma.enabled = True
 
 
-def connect(db_url):
+def connect(db_url, *, external=False):
     """Connect to the database using an environment variable.
     """
     logger.info("Connecting to SQL database %r", db_url)
@@ -641,6 +641,22 @@ def connect(db_url):
             "connect",
             set_sqlite_pragma,
         )
+
+        # https://www.sqlite.org/security.html#untrusted_sqlite_database_files
+        if external:
+            logger.info("Database is not trusted")
+
+            @sqlalchemy.event.listens_for(engine, "connect")
+            def secure(dbapi_connection, connection_record):
+                cursor = dbapi_connection.cursor()
+                cursor.execute("PRAGMA trusted_schema=OFF")
+                cursor.close()
+
+            conn = engine.connect()
+            conn.execute('PRAGMA quick_check')
+            conn.execute('PRAGMA cell_size_check=ON')
+            conn.execute('PRAGMA mmap_size=0')
+            conn.close()
 
     alembic_cfg = alembic.config.Config()
     alembic_cfg.set_main_option('script_location', 'taguette:migrations')
@@ -666,20 +682,25 @@ def connect(db_url):
             logger.warning("Database schema is out of date: %s", current_rev)
             _ = taguette.trans.gettext
             if db_url.startswith('sqlite:'):
-                print(_("\n    The database schema used by Taguette has "
+                if not external:
+                    print(_(
+                        "\n    The database schema used by Taguette has "
                         "changed! We will try to\n    update your workspace "
                         "automatically.\n"), file=sys.stderr, flush=True)
-                assert db_url.startswith('sqlite:///')
-                assert os.path.exists(db_url[10:])
-                backup = db_url[10:] + '.bak'
-                shutil.copy2(db_url[10:], backup)
-                logger.warning("Performing automated update, backup file: %s",
-                               backup)
-                print(_("\n    A backup copy of your database file has been "
-                        "created. If the update\n    goes horribly wrong, "
-                        "make sure to keep that file, and let us know:\n    "
-                        "%(backup)s\n") % dict(backup=backup),
-                      file=sys.stderr, flush=True)
+                    assert db_url.startswith('sqlite:///')
+                    assert os.path.exists(db_url[10:])
+                    backup = db_url[10:] + '.bak'
+                    shutil.copy2(db_url[10:], backup)
+                    logger.warning(
+                        "Performing automated update, backup file: %s", backup,
+                    )
+                    print(
+                        _("\n    A backup copy of your database file has been "
+                          "created. If the update\n    goes horribly wrong, "
+                          "make sure to keep that file, and let us know:\n    "
+                          "%(backup)s\n") % dict(backup=backup),
+                        file=sys.stderr, flush=True,
+                    )
                 alembic.command.upgrade(alembic_cfg, 'head')
             else:
                 print(_("\n    The database schema used by Taguette has "
