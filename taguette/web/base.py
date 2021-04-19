@@ -431,7 +431,7 @@ class BaseHandler(RequestHandler):
             self.render(
                 'error.html',
                 error_title="Error %d" % status_code,
-                error_message=self._reason,
+                error_message=self._reason + ".",
             )
 
 
