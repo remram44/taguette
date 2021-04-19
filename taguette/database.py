@@ -266,9 +266,11 @@ class Command(Base):
             PROM_COMMAND.labels(kwargs['payload']['type']).inc()
         super(Command, self).__init__(**kwargs)
 
-    for n in ['project_meta', 'document_add', 'document_delete',
-              'highlight_add', 'highlight_delete', 'tag_add', 'tag_delete',
-              'tag_merge', 'member_add', 'member_remove']:
+    TYPES = {'project_meta', 'document_add', 'document_delete',
+             'highlight_add', 'highlight_delete', 'tag_add', 'tag_delete',
+             'tag_merge', 'member_add', 'member_remove'}
+
+    for n in TYPES:
         PROM_COMMAND.labels(n).inc(0)
 
     @classmethod
