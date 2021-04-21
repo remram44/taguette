@@ -418,6 +418,9 @@ class BaseHandler(RequestHandler):
             super(BaseHandler, self).log_exception(typ, value, tb)
 
     def write_error(self, status_code, **kwargs):
+        # If database session has failed, can't use it to render the error
+        self.close_db_connection()
+
         if self.settings.get('serve_traceback'):
             # Debug mode
             super(BaseHandler, self).write_error(status_code, **kwargs)
