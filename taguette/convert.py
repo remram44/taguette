@@ -120,7 +120,7 @@ else:
             try:
                 retcode = await asyncio.wait_for(proc.wait(), timeout=timeout)
             except asyncio.TimeoutError:
-                logger.error(
+                logger.warning(
                     "Process didn't finish before %ds timeout: %r",
                     timeout, cmd,
                 )
@@ -202,8 +202,8 @@ async def calibre_to_html(input_filename, output_dir, config):
         try:
             await check_call(cmd_heuristics, config['CONVERT_TO_HTML_TIMEOUT'])
         except asyncio.TimeoutError:
-            logger.error("Calibre timed out, trying again without "
-                         "heuristics...")
+            logger.warning("Calibre timed out, trying again without "
+                           "heuristics...")
             try:
                 await check_call(cmd, config['CONVERT_TO_HTML_TIMEOUT'])
             except asyncio.TimeoutError:
@@ -309,8 +309,11 @@ async def calibre_to_html(input_filename, output_dir, config):
         logger.info("Reading in %r", output_name)
         size += os.stat(output_filename).st_size
         if size > config['HTML_OUT_SIZE_LIMIT']:
-            logger.error("File is %d bytes for a total of %d bytes; aborting",
-                         os.stat(output_filename).st_size, size)
+            logger.warning(
+                "File is %d bytes for a total of %d bytes; aborting",
+                os.stat(output_filename).st_size,
+                size,
+            )
             raise ConversionError("Output file is too long")
         with open(output_filename, 'rb') as fp:
             output.append(get_html_body(fp.read()))
