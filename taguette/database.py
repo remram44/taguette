@@ -137,7 +137,7 @@ class Project(Base):
                             passive_deletes=True)
     documents = relationship('Document', cascade='all,delete-orphan',
                              passive_deletes=True)
-    tags = relationship('Tag', cascade='all,delete-orphan',
+    tags = relationship('Tag', cascade='all,delete-orphan', order_by='Tag.id',
                         passive_deletes=True)
     groups = relationship('Group', cascade='all,delete-orphan',
                           passive_deletes=True)
