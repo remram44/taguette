@@ -64,8 +64,8 @@ taguette --no-browser server taguette.conf</pre>
   <p>The <code>DATABASE</code> setting should be a SQLAlchemy connection string. For example, you can use:</p>
   <ul>
     <li>a SQLite database file (note the 4 slashes): <code>sqlite:////srv/taguette/taguette.sqlite3</code></li>
-    <li>a PostgreSQL database: <code>postgresql://user:secretpassword@localhost/taguette</code></li>
-    <li>a MariaDB database (<a href="https://gitlab.com/remram44/taguette/-/merge_requests/84">MySQL currently doesn't work</a>): <code>mysql+pymysql://user:secretpassword@localhost/taguette</code></li>
+    <li>a PostgreSQL database: <code>postgresql://user:secretpassword@localhost/taguette</code> (you need to <code>pip install psycopg2-binary</code>)</li>
+    <li>a MariaDB database (<a href="https://gitlab.com/remram44/taguette/-/merge_requests/84">MySQL currently doesn't work</a>): <code>mysql+pymysql://user:secretpassword@localhost/taguette</code> (you need to <code>pip install pymysql cryptography</code>)</li>
     <li>... or any of the <a href="https://docs.sqlalchemy.org/en/13/core/engines.html">other databases supported by SQLAlchemy</a>. Note that we don't test any other database, so you might run into issues.</li>
   </ul>
   {% endtrans %}
