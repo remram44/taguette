@@ -65,8 +65,7 @@ taguette --no-browser server taguette.conf</pre>
   <ul>
     <li>a SQLite database file (note the 4 slashes): <code>sqlite:////srv/taguette/taguette.sqlite3</code></li>
     <li>a PostgreSQL database: <code>postgresql://user:secretpassword@localhost/taguette</code></li>
-    <li>a MySQL or MariaDB database: <code>mysql://user:secretpassword@localhost/taguette</code></li>
-    <li>... or any of the <a href="https://docs.sqlalchemy.org/en/13/core/engines.html">other databases supported by SQLAlchemy</a></li>
+    <li>... or any of the <a href="https://docs.sqlalchemy.org/en/13/core/engines.html">other databases supported by SQLAlchemy</a>. Note that we don't test any other database, so you might run into issues; <a href="https://gitlab.com/remram44/taguette/-/merge_requests/84">MySQL is currently known not to work</a>.</li>
   </ul>
   {% endtrans %}
 </div>
