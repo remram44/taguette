@@ -54,6 +54,8 @@ def user_email(email):
         raise InvalidFormat(_f("Email cannot be empty"))  # but it can be NULL
     if '@' not in email:
         raise InvalidFormat(_f("Invalid email address"))
+    if len(email) > 256:
+        raise InvalidFormat(_f("Email address is too long"))
 
 
 def user_password(password):
