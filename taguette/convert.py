@@ -208,6 +208,8 @@ async def calibre_to_html(input_filename, output_dir, config):
                 await check_call(cmd, config['CONVERT_TO_HTML_TIMEOUT'])
             except asyncio.TimeoutError:
                 raise ConversionError("Calibre took too long and was stopped")
+    except OSError:
+        raise ConversionError("Calibre is not available")
     except CalledProcessError:
         raise ConversionError("Calibre couldn't convert that file")
     logger.info("ebook-convert successful")
@@ -420,6 +422,8 @@ async def calibre_from_html(html, extension, config):
         logger.info("Running: %s", ' '.join(cmd))
         try:
             await check_call(cmd, config['CONVERT_FROM_HTML_TIMEOUT'])
+        except OSError:
+            raise ConversionError("Calibre is not available")
         except CalledProcessError:
             raise ConversionError("Calibre couldn't convert that file")
         except asyncio.TimeoutError:
