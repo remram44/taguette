@@ -51,7 +51,7 @@ Base = declarative_base(metadata=meta)
 class JSON(TypeDecorator):
     """Platform-independent JSON type.
     """
-    impl = String
+    impl = Text
 
     def process_bind_param(self, value, dialect):
         return json.dumps(value, sort_keys=True)
@@ -63,13 +63,13 @@ class JSON(TypeDecorator):
 class User(Base):
     __tablename__ = 'users'
 
-    login = Column(String, primary_key=True)
+    login = Column(String(30), primary_key=True)
     created = Column(DateTime, nullable=False,
                      default=lambda: datetime.utcnow())
-    hashed_password = Column(String, nullable=True)
+    hashed_password = Column(String(120), nullable=True)
     password_set_date = Column(DateTime, nullable=True)
-    language = Column(String, nullable=True)
-    email = Column(String, nullable=True, index=True, unique=True)
+    language = Column(String(10), nullable=True)
+    email = Column(String(256), nullable=True, index=True, unique=True)
     email_sent = Column(DateTime, nullable=True)
     projects = relationship('Project', secondary='project_members')
 
@@ -128,7 +128,7 @@ class Project(Base):
     __table_args__ = {'sqlite_autoincrement': True}
 
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
+    name = Column(String(200), nullable=False)
     description = Column(Text, nullable=False)
     created = Column(DateTime, nullable=False,
                      default=lambda: datetime.utcnow())
@@ -137,7 +137,7 @@ class Project(Base):
                             passive_deletes=True)
     documents = relationship('Document', cascade='all,delete-orphan',
                              passive_deletes=True)
-    tags = relationship('Tag', cascade='all,delete-orphan',
+    tags = relationship('Tag', cascade='all,delete-orphan', order_by='Tag.id',
                         passive_deletes=True)
     groups = relationship('Group', cascade='all,delete-orphan',
                           passive_deletes=True)
@@ -193,7 +193,7 @@ class ProjectMember(Base):
     project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
                         primary_key=True, index=True)
     project = relationship('Project')
-    user_login = Column(String,
+    user_login = Column(String(30),
                         ForeignKey('users.login',
                                    ondelete='CASCADE', onupdate='CASCADE'),
                         primary_key=True, index=True)
@@ -214,9 +214,9 @@ class Document(Base):
     __table_args__ = {'sqlite_autoincrement': True}
 
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
+    name = Column(String(200), nullable=False)
     description = Column(Text, nullable=False)
-    filename = Column(String, nullable=True)
+    filename = Column(String(200), nullable=True)
     created = Column(DateTime, nullable=False,
                      default=lambda: datetime.utcnow())
     project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
@@ -244,7 +244,7 @@ class Command(Base):
     id = Column(Integer, primary_key=True)
     date = Column(DateTime, nullable=False,
                   default=datetime.utcnow(), index=True)
-    user_login = Column(String,
+    user_login = Column(String(30),
                         ForeignKey('users.login', onupdate='CASCADE'),
                         nullable=False)
     user = relationship('User')
@@ -445,7 +445,7 @@ class Group(Base):
                         nullable=False, index=True)
     project = relationship('Project')
 
-    path = Column(String, nullable=False, index=True)
+    path = Column(String(200), nullable=False, index=True)
     description = Column(Text, nullable=False)
 
     __table_args__ = (
@@ -491,7 +491,7 @@ class Tag(Base):
                         nullable=False, index=True)
     project = relationship('Project')
 
-    path = Column(String, nullable=False, index=True)
+    path = Column(String(200), nullable=False, index=True)
     description = Column(Text, nullable=False)
 
     __table_args__ = (
