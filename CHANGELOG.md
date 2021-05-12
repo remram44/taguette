@@ -16,6 +16,10 @@ Enhancements:
 * Performance improvement of getting a document or tag with many highlights
 * Add terms of service, which you can optionally set in your own instance
 * Made document/highlights/codebook exporting functions available under `taguette.export`, for use in scripts and notebooks
+* Improve button placement in the left panel (put "add a document" and "create a tag" at the top)
+* Add an HTML page for 404 errors
+* Improve error message when Calibre is not found
+* Add support for MariaDB (MySQL doesn't work because of error 1093, see https://stackoverflow.com/q/4429319)
 
 0.10.1 (2021-02-22)
 -------------------
