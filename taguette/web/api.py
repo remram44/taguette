@@ -77,7 +77,7 @@ class ProjectMeta(BaseHandler):
             obj = self.get_json()
             validate.project_name(obj['name'])
             project.name = obj['name']
-            validate.project_description(obj['description'])
+            validate.description(obj['description'])
             project.description = obj['description']
             logger.info("Updated project: %r %r",
                         project.name, project.description)
@@ -108,7 +108,7 @@ class DocumentAdd(BaseHandler):
             name = self.get_body_argument('name')
             validate.document_name(name)
             description = self.get_body_argument('description')
-            validate.document_description(description)
+            validate.description(description)
             try:
                 file = self.request.files['file'][0]
             except (KeyError, IndexError):
@@ -166,7 +166,7 @@ class DocumentUpdate(BaseHandler):
                     validate.document_name(obj['name'])
                     document.name = obj['name']
                 if 'description' in obj:
-                    validate.document_description(obj['description'])
+                    validate.description(obj['description'])
                     document.description = obj['description']
                 cmd = database.Command.document_add(
                     self.current_user,
@@ -241,7 +241,7 @@ class TagAdd(BaseHandler):
         try:
             obj = self.get_json()
             validate.tag_path(obj['path'])
-            validate.tag_description(obj['description'])
+            validate.description(obj['description'])
             tag = database.Tag(project=project,
                                path=obj['path'],
                                description=obj['description'])
@@ -283,7 +283,7 @@ class TagUpdate(BaseHandler):
                     validate.tag_path(obj['path'])
                     tag.path = obj['path']
                 if 'description' in obj:
-                    validate.tag_description(obj['description'])
+                    validate.description(obj['description'])
                     tag.description = obj['description']
                 cmd = database.Command.tag_add(
                     self.current_user,

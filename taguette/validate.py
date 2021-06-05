@@ -16,16 +16,16 @@ class InvalidFormat(HTTPError):
         return "InvalidFormat(%r, %d)" % (self.message, self.status_code)
 
 
+def description(descr):
+    if len(descr) > 102400:
+        raise InvalidFormat(_f("Description is too long"))
+
+
 def project_name(name):
     if not name:
         raise InvalidFormat(_f("Project name cannot be empty"))
     if len(name) > 50:
         raise InvalidFormat(_f("Project name is too long"))
-
-
-def project_description(description):
-    if len(description) > 102400:
-        raise InvalidFormat(_f("Project description is too long"))
 
 
 ALLOWED_LOGIN_CHARACTERS_NEW = (
@@ -72,21 +72,11 @@ def document_name(name):
         raise InvalidFormat(_f("Document name is too long"))
 
 
-def document_description(description):
-    if len(description) > 102400:
-        raise InvalidFormat(_f("Document description is too long"))
-
-
 def tag_path(path):
     if not path:
         raise InvalidFormat(_f("Tag path cannot be empty"))
     if len(path) > 200:
         raise InvalidFormat(_f("Tag path is too long"))
-
-
-def tag_description(description):
-    if len(description) > 102400:
-        raise InvalidFormat(_f("Tag description is too long"))
 
 
 _windows_device_files = ('CON', 'AUX', 'COM1', 'COM2', 'COM3', 'COM4', 'LPT1',

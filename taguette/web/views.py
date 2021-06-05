@@ -409,7 +409,7 @@ class ProjectAdd(BaseHandler):
         description = self.get_body_argument('description', '')
         try:
             validate.project_name(name)
-            validate.project_description(description)
+            validate.description(description)
 
             # Create project
             project = database.Project(name=name, description=description)
