@@ -3,7 +3,6 @@ import alembic.config
 from alembic.runtime.migration import MigrationContext
 from alembic.script import ScriptDirectory
 import binascii
-from collections import defaultdict
 import contextlib
 from datetime import datetime
 import enum
@@ -26,6 +25,7 @@ from sqlalchemy.types import DateTime, Enum, Integer, String, Text
 import sys
 
 import taguette
+from taguette import validate
 
 
 logger = logging.getLogger(__name__)
@@ -238,6 +238,14 @@ class Document(Base):
         )
 
 
+def command_fields(columns, payload_fields):
+    def wrapper(func):
+        func.columns = columns
+        func.payload_fields = payload_fields
+        return func
+    return wrapper
+
+
 class Command(Base):
     __tablename__ = 'commands'
     __table_args__ = ({'sqlite_autoincrement': True},)
@@ -275,6 +283,10 @@ class Command(Base):
         PROM_COMMAND.labels(n).inc(0)
 
     @classmethod
+    @command_fields(
+        columns=['project_id'],
+        payload_fields=['project_name', 'description'],
+    )
     def project_meta(cls, user_login, project_id, name, description):
         return cls(
             user_login=user_login,
@@ -285,6 +297,10 @@ class Command(Base):
         )
 
     @classmethod
+    @command_fields(
+        columns=['project_id', 'document_id'],
+        payload_fields=['document_name', 'description'],
+    )
     def document_add(cls, user_login, document):
         return cls(
             user_login=user_login,
@@ -296,6 +312,10 @@ class Command(Base):
         )
 
     @classmethod
+    @command_fields(
+        columns=['project_id', 'document_id'],
+        payload_fields=[],
+    )
     def document_delete(cls, user_login, document):
         assert isinstance(document, Document)
         return cls(
@@ -306,6 +326,12 @@ class Command(Base):
         )
 
     @classmethod
+    @command_fields(
+        columns=['project_id', 'document_id'],
+        payload_fields=[
+            'highlight_id', 'start_offset', 'end_offset', 'tags',
+        ],
+    )
     def highlight_add(cls, user_login, document, highlight, tags):
         assert isinstance(highlight.id, int)
         return cls(
@@ -320,6 +346,10 @@ class Command(Base):
         )
 
     @classmethod
+    @command_fields(
+        columns=['project_id', 'document_id'],
+        payload_fields=['highlight_id'],
+    )
     def highlight_delete(cls, user_login, document, highlight_id):
         assert isinstance(highlight_id, int)
         return cls(
@@ -331,6 +361,10 @@ class Command(Base):
         )
 
     @classmethod
+    @command_fields(
+        columns=['project_id'],
+        payload_fields=['tag_id', 'tag_path', 'description'],
+    )
     def tag_add(cls, user_login, tag):
         assert isinstance(tag, Tag)
         return cls(
@@ -343,6 +377,10 @@ class Command(Base):
         )
 
     @classmethod
+    @command_fields(
+        columns=['project_id'],
+        payload_fields=['tag_id'],
+    )
     def tag_delete(cls, user_login, project_id, tag_id):
         assert isinstance(project_id, int)
         assert isinstance(tag_id, int)
@@ -354,6 +392,10 @@ class Command(Base):
         )
 
     @classmethod
+    @command_fields(
+        columns=['project_id'],
+        payload_fields=['src_tag_id', 'dest_tag_id'],
+    )
     def tag_merge(cls, user_login, project_id, tag_src, tag_dest):
         assert isinstance(project_id, int)
         assert isinstance(tag_src, int)
@@ -367,6 +409,10 @@ class Command(Base):
         )
 
     @classmethod
+    @command_fields(
+        columns=['project_id'],
+        payload_fields=['member', 'privileges'],
+    )
     def member_add(cls, user_login, project_id, member_login, privileges):
         assert isinstance(project_id, int)
         assert isinstance(privileges, Privileges)
@@ -379,6 +425,10 @@ class Command(Base):
         )
 
     @classmethod
+    @command_fields(
+        columns=['project_id'],
+        payload_fields=['member'],
+    )
     def member_remove(cls, user_login, project_id, member_login):
         assert isinstance(project_id, int)
         return cls(
@@ -389,6 +439,10 @@ class Command(Base):
         )
 
     @classmethod
+    @command_fields(
+        columns=['project_id'],
+        payload_fields=[],
+    )
     def project_import(cls, user_login, project_id):
         assert isinstance(project_id, int)
         return cls(
@@ -658,6 +712,21 @@ def migrate(db_url, revision):
     alembic.command.upgrade(alembic_cfg, revision)
 
 
+class DefaultMap(object):
+    def __init__(self, default, mapping):
+        self.__default = default
+        self.mapping = mapping
+
+    def get(self, key):
+        try:
+            return self.mapping[key]
+        except KeyError:
+            return self.__default(key)
+
+    def __getitem__(self, key):
+        return self.get(key)
+
+
 def copy_project(
     src_db, dest_db,
     project_id, user_login,
@@ -733,32 +802,78 @@ def copy_project(
     def transform_command(cmd):
         payload = cmd['payload']
 
-        def m(mapping, key):
-            payload[key] = mapping.get(payload[key], payload[key])
-
-        if payload['type'] == 'highlight_add':
-            m(mapping_highlights, 'highlight_id')
-            payload['tags'] = [mapping_tags.get(t, t) for t in payload['tags']]
-        elif payload['type'] == 'highlight_delete':
-            m(mapping_highlights, 'highlight_id')
-        elif payload['type'] == 'tag_add':
-            m(mapping_tags, 'tag_id')
-        elif payload['type'] == 'tag_delete':
-            m(mapping_tags, 'tag_id')
-        elif payload['type'] == 'tag_merge':
-            m(mapping_tags, 'src_tag_id')
-            m(mapping_tags, 'dest_tag_id')
-        elif payload['type'] not in Command.TYPES:
+        if payload['type'] not in Command.TYPES:
             raise ValueError("Unknown command %r" % payload['type'])
+
+        method = getattr(Command, payload['type'])
+        expected_columns = (
+            set(method.columns)
+            | {'date', 'user_login', 'payload'}
+        )
+        expected_payload_fields = set(method.payload_fields) | {'type'}
+
+        # Check that the right columns are set
+        if {k for k, v in cmd.items() if v is not None} != expected_columns:
+            raise ValueError("Command doesn't have expected columns")
+
+        # Check that the right JSON fields are set
+        if payload.keys() != expected_payload_fields:
+            raise ValueError("Command doesn't have expected fields")
+
+        # Map an ID, using negative ID if it's unknown
+        def mv(mapping, value):
+            return mapping.get(value, -abs(value))
+
+        field_validators = dict(
+            type=lambda v: True,  # Already checked above
+            description=validate.description,
+            project_name=validate.project_name,
+            document_name=validate.document_name,
+            highlight_id=lambda v: isinstance(v, int),
+            start_offset=lambda v: isinstance(v, int) and v > 0,
+            end_offset=lambda v: isinstance(v, int) and v > 0,
+            tags=lambda v: (
+                isinstance(v, list)
+                and all(isinstance(e, int) for e in v)
+            ),
+            tag_id=lambda v: isinstance(v, int),
+            tag_path=validate.tag_path,
+            src_tag_id=lambda v: isinstance(v, int),
+            dest_tag_id=lambda v: isinstance(v, int),
+            member=validate.user_login,
+            privileges=lambda v: v in Privileges.__members__,
+        )
+
+        field_transformers = dict(
+            highlight_id=lambda v: mv(mapping_highlights, v),
+            tag_id=lambda v: mv(mapping_tags, v),
+            src_tag_id=lambda v: mv(mapping_tags, v),
+            tags=lambda tags: [mv(mapping_tags, t) for t in tags],
+        )
+
+        # Map JSON fields
+        for field, value in list(payload.items()):
+            try:
+                if not field_validators[field](value):
+                    raise ValueError("Invalid field %r in command" % field)
+            except validate.InvalidFormat:
+                raise ValueError("Invalid field %r in command" % field)
+            if field in field_transformers:
+                payload[field] = field_transformers[field](value)
+
         return dict(cmd.items(), payload=payload)
-    mapping_document_opt = dict(mapping_document)
-    mapping_document_opt[None] = None
+
     copy(
         Command, 'id',
         dict(
-            user_login=defaultdict(lambda: user_login),
+            # Map all users to the importing user
+            user_login=DefaultMap(lambda key: user_login, {}),
             project_id=mapping_project,
-            document_id=mapping_document_opt,
+            # Map None to None and unknown keys (deleted documents) to negative
+            document_id=DefaultMap(
+                lambda key: None if key is None else -abs(key),
+                mapping_document,
+            ),
         ),
         100,
         condition=Command.project_id == project_id,
