@@ -2,7 +2,7 @@ stages:
   - test
   - deploy
 
-run_tests_sqlite3:
+sqlite3:
   stage: test
   image: python:3.8
   script:
@@ -20,7 +20,7 @@ run_tests_sqlite3:
     paths:
       - htmlcov
 
-run_tests_sqlite3_latest:
+sqlite3_latest:
   stage: test
   image: python:3.8
   script:
@@ -31,7 +31,7 @@ run_tests_sqlite3_latest:
     - scripts/update_translations.sh
     - python tests.py
 
-run_tests_postgres:
+postgres:
   stage: test
   image: python:3.8
   services:
@@ -48,7 +48,7 @@ run_tests_postgres:
     - pip install psycopg2-binary
     - python tests.py
 
-run_tests_mariadb:
+mariadb:
   stage: test
   image: python:3.8
   services:
@@ -67,7 +67,7 @@ run_tests_mariadb:
     - pip install pymysql cryptography
     - python tests.py
 
-run_tests_pypy:
+sqlite3_pypy:
   stage: test
   image: pypy:3.7
   script:
@@ -79,7 +79,7 @@ run_tests_pypy:
     - scripts/update_translations.sh
     - python tests.py
 
-run_tests_py35:
+sqlite3_py35:
   stage: test
   image: python:3.5
   script:
@@ -89,7 +89,7 @@ run_tests_py35:
     - scripts/update_translations.sh
     - python tests.py
 
-run_tests_py39:
+sqlite3_py39:
   stage: test
   image: python:3.9
   script:
