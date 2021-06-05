@@ -277,7 +277,7 @@ class Command(Base):
             user_login=user_login,
             project_id=project_id,
             payload={'type': 'project_meta',  # keep in sync above
-                     'name': name,
+                     'project_name': name,
                      'description': description},
         )
 
@@ -288,7 +288,7 @@ class Command(Base):
             project=document.project,
             document_id=document.id,
             payload={'type': 'document_add',  # keep in sync above
-                     'name': document.name,
+                     'document_name': document.name,
                      'description': document.description},
         )
 
@@ -310,7 +310,7 @@ class Command(Base):
             project_id=document.project_id,
             document_id=document.id,
             payload={'type': 'highlight_add',  # keep in sync above
-                     'id': highlight.id,
+                     'highlight_id': highlight.id,
                      'start_offset': highlight.start_offset,
                      'end_offset': highlight.end_offset,
                      'tags': tags},
@@ -324,7 +324,7 @@ class Command(Base):
             project_id=document.project_id,
             document_id=document.id,
             payload={'type': 'highlight_delete',  # keep in sync above
-                     'id': highlight_id},
+                     'highlight_id': highlight_id},
         )
 
     @classmethod
@@ -334,8 +334,8 @@ class Command(Base):
             user_login=user_login,
             project_id=tag.project_id,
             payload={'type': 'tag_add',  # keep in sync above
-                     'id': tag.id,
-                     'path': tag.path,
+                     'tag_id': tag.id,
+                     'tag_path': tag.path,
                      'description': tag.description},
         )
 
@@ -347,7 +347,7 @@ class Command(Base):
             user_login=user_login,
             project_id=project_id,
             payload={'type': 'tag_delete',  # keep in sync above
-                     'id': tag_id},
+                     'tag_id': tag_id},
         )
 
     @classmethod
@@ -359,8 +359,8 @@ class Command(Base):
             user_login=user_login,
             project_id=project_id,
             payload={'type': 'tag_merge',  # keep in sync above
-                     'src': tag_src,
-                     'dest': tag_dest},
+                     'src_tag_id': tag_src,
+                     'dest_tag_id': tag_dest},
         )
 
     @classmethod
