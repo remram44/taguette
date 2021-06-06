@@ -21,6 +21,7 @@ def description(descr):
         raise ValueError("Description is not a string")
     if len(descr) > 102400:
         raise InvalidFormat(_f("Description is too long"))
+    return True
 
 
 def project_name(name):
@@ -28,6 +29,7 @@ def project_name(name):
         raise InvalidFormat(_f("Project name cannot be empty"))
     if len(name) > 50:
         raise InvalidFormat(_f("Project name is too long"))
+    return True
 
 
 ALLOWED_LOGIN_CHARACTERS_NEW = (
@@ -62,6 +64,7 @@ def user_email(email):
         raise InvalidFormat(_f("Invalid email address"))
     if len(email) > 256:
         raise InvalidFormat(_f("Email address is too long"))
+    return True
 
 
 def user_password(password):
@@ -71,6 +74,7 @@ def user_password(password):
         raise InvalidFormat(_f("Please use a longer password"))
     if len(password) > 5120:
         raise InvalidFormat(_f("Please use a shorter password"))
+    return True
 
 
 def document_name(name):
@@ -80,6 +84,7 @@ def document_name(name):
         raise InvalidFormat(_f("Document name cannot be empty"))
     if len(name) > 50:
         raise InvalidFormat(_f("Document name is too long"))
+    return True
 
 
 def tag_path(path):
@@ -89,6 +94,7 @@ def tag_path(path):
         raise InvalidFormat(_f("Tag path cannot be empty"))
     if len(path) > 200:
         raise InvalidFormat(_f("Tag path is too long"))
+    return True
 
 
 _windows_device_files = ('CON', 'AUX', 'COM1', 'COM2', 'COM3', 'COM4', 'LPT1',
