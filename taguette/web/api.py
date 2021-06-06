@@ -715,7 +715,7 @@ class ProjectEvents(BaseHandler):
         if type_ == 'project_meta':
             result = {'project_meta': payload}
         elif type_ == 'document_add':
-            payload['id'] = cmd.document_id
+            payload['document_id'] = cmd.document_id
             result = {'document_add': [payload]}
         elif type_ == 'document_delete':
             result = {'document_delete': [cmd.document_id]}
@@ -723,7 +723,9 @@ class ProjectEvents(BaseHandler):
             result = {'highlight_add': {cmd.document_id: [payload]}}
         elif type_ == 'highlight_delete':
             result = {
-                'highlight_delete': {cmd.document_id: [payload['id']]}
+                'highlight_delete': {
+                    cmd.document_id: [payload['highlight_id']],
+                }
             }
         elif type_ == 'tag_add':
             result = {
@@ -731,13 +733,11 @@ class ProjectEvents(BaseHandler):
             }
         elif type_ == 'tag_delete':
             result = {
-                'tag_delete': [payload['id']],
+                'tag_delete': [payload['tag_id']],
             }
         elif type_ == 'tag_merge':
             result = {
-                'tag_merge': [
-                    {'src': payload['src'], 'dest': payload['dest']},
-                ],
+                'tag_merge': [payload],
             }
         elif type_ == 'member_add':
             result = {
