@@ -526,8 +526,8 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(response.code, 200)
         self.assertEqual(
             await poll_proj2,
-            {'tag_add': [{'description': "People of interest", 'id': 3,
-                          'path': 'people'}],
+            {'tag_add': [{'description': "People of interest", 'tag_id': 3,
+                          'tag_path': 'people'}],
              'id': 1})
         poll_proj2 = await self.poll_event(2, 1)
 
@@ -538,8 +538,8 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(response.code, 200)
         self.assertEqual(
             await poll_proj2,
-            {'tag_add': [{'description': '', 'id': 4,
-                          'path': 'interesting.places'}],
+            {'tag_add': [{'description': '', 'tag_id': 4,
+                          'tag_path': 'interesting.places'}],
              'id': 2})
         poll_proj2 = await self.poll_event(2, 2)
 
@@ -560,8 +560,8 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(doc.filename, '_NUL.html')
         self.assertEqual(
             await poll_proj1,
-            {'document_add': [{'description': '', 'id': 1, 'name': name}],
-             'id': 3})
+            {'document_add': [{'description': '', 'document_id': 1,
+                               'document_name': name}], 'id': 3})
         poll_proj1 = await self.poll_event(1, 3)
 
         # Create document 2 in project 2
@@ -581,8 +581,8 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(doc.filename, 'otherdoc.html')
         self.assertEqual(
             await poll_proj2,
-            {'document_add': [{'description': 'Other one', 'id': 2,
-                               'name': 'otherdoc'}], 'id': 4})
+            {'document_add': [{'description': 'Other one', 'document_id': 2,
+                               'document_name': 'otherdoc'}], 'id': 4})
         poll_proj2 = await self.poll_event(2, 4)
 
         # Create highlight 1 in document 1
@@ -594,7 +594,7 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(response.body, b'{"id": 1}')
         self.assertEqual(
             await poll_proj1,
-            {'highlight_add': {'1': [{'id': 1, 'tags': [1],
+            {'highlight_add': {'1': [{'highlight_id': 1, 'tags': [1],
                                       'start_offset': 3, 'end_offset': 7}]},
              'id': 5, 'tag_count_changes': {'1': 1}})
         poll_proj1 = await self.poll_event(1, 5)
@@ -608,7 +608,7 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(response.body, b'{}')
         self.assertEqual(
             await poll_proj2,
-            {'project_meta': {'name': 'new project',
+            {'project_meta': {'project_name': 'new project',
                               'description': 'Meaningful'},
              'id': 6})
         poll_proj2 = await self.poll_event(2, 6)
@@ -629,8 +629,8 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(response.body, b'{"created": 3}')
         self.assertEqual(
             await poll_proj2,
-            {'document_add': [{'description': 'Last one', 'id': 3,
-                               'name': 'third'}], 'id': 7})
+            {'document_add': [{'description': 'Last one', 'document_id': 3,
+                               'document_name': 'third'}], 'id': 7})
         poll_proj2 = await self.poll_event(2, 7)
 
         # Create highlight in document 2, using wrong project id
@@ -665,7 +665,7 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(response.body, b'{"id": 2}')
         self.assertEqual(
             await poll_proj2,
-            {'highlight_add': {'2': [{'id': 2, 'tags': [4],
+            {'highlight_add': {'2': [{'highlight_id': 2, 'tags': [4],
                                       'start_offset': 0, 'end_offset': 4}]},
              'id': 8, 'tag_count_changes': {'4': 1}})
         poll_proj2 = await self.poll_event(2, 8)
@@ -679,7 +679,7 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(response.body, b'{"id": 3}')
         self.assertEqual(
             await poll_proj2,
-            {'highlight_add': {'2': [{'id': 3, 'tags': [2, 3],
+            {'highlight_add': {'2': [{'highlight_id': 3, 'tags': [2, 3],
                                       'start_offset': 13, 'end_offset': 17}]},
              'id': 9, 'tag_count_changes': {'2': 1, '3': 1}})
         poll_proj2 = await self.poll_event(2, 9)
@@ -693,7 +693,7 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(response.body, b'{"id": 4}')
         self.assertEqual(
             await poll_proj2,
-            {'highlight_add': {'3': [{'id': 4, 'tags': [3],
+            {'highlight_add': {'3': [{'highlight_id': 4, 'tags': [3],
                                       'start_offset': 0, 'end_offset': 7}]},
              'id': 10, 'tag_count_changes': {'3': 1}})
         poll_proj2 = await self.poll_event(2, 10)
@@ -942,7 +942,7 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(json.loads(response.body.decode('utf-8')), {'id': 2})
         self.assertEqual(
             await poll_proj2,
-            {'tag_merge': [{'src': 3, 'dest': 2}], 'id': 11},
+            {'tag_merge': [{'src_tag_id': 3, 'dest_tag_id': 2}], 'id': 11},
         )
         poll_proj2 = await self.poll_event(2, 11)
 
