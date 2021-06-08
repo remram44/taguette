@@ -125,7 +125,7 @@ class User(Base):
 
 class Project(Base):
     __tablename__ = 'projects'
-    __table_args__ = {'sqlite_autoincrement': True}
+    __table_args__ = ({'sqlite_autoincrement': True},)
 
     id = Column(Integer, primary_key=True)
     name = Column(String(200), nullable=False)
@@ -211,7 +211,7 @@ class ProjectMember(Base):
 
 class Document(Base):
     __tablename__ = 'documents'
-    __table_args__ = {'sqlite_autoincrement': True}
+    __table_args__ = ({'sqlite_autoincrement': True},)
 
     id = Column(Integer, primary_key=True)
     name = Column(String(200), nullable=False)
@@ -239,7 +239,7 @@ class Document(Base):
 
 class Command(Base):
     __tablename__ = 'commands'
-    __table_args__ = {'sqlite_autoincrement': True}
+    __table_args__ = ({'sqlite_autoincrement': True},)
 
     id = Column(Integer, primary_key=True)
     date = Column(DateTime, nullable=False,
@@ -259,7 +259,7 @@ class Command(Base):
 
     __table_args__ = (
         Index('idx_project_document', 'project_id', 'document_id'),
-    )
+    ) + __table_args__
 
     def __init__(self, **kwargs):
         if 'payload' in kwargs:
@@ -414,7 +414,7 @@ Project.last_event = column_property(
 
 class Highlight(Base):
     __tablename__ = 'highlights'
-    __table_args__ = {'sqlite_autoincrement': True}
+    __table_args__ = ({'sqlite_autoincrement': True},)
 
     id = Column(Integer, primary_key=True)
     document_id = Column(Integer, ForeignKey('documents.id',
@@ -438,7 +438,7 @@ class Highlight(Base):
 
 class Group(Base):
     __tablename__ = 'groups'
-    __table_args__ = {'sqlite_autoincrement': True}
+    __table_args__ = ({'sqlite_autoincrement': True},)
 
     id = Column(Integer, primary_key=True)
     project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
@@ -450,7 +450,7 @@ class Group(Base):
 
     __table_args__ = (
         UniqueConstraint('project_id', 'path'),
-    )
+    ) + __table_args__
 
     documents = relationship('Document', secondary='document_groups')
 
@@ -484,7 +484,7 @@ class DocumentGroup(Base):
 
 class Tag(Base):
     __tablename__ = 'tags'
-    __table_args__ = {'sqlite_autoincrement': True}
+    __table_args__ = ({'sqlite_autoincrement': True},)
 
     id = Column(Integer, primary_key=True)
     project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
@@ -496,7 +496,7 @@ class Tag(Base):
 
     __table_args__ = (
         UniqueConstraint('project_id', 'path'),
-    )
+    ) + __table_args__
 
     highlights = relationship('Highlight', secondary='highlight_tags')
 
