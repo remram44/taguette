@@ -1,10 +1,12 @@
 import asyncio
 import functools
+import json
 import logging
 import math
 import prometheus_client
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import aliased, defer, joinedload
+import tempfile
 from tornado.concurrent import Future
 import tornado.log
 from tornado.web import MissingArgumentError, HTTPError
@@ -77,7 +79,7 @@ class ProjectMeta(BaseHandler):
             obj = self.get_json()
             validate.project_name(obj['name'])
             project.name = obj['name']
-            validate.project_description(obj['description'])
+            validate.description(obj['description'])
             project.description = obj['description']
             logger.info("Updated project: %r %r",
                         project.name, project.description)
@@ -108,7 +110,7 @@ class DocumentAdd(BaseHandler):
             name = self.get_body_argument('name')
             validate.document_name(name)
             description = self.get_body_argument('description')
-            validate.document_description(description)
+            validate.description(description)
             try:
                 file = self.request.files['file'][0]
             except (KeyError, IndexError):
@@ -166,7 +168,7 @@ class DocumentUpdate(BaseHandler):
                     validate.document_name(obj['name'])
                     document.name = obj['name']
                 if 'description' in obj:
-                    validate.document_description(obj['description'])
+                    validate.description(obj['description'])
                     document.description = obj['description']
                 cmd = database.Command.document_add(
                     self.current_user,
@@ -241,7 +243,7 @@ class TagAdd(BaseHandler):
         try:
             obj = self.get_json()
             validate.tag_path(obj['path'])
-            validate.tag_description(obj['description'])
+            validate.description(obj['description'])
             tag = database.Tag(project=project,
                                path=obj['path'],
                                description=obj['description'])
@@ -283,7 +285,7 @@ class TagUpdate(BaseHandler):
                     validate.tag_path(obj['path'])
                     tag.path = obj['path']
                 if 'description' in obj:
-                    validate.tag_description(obj['description'])
+                    validate.description(obj['description'])
                     tag.description = obj['description']
                 cmd = database.Command.tag_add(
                     self.current_user,
@@ -665,6 +667,80 @@ class MembersUpdate(BaseHandler):
         return self.finish()
 
 
+class ImportProject(BaseHandler):
+    @api_auth
+    @PROM_REQUESTS.sync('project_import')
+    async def post(self):
+        try:
+            file = self.request.files['file'][0]
+        except (KeyError, IndexError):
+            raise MissingArgumentError('file')
+
+        with tempfile.NamedTemporaryFile(
+            'wb',
+            prefix='taguette_import_',
+            suffix='.sqlite3',
+        ) as tmp:
+            # Write the database to temporary file
+            tmp.write(file.body)
+            tmp.flush()
+
+            project_id = self.get_body_argument('project_id', None)
+            if project_id is None:
+                return await self._list_projects(tmp.name)
+            else:
+                try:
+                    project_id = int(project_id)
+                except ValueError:
+                    self.set_status(400)
+                    return await self.send_json({
+                        'error': "Invalid project ID",
+                    })
+                return await self._import_project(tmp.name, project_id)
+
+    async def _list_projects(self, filename):
+        # Connect to the database
+        src_db = database.connect('sqlite:///%s' % filename, external=True)()
+
+        # List projects
+        projects = src_db.execute(database.Project.__table__.select())
+        for i, row in enumerate(projects):
+            if i == 0:
+                self.set_header(
+                    'Content-Type', 'application/json; charset=utf-8',
+                )
+                self.write('{"projects": [')
+            else:
+                self.write(',')
+            self.write(json.dumps({
+                'id': row['id'],
+                'name': row['name'],
+            }))
+            if i == 100:
+                await self.flush()
+        return await self.finish(']}')
+
+    async def _import_project(self, filename, project_id):
+        # Connect to the database
+        src_db = database.connect('sqlite:///%s' % filename, external=True)()
+
+        # Copy data
+        new_project_id = database.copy_project(
+            src_db, self.db,
+            project_id, self.current_user,
+        )
+        src_db.close()
+
+        # Insert a command for the import
+        self.db.add(
+            database.Command.project_import(self.current_user, new_project_id)
+        )
+
+        self.db.commit()
+
+        return await self.send_json({'project_id': new_project_id})
+
+
 class ProjectEvents(BaseHandler):
     response_cancelled = False
     polling_clients = set()
@@ -715,7 +791,7 @@ class ProjectEvents(BaseHandler):
         if type_ == 'project_meta':
             result = {'project_meta': payload}
         elif type_ == 'document_add':
-            payload['id'] = cmd.document_id
+            payload['document_id'] = cmd.document_id
             result = {'document_add': [payload]}
         elif type_ == 'document_delete':
             result = {'document_delete': [cmd.document_id]}
@@ -723,7 +799,9 @@ class ProjectEvents(BaseHandler):
             result = {'highlight_add': {cmd.document_id: [payload]}}
         elif type_ == 'highlight_delete':
             result = {
-                'highlight_delete': {cmd.document_id: [payload['id']]}
+                'highlight_delete': {
+                    cmd.document_id: [payload['highlight_id']],
+                }
             }
         elif type_ == 'tag_add':
             result = {
@@ -731,13 +809,11 @@ class ProjectEvents(BaseHandler):
             }
         elif type_ == 'tag_delete':
             result = {
-                'tag_delete': [payload['id']],
+                'tag_delete': [payload['tag_id']],
             }
         elif type_ == 'tag_merge':
             result = {
-                'tag_merge': [
-                    {'src': payload['src'], 'dest': payload['dest']},
-                ],
+                'tag_merge': [payload],
             }
         elif type_ == 'member_add':
             result = {

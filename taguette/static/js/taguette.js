@@ -1693,7 +1693,12 @@ function longPollForEvents() {
     }
     if('document_add' in result) {
       for(var i = 0; i < result.document_add.length; ++i) {
-        addDocument(result.document_add[i]);
+        var p = result.document_add[i];
+        addDocument({
+          id: p.document_id,
+          name: p.document_name,
+          description: p.description
+        });
       }
     }
     if('document_delete' in result) {
@@ -1705,7 +1710,13 @@ function longPollForEvents() {
       var added = result.highlight_add['' + current_document];
       if(added) {
         for(var i = 0; i < added.length; ++i) {
-          setHighlight(added[i]);
+          var p = added[i];
+          setHighlight({
+            id: p.highlight_id,
+            start_offset: p.start_offset,
+            end_offset: p.end_offset,
+            tags: p.tags
+          });
         }
       }
     }
@@ -1719,7 +1730,12 @@ function longPollForEvents() {
     }
     if('tag_add' in result) {
       for(var i = 0; i < result.tag_add.length; ++i) {
-        addTag(result.tag_add[i]);
+        var p = result.tag_add[i]
+        addTag({
+          id: p.tag_id,
+          path: p.tag_path,
+          description: p.description
+        });
       }
     }
     if('tag_delete' in result) {
@@ -1729,7 +1745,7 @@ function longPollForEvents() {
     }
     if('tag_merge' in result) {
       for(var i = 0; i < result.tag_merge.length; ++i) {
-        mergeTags(result.tag_merge[i].src, result.tag_merge[i].dest);
+        mergeTags(result.tag_merge[i].src_tag_id, result.tag_merge[i].dest_tag_id);
       }
     }
     if('member_add' in result) {

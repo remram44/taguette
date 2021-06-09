@@ -16,16 +16,20 @@ class InvalidFormat(HTTPError):
         return "InvalidFormat(%r, %d)" % (self.message, self.status_code)
 
 
+def description(descr):
+    if not isinstance(descr, str):
+        raise ValueError("Description is not a string")
+    if len(descr) > 102400:
+        raise InvalidFormat(_f("Description is too long"))
+    return True
+
+
 def project_name(name):
     if not name:
         raise InvalidFormat(_f("Project name cannot be empty"))
     if len(name) > 50:
         raise InvalidFormat(_f("Project name is too long"))
-
-
-def project_description(description):
-    if len(description) > 102400:
-        raise InvalidFormat(_f("Project description is too long"))
+    return True
 
 
 ALLOWED_LOGIN_CHARACTERS_NEW = (
@@ -38,6 +42,8 @@ ALLOWED_LOGIN_CHARACTERS = (
 
 
 def user_login(login, new=False):
+    if not isinstance(login, str):
+        raise ValueError("Login is not a string")
     if not login:
         raise InvalidFormat(_f("User login cannot be empty"))
     if len(login) > (20 if new else 25):
@@ -50,43 +56,45 @@ def user_login(login, new=False):
 
 
 def user_email(email):
+    if not isinstance(email, str):
+        raise ValueError("Email is not a string")
     if not email:
         raise InvalidFormat(_f("Email cannot be empty"))  # but it can be NULL
     if '@' not in email:
         raise InvalidFormat(_f("Invalid email address"))
     if len(email) > 256:
         raise InvalidFormat(_f("Email address is too long"))
+    return True
 
 
 def user_password(password):
+    if not isinstance(password, str):
+        raise ValueError("Password is not a string")
     if len(password) < 5:
         raise InvalidFormat(_f("Please use a longer password"))
     if len(password) > 5120:
         raise InvalidFormat(_f("Please use a shorter password"))
+    return True
 
 
 def document_name(name):
+    if not isinstance(name, str):
+        raise ValueError("Document name is not a string")
     if not name:
         raise InvalidFormat(_f("Document name cannot be empty"))
     if len(name) > 50:
         raise InvalidFormat(_f("Document name is too long"))
-
-
-def document_description(description):
-    if len(description) > 102400:
-        raise InvalidFormat(_f("Document description is too long"))
+    return True
 
 
 def tag_path(path):
+    if not isinstance(path, str):
+        raise ValueError("Tag path is not a string")
     if not path:
         raise InvalidFormat(_f("Tag path cannot be empty"))
     if len(path) > 200:
         raise InvalidFormat(_f("Tag path is too long"))
-
-
-def tag_description(description):
-    if len(description) > 102400:
-        raise InvalidFormat(_f("Tag description is too long"))
+    return True
 
 
 _windows_device_files = ('CON', 'AUX', 'COM1', 'COM2', 'COM3', 'COM4', 'LPT1',
@@ -103,6 +111,10 @@ def filename(name):
     Adapted from werkzeug's secure_filename(), copyright 2007 the Pallets team.
     https://palletsprojects.com/p/werkzeug/
     """
+    if not isinstance(name, str):
+        raise ValueError("File name is not a string")
+    if not name:
+        raise ValueError("File name cannot be empty")
     if '/' in name:
         name = name[name.rindex('/') + 1:]
     if filename.windows and '\\' in name:

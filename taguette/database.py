@@ -25,6 +25,8 @@ from sqlalchemy.types import DateTime, Enum, Integer, String, Text
 import sys
 
 import taguette
+from taguette import convert
+from taguette import validate
 
 
 logger = logging.getLogger(__name__)
@@ -237,6 +239,14 @@ class Document(Base):
         )
 
 
+def command_fields(columns, payload_fields):
+    def wrapper(func):
+        func.columns = columns
+        func.payload_fields = payload_fields
+        return func
+    return wrapper
+
+
 class Command(Base):
     __tablename__ = 'commands'
     __table_args__ = ({'sqlite_autoincrement': True},)
@@ -266,33 +276,47 @@ class Command(Base):
             PROM_COMMAND.labels(kwargs['payload']['type']).inc()
         super(Command, self).__init__(**kwargs)
 
-    for n in ['project_meta', 'document_add', 'document_delete',
-              'highlight_add', 'highlight_delete', 'tag_add', 'tag_delete',
-              'tag_merge', 'member_add', 'member_remove']:
+    TYPES = {'project_meta', 'document_add', 'document_delete',
+             'highlight_add', 'highlight_delete', 'tag_add', 'tag_delete',
+             'tag_merge', 'member_add', 'member_remove', 'project_import'}
+
+    for n in TYPES:
         PROM_COMMAND.labels(n).inc(0)
 
     @classmethod
+    @command_fields(
+        columns=['project_id'],
+        payload_fields=['project_name', 'description'],
+    )
     def project_meta(cls, user_login, project_id, name, description):
         return cls(
             user_login=user_login,
             project_id=project_id,
             payload={'type': 'project_meta',  # keep in sync above
-                     'name': name,
+                     'project_name': name,
                      'description': description},
         )
 
     @classmethod
+    @command_fields(
+        columns=['project_id', 'document_id'],
+        payload_fields=['document_name', 'description'],
+    )
     def document_add(cls, user_login, document):
         return cls(
             user_login=user_login,
             project=document.project,
             document_id=document.id,
             payload={'type': 'document_add',  # keep in sync above
-                     'name': document.name,
+                     'document_name': document.name,
                      'description': document.description},
         )
 
     @classmethod
+    @command_fields(
+        columns=['project_id', 'document_id'],
+        payload_fields=[],
+    )
     def document_delete(cls, user_login, document):
         assert isinstance(document, Document)
         return cls(
@@ -303,6 +327,12 @@ class Command(Base):
         )
 
     @classmethod
+    @command_fields(
+        columns=['project_id', 'document_id'],
+        payload_fields=[
+            'highlight_id', 'start_offset', 'end_offset', 'tags',
+        ],
+    )
     def highlight_add(cls, user_login, document, highlight, tags):
         assert isinstance(highlight.id, int)
         return cls(
@@ -310,13 +340,17 @@ class Command(Base):
             project_id=document.project_id,
             document_id=document.id,
             payload={'type': 'highlight_add',  # keep in sync above
-                     'id': highlight.id,
+                     'highlight_id': highlight.id,
                      'start_offset': highlight.start_offset,
                      'end_offset': highlight.end_offset,
                      'tags': tags},
         )
 
     @classmethod
+    @command_fields(
+        columns=['project_id', 'document_id'],
+        payload_fields=['highlight_id'],
+    )
     def highlight_delete(cls, user_login, document, highlight_id):
         assert isinstance(highlight_id, int)
         return cls(
@@ -324,22 +358,30 @@ class Command(Base):
             project_id=document.project_id,
             document_id=document.id,
             payload={'type': 'highlight_delete',  # keep in sync above
-                     'id': highlight_id},
+                     'highlight_id': highlight_id},
         )
 
     @classmethod
+    @command_fields(
+        columns=['project_id'],
+        payload_fields=['tag_id', 'tag_path', 'description'],
+    )
     def tag_add(cls, user_login, tag):
         assert isinstance(tag, Tag)
         return cls(
             user_login=user_login,
             project_id=tag.project_id,
             payload={'type': 'tag_add',  # keep in sync above
-                     'id': tag.id,
-                     'path': tag.path,
+                     'tag_id': tag.id,
+                     'tag_path': tag.path,
                      'description': tag.description},
         )
 
     @classmethod
+    @command_fields(
+        columns=['project_id'],
+        payload_fields=['tag_id'],
+    )
     def tag_delete(cls, user_login, project_id, tag_id):
         assert isinstance(project_id, int)
         assert isinstance(tag_id, int)
@@ -347,10 +389,14 @@ class Command(Base):
             user_login=user_login,
             project_id=project_id,
             payload={'type': 'tag_delete',  # keep in sync above
-                     'id': tag_id},
+                     'tag_id': tag_id},
         )
 
     @classmethod
+    @command_fields(
+        columns=['project_id'],
+        payload_fields=['src_tag_id', 'dest_tag_id'],
+    )
     def tag_merge(cls, user_login, project_id, tag_src, tag_dest):
         assert isinstance(project_id, int)
         assert isinstance(tag_src, int)
@@ -359,11 +405,15 @@ class Command(Base):
             user_login=user_login,
             project_id=project_id,
             payload={'type': 'tag_merge',  # keep in sync above
-                     'src': tag_src,
-                     'dest': tag_dest},
+                     'src_tag_id': tag_src,
+                     'dest_tag_id': tag_dest},
         )
 
     @classmethod
+    @command_fields(
+        columns=['project_id'],
+        payload_fields=['member', 'privileges'],
+    )
     def member_add(cls, user_login, project_id, member_login, privileges):
         assert isinstance(project_id, int)
         assert isinstance(privileges, Privileges)
@@ -376,6 +426,10 @@ class Command(Base):
         )
 
     @classmethod
+    @command_fields(
+        columns=['project_id'],
+        payload_fields=['member'],
+    )
     def member_remove(cls, user_login, project_id, member_login):
         assert isinstance(project_id, int)
         return cls(
@@ -383,6 +437,19 @@ class Command(Base):
             project_id=project_id,
             payload={'type': 'member_remove',  # keep in sync above
                      'member': member_login}
+        )
+
+    @classmethod
+    @command_fields(
+        columns=['project_id'],
+        payload_fields=[],
+    )
+    def project_import(cls, user_login, project_id):
+        assert isinstance(project_id, int)
+        return cls(
+            user_login=user_login,
+            project_id=project_id,
+            payload={'type': 'project_import'}  # keep in sync above
         )
 
     def __repr__(self):
@@ -559,7 +626,7 @@ def no_sqlite_pragma_check():
         taguette.database.set_sqlite_pragma.enabled = True
 
 
-def connect(db_url):
+def connect(db_url, *, external=False):
     """Connect to the database using an environment variable.
     """
     logger.info("Connecting to SQL database %r", db_url)
@@ -571,10 +638,26 @@ def connect(db_url):
 
     if db_url.startswith('sqlite:'):
         sqlalchemy.event.listen(
-            sqlalchemy.engine.Engine,
+            engine,
             "connect",
             set_sqlite_pragma,
         )
+
+        # https://www.sqlite.org/security.html#untrusted_sqlite_database_files
+        if external:
+            logger.info("Database is not trusted")
+
+            @sqlalchemy.event.listens_for(engine, "connect")
+            def secure(dbapi_connection, connection_record):
+                cursor = dbapi_connection.cursor()
+                cursor.execute("PRAGMA trusted_schema=OFF")
+                cursor.close()
+
+            conn = engine.connect()
+            conn.execute('PRAGMA quick_check')
+            conn.execute('PRAGMA cell_size_check=ON')
+            conn.execute('PRAGMA mmap_size=0')
+            conn.close()
 
     alembic_cfg = alembic.config.Config()
     alembic_cfg.set_main_option('script_location', 'taguette:migrations')
@@ -600,20 +683,25 @@ def connect(db_url):
             logger.warning("Database schema is out of date: %s", current_rev)
             _ = taguette.trans.gettext
             if db_url.startswith('sqlite:'):
-                print(_("\n    The database schema used by Taguette has "
+                if not external:
+                    print(_(
+                        "\n    The database schema used by Taguette has "
                         "changed! We will try to\n    update your workspace "
                         "automatically.\n"), file=sys.stderr, flush=True)
-                assert db_url.startswith('sqlite:///')
-                assert os.path.exists(db_url[10:])
-                backup = db_url[10:] + '.bak'
-                shutil.copy2(db_url[10:], backup)
-                logger.warning("Performing automated update, backup file: %s",
-                               backup)
-                print(_("\n    A backup copy of your database file has been "
-                        "created. If the update\n    goes horribly wrong, "
-                        "make sure to keep that file, and let us know:\n    "
-                        "%(backup)s\n") % dict(backup=backup),
-                      file=sys.stderr, flush=True)
+                    assert db_url.startswith('sqlite:///')
+                    assert os.path.exists(db_url[10:])
+                    backup = db_url[10:] + '.bak'
+                    shutil.copy2(db_url[10:], backup)
+                    logger.warning(
+                        "Performing automated update, backup file: %s", backup,
+                    )
+                    print(
+                        _("\n    A backup copy of your database file has been "
+                          "created. If the update\n    goes horribly wrong, "
+                          "make sure to keep that file, and let us know:\n    "
+                          "%(backup)s\n") % dict(backup=backup),
+                        file=sys.stderr, flush=True,
+                    )
                 alembic.command.upgrade(alembic_cfg, 'head')
             else:
                 print(_("\n    The database schema used by Taguette has "
@@ -644,3 +732,262 @@ def migrate(db_url, revision):
 
     logger.warning("Performing database upgrade")
     alembic.command.upgrade(alembic_cfg, revision)
+
+
+class DefaultMap(object):
+    def __init__(self, default, mapping):
+        self.__default = default
+        self.mapping = mapping
+
+    def get(self, key):
+        try:
+            return self.mapping[key]
+        except KeyError:
+            return self.__default(key)
+
+    def __getitem__(self, key):
+        return self.get(key)
+
+
+def copy_project(
+    src_db, dest_db,
+    project_id, user_login,
+):
+    def copy(
+        model, pkey, fkeys, size,
+        *, condition=None, transform=None, validators=None
+    ):
+        return copy_table(
+            src_db, dest_db,
+            model.__table__, pkey, fkeys,
+            batch_size=size,
+            condition=condition, transform=transform, validators=validators,
+        )
+
+    def insert(model, values):
+        ins = dest_db.execute(
+            model.__table__.insert(),
+            values,
+        )
+        return ins
+
+    # Copy project
+    project = src_db.execute(
+        Project.__table__.select().where(Project.id == project_id)
+    ).fetchone()
+    if project is None:
+        raise KeyError("project ID not found")
+    validate.project_name(project['name'])
+    validate.description(project['description'])
+    project = dict(project.items())
+    project.pop('id')
+    new_project_id, = insert(Project, project).inserted_primary_key
+    mapping_project = {project_id: new_project_id}
+
+    # Add member
+    insert(
+        ProjectMember,
+        dict(
+            project_id=new_project_id,
+            user_login=user_login,
+            privileges=Privileges.ADMIN,
+        ),
+    )
+
+    # Copy documents
+    mapping_document = copy(
+        Document, 'id',
+        dict(project_id=mapping_project),
+        2,
+        condition=Document.project_id == project_id,
+        validators=dict(
+            name=validate.document_name,
+            description=validate.description,
+            filename=validate.filename,
+            contents=convert.is_html_safe,
+        ),
+    )
+
+    # Copy tags
+    mapping_tags = copy(
+        Tag, 'id',
+        dict(project_id=mapping_project),
+        50,
+        condition=Tag.project_id == project_id,
+        validators=dict(
+            path=validate.tag_path,
+            description=validate.description,
+        ),
+    )
+
+    # Copy highlights
+    mapping_highlights = copy(
+        Highlight, 'id',
+        dict(document_id=mapping_document),
+        50,
+        condition=Highlight.document_id.in_(mapping_document.keys()),
+        validators=dict(
+            start_offset=lambda v: isinstance(v, int) and v > 0,
+            end_offset=lambda v: isinstance(v, int) and v > 0,
+            snippet=convert.is_html_safe,
+        ),
+    )
+
+    # Copy highlight tags
+    copy(
+        HighlightTag, None,
+        dict(highlight_id=mapping_highlights, tag_id=mapping_tags),
+        200,
+        condition=HighlightTag.tag_id.in_(mapping_tags.keys()),
+    )
+
+    # Copy commands
+    def transform_command(cmd):
+        payload = cmd['payload']
+
+        if payload['type'] not in Command.TYPES:
+            raise ValueError("Unknown command %r" % payload['type'])
+
+        method = getattr(Command, payload['type'])
+        expected_columns = (
+            set(method.columns)
+            | {'date', 'user_login', 'payload'}
+        )
+        expected_payload_fields = set(method.payload_fields) | {'type'}
+
+        # Check that the right columns are set
+        if {k for k, v in cmd.items() if v is not None} != expected_columns:
+            raise ValueError("Command doesn't have expected columns")
+
+        # Check that the right JSON fields are set
+        if payload.keys() != expected_payload_fields:
+            raise ValueError("Command doesn't have expected fields")
+
+        # Map an ID, using negative ID if it's unknown
+        def mv(mapping, value):
+            return mapping.get(value, -abs(value))
+
+        field_validators = dict(
+            type=lambda v: True,  # Already checked above
+            description=validate.description,
+            project_name=validate.project_name,
+            document_name=validate.document_name,
+            highlight_id=lambda v: isinstance(v, int),
+            start_offset=lambda v: isinstance(v, int) and v > 0,
+            end_offset=lambda v: isinstance(v, int) and v > 0,
+            tags=lambda v: (
+                isinstance(v, list)
+                and all(isinstance(e, int) for e in v)
+            ),
+            tag_id=lambda v: isinstance(v, int),
+            tag_path=validate.tag_path,
+            src_tag_id=lambda v: isinstance(v, int),
+            dest_tag_id=lambda v: isinstance(v, int),
+            member=validate.user_login,
+            privileges=lambda v: v in Privileges.__members__,
+        )
+
+        field_transformers = dict(
+            highlight_id=lambda v: mv(mapping_highlights, v),
+            tag_id=lambda v: mv(mapping_tags, v),
+            src_tag_id=lambda v: mv(mapping_tags, v),
+            tags=lambda tags: [mv(mapping_tags, t) for t in tags],
+        )
+
+        # Map JSON fields
+        for field, value in list(payload.items()):
+            try:
+                if not field_validators[field](value):
+                    raise ValueError("Invalid field %r in command" % field)
+            except validate.InvalidFormat:
+                raise ValueError("Invalid field %r in command" % field)
+            if field in field_transformers:
+                payload[field] = field_transformers[field](value)
+
+        return dict(cmd.items(), payload=payload)
+
+    copy(
+        Command, 'id',
+        dict(
+            # Map all users to the importing user
+            user_login=DefaultMap(lambda key: user_login, {}),
+            project_id=mapping_project,
+            # Map None to None and unknown keys (deleted documents) to negative
+            document_id=DefaultMap(
+                lambda key: None if key is None else -abs(key),
+                mapping_document,
+            ),
+        ),
+        100,
+        condition=Command.project_id == project_id,
+        transform=transform_command,
+    )
+
+    dest_db.commit()
+
+    return new_project_id
+
+
+def copy_table(
+    src_db, dest_db, table,
+    pkey, fkeys,
+    *, batch_size=50, condition=None, transform=None, validators=None
+):
+    """Copy all data in a table across database connections.
+
+    :param src_db: The SQLAlchemy ``Connection`` or ``Session`` to copy from.
+    :param dest_db: The SQLAlchemy ``Connection`` or ``Session`` to copy into.
+    :param table: The SQLAlchemy ``Table`` we are copying. It should exist on
+        both the source and destination databases.
+    :param pkey: The field in the table that is the primary key and should be
+        reset during the copy (so new values get generated when inserting in
+        the destination and no conflict occurs).
+    :param fkeys: A dictionary associating the name of the fields that are
+        foreign keys to a dictionary mapping the keys.
+    :param transform: Function to apply on each row.
+    """
+    query = table.select()
+    if pkey is not None:
+        query = query.order_by(pkey)
+    if condition is not None:
+        query = query.where(condition)
+    query = src_db.execute(query)
+    assert pkey is None or pkey in query.keys()
+    assert all(field in query.keys() for field in fkeys)
+    mapping = {}
+    batch = query.fetchmany(batch_size)
+    orig_pkey = None  # Avoids warning
+    while batch:
+        for row in batch:
+            row = dict(row.items())
+            # Get primary key, remove it
+            if pkey is not None:
+                orig_pkey = row[pkey]
+                row = dict(row)
+                row.pop(pkey)
+            # Map foreign keys
+            for field, fkey_map in fkeys.items():
+                row[field] = fkey_map[row[field]]
+            # Generic transform
+            if transform is not None:
+                row = transform(row)
+            # Validate
+            if validators:
+                for key, value in row.items():
+                    if key in validators:
+                        try:
+                            if not validators[key](value):
+                                raise ValueError("Data failed validation")
+                        except validate.InvalidFormat:
+                            raise ValueError("Data failed validation")
+
+            # Have to insert one-by-one for inserted_primary_key
+            ins = dest_db.execute(
+                table.insert(),
+                row,
+            )
+            # Store new primary key
+            if pkey is not None:
+                mapping[orig_pkey], = ins.inserted_primary_key
+        batch = query.fetchmany(batch_size)
+    return mapping

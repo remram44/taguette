@@ -18,6 +18,7 @@
 {% else %}
   <li class="list-group-item disabled" style="font-style: oblique;">{% trans %}You have no projects yet.{% endtrans %}</li>
 {% endfor %}
-  <li class="list-group-item list-group-item-primary" style="font-weight: bold;"><a href="{{ reverse_url('new_project') }}">{% trans %}Create a project{% endtrans %}</a></li>
+  <li class="list-group-item list-group-item-primary" style="font-weight: bold;"><a href="{{ reverse_url('new_project') }}">{% trans %}Create a new project{% endtrans %}</a></li>
+  <li class="list-group-item list-group-item-primary" style="font-weight: bold;"><a href="{{ reverse_url('import_project') }}">{% trans %}Import a project file{% endtrans %}</a></li>
 </ul>
 {% endblock %}

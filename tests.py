@@ -1,13 +1,16 @@
 import asyncio
+from datetime import datetime
+import functools
 from http.cookies import SimpleCookie
 import itertools
 import json
 import os
 import random
 import re
-from sqlalchemy import create_engine
+import sqlalchemy
 from sqlalchemy.orm import close_all_sessions
 import string
+import tempfile
 import textwrap
 import time
 from tornado.testing import AsyncTestCase, gen_test, AsyncHTTPTestCase, \
@@ -38,6 +41,15 @@ def compare_xml(str1, str2):
     et1 = ElementTree.fromstring(str1)
     et2 = ElementTree.fromstring(str2)
     _compare_xml(et1, et2)
+
+
+def with_tempdir(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        with tempfile.TemporaryDirectory() as tmp:
+            return func(*args, **kwargs, tmp=tmp)
+
+    return wrapper
 
 
 class TestConvert(AsyncTestCase):
@@ -289,7 +301,7 @@ class MyHTTPTestCase(AsyncHTTPTestCase):
             for k, v in dict(args, _xsrf=self.xsrf).items():
                 body.append(('---sep\r\nContent-Disposition: form-data; '
                              'name="%s"\r\n' % k).encode('utf-8'))
-                body.append(v.encode('utf-8'))
+                body.append(str(v).encode('utf-8'))
             for k, v in files.items():
                 body.append(('---sep\r\nContent-Disposition: form-data; name='
                              '"%s"; filename="%s"\r\nContent-Type: %s\r\n' % (
@@ -310,9 +322,9 @@ class MyHTTPTestCase(AsyncHTTPTestCase):
             lambda: self.aget(url),
             timeout=get_async_test_timeout())
 
-    def post(self, url, args):
+    def post(self, url, args, **kwargs):
         return self.io_loop.run_sync(
-            lambda: self.apost(url, args),
+            lambda: self.apost(url, args, **kwargs),
             timeout=get_async_test_timeout())
 
 
@@ -339,7 +351,7 @@ class TestMultiuser(MyHTTPTestCase):
 
     def tearDown(self):
         close_all_sessions()
-        engine = create_engine(DATABASE_URI)
+        engine = sqlalchemy.create_engine(DATABASE_URI)
         database.Base.metadata.drop_all(bind=engine)
 
     def test_login(self):
@@ -526,8 +538,8 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(response.code, 200)
         self.assertEqual(
             await poll_proj2,
-            {'tag_add': [{'description': "People of interest", 'id': 3,
-                          'path': 'people'}],
+            {'tag_add': [{'description': "People of interest", 'tag_id': 3,
+                          'tag_path': 'people'}],
              'id': 1})
         poll_proj2 = await self.poll_event(2, 1)
 
@@ -538,8 +550,8 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(response.code, 200)
         self.assertEqual(
             await poll_proj2,
-            {'tag_add': [{'description': '', 'id': 4,
-                          'path': 'interesting.places'}],
+            {'tag_add': [{'description': '', 'tag_id': 4,
+                          'tag_path': 'interesting.places'}],
              'id': 2})
         poll_proj2 = await self.poll_event(2, 2)
 
@@ -560,8 +572,8 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(doc.filename, '_NUL.html')
         self.assertEqual(
             await poll_proj1,
-            {'document_add': [{'description': '', 'id': 1, 'name': name}],
-             'id': 3})
+            {'document_add': [{'description': '', 'document_id': 1,
+                               'document_name': name}], 'id': 3})
         poll_proj1 = await self.poll_event(1, 3)
 
         # Create document 2 in project 2
@@ -581,8 +593,8 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(doc.filename, 'otherdoc.html')
         self.assertEqual(
             await poll_proj2,
-            {'document_add': [{'description': 'Other one', 'id': 2,
-                               'name': 'otherdoc'}], 'id': 4})
+            {'document_add': [{'description': 'Other one', 'document_id': 2,
+                               'document_name': 'otherdoc'}], 'id': 4})
         poll_proj2 = await self.poll_event(2, 4)
 
         # Create highlight 1 in document 1
@@ -594,7 +606,7 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(response.body, b'{"id": 1}')
         self.assertEqual(
             await poll_proj1,
-            {'highlight_add': {'1': [{'id': 1, 'tags': [1],
+            {'highlight_add': {'1': [{'highlight_id': 1, 'tags': [1],
                                       'start_offset': 3, 'end_offset': 7}]},
              'id': 5, 'tag_count_changes': {'1': 1}})
         poll_proj1 = await self.poll_event(1, 5)
@@ -608,7 +620,7 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(response.body, b'{}')
         self.assertEqual(
             await poll_proj2,
-            {'project_meta': {'name': 'new project',
+            {'project_meta': {'project_name': 'new project',
                               'description': 'Meaningful'},
              'id': 6})
         poll_proj2 = await self.poll_event(2, 6)
@@ -629,8 +641,8 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(response.body, b'{"created": 3}')
         self.assertEqual(
             await poll_proj2,
-            {'document_add': [{'description': 'Last one', 'id': 3,
-                               'name': 'third'}], 'id': 7})
+            {'document_add': [{'description': 'Last one', 'document_id': 3,
+                               'document_name': 'third'}], 'id': 7})
         poll_proj2 = await self.poll_event(2, 7)
 
         # Create highlight in document 2, using wrong project id
@@ -665,7 +677,7 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(response.body, b'{"id": 2}')
         self.assertEqual(
             await poll_proj2,
-            {'highlight_add': {'2': [{'id': 2, 'tags': [4],
+            {'highlight_add': {'2': [{'highlight_id': 2, 'tags': [4],
                                       'start_offset': 0, 'end_offset': 4}]},
              'id': 8, 'tag_count_changes': {'4': 1}})
         poll_proj2 = await self.poll_event(2, 8)
@@ -679,7 +691,7 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(response.body, b'{"id": 3}')
         self.assertEqual(
             await poll_proj2,
-            {'highlight_add': {'2': [{'id': 3, 'tags': [2, 3],
+            {'highlight_add': {'2': [{'highlight_id': 3, 'tags': [2, 3],
                                       'start_offset': 13, 'end_offset': 17}]},
              'id': 9, 'tag_count_changes': {'2': 1, '3': 1}})
         poll_proj2 = await self.poll_event(2, 9)
@@ -693,7 +705,7 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(response.body, b'{"id": 4}')
         self.assertEqual(
             await poll_proj2,
-            {'highlight_add': {'3': [{'id': 4, 'tags': [3],
+            {'highlight_add': {'3': [{'highlight_id': 4, 'tags': [3],
                                       'start_offset': 0, 'end_offset': 7}]},
              'id': 10, 'tag_count_changes': {'3': 1}})
         poll_proj2 = await self.poll_event(2, 10)
@@ -942,7 +954,7 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(json.loads(response.body.decode('utf-8')), {'id': 2})
         self.assertEqual(
             await poll_proj2,
-            {'tag_merge': [{'src': 3, 'dest': 2}], 'id': 11},
+            {'tag_merge': [{'src_tag_id': 3, 'dest_tag_id': 2}], 'id': 11},
         )
         poll_proj2 = await self.poll_event(2, 11)
 
@@ -1076,6 +1088,435 @@ class TestMultiuser(MyHTTPTestCase):
         response = self.get('/new_password?reset_token=' + token)
         self.assertEqual(response.code, 403)
 
+    @classmethod
+    def make_basic_db(cls, db, db_num):
+        # Populate database
+        user = database.User(login='db%duser' % db_num)
+        user.set_password('hackme')
+        db.add(user)
+        cls.make_basic_project(db, db_num, 1)
+        cls.make_basic_project(db, db_num, 2)
+
+    @staticmethod
+    def make_basic_project(db, db_num, project_num):
+        # Creates 1 project, 2 (+1 deleted) documents, 2 (+1 deleted) tags,
+        # 2 (+1 deleted) highlights, 13 commands total
+        def doc(project, number):
+            text = 'db%ddoc%d%d' % (db_num, project_num, number)
+            return database.Document(
+                name=text + '.txt',
+                description='',
+                filename=text + '.txt',
+                project=project,
+                contents=text,
+            )
+
+        user = 'db%duser' % db_num
+        project1 = database.Project(
+            name='db%dproject%d' % (db_num, project_num),
+            description='',
+        )
+        db.add(project1)
+        db.flush()
+        document1 = doc(project1, 1)
+        db.add(document1)
+        document2 = doc(project1, 2)
+        db.add(document2)
+        tag1 = database.Tag(
+            project=project1,
+            path='db%dtag%d1' % (db_num, project_num),
+            description='',
+        )
+        db.add(tag1)
+        tag2 = database.Tag(
+            project=project1,
+            path='db%dtag%d2' % (db_num, project_num),
+            description='',
+        )
+        db.add(tag2)
+        db.flush()
+        hl1 = database.Highlight(
+            document_id=document1.id,
+            start_offset=3, end_offset=6, snippet='doc',
+        )
+        hl2 = database.Highlight(
+            document_id=document2.id,
+            start_offset=3, end_offset=6, snippet='doc',
+        )
+        db.add(hl1)
+        db.add(hl2)
+        db.flush()
+        db.add(database.HighlightTag(highlight_id=hl1.id, tag_id=tag2.id))
+        db.add(database.HighlightTag(highlight_id=hl2.id, tag_id=tag1.id))
+        db.add(database.ProjectMember(user_login='admin', project=project1,
+                                      privileges=database.Privileges.ADMIN))
+        db.add(database.ProjectMember(user_login=user,
+                                      project=project1,
+                                      privileges=database.Privileges.ADMIN))
+        db.add(database.Command.document_add(user, document1))
+        document_fake = doc(project1, 100)
+        db.add(document_fake)
+        db.flush()
+        db.add(database.Command.document_add(user, document_fake))
+        db.add(database.Command.document_add(user, document2))
+        db.add(database.Command.document_delete(user, document_fake))
+        db.delete(document_fake)
+        tag_fake = database.Tag(project=project1, path='db%dtagF' % db_num,
+                                description='')
+        db.add(tag_fake)
+        db.flush()
+        db.add(database.Command.tag_add(user, tag1))
+        db.add(database.Command.tag_add(user, tag_fake))
+        db.add(database.Command.tag_add(user, tag2))
+        db.add(database.Command.tag_delete(user, project1.id, tag_fake.id))
+        db.delete(tag_fake)
+        hl_fake = database.Highlight(
+            document_id=document1.id,
+            start_offset=3, end_offset=6, snippet='doc',
+        )
+        db.add(hl_fake)
+        db.flush()
+        db.add(database.Command.highlight_add(user, document1, hl1, []))
+        db.add(database.Command.highlight_add(user, document1, hl1, [tag2.id]))
+        db.add(database.Command.highlight_add(user, document1, hl_fake,
+                                              [tag1.id]))
+        db.add(database.Command.highlight_add(user, document1, hl2, [tag1.id]))
+        db.add(database.Command.highlight_delete(user, document1, hl_fake.id))
+        db.delete(hl_fake)
+
+    def assertRowsEqualsExceptDates(self, first, second):
+        self.assertEqual(*[
+            [
+                [item for item in row if not isinstance(item, datetime)]
+                for row in rows]
+            for rows in (first, second)
+        ])
+
+    @with_tempdir
+    def test_import(self, tmp):
+        # Populate database
+        db1 = self.application.DBSession()
+        self.make_basic_db(db1, 1)
+        db1.commit()
+
+        # Login
+        response = self.post('/cookies', dict())
+        self.assertEqual(response.code, 302)
+        self.assertEqual(response.headers['Location'], '/')
+        response = self.get('/login')
+        self.assertEqual(response.code, 200)
+        response = self.post('/login', dict(next='/', login='db1user',
+                                            password='hackme'))
+        self.assertEqual(response.code, 302)
+        self.assertEqual(response.headers['Location'], '/')
+
+        # Create second database
+        db2_path = os.path.join(tmp, 'db.sqlite3')
+        db2 = database.connect('sqlite:///' + db2_path)()
+        db2.add(database.User(login='admin'))
+        self.make_basic_db(db2, 2)
+        db2.commit()
+
+        # List projects in database
+        with open(db2_path, 'rb') as fp:
+            response = self.post(
+                '/api/import',
+                {},
+                fmt='multipart',
+                files=dict(file=('db2.sqlite3', 'application/octet-stream',
+                                 fp.read())),
+            )
+        self.assertEqual(response.code, 200)
+        self.assertEqual(json.loads(response.body.decode('utf-8')), {
+            'projects': [{'id': 1, 'name': 'db2project1'},
+                         {'id': 2, 'name': 'db2project2'}],
+        })
+
+        # Import project
+        with open(db2_path, 'rb') as fp:
+            response = self.post(
+                '/api/import',
+                {'project_id': 1},
+                fmt='multipart',
+                files=dict(file=('db2.sqlite3', 'application/octet-stream',
+                                 fp.read())),
+            )
+        self.assertEqual(response.code, 200)
+        self.assertEqual(json.loads(response.body.decode('utf-8')), {
+            'project_id': 3,
+        })
+
+        # Check imported project
+        self.assertEqual(
+            {row[0] for row in db1.execute(
+                sqlalchemy.select([database.User.__table__.c.login])
+            )},
+            {'admin', 'db1user'},
+        )
+        self.assertRowsEqualsExceptDates(
+            db1.execute(
+                database.Project.__table__.select()
+                .order_by(database.Project.__table__.c.id)
+            ),
+            [
+                (1, 'db1project1', '', datetime.utcnow()),
+                (2, 'db1project2', '', datetime.utcnow()),
+                (3, 'db2project1', '', datetime.utcnow()),
+            ],
+        )
+        self.assertRowsEqualsExceptDates(
+            db1.execute(
+                database.ProjectMember.__table__.select()
+                .order_by(database.ProjectMember.__table__.c.project_id)
+                .order_by(database.ProjectMember.__table__.c.user_login)
+            ),
+            [
+                (1, 'admin', database.Privileges.ADMIN),
+                (1, 'db1user', database.Privileges.ADMIN),
+                (2, 'admin', database.Privileges.ADMIN),
+                (2, 'db1user', database.Privileges.ADMIN),
+                (3, 'db1user', database.Privileges.ADMIN),
+            ],
+        )
+        self.assertEqual(
+            [
+                (row['id'], row['name'])
+                for row in db1.execute(
+                    database.Document.__table__.select()
+                    .order_by(database.Document.__table__.c.id)
+                )
+            ],
+            [
+                (1, 'db1doc11.txt'),
+                (2, 'db1doc12.txt'),
+                (4, 'db1doc21.txt'),
+                (5, 'db1doc22.txt'),
+                (7, 'db2doc11.txt'),
+                (8, 'db2doc12.txt'),
+            ],
+        )
+        self.assertRowsEqualsExceptDates(
+            db1.execute(
+                database.Command.__table__.select()
+                .where(database.Command.__table__.c.project_id == 3)
+                .order_by(database.Command.__table__.c.id)
+            ),
+            [
+                # id, user_login, project_id, document_id, {payload}
+                # project 1 imported as 3
+                # documents 1, 2, 3 imported as 7, 8, 9
+                # tags 1, 2, 3 imported as 7, 8, -3
+                # highlights 1, 2, 3 imported as 7, 8, -3
+                # commands 1-13 exported as 27-39
+                (27, 'db1user', 3, 7,
+                 {'type': 'document_add', 'description': '',
+                  'document_name': 'db2doc11.txt'}),
+                (28, 'db1user', 3, -3,
+                 {'type': 'document_add', 'description': '',
+                  'document_name': 'db2doc1100.txt'}),
+                (29, 'db1user', 3, 8,
+                 {'type': 'document_add', 'description': '',
+                  'document_name': 'db2doc12.txt'}),
+                (30, 'db1user', 3, -3, {'type': 'document_delete'}),
+                (31, 'db1user', 3, None,
+                 {'type': 'tag_add', 'description': '', 'tag_id': 7,
+                  'tag_path': 'db2tag11'}),
+                (32, 'db1user', 3, None,
+                 {'type': 'tag_add', 'description': '', 'tag_id': -3,
+                  'tag_path': 'db2tagF'}),
+                (33, 'db1user', 3, None,
+                 {'type': 'tag_add', 'description': '', 'tag_id': 8,
+                  'tag_path': 'db2tag12'}),
+                (34, 'db1user', 3, None, {'type': 'tag_delete', 'tag_id': -3}),
+                (35, 'db1user', 3, 7,
+                 {'type': 'highlight_add', 'highlight_id': 7,
+                  'start_offset': 3, 'end_offset': 6, 'tags': []}),
+                (36, 'db1user', 3, 7,
+                 {'type': 'highlight_add', 'highlight_id': 7,
+                  'start_offset': 3, 'end_offset': 6, 'tags': [8]}),
+                (37, 'db1user', 3, 7,
+                 {'type': 'highlight_add', 'highlight_id': -3,
+                  'start_offset': 3, 'end_offset': 6, 'tags': [7]}),
+                (38, 'db1user', 3, 7,
+                 {'type': 'highlight_add', 'highlight_id': 8,
+                  'start_offset': 3, 'end_offset': 6, 'tags': [7]}),
+                (39, 'db1user', 3, 7,
+                 {'type': 'highlight_delete', 'highlight_id': -3}),
+                (40, 'db1user', 3, None, {'type': 'project_import'}),
+            ],
+        )
+        self.assertEqual(
+            [
+                (row['id'], row['document_id'])
+                for row in db1.execute(
+                    database.Highlight.__table__.select()
+                    .order_by(database.Highlight.__table__.c.id)
+                )
+            ],
+            [(1, 1), (2, 2), (4, 4), (5, 5), (7, 7), (8, 8)],
+        )
+        self.assertRowsEqualsExceptDates(
+            db1.execute(database.Tag.__table__.select()),
+            [
+                (1, 1, 'db1tag11', ''),
+                (2, 1, 'db1tag12', ''),
+                (4, 2, 'db1tag21', ''),
+                (5, 2, 'db1tag22', ''),
+                (7, 3, 'db2tag11', ''),
+                (8, 3, 'db2tag12', ''),
+            ],
+        )
+        self.assertRowsEqualsExceptDates(
+            db1.execute(
+                database.HighlightTag.__table__.select()
+                .order_by(database.HighlightTag.__table__.c.highlight_id)
+            ),
+            [(1, 2), (2, 1), (4, 5), (5, 4), (7, 8), (8, 7)],
+        )
+
+    @with_tempdir
+    def test_export(self, tmp):
+        # Populate database
+        db1 = self.application.DBSession()
+        self.make_basic_db(db1, 1)
+        db1.commit()
+
+        # Login
+        response = self.post('/cookies', dict())
+        self.assertEqual(response.code, 302)
+        self.assertEqual(response.headers['Location'], '/')
+        response = self.get('/login')
+        self.assertEqual(response.code, 200)
+        response = self.post('/login', dict(next='/', login='db1user',
+                                            password='hackme'))
+        self.assertEqual(response.code, 302)
+        self.assertEqual(response.headers['Location'], '/')
+
+        # Export project
+        db2_path = os.path.join(tmp, 'db.sqlite3')
+        response = self.get('/project/2/export/project.sqlite3')
+        self.assertEqual(response.code, 200)
+        self.assertEqual(response.headers['Content-Type'],
+                         'application/vnd.sqlite3')
+        with open(db2_path, 'wb') as fp:
+            fp.write(response.body)
+        db2 = database.connect('sqlite:///' + db2_path)()
+
+        # Check exported project
+        self.assertEqual(
+            {row[0] for row in db2.execute(
+                sqlalchemy.select([database.User.__table__.c.login])
+            )},
+            {'admin'},
+        )
+        self.assertRowsEqualsExceptDates(
+            db2.execute(
+                database.Project.__table__.select()
+                .order_by(database.Project.__table__.c.id)
+            ),
+            [
+                (1, 'db1project2', '', datetime.utcnow()),
+            ],
+        )
+        self.assertRowsEqualsExceptDates(
+            db2.execute(
+                database.ProjectMember.__table__.select()
+                .order_by(database.ProjectMember.__table__.c.user_login)
+            ),
+            [
+                (1, 'admin', database.Privileges.ADMIN),
+            ],
+        )
+        self.assertEqual(
+            [
+                (row['id'], row['name'])
+                for row in db2.execute(
+                    database.Document.__table__.select()
+                    .order_by(database.Document.__table__.c.id)
+                )
+            ],
+            [
+                (1, 'db1doc21.txt'),
+                (2, 'db1doc22.txt'),
+            ],
+        )
+        self.assertRowsEqualsExceptDates(
+            db2.execute(
+                database.Command.__table__.select()
+                .order_by(database.Command.__table__.c.id)
+            ),
+            [
+                # id, user_login, project_id, document_id, {payload}
+                # project 2 exported as 1
+                # documents 4, 5, 6 exported as 1, 2, -6
+                # tags 4, 5, 6 exported as 1, 2, -6
+                # highlights 4, 5, 6 exported as 1, 2, -6
+                # commands 14-26 exported as 1-13
+                (1, 'admin', 1, 1,
+                 {'type': 'document_add', 'description': '',
+                  'document_name': 'db1doc21.txt'}),
+                (2, 'admin', 1, -6,
+                 {'type': 'document_add', 'description': '',
+                  'document_name': 'db1doc2100.txt'}),
+                (3, 'admin', 1, 2,
+                 {'type': 'document_add', 'description': '',
+                  'document_name': 'db1doc22.txt'}),
+                (4, 'admin', 1, -6, {'type': 'document_delete'}),
+                (5, 'admin', 1, None,
+                 {'type': 'tag_add', 'description': '', 'tag_id': 1,
+                  'tag_path': 'db1tag21'}),
+                (6, 'admin', 1, None,
+                 {'type': 'tag_add', 'description': '', 'tag_id': -6,
+                  'tag_path': 'db1tagF'}),
+                (7, 'admin', 1, None,
+                 {'type': 'tag_add', 'description': '', 'tag_id': 2,
+                  'tag_path': 'db1tag22'}),
+                (8, 'admin', 1, None,
+                 {'type': 'tag_delete', 'tag_id': -6}),
+                (9, 'admin', 1, 1,
+                 {'type': 'highlight_add', 'highlight_id': 1,
+                  'start_offset': 3, 'end_offset': 6, 'tags': []}),
+                (10, 'admin', 1, 1,
+                 {'type': 'highlight_add', 'highlight_id': 1,
+                  'start_offset': 3, 'end_offset': 6, 'tags': [2]}),
+                (11, 'admin', 1, 1,
+                 {'type': 'highlight_add', 'highlight_id': -6,
+                  'start_offset': 3, 'end_offset': 6, 'tags': [1]}),
+                (12, 'admin', 1, 1,
+                 {'type': 'highlight_add', 'highlight_id': 2,
+                  'start_offset': 3, 'end_offset': 6, 'tags': [1]}),
+                (13, 'admin', 1, 1,
+                 {'type': 'highlight_delete', 'highlight_id': -6}),
+            ],
+        )
+        self.assertEqual(
+            [
+                (row['id'], row['document_id'])
+                for row in db2.execute(
+                    database.Highlight.__table__.select()
+                    .order_by(database.Highlight.__table__.c.id)
+                )
+            ],
+            [(1, 1), (2, 2)],
+        )
+        self.assertRowsEqualsExceptDates(
+            db2.execute(
+                database.Tag.__table__.select()
+                .order_by(database.Tag.__table__.c.id)
+            ),
+            [
+                (1, 1, 'db1tag21', ''),
+                (2, 1, 'db1tag22', ''),
+            ],
+        )
+        self.assertRowsEqualsExceptDates(
+            db2.execute(
+                database.HighlightTag.__table__.select()
+                .order_by(database.HighlightTag.__table__.c.highlight_id)
+            ),
+            [(1, 2), (2, 1)],
+        )
+
     async def _poll_event(self, proj, from_id):
         response = await self.aget('/api/project/%d/events?from=%d' % (
                                    proj, from_id))
@@ -1113,7 +1554,7 @@ class TestSingleuser(MyHTTPTestCase):
 
     def tearDown(self):
         close_all_sessions()
-        engine = create_engine(DATABASE_URI)
+        engine = sqlalchemy.create_engine(DATABASE_URI)
         database.Base.metadata.drop_all(bind=engine)
 
     def test_login(self):

@@ -79,6 +79,8 @@ def make_app(config, debug=False, xsrf_cookies=True):
             URLSpec('/new_password', views.SetNewPassword,
                     name='new_password'),
             URLSpec('/project/new', views.ProjectAdd, name='new_project'),
+            URLSpec('/project/import', views.ProjectImport,
+                    name='import_project'),
             URLSpec('/project/([0-9]+)/delete', views.ProjectDelete,
                     name='delete_project'),
 
@@ -90,6 +92,8 @@ def make_app(config, debug=False, xsrf_cookies=True):
                     name='project_tag'),
 
             # Export options
+            URLSpec('/project/([0-9]+)/export/project\\.sqlite3',
+                    export.ExportSqlite, name='export_project_sqlite'),
             URLSpec('/project/([0-9]+)/export/codebook\\.qdc',
                     export.ExportCodebookXml, name='export_codebook_qdc'),
             URLSpec('/project/([0-9]+)/export/codebook\\.csv',
@@ -111,6 +115,7 @@ def make_app(config, debug=False, xsrf_cookies=True):
 
             # API
             URLSpec('/api/check_user', api.CheckUser),
+            URLSpec('/api/import', api.ImportProject),
             URLSpec('/api/project/([0-9]+)', api.ProjectMeta),
             URLSpec('/api/project/([0-9]+)/document/new', api.DocumentAdd),
             URLSpec('/api/project/([0-9]+)/document/([0-9]+)',

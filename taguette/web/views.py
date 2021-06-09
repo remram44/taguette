@@ -409,7 +409,7 @@ class ProjectAdd(BaseHandler):
         description = self.get_body_argument('description', '')
         try:
             validate.project_name(name)
-            validate.project_description(description)
+            validate.description(description)
 
             # Create project
             project = database.Project(name=name, description=description)
@@ -442,6 +442,13 @@ class ProjectAdd(BaseHandler):
         for name in ('name', 'description', 'error'):
             kwargs.setdefault(name, '')
         super(ProjectAdd, self).render(template_name, **kwargs)
+
+
+class ProjectImport(BaseHandler):
+    @authenticated
+    @PROM_REQUESTS.sync('import_project')
+    def get(self):
+        return self.render('project_import.html', projects=None)
 
 
 class ProjectDelete(BaseHandler):

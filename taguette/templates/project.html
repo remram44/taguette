@@ -44,6 +44,8 @@
 
           {% endif %}
 
+          <p><a href="{{ reverse_url('export_project_sqlite', project.id) }}" class="w-100 btn btn-outline-primary" role="button">{% trans %}Export project{% endtrans %}</a></p>
+
           <div class="dropdown mb-3">
             <button class="w-100 btn btn-outline-primary dropdown-toggle" type="button" id="dropdown-codebook" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               {% trans %}Export codebook{% endtrans %}
