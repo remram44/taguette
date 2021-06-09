@@ -494,8 +494,8 @@ html_to_extensions = {
              'wordprocessingml.document; charset=utf-8'),
     'pdf': (lambda html, config: calibre_from_html(html, 'pdf', config),
             'application/pdf'),
-    'rtf': (lambda html: calibre_from_html(html, 'pdf'),
-            'application/pdf'),
+    'rtf': (lambda html, config: calibre_from_html(html, 'rtf', config),
+            'application/rtf'),
 }
 for n in html_to_extensions:
     PROM_CALIBRE_FROMHTML.labels(n).inc(0)
