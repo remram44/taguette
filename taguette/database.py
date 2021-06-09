@@ -243,7 +243,7 @@ class Command(Base):
 
     id = Column(Integer, primary_key=True)
     date = Column(DateTime, nullable=False,
-                  default=datetime.utcnow(), index=True)
+                  default=lambda: datetime.utcnow(), index=True)
     user_login = Column(String(30),
                         ForeignKey('users.login', onupdate='CASCADE'),
                         nullable=False)
