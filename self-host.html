@@ -1,7 +1,7 @@
 {% extends "_layout.html" %}
 {% set active_page = 'self-host' %}
 
-{% block title %}{# TRANSLATORS: Page title #}{% trans %}Self Hosting Taguette, the free and opensource qualitative data analysis tool{% endtrans %}{% endblock %}
+{% block title %}{# TRANSLATORS: Page title #}{% trans %}Self Hosting Taguette, the free and open-source qualitative data analysis tool{% endtrans %}{% endblock %}
 
 {% block contents %}
 <div id="container-body">
@@ -12,7 +12,7 @@
   <p>Taguette can be run in two separate ways:</p>
   <ul>
     <li>On your machine, after <a href="install.html">installing it</a>. This requires no complex setup, and your data never has to leave your machine!</li>
-    <li>On a server. This is more difficult to setup, but users can then use that installed version with nothing more than their web browser! We host a publicly-available Taguette server at <a href="https://app.taguette.org/">app.taguette.org</a> at the moment, so you can feel free to use that. If you want to deploy your own server for your organization, read on!</li>
+    <li>On a server. This is more difficult to set up, but users can then use that installed version with nothing more than their web browser! We host a publicly available Taguette server at <a href="https://app.taguette.org/">app.taguette.org</a> at the moment, so you can feel free to use that. If you want to deploy your own server for your organization, read on!</li>
   </ul>
   {% endtrans %}
 
@@ -48,14 +48,14 @@ taguette --no-browser server taguette.conf</pre>
   {% trans %}
   <p>In either case, running the server requires a configuration file. This file contains important information, such as email server and addresses, the port number to listen on, which database to use, whether registration of new accounts is enabled, etc.</p>
   <p>You can make Taguette print a configuration file for you to edit using <code>taguette default-config</code>.</p>
-  <p>You might want to change the <code>PORT</code> to <code>80</code>, or better yet configure a webserver to act as a proxy, see below.</p>
+  <p>You might want to change the <code>PORT</code> to <code>80</code>, or better yet configure a web-server to act as a proxy, see below.</p>
   {% endtrans %}
 
   <h2 id="proxy">{% trans %}Using a proxy server{% endtrans %}</h2>
 
   {% trans %}
-  <p>For performance or security reasons, or simply because you want to host multiple sites on your machine, you might want to put a webserver (such as <a href="https://nginx.org/">nginx</a> or <a href="https://httpd.apache.org/">Apache</a>) in front of Taguette. That server will then simply relay connections to Taguette (a setup we call reverse proxy). You can use it to provide encryption using TLS (recommended) for example using <a href="https://letsencrypt.org/">Let's Encrypt</a>, free.</p>
-  <p>To help with this this, we provide <a href="https://gitlab.com/remram44/taguette/tree/master/scripts/dist/server_configs">example configuration files</a> that you can use.</p>
+  <p>For performance or security reasons, or simply because you want to host multiple sites on your machine, you might want to put a web-server (such as <a href="https://nginx.org/">nginx</a> or <a href="https://httpd.apache.org/">Apache</a>) in front of Taguette. That server will then simply relay connections to Taguette (a setup we call reverse proxy). You can use it to provide encryption using TLS (recommended) for example using <a href="https://letsencrypt.org/">Let's Encrypt</a>, free.</p>
+  <p>To help with this, we provide <a href="https://gitlab.com/remram44/taguette/tree/master/scripts/dist/server_configs">example configuration files</a> that you can use.</p>
   {% endtrans %}
 
   <h2 id="database">{% trans %}Database{% endtrans %}</h2>
