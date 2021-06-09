@@ -7,6 +7,7 @@ Create Date: 2021-06-05 18:24:28.756510
 """
 from alembic import op
 import json
+import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
@@ -14,6 +15,26 @@ revision = 'bc8e0e0677e9'
 down_revision = 'ecb4065de575'
 branch_labels = None
 depends_on = None
+
+
+meta = sa.MetaData(naming_convention={
+    "ix": "ix_%(column_0_label)s",
+    "uq": "uq_%(table_name)s_%(column_0_name)s",
+    "ck": "ck_%(table_name)s_%(constraint_name)s",
+    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+    "pk": "pk_%(table_name)s",
+})
+
+commands = sa.Table(
+    'commands',
+    meta,
+    sa.Column('id', sa.Integer, primary_key=True),
+    sa.Column('date', sa.DateTime, nullable=False),
+    sa.Column('user_login', sa.String(30), nullable=False),
+    sa.Column('project_id', sa.Integer, nullable=False),
+    sa.Column('document_id', sa.Integer, nullable=True),
+    sa.Column('payload', sa.Text, nullable=False),
+)
 
 
 def _do_map(map_func):
@@ -31,14 +52,16 @@ def _do_map(map_func):
         payload = map_func(payload)
         if payload is not None:
             payload = json.dumps(payload, sort_keys=True)
-            update.append({'id': id, 'payload': payload})
+            update.append({'cmd_id': id, 'cmd_payload': payload})
 
     if update:
         with connection.begin():
             connection.execute(
-                '''\
-                    UPDATE commands SET payload=:payload WHERE id=:id;
-                ''',
+                (
+                    commands.update()
+                    .where(commands.c.id == sa.bindparam('cmd_id'))
+                    .values(payload=sa.bindparam('cmd_payload'))
+                ),
                 update,
             )
 
