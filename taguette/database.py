@@ -209,6 +209,11 @@ class ProjectMember(Base):
         )
 
 
+class TextDirection(enum.Enum):
+    LEFT_TO_RIGHT = 0
+    RIGHT_TO_LEFT = 1
+
+
 class Document(Base):
     __tablename__ = 'documents'
     __table_args__ = ({'sqlite_autoincrement': True},)
@@ -222,6 +227,7 @@ class Document(Base):
     project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
                         nullable=False, index=True)
     project = relationship('Project', back_populates='documents')
+    text_direction = Column(Enum(TextDirection), nullable=False)
     contents = deferred(Column(Text, nullable=False))
     highlights = relationship('Highlight', cascade='all,delete-orphan',
                               passive_deletes=True)

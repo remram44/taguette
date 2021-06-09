@@ -1120,7 +1120,7 @@ class TestMultiuser(MyHTTPTestCase):
     def make_basic_project(db, db_num, project_num):
         # Creates 1 project, 2 (+1 deleted) documents, 2 (+1 deleted) tags,
         # 2 (+1 deleted) highlights, 13 commands total
-        def doc(project, number):
+        def doc(project, number, dir=database.TextDirection.LEFT_TO_RIGHT):
             text = 'db%ddoc%d%d' % (db_num, project_num, number)
             return database.Document(
                 name=text + '.txt',
@@ -1128,6 +1128,7 @@ class TestMultiuser(MyHTTPTestCase):
                 filename=text + '.txt',
                 project=project,
                 contents=text,
+                text_direction=dir,
             )
 
         user = 'db%duser' % db_num
@@ -1139,7 +1140,7 @@ class TestMultiuser(MyHTTPTestCase):
         db.flush()
         document1 = doc(project1, 1)
         db.add(document1)
-        document2 = doc(project1, 2)
+        document2 = doc(project1, 2, database.TextDirection.RIGHT_TO_LEFT)
         db.add(document2)
         tag1 = database.Tag(
             project=project1,
