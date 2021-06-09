@@ -191,6 +191,13 @@ def is_html_safe(text):
     For situation where we cannot run `get_html_body()`, this will throw out
     unsafe HTML.
     """
+    soup = bs4.BeautifulSoup(text, 'html5lib')
+    # Check 'src' URLs
+    for e in soup.find_all('img'):
+        if e.attrs['src'] != '/static/missing.png':
+            return False
+
+    # Use bleach to sanitize the content
     cleaned = bleach.clean(
         text,
         tags=['p', 'br', 'a', 'img',
