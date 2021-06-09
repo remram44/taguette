@@ -185,6 +185,25 @@ def get_html_body(body):
     return body
 
 
+def is_html_safe(text):
+    """Check whether the given HTML is safe.
+
+    For situation where we cannot run `get_html_body()`, this will throw out
+    unsafe HTML.
+    """
+    cleaned = bleach.clean(
+        text,
+        tags=['p', 'br', 'a', 'img',
+              'h1', 'h2', 'h3', 'h4', 'h5',
+              'strong', 'em', 'b', 'u',
+              'ul', 'ol', 'li'],
+        attributes={'a': ['href', 'title'], 'img': ['src']},
+        strip=True,
+    )
+
+    return text.strip() == cleaned.strip()
+
+
 @prom_async_time(PROM_CALIBRE_TOHTML_TIME)
 async def calibre_to_html(input_filename, output_dir, config):
     PROM_CALIBRE_TOHTML.inc()
