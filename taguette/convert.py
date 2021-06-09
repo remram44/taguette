@@ -197,7 +197,7 @@ def is_html_safe(text):
               'h1', 'h2', 'h3', 'h4', 'h5',
               'strong', 'em', 'b', 'u',
               'ul', 'ol', 'li'],
-        attributes={'a': ['href', 'title'], 'img': ['src']},
+        attributes={'a': ['href', 'title'], 'img': ['src', 'width', 'height']},
         strip=True,
     )
 
