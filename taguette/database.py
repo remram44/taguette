@@ -827,7 +827,7 @@ def copy_project(
         50,
         condition=Highlight.document_id.in_(mapping_document.keys()),
         validators=dict(
-            start_offset=lambda v: isinstance(v, int) and v > 0,
+            start_offset=lambda v: isinstance(v, int) and v >= 0,
             end_offset=lambda v: isinstance(v, int) and v > 0,
             snippet=convert.is_html_safe,
         ),
@@ -873,7 +873,7 @@ def copy_project(
             project_name=validate.project_name,
             document_name=validate.document_name,
             highlight_id=lambda v: isinstance(v, int),
-            start_offset=lambda v: isinstance(v, int) and v > 0,
+            start_offset=lambda v: isinstance(v, int) and v >= 0,
             end_offset=lambda v: isinstance(v, int) and v > 0,
             tags=lambda v: (
                 isinstance(v, list)
