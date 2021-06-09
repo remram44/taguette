@@ -23,7 +23,8 @@ def upgrade():
     bind = op.get_bind()
     session = Session(bind=bind)
     # https://stackoverflow.com/a/7416624
-    session.execute('''\
+    session.execute(
+        '''\
         UPDATE tags
         SET path = path || ' ' || id
         WHERE
@@ -40,7 +41,8 @@ def upgrade():
                     t1.project_id = t2.project_id AND
                     t1.id <> t2.id
             );
-        ''')
+        ''',
+    )
     session.commit()
 
     # Add the indexes

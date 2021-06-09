@@ -26,10 +26,10 @@ def upgrade():
 
     # Set the password set time to now if a password is set
     op.execute(
-        '''
+        '''\
         UPDATE users SET password_set_date=DATETIME()
         WHERE hashed_password IS NOT NULL;
-        '''
+        ''',
     )
 
 

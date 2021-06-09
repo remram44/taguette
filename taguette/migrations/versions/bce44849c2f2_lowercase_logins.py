@@ -53,9 +53,11 @@ def upgrade():
     # Check that logins pass new validation requirements
     bind = op.get_bind()
     session = Session(bind=bind)
-    logins = session.execute('''\
-        SELECT login FROM users;
-    ''')
+    logins = session.execute(
+        '''\
+            SELECT login FROM users;
+        ''',
+    )
     error = False
     for row in logins:
         login, = row
