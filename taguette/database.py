@@ -977,9 +977,13 @@ def copy_table(
                     if key in validators:
                         try:
                             if not validators[key](value):
-                                raise ValueError("Data failed validation")
+                                raise ValueError(
+                                    "Data failed validation (column %r)" % key,
+                                )
                         except validate.InvalidFormat:
-                            raise ValueError("Data failed validation")
+                            raise ValueError(
+                                "Data failed validation (column %r)" % key,
+                            )
 
             # Have to insert one-by-one for inserted_primary_key
             ins = dest_db.execute(
