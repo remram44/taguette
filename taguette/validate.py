@@ -111,6 +111,10 @@ def filename(name):
     Adapted from werkzeug's secure_filename(), copyright 2007 the Pallets team.
     https://palletsprojects.com/p/werkzeug/
     """
+    if not isinstance(name, str):
+        raise ValueError("File name is not a string")
+    if not name:
+        raise ValueError("File name cannot be empty")
     if '/' in name:
         name = name[name.rindex('/') + 1:]
     if filename.windows and '\\' in name:

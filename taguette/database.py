@@ -25,6 +25,7 @@ from sqlalchemy.types import DateTime, Enum, Integer, String, Text
 import sys
 
 import taguette
+from taguette import convert
 from taguette import validate
 
 
@@ -752,11 +753,15 @@ def copy_project(
     src_db, dest_db,
     project_id, user_login,
 ):
-    def copy(model, pkey, fkeys, size, *, condition=None, transform=None):
+    def copy(
+        model, pkey, fkeys, size,
+        *, condition=None, transform=None, validators=None
+    ):
         return copy_table(
             src_db, dest_db,
             model.__table__, pkey, fkeys,
-            batch_size=size, condition=condition, transform=transform,
+            batch_size=size,
+            condition=condition, transform=transform, validators=validators,
         )
 
     def insert(model, values):
@@ -772,6 +777,8 @@ def copy_project(
     ).fetchone()
     if project is None:
         raise KeyError("project ID not found")
+    validate.project_name(project['name'])
+    validate.description(project['description'])
     project = dict(project.items())
     project.pop('id')
     new_project_id, = insert(Project, project).inserted_primary_key
@@ -793,6 +800,12 @@ def copy_project(
         dict(project_id=mapping_project),
         2,
         condition=Document.project_id == project_id,
+        validators=dict(
+            name=validate.document_name,
+            description=validate.description,
+            filename=validate.filename,
+            contents=convert.is_html_safe,
+        ),
     )
 
     # Copy tags
@@ -801,6 +814,10 @@ def copy_project(
         dict(project_id=mapping_project),
         50,
         condition=Tag.project_id == project_id,
+        validators=dict(
+            path=validate.tag_path,
+            description=validate.description,
+        ),
     )
 
     # Copy highlights
@@ -809,6 +826,11 @@ def copy_project(
         dict(document_id=mapping_document),
         50,
         condition=Highlight.document_id.in_(mapping_document.keys()),
+        validators=dict(
+            start_offset=lambda v: isinstance(v, int) and v > 0,
+            end_offset=lambda v: isinstance(v, int) and v > 0,
+            snippet=convert.is_html_safe,
+        ),
     )
 
     # Copy highlight tags
@@ -901,16 +923,16 @@ def copy_project(
         transform=transform_command,
     )
 
-    # TODO: Validate project/documents/tags with validate.py?
-
     dest_db.commit()
 
     return new_project_id
 
 
-def copy_table(src_db, dest_db, table,
-               pkey, fkeys,
-               *, batch_size=50, condition=None, transform=None):
+def copy_table(
+    src_db, dest_db, table,
+    pkey, fkeys,
+    *, batch_size=50, condition=None, transform=None, validators=None
+):
     """Copy all data in a table across database connections.
 
     :param src_db: The SQLAlchemy ``Connection`` or ``Session`` to copy from.
@@ -949,6 +971,16 @@ def copy_table(src_db, dest_db, table,
             # Generic transform
             if transform is not None:
                 row = transform(row)
+            # Validate
+            if validators:
+                for key, value in row.items():
+                    if key in validators:
+                        try:
+                            if not validators[key](value):
+                                raise ValueError("Data failed validation")
+                        except validate.InvalidFormat:
+                            raise ValueError("Data failed validation")
+
             # Have to insert one-by-one for inserted_primary_key
             ins = dest_db.execute(
                 table.insert(),
