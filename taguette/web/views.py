@@ -246,6 +246,10 @@ class Account(BaseHandler):
             if language not in tornado.locale.get_supported_locales():
                 language = None
             user.language = language
+            if language is None:
+                self.clear_cookie('language')
+            else:
+                self.set_secure_cookie('language', language)
             self.db.commit()
             return self.redirect(self.reverse_url('account'))
         except validate.InvalidFormat as e:
