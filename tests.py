@@ -1,7 +1,7 @@
+import aiohttp
 import asyncio
 from datetime import datetime
 import functools
-from http.cookies import SimpleCookie
 import itertools
 import json
 import os
@@ -13,8 +13,7 @@ import string
 import tempfile
 import textwrap
 import time
-from tornado.testing import AsyncTestCase, gen_test, AsyncHTTPTestCase, \
-    get_async_test_timeout
+from tornado.testing import AsyncTestCase, gen_test, AsyncHTTPTestCase
 import unittest
 from unittest import mock
 from urllib.parse import urlencode, urlparse
@@ -248,84 +247,50 @@ class MyHTTPTestCase(AsyncHTTPTestCase):
         web.Application.check_messages = lambda *a: None
         validate.filename.windows = True  # escape device names
         super(MyHTTPTestCase, self).setUp()
-        self.cookie = SimpleCookie()
+        # Tornado's http client doesn't support cookies
+        self.http_client = aiohttp.ClientSession(
+            # Need to set 'unsafe' to work when host is an IP address
+            cookie_jar=aiohttp.cookiejar.CookieJar(unsafe=True),
+        )
 
-    _re_xsrf = re.compile(
-        br'<input type="hidden" name="_xsrf" value="([^">]+)" */?>')
+    def tearDown(self):
+        self.io_loop.run_sync(
+            lambda: self.http_client.close(),
+            timeout=3,
+        )
 
-    def update(self, response):
-        if response.code < 400:
-            m = self._re_xsrf.search(response.body)
-            if m is not None:
-                self.xsrf = m.group(1).decode('utf-8')
-            if 'Set-Cookie' in response.headers:
-                self.cookie.load(response.headers['Set-Cookie'])
-
-    def get_cookie(self):
-        # Python's cookies lib makes multiple headers, which is invalid
-        return '; '.join('%s=%s' % (k, v.value)
-                         for k, v in self.cookie.items())
-
-    def _fetch(self, url, **kwargs):
+    def _fetch(self, url, method='GET', **kwargs):
         # Copied from tornado.testing.AsyncHTTPTestCase.fetch()
         if not url.lower().startswith(('http://', 'https://')):
             url = self.get_url(url)
-        return self.http_client.fetch(url, raise_error=False, **kwargs)
+        return getattr(self.http_client, method.lower())(url, **kwargs)
 
-    async def aget(self, url):
-        headers = {}
-        headers['Cookie'] = self.get_cookie()
-        response = self._fetch(url, follow_redirects=False,
-                               headers=headers)
-        response = await response
-        self.update(response)
-        return response
+    def aget(self, url):
+        return self._fetch(url, allow_redirects=False)
 
-    async def apost(self, url, args, fmt='form', files={}):
-        if fmt == 'form':
-            headers = {'Content-Type': 'application/x-www-form-urlencoded',
-                       'Cookie': self.get_cookie()}
-            body = urlencode(dict(args, _xsrf=self.xsrf))
-        elif fmt == 'json':
-            url = '%s%s%s' % (url, '&' if '?' in url else '?',
-                              urlencode(dict(_xsrf=self.xsrf)))
-            headers = {'Content-Type': 'application/json',
-                       'Accept': 'application/json',
-                       'Cookie': self.get_cookie()}
-            body = json.dumps(args)
-        elif fmt == 'multipart':
-            headers = {'Content-Type': 'multipart/form-data; charset=utf-8; '
-                                       'boundary=-sep',
-                       'Cookie': self.get_cookie()}
-            body = []
-            for k, v in dict(args, _xsrf=self.xsrf).items():
-                body.append(('---sep\r\nContent-Disposition: form-data; '
-                             'name="%s"\r\n' % k).encode('utf-8'))
-                body.append(str(v).encode('utf-8'))
-            for k, v in files.items():
-                body.append(('---sep\r\nContent-Disposition: form-data; name='
-                             '"%s"; filename="%s"\r\nContent-Type: %s\r\n' % (
-                                 k, v[0], v[1])).encode('utf-8'))
-                body.append(v[2])
-            body.append(b'---sep--\r\n')
-            body = b'\r\n'.join(body)
-        else:
-            raise ValueError
-        response = self._fetch(url, method='POST', follow_redirects=False,
-                               headers=headers, body=body)
-        response = await response
-        self.update(response)
-        return response
-
-    def get(self, url):
-        return self.io_loop.run_sync(
-            lambda: self.aget(url),
-            timeout=get_async_test_timeout())
-
-    def post(self, url, args, **kwargs):
-        return self.io_loop.run_sync(
-            lambda: self.apost(url, args, **kwargs),
-            timeout=get_async_test_timeout())
+    def apost(self, url, **kwargs):
+        cookies = self.http_client.cookie_jar.filter_cookies(self.get_url('/'))
+        if '_xsrf' in cookies:
+            token = cookies['_xsrf'].value
+            if 'data' in kwargs:
+                if isinstance(kwargs['data'], dict):
+                    kwargs['data'] = dict(kwargs['data'], _xsrf=token)
+            elif 'json' in kwargs:
+                url = '%s%s%s' % (url, '&' if '?' in url else '?',
+                                  urlencode(dict(_xsrf=token)))
+        if 'files' in kwargs:
+            files = kwargs.pop('files')
+            data = aiohttp.FormData()
+            for key, value in kwargs.get('data', {}).items():
+                data.add_field(key, value)
+            for key, (filename, content_type, value) in files.items():
+                data.add_field(
+                    key, value,
+                    content_type=content_type,
+                    filename=filename,
+                )
+            kwargs['data'] = data
+        return self._fetch(url, method='POST', allow_redirects=False, **kwargs)
 
 
 def set_dumb_password(self, user):
@@ -350,17 +315,19 @@ class TestMultiuser(MyHTTPTestCase):
             return self.application
 
     def tearDown(self):
+        super(TestMultiuser, self).tearDown()
         close_all_sessions()
         engine = sqlalchemy.create_engine(DATABASE_URI)
         database.Base.metadata.drop_all(bind=engine)
 
-    def test_login(self):
+    @gen_test
+    async def test_login(self):
         # Fetch index, should have welcome message and register link
-        response = self.get('/')
-        self.assertEqual(response.code, 200)
-        self.assertIn(b'>Welcome</h1>', response.body)
-        self.assertIn(b'Register now</a> for free and get started',
-                      response.body)
+        async with self.aget('/') as response:
+            self.assertEqual(response.status, 200)
+            self.assertIn(b'>Welcome</h1>', await response.read())
+            self.assertIn(b'Register now</a> for free and get started',
+                          await response.read())
 
         # Only admin so far
         db = self.application.DBSession()
@@ -369,26 +336,31 @@ class TestMultiuser(MyHTTPTestCase):
                          ['admin'])
 
         # Fetch registration page, should hit cookies prompt
-        response = self.get('/register')
-        self.assertEqual(response.code, 302)
-        self.assertEqual(response.headers['Location'],
-                         '/cookies?next=%2Fregister')
+        async with self.aget('/register') as response:
+            self.assertEqual(response.status, 302)
+            self.assertEqual(response.headers['Location'],
+                             '/cookies?next=%2Fregister')
 
         # Accept cookies
-        response = self.post('/cookies', dict(next='/register'))
-        self.assertEqual(response.code, 302)
-        self.assertEqual(response.headers['Location'], '/register')
+        async with self.apost(
+            '/cookies',
+            data=dict(next='/register'),
+        ) as response:
+            self.assertEqual(response.status, 302)
+            self.assertEqual(response.headers['Location'], '/register')
 
         # Fetch registration page
-        response = self.get('/register')
-        self.assertEqual(response.code, 200)
+        async with self.aget('/register') as response:
+            self.assertEqual(response.status, 200)
 
         # Register
-        response = self.post(
-            '/register', dict(login='Tester',
-                              password1='hacktoo', password2='hacktoo'))
-        self.assertEqual(response.code, 302)
-        self.assertEqual(response.headers['Location'], '/')
+        async with self.apost(
+            '/register',
+            data=dict(login='Tester',
+                      password1='hacktoo', password2='hacktoo'),
+        ) as response:
+            self.assertEqual(response.status, 302)
+            self.assertEqual(response.headers['Location'], '/')
 
         # User exists in database
         db = self.application.DBSession()
@@ -397,46 +369,51 @@ class TestMultiuser(MyHTTPTestCase):
                          ['admin', 'tester'])
 
         # Fetch index, should have project list
-        response = self.get('/')
-        self.assertEqual(response.code, 200)
-        self.assertIn(b'>Welcome tester</h1>', response.body)
-        self.assertIn(b'Here are your projects', response.body)
+        async with self.aget('/') as response:
+            self.assertEqual(response.status, 200)
+            self.assertIn(b'>Welcome tester</h1>', await response.read())
+            self.assertIn(b'Here are your projects', await response.read())
 
         # Fetch project creation page
-        response = self.get('/project/new')
-        self.assertEqual(response.code, 200)
+        async with self.aget('/project/new') as response:
+            self.assertEqual(response.status, 200)
 
         # Create a project
-        response = self.post(
-            '/project/new', dict(name='test project', description=''))
-        self.assertEqual(response.code, 302)
-        self.assertEqual(response.headers['Location'], '/project/1')
+        async with self.apost(
+            '/project/new',
+            data=dict(name='test project', description=''),
+        ) as response:
+            self.assertEqual(response.status, 302)
+            self.assertEqual(response.headers['Location'], '/project/1')
 
         # Log out
-        response = self.get('/logout')
-        self.assertEqual(response.code, 302)
-        self.assertEqual(response.headers['Location'], '/')
+        async with self.aget('/logout') as response:
+            self.assertEqual(response.status, 302)
+            self.assertEqual(response.headers['Location'], '/')
 
         # Hit error page
-        response = self.get('/api/project/1/highlights/')
-        self.assertEqual(response.code, 403)
-        self.assertEqual(response.body, b'{"error": "Not logged in"}')
+        async with self.aget('/api/project/1/highlights/') as response:
+            self.assertEqual(response.status, 403)
+            self.assertEqual(await response.json(), {"error": "Not logged in"})
 
         # Fetch login page
-        response = self.get('/login?' + urlencode(dict(next='/project/1')))
-        self.assertEqual(response.code, 200)
+        async with self.aget(
+            '/login?' + urlencode(dict(next='/project/1')),
+        ) as response:
+            self.assertEqual(response.status, 200)
 
         # Log in
-        response = self.post('/login',
-                             dict(next='/project/1', login='admin',
-                                  password='hackme'))
-        self.assertEqual(response.code, 302)
-        self.assertEqual(response.headers['Location'], '/project/1')
+        async with self.apost(
+            '/login',
+            data=dict(next='/project/1', login='admin', password='hackme'),
+        ) as response:
+            self.assertEqual(response.status, 302)
+            self.assertEqual(response.headers['Location'], '/project/1')
 
         # Check redirect to account
-        response = self.get('/.well-known/change-password')
-        self.assertEqual(response.code, 301)
-        self.assertEqual(response.headers['Location'], '/account')
+        async with self.aget('/.well-known/change-password') as response:
+            self.assertEqual(response.status, 301)
+            self.assertEqual(response.headers['Location'], '/account')
 
     @gen_test(timeout=30)
     async def test_projects(self):
@@ -465,32 +442,38 @@ class TestMultiuser(MyHTTPTestCase):
         #                         highlights: [2, 3, 4]
 
         # Accept cookies
-        response = await self.apost('/cookies', dict())
-        self.assertEqual(response.code, 302)
-        self.assertEqual(response.headers['Location'], '/')
+        async with self.apost('/cookies', data=dict()) as response:
+            self.assertEqual(response.status, 302)
+            self.assertEqual(response.headers['Location'], '/')
 
         # Log in
-        response = await self.aget('/login')
-        self.assertEqual(response.code, 200)
-        response = await self.apost('/login', dict(next='/', login='admin',
-                                                   password='hackme'))
-        self.assertEqual(response.code, 302)
-        self.assertEqual(response.headers['Location'], '/')
+        async with self.aget('/login') as response:
+            self.assertEqual(response.status, 200)
+        async with self.apost(
+            '/login',
+            data=dict(next='/', login='admin', password='hackme'),
+        ) as response:
+            self.assertEqual(response.status, 302)
+            self.assertEqual(response.headers['Location'], '/')
 
         # Create project 1
-        response = await self.aget('/project/new')
-        self.assertEqual(response.code, 200)
-        response = await self.apost('/project/new', dict(
-            name='\uFF9F\uFF65\u273F\u30FE\u2572\x28\uFF61\u25D5\u203F\u25D5'
-                 '\uFF61\x29\u2571\u273F\uFF65\uFF9F',
-            description="R\xE9mi's project"))
-        self.assertEqual(response.code, 302)
-        self.assertEqual(response.headers['Location'], '/project/1')
+        async with self.aget('/project/new') as response:
+            self.assertEqual(response.status, 200)
+        async with self.apost(
+            '/project/new',
+            data=dict(
+                name='\uFF9F\uFF65\u273F\u30FE\u2572\x28\uFF61\u25D5\u203F'
+                     '\u25D5\uFF61\x29\u2571\u273F\uFF65\uFF9F',
+                description="R\xE9mi's project",
+            ),
+        ) as response:
+            self.assertEqual(response.status, 302)
+            self.assertEqual(response.headers['Location'], '/project/1')
 
         # Check project page
-        response = await self.aget('/project/1')
-        self.assertEqual(response.code, 200)
-        body = response.body.decode('utf-8')
+        async with self.aget('/project/1') as response:
+            self.assertEqual(response.status, 200)
+            body = await response.text()
         self.assertIn('we are good at engineering', body)
         idx = body.index('we are good at engineering')
         init_js = '\n'.join(body[idx:].splitlines()[1:10])
@@ -520,22 +503,24 @@ class TestMultiuser(MyHTTPTestCase):
         poll_proj1 = await self.poll_event(1, -1)
 
         # Create project 2
-        response = await self.aget('/project/new')
-        self.assertEqual(response.code, 200)
-        response = await self.apost('/project/new', dict(name='other project',
-                                                         description=''))
-        self.assertEqual(response.code, 302)
-        self.assertEqual(response.headers['Location'], '/project/2')
+        async with self.aget('/project/new') as response:
+            self.assertEqual(response.status, 200)
+        async with self.apost(
+            '/project/new',
+            data=dict(name='other project', description=''),
+        ) as response:
+            self.assertEqual(response.status, 302)
+            self.assertEqual(response.headers['Location'], '/project/2')
 
         # Start polling
         poll_proj2 = await self.poll_event(2, -1)
 
         # Create tags in project 2
-        response = await self.apost('/api/project/2/tag/new',
-                                    dict(path='people',
-                                         description="People of interest"),
-                                    fmt='json')
-        self.assertEqual(response.code, 200)
+        async with self.apost(
+            '/api/project/2/tag/new',
+            json=dict(path='people', description="People of interest"),
+        ) as response:
+            self.assertEqual(response.status, 200)
         self.assertEqual(
             await poll_proj2,
             {'tag_add': [{'description': "People of interest", 'tag_id': 3,
@@ -543,11 +528,11 @@ class TestMultiuser(MyHTTPTestCase):
              'id': 1})
         poll_proj2 = await self.poll_event(2, 1)
 
-        response = await self.apost('/api/project/2/tag/new',
-                                    dict(path='interesting.places',
-                                         description=''),
-                                    fmt='json')
-        self.assertEqual(response.code, 200)
+        async with self.apost(
+            '/api/project/2/tag/new',
+            json=dict(path='interesting.places', description=''),
+        ) as response:
+            self.assertEqual(response.status, 200)
         self.assertEqual(
             await poll_proj2,
             {'tag_add': [{'description': '', 'tag_id': 4,
@@ -557,14 +542,13 @@ class TestMultiuser(MyHTTPTestCase):
 
         # Create document 1 in project 1
         name = '\u03A9\u2248\xE7\u221A\u222B\u02DC\xB5\u2264\u2265\xF7'
-        response = await self.apost('/api/project/1/document/new',
-                                    dict(name=name, description=''),
-                                    fmt='multipart',
-                                    files=dict(file=('../NUL.html',
-                                                     'text/plain',
-                                                     b'content here')))
-        self.assertEqual(response.code, 200)
-        self.assertEqual(response.body, b'{"created": 1}')
+        async with self.apost(
+            '/api/project/1/document/new',
+            data=dict(name=name, description=''),
+            files=dict(file=('../NUL.html', 'text/plain', b'content here')),
+        ) as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(await response.json(), {"created": 1})
         db = self.application.DBSession()
         doc = db.query(database.Document).get(1)
         self.assertEqual(doc.name, name)
@@ -577,15 +561,15 @@ class TestMultiuser(MyHTTPTestCase):
         poll_proj1 = await self.poll_event(1, 3)
 
         # Create document 2 in project 2
-        response = await self.apost('/api/project/2/document/new',
-                                    dict(name='otherdoc',
-                                         description='Other one'),
-                                    fmt='multipart',
-                                    files=dict(file=('../otherdoc.html',
-                                                     'text/plain',
-                                                     b'different content')))
-        self.assertEqual(response.code, 200)
-        self.assertEqual(response.body, b'{"created": 2}')
+        async with self.apost(
+            '/api/project/2/document/new',
+            data=dict(name='otherdoc', description='Other one'),
+            files=dict(
+                file=('../otherdoc.html', 'text/plain', b'different content'),
+            ),
+        ) as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(await response.json(), {"created": 2})
         db = self.application.DBSession()
         doc = db.query(database.Document).get(2)
         self.assertEqual(doc.name, 'otherdoc')
@@ -598,12 +582,12 @@ class TestMultiuser(MyHTTPTestCase):
         poll_proj2 = await self.poll_event(2, 4)
 
         # Create highlight 1 in document 1
-        response = await self.apost('/api/project/1/document/1/highlight/new',
-                                    dict(start_offset=3, end_offset=7,
-                                         tags=[1]),
-                                    fmt='json')
-        self.assertEqual(response.code, 200)
-        self.assertEqual(response.body, b'{"id": 1}')
+        async with self.apost(
+            '/api/project/1/document/1/highlight/new',
+            json=dict(start_offset=3, end_offset=7, tags=[1]),
+        ) as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(await response.json(), {"id": 1})
         self.assertEqual(
             await poll_proj1,
             {'highlight_add': {'1': [{'highlight_id': 1, 'tags': [1],
@@ -612,12 +596,12 @@ class TestMultiuser(MyHTTPTestCase):
         poll_proj1 = await self.poll_event(1, 5)
 
         # Change project 2 metadata
-        response = await self.apost('/api/project/2',
-                                    {'name': 'new project',
-                                     'description': "Meaningful"},
-                                    fmt='json')
-        self.assertEqual(response.code, 200)
-        self.assertEqual(response.body, b'{}')
+        async with self.apost(
+            '/api/project/2',
+            json={'name': 'new project', 'description': "Meaningful"},
+        ) as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(await response.json(), {})
         self.assertEqual(
             await poll_proj2,
             {'project_meta': {'project_name': 'new project',
@@ -626,19 +610,17 @@ class TestMultiuser(MyHTTPTestCase):
         poll_proj2 = await self.poll_event(2, 6)
 
         # Create document 3 in project 2
-        response = await self.apost(
+        async with self.apost(
             '/api/project/2/document/new',
-            dict(name='third',
-                 description='Last one'),
-            fmt='multipart',
+            data=dict(name='third', description='Last one'),
             files=dict(file=(
                 'C:\\Users\\Vicky\\Documents\\study.html',
                 'text/html',
                 b'<strong>Opinions</strong> and <em>facts</em>!',
             )),
-        )
-        self.assertEqual(response.code, 200)
-        self.assertEqual(response.body, b'{"created": 3}')
+        ) as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(await response.json(), {"created": 3})
         self.assertEqual(
             await poll_proj2,
             {'document_add': [{'description': 'Last one', 'document_id': 3,
@@ -646,35 +628,37 @@ class TestMultiuser(MyHTTPTestCase):
         poll_proj2 = await self.poll_event(2, 7)
 
         # Create highlight in document 2, using wrong project id
-        response = await self.apost('/api/project/1/document/2/highlight/new',
-                                    dict(start_offset=0, end_offset=4,
-                                         tags=[]),
-                                    fmt='json')
-        self.assertEqual(response.code, 404)
+        async with self.apost(
+            '/api/project/1/document/2/highlight/new',
+            json=dict(start_offset=0, end_offset=4, tags=[]),
+        ) as response:
+            self.assertEqual(response.status, 404)
 
         # Create highlight in document 2, using tags that don't exist
-        response = await self.apost('/api/project/2/document/2/highlight/new',
-                                    dict(start_offset=0, end_offset=4,
-                                         tags=[150]),
-                                    fmt='json')
-        self.assertEqual(response.code, 400)
-        self.assertEqual(response.body, b'{"error": "Tag not in project"}')
+        async with self.apost(
+            '/api/project/2/document/2/highlight/new',
+            json=dict(start_offset=0, end_offset=4, tags=[150]),
+        ) as response:
+            self.assertEqual(response.status, 400)
+            self.assertEqual(await response.json(),
+                             {"error": "Tag not in project"})
 
         # Create highlight in document 2, using tags from project 1
-        response = await self.apost('/api/project/2/document/2/highlight/new',
-                                    dict(start_offset=0, end_offset=4,
-                                         tags=[1]),
-                                    fmt='json')
-        self.assertEqual(response.code, 400)
-        self.assertEqual(response.body, b'{"error": "Tag not in project"}')
+        async with self.apost(
+            '/api/project/2/document/2/highlight/new',
+            json=dict(start_offset=0, end_offset=4, tags=[1]),
+        ) as response:
+            self.assertEqual(response.status, 400)
+            self.assertEqual(await response.json(),
+                             {"error": "Tag not in project"})
 
         # Create highlight 2 in document 2
-        response = await self.apost('/api/project/2/document/2/highlight/new',
-                                    dict(start_offset=0, end_offset=4,
-                                         tags=[4]),
-                                    fmt='json')
-        self.assertEqual(response.code, 200)
-        self.assertEqual(response.body, b'{"id": 2}')
+        async with self.apost(
+            '/api/project/2/document/2/highlight/new',
+            json=dict(start_offset=0, end_offset=4, tags=[4]),
+        ) as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(await response.json(), {"id": 2})
         self.assertEqual(
             await poll_proj2,
             {'highlight_add': {'2': [{'highlight_id': 2, 'tags': [4],
@@ -683,12 +667,12 @@ class TestMultiuser(MyHTTPTestCase):
         poll_proj2 = await self.poll_event(2, 8)
 
         # Create highlight 3 in document 2
-        response = await self.apost('/api/project/2/document/2/highlight/new',
-                                    dict(start_offset=13, end_offset=17,
-                                         tags=[3, 2]),
-                                    fmt='json')
-        self.assertEqual(response.code, 200)
-        self.assertEqual(response.body, b'{"id": 3}')
+        async with self.apost(
+            '/api/project/2/document/2/highlight/new',
+            json=dict(start_offset=13, end_offset=17, tags=[3, 2]),
+        ) as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(await response.json(), {"id": 3})
         self.assertEqual(
             await poll_proj2,
             {'highlight_add': {'2': [{'highlight_id': 3, 'tags': [2, 3],
@@ -697,12 +681,12 @@ class TestMultiuser(MyHTTPTestCase):
         poll_proj2 = await self.poll_event(2, 9)
 
         # Create highlight 4 in document 3
-        response = await self.apost('/api/project/2/document/3/highlight/new',
-                                    dict(start_offset=0, end_offset=7,
-                                         tags=[3]),
-                                    fmt='json')
-        self.assertEqual(response.code, 200)
-        self.assertEqual(response.body, b'{"id": 4}')
+        async with self.apost(
+            '/api/project/2/document/3/highlight/new',
+            json=dict(start_offset=0, end_offset=7, tags=[3]),
+        ) as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(await response.json(), {"id": 4})
         self.assertEqual(
             await poll_proj2,
             {'highlight_add': {'3': [{'highlight_id': 4, 'tags': [3],
@@ -711,193 +695,84 @@ class TestMultiuser(MyHTTPTestCase):
         poll_proj2 = await self.poll_event(2, 10)
 
         # List highlights in project 2 under 'people'
-        response = await self.aget('/api/project/2/highlights/people')
-        self.assertEqual(response.code, 200)
-        self.assertEqual(json.loads(response.body.decode('utf-8')), {
-            'highlights': [
-                {'id': 3, 'document_id': 2, 'tags': [2, 3],
-                 'content': "tent"},
-                {'id': 4, 'document_id': 3, 'tags': [3],
-                 'content': "<strong>Opinion</strong>"},
-            ],
-            'pages': 1,
-        })
+        async with self.aget('/api/project/2/highlights/people') as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(await response.json(), {
+                'highlights': [
+                    {'id': 3, 'document_id': 2, 'tags': [2, 3],
+                     'content': "tent"},
+                    {'id': 4, 'document_id': 3, 'tags': [3],
+                     'content': "<strong>Opinion</strong>"},
+                ],
+                'pages': 1,
+            })
 
         # List highlights in project 2 under 'interesting.places'
-        response = await self.aget('/api/project/2/highlights/interesting.'
-                                   'places')
-        self.assertEqual(response.code, 200)
-        self.assertEqual(json.loads(response.body.decode('utf-8')), {
-            'highlights': [
-                {'id': 2, 'document_id': 2, 'tags': [4],
-                 'content': "diff"},
-            ],
-            'pages': 1,
-        })
+        async with self.aget(
+            '/api/project/2/highlights/interesting.places',
+        ) as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(await response.json(), {
+                'highlights': [
+                    {'id': 2, 'document_id': 2, 'tags': [4],
+                     'content': "diff"},
+                ],
+                'pages': 1,
+            })
 
         # List highlights in project 2 under 'interesting'
-        response = await self.aget('/api/project/2/highlights/interesting')
-        self.assertEqual(response.code, 200)
-        self.assertEqual(json.loads(response.body.decode('utf-8')), {
-            'highlights': [
-                {'id': 2, 'document_id': 2, 'tags': [4],
-                 'content': "diff"},
-                {'id': 3, 'document_id': 2, 'tags': [2, 3],
-                 'content': "tent"},
-            ],
-            'pages': 1,
-        })
+        async with self.aget(
+            '/api/project/2/highlights/interesting',
+        ) as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(await response.json(), {
+                'highlights': [
+                    {'id': 2, 'document_id': 2, 'tags': [4],
+                     'content': "diff"},
+                    {'id': 3, 'document_id': 2, 'tags': [2, 3],
+                     'content': "tent"},
+                ],
+                'pages': 1,
+            })
 
         # List all highlights in project 2
-        response = await self.aget('/api/project/2/highlights/')
-        self.assertEqual(response.code, 200)
-        self.assertEqual(json.loads(response.body.decode('utf-8')), {
-            'highlights': [
-                {'id': 2, 'document_id': 2, 'tags': [4],
-                 'content': "diff"},
-                {'id': 3, 'document_id': 2, 'tags': [2, 3],
-                 'content': "tent"},
-                {'id': 4, 'document_id': 3, 'tags': [3],
-                 'content': "<strong>Opinion</strong>"},
-            ],
-            'pages': 1,
-        })
+        async with self.aget('/api/project/2/highlights/') as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(await response.json(), {
+                'highlights': [
+                    {'id': 2, 'document_id': 2, 'tags': [4],
+                     'content': "diff"},
+                    {'id': 3, 'document_id': 2, 'tags': [2, 3],
+                     'content': "tent"},
+                    {'id': 4, 'document_id': 3, 'tags': [3],
+                     'content': "<strong>Opinion</strong>"},
+                ],
+                'pages': 1,
+            })
 
         # Get contents of document 2
-        response = await self.aget('/api/project/2/document/2/content')
-        self.assertEqual(response.code, 200)
-        self.assertEqual(json.loads(response.body.decode('utf-8')), {
-            'contents': [{'contents': 'different content', 'offset': 0}],
-            'highlights': [
-                {'id': 2, 'start_offset': 0, 'end_offset': 4,
-                 'tags': [4]},
-                {'id': 3, 'start_offset': 13, 'end_offset': 17,
-                 'tags': [2, 3]},
-            ],
-        })
+        async with self.aget('/api/project/2/document/2/content') as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(await response.json(), {
+                'contents': [{'contents': 'different content', 'offset': 0}],
+                'highlights': [
+                    {'id': 2, 'start_offset': 0, 'end_offset': 4,
+                     'tags': [4]},
+                    {'id': 3, 'start_offset': 13, 'end_offset': 17,
+                     'tags': [2, 3]},
+                ],
+            })
 
         # Export document 2 to HTML
-        response = await self.aget('/project/2/export/document/2.html')
-        self.assertEqual(response.code, 200)
-        self.assertEqual(
-            response.headers['Content-Type'],
-            'text/html; charset=utf-8',
-        )
-        self.assertEqual(
-            response.body.decode('utf-8'),
-            textwrap.dedent('''\
-            <!DOCTYPE html>
-            <html>
-              <head>
-                <meta charset="UTF-8">
-                <style>
-                  .highlight {
-                    background-color: #ff0;
-                  }
-                  .taglist {
-                    font-style: oblique;
-                    background: #fbb !important;
-                  }
-                </style>
-                <title>otherdoc</title>
-              </head>
-              <body>
-                <h1>otherdoc</h1>
-            <span class="highlight">diff</span>\
-<span class="taglist"> [interesting.places]</span>erent con\
-<span class="highlight">tent</span><span class="taglist"> \
-[interesting, people]</span>
-              </body>
-            </html>'''),
-        )
-
-        # Export document 2 to unknown format
-        response = await self.aget('/project/2/export/document/2.dat')
-        self.assertEqual(response.code, 404)
-        self.assertEqual(response.headers['Content-Type'], 'text/plain')
-        self.assertEqual(
-            response.body.decode('utf-8'),
-            'Unsupported format: dat',
-        )
-
-        # Export highlights in project 2 under 'interesting' to HTML
-        response = await self.aget('/project/2/export/highlights/'
-                                   'interesting.html')
-        self.assertEqual(response.code, 200)
-        self.assertEqual(
-            response.body.decode('utf-8'),
-            textwrap.dedent('''\
-                <!DOCTYPE html>
-                <html>
-                  <head>
-                    <meta charset="UTF-8">
-                    <title></title>
-                    <style>
-                      h1 {
-                        margin-bottom: 1em;
-                      }
-                    </style>
-                  </head>
-                  <body>
-                    <h1>Taguette highlights: interesting</h1>
-
-                    diff
-                    <p>
-                      <strong>Document:</strong> otherdoc
-                      <strong>Tags:</strong>
-                        interesting.places
-                    </p>
-                    <hr>
-
-                    tent
-                    <p>
-                      <strong>Document:</strong> otherdoc
-                      <strong>Tags:</strong>
-                        interesting,
-                        people
-                    </p>
-
-                  </body>
-                </html>'''),
-        )
-
-        # Export highlights in project 2 under 'interesting' to CSV
-        response = await self.aget('/project/2/export/highlights/'
-                                   'interesting.csv')
-        self.assertEqual(response.code, 200)
-        self.assertEqual(
-            response.body.decode('utf-8'),
-            textwrap.dedent('''\
-            id,document,tag,content
-            2,otherdoc,interesting.places,diff
-            3,otherdoc,interesting,tent
-            3,otherdoc,people,tent
-            ''').replace('\n', '\r\n'),
-        )
-
-        # Export codebook of project 2 to CSV
-        response = await self.aget('/project/2/export/codebook.csv')
-        self.assertEqual(response.code, 200)
-        self.assertEqual(
-            response.headers['Content-Type'],
-            'text/csv; charset=utf-8',
-        )
-        self.assertEqual(
-            response.body.decode('utf-8'),
-            textwrap.dedent('''\
-                tag,description,number of highlights
-                interesting,Further review required,1
-                people,People of interest,2
-                interesting.places,,1
-                ''').replace('\n', '\r\n'),
-        )
-
-        # Export codebook of project 2 to HTML
-        response = await self.aget('/project/2/export/codebook.html')
-        self.assertEqual(response.code, 200)
-        self.assertEqual(
-            response.body.decode('utf-8'),
-            textwrap.dedent('''\
+        async with self.aget('/project/2/export/document/2.html') as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(
+                response.headers['Content-Type'],
+                'text/html; charset=utf-8',
+            )
+            self.assertEqual(
+                await response.text(),
+                textwrap.dedent('''\
                 <!DOCTYPE html>
                 <html>
                   <head>
@@ -906,52 +781,168 @@ class TestMultiuser(MyHTTPTestCase):
                       .highlight {
                         background-color: #ff0;
                       }
+                      .taglist {
+                        font-style: oblique;
+                        background: #fbb !important;
+                      }
                     </style>
-                    <title>Taguette Codebook</title>
+                    <title>otherdoc</title>
                   </head>
                   <body>
-                    <h1>Taguette Codebook</h1>
-
-                      <h2>interesting</h2>
-                      <p class="number">1 highlight</p>
-                      <p>Further review required</p>
-
-                      <h2>people</h2>
-                      <p class="number">2 highlights</p>
-                      <p>People of interest</p>
-
-                      <h2>interesting.places</h2>
-                      <p class="number">1 highlight</p>
-                      <p></p>
-
+                    <h1>otherdoc</h1>
+                <span class="highlight">diff</span>\
+<span class="taglist"> [interesting.places]</span>erent con\
+<span class="highlight">tent</span><span class="taglist"> \
+[interesting, people]</span>
                   </body>
                 </html>'''),
-        )
+            )
+
+        # Export document 2 to unknown format
+        async with self.aget('/project/2/export/document/2.dat') as response:
+            self.assertEqual(response.status, 404)
+            self.assertEqual(response.headers['Content-Type'], 'text/plain')
+            self.assertEqual(
+                await response.text(),
+                'Unsupported format: dat',
+            )
+
+        # Export highlights in project 2 under 'interesting' to HTML
+        async with self.aget(
+            '/project/2/export/highlights/interesting.html',
+        ) as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(
+                await response.text(),
+                textwrap.dedent('''\
+                    <!DOCTYPE html>
+                    <html>
+                      <head>
+                        <meta charset="UTF-8">
+                        <title></title>
+                        <style>
+                          h1 {
+                            margin-bottom: 1em;
+                          }
+                        </style>
+                      </head>
+                      <body>
+                        <h1>Taguette highlights: interesting</h1>
+
+                        diff
+                        <p>
+                          <strong>Document:</strong> otherdoc
+                          <strong>Tags:</strong>
+                            interesting.places
+                        </p>
+                        <hr>
+
+                        tent
+                        <p>
+                          <strong>Document:</strong> otherdoc
+                          <strong>Tags:</strong>
+                            interesting,
+                            people
+                        </p>
+
+                      </body>
+                    </html>'''),
+            )
+
+        # Export highlights in project 2 under 'interesting' to CSV
+        async with self.aget(
+            '/project/2/export/highlights/interesting.csv',
+        ) as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(
+                await response.text(),
+                textwrap.dedent('''\
+                id,document,tag,content
+                2,otherdoc,interesting.places,diff
+                3,otherdoc,interesting,tent
+                3,otherdoc,people,tent
+                ''').replace('\n', '\r\n'),
+            )
+
+        # Export codebook of project 2 to CSV
+        async with self.aget('/project/2/export/codebook.csv') as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(
+                response.headers['Content-Type'],
+                'text/csv; charset=utf-8',
+            )
+            self.assertEqual(
+                await response.text(),
+                textwrap.dedent('''\
+                    tag,description,number of highlights
+                    interesting,Further review required,1
+                    people,People of interest,2
+                    interesting.places,,1
+                    ''').replace('\n', '\r\n'),
+            )
+
+        # Export codebook of project 2 to HTML
+        async with self.aget('/project/2/export/codebook.html') as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(
+                await response.text(),
+                textwrap.dedent('''\
+                    <!DOCTYPE html>
+                    <html>
+                      <head>
+                        <meta charset="UTF-8">
+                        <style>
+                          .highlight {
+                            background-color: #ff0;
+                          }
+                        </style>
+                        <title>Taguette Codebook</title>
+                      </head>
+                      <body>
+                        <h1>Taguette Codebook</h1>
+
+                          <h2>interesting</h2>
+                          <p class="number">1 highlight</p>
+                          <p>Further review required</p>
+
+                          <h2>people</h2>
+                          <p class="number">2 highlights</p>
+                          <p>People of interest</p>
+
+                          <h2>interesting.places</h2>
+                          <p class="number">1 highlight</p>
+                          <p></p>
+
+                      </body>
+                    </html>'''),
+            )
 
         # Export codebook of project 2 to REFI-QDA
-        response = await self.aget('/project/2/export/codebook.qdc')
-        self.assertEqual(response.code, 200)
-        self.assertEqual(
-            response.headers['Content-Type'],
-            'text/xml; charset=utf-8',
-        )
-        compare_xml(
-            response.body.decode('utf-8'),
-            '<?xml version="1.0" encoding="utf-8"?>\n'
-            + '<CodeBook xmlns="urn:QDA-XML:codebook:1.0" origin="Taguette 0.1'
-            + '0.1"><Codes><Code guid="0D62985D-B147-5D01-A9B5-CAE5DCD98342" n'
-            + 'ame="interesting" isCodable="true"/><Code guid="DFE5C38E-9449-5'
-            + '959-A1F7-E3D895CFA87F" name="people" isCodable="true"/><Code gu'
-            + 'id="725F0645-9CD3-598A-8D2B-EC3D39AB3C3F" name="interesting.pla'
-            + 'ces" isCodable="true"/></Codes><Sets/></CodeBook>',
-        )
+        async with self.aget('/project/2/export/codebook.qdc') as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(
+                response.headers['Content-Type'],
+                'text/xml; charset=utf-8',
+            )
+            compare_xml(
+                await response.text(),
+                '<?xml version="1.0" encoding="utf-8"?>\n'
+                + '<CodeBook xmlns="urn:QDA-XML:codebook:1.0" origin="Taguette'
+                + ' 0.10.1"><Codes><Code guid="0D62985D-B147-5D01-A9B5-CAE5DCD'
+                + '98342" name="interesting" isCodable="true"/><Code guid="DFE'
+                + '5C38E-9449-5959-A1F7-E3D895CFA87F" name="people" isCodable='
+                + '"true"/><Code guid="725F0645-9CD3-598A-8D2B-EC3D39AB3C3F" n'
+                + 'ame="interesting.places" isCodable="true"/></Codes><Sets/><'
+                + '/CodeBook>',
+            )
 
         # Merge tag 3 into 2
-        response = await self.apost('/api/project/2/tag/merge',
-                                    dict(src=3, dest=2),
-                                    fmt='json')
-        self.assertEqual(response.code, 200)
-        self.assertEqual(json.loads(response.body.decode('utf-8')), {'id': 2})
+        async with self.apost(
+            '/api/project/2/tag/merge',
+            json=dict(src=3, dest=2),
+        ) as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(await response.json(), {'id': 2})
         self.assertEqual(
             await poll_proj2,
             {'tag_merge': [{'src_tag_id': 3, 'dest_tag_id': 2}], 'id': 11},
@@ -959,41 +950,46 @@ class TestMultiuser(MyHTTPTestCase):
         poll_proj2 = await self.poll_event(2, 11)
 
         # List all highlights in project 2
-        response = await self.aget('/api/project/2/highlights/')
-        self.assertEqual(response.code, 200)
-        self.assertEqual(json.loads(response.body.decode('utf-8')), {
-            'highlights': [
-                {'id': 2, 'document_id': 2, 'tags': [4],
-                 'content': "diff"},
-                {'id': 3, 'document_id': 2, 'tags': [2],
-                 'content': "tent"},
-                {'id': 4, 'document_id': 3, 'tags': [2],
-                 'content': "<strong>Opinion</strong>"},
-            ],
-            'pages': 1,
-        })
+        async with self.aget('/api/project/2/highlights/') as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(await response.json(), {
+                'highlights': [
+                    {'id': 2, 'document_id': 2, 'tags': [4],
+                     'content': "diff"},
+                    {'id': 3, 'document_id': 2, 'tags': [2],
+                     'content': "tent"},
+                    {'id': 4, 'document_id': 3, 'tags': [2],
+                     'content': "<strong>Opinion</strong>"},
+                ],
+                'pages': 1,
+            })
 
         await asyncio.sleep(2)
         self.assertNotDone(poll_proj1)
         self.assertNotDone(poll_proj2)
 
-    def test_reset_password(self):
+    @gen_test
+    async def test_reset_password(self):
         # Accept cookies
-        response = self.post('/cookies', dict())
-        self.assertEqual(response.code, 302)
-        self.assertEqual(response.headers['Location'], '/')
+        async with self.apost('/cookies', data=dict()) as response:
+            self.assertEqual(response.status, 302)
+            self.assertEqual(response.headers['Location'], '/')
 
         # Fetch registration page
-        response = self.get('/register')
-        self.assertEqual(response.code, 200)
+        async with self.aget('/register') as response:
+            self.assertEqual(response.status, 200)
 
         # Register
-        response = self.post('/register', dict(login='User',
-                                               password1='pass1',
-                                               password2='pass1',
-                                               email='test@example.com'))
-        self.assertEqual(response.code, 302)
-        self.assertEqual(response.headers['Location'], '/')
+        async with self.apost(
+            '/register',
+            data=dict(
+                login='User',
+                password1='pass1', password2='pass1',
+                email='test@example.com',
+            ),
+        ) as response:
+            self.assertEqual(response.status, 302)
+            self.assertEqual(response.headers['Location'], '/')
 
         # User exists in database
         db = self.application.DBSession()
@@ -1014,19 +1010,23 @@ class TestMultiuser(MyHTTPTestCase):
         )
 
         # Log out
-        response = self.get('/logout')
-        self.assertEqual(response.code, 302)
-        self.assertEqual(response.headers['Location'], '/')
+        async with self.aget('/logout') as response:
+            self.assertEqual(response.status, 302)
+            self.assertEqual(response.headers['Location'], '/')
 
         # Wait so that reset link is more recent than password
         time.sleep(1)
 
         # Send reset link
-        self.get('/reset_password')
+        async with self.aget('/reset_password'):
+            self.assertEqual(response.status, 302)
+            self.assertEqual(response.headers['Location'], '/')
         with mock.patch.object(self.application, 'send_mail') as mo:
-            response = self.post('/reset_password',
-                                 dict(email='test@example.com'))
-        self.assertEqual(response.code, 200)
+            async with self.apost(
+                '/reset_password',
+                data=dict(email='test@example.com'),
+            ) as response:
+                self.assertEqual(response.status, 200)
         msg = mo.call_args[0][0]
         content = msg.get_payload()[0].get_content()
         self.assertTrue(content.startswith("Someone has requested "))
@@ -1034,29 +1034,31 @@ class TestMultiuser(MyHTTPTestCase):
         token = urlparse(link).query[12:]
 
         # Check wrong tokens don't work
-        response = self.get('/new_password?reset_token=wrongtoken')
-        self.assertEqual(response.code, 403)
-        response = self.post(
+        async with self.aget(
+            '/new_password?reset_token=wrongtoken',
+        ) as response:
+            self.assertEqual(response.status, 403)
+        async with self.apost(
             '/new_password',
-            dict(
+            data=dict(
                 reset_token='wrongtoken',
                 password1='pass3', password2='pass3',
             ),
-        )
-        self.assertEqual(response.code, 403)
+        ) as response:
+            self.assertEqual(response.status, 403)
 
         # Check right token works
-        response = self.get('/new_password?reset_token=' + token)
-        self.assertEqual(response.code, 200)
-        response = self.post(
+        async with self.aget('/new_password?reset_token=' + token) as response:
+            self.assertEqual(response.status, 200)
+        async with self.apost(
             '/new_password',
-            dict(
+            data=dict(
                 reset_token=token,
                 password1='pass2', password2='pass2',
             ),
-        )
-        self.assertEqual(response.code, 302)
-        self.assertEqual(response.headers['Location'], '/')
+        ) as response:
+            self.assertEqual(response.status, 302)
+            self.assertEqual(response.headers['Location'], '/')
 
         # User exists in database
         db = self.application.DBSession()
@@ -1077,16 +1079,16 @@ class TestMultiuser(MyHTTPTestCase):
         )
 
         # Check token doesn't work anymore
-        response = self.post(
+        async with self.apost(
             '/new_password',
-            dict(
+            data=dict(
                 reset_token=token,
                 password1='pass4', password2='pass4',
             ),
-        )
-        self.assertEqual(response.code, 403)
-        response = self.get('/new_password?reset_token=' + token)
-        self.assertEqual(response.code, 403)
+        ) as response:
+            self.assertEqual(response.status, 403)
+        async with self.aget('/new_password?reset_token=' + token) as response:
+            self.assertEqual(response.status, 403)
 
     @classmethod
     def make_basic_db(cls, db, db_num):
@@ -1193,22 +1195,25 @@ class TestMultiuser(MyHTTPTestCase):
         ])
 
     @with_tempdir
-    def test_import(self, tmp):
+    @gen_test
+    async def test_import(self, tmp):
         # Populate database
         db1 = self.application.DBSession()
         self.make_basic_db(db1, 1)
         db1.commit()
 
         # Login
-        response = self.post('/cookies', dict())
-        self.assertEqual(response.code, 302)
-        self.assertEqual(response.headers['Location'], '/')
-        response = self.get('/login')
-        self.assertEqual(response.code, 200)
-        response = self.post('/login', dict(next='/', login='db1user',
-                                            password='hackme'))
-        self.assertEqual(response.code, 302)
-        self.assertEqual(response.headers['Location'], '/')
+        async with self.apost('/cookies', data=dict()) as response:
+            self.assertEqual(response.status, 302)
+            self.assertEqual(response.headers['Location'], '/')
+        async with self.aget('/login') as response:
+            self.assertEqual(response.status, 200)
+        async with self.apost(
+            '/login',
+            data=dict(next='/', login='db1user', password='hackme'),
+        ) as response:
+            self.assertEqual(response.status, 302)
+            self.assertEqual(response.headers['Location'], '/')
 
         # Create second database
         db2_path = os.path.join(tmp, 'db.sqlite3')
@@ -1219,32 +1224,30 @@ class TestMultiuser(MyHTTPTestCase):
 
         # List projects in database
         with open(db2_path, 'rb') as fp:
-            response = self.post(
+            async with self.apost(
                 '/api/import',
-                {},
-                fmt='multipart',
+                data={},
                 files=dict(file=('db2.sqlite3', 'application/octet-stream',
                                  fp.read())),
-            )
-        self.assertEqual(response.code, 200)
-        self.assertEqual(json.loads(response.body.decode('utf-8')), {
-            'projects': [{'id': 1, 'name': 'db2project1'},
-                         {'id': 2, 'name': 'db2project2'}],
-        })
+            ) as response:
+                self.assertEqual(response.status, 200)
+                self.assertEqual(await response.json(), {
+                    'projects': [{'id': 1, 'name': 'db2project1'},
+                                 {'id': 2, 'name': 'db2project2'}],
+                })
 
         # Import project
         with open(db2_path, 'rb') as fp:
-            response = self.post(
+            async with self.apost(
                 '/api/import',
-                {'project_id': 1},
-                fmt='multipart',
+                data={'project_id': '1'},
                 files=dict(file=('db2.sqlite3', 'application/octet-stream',
                                  fp.read())),
-            )
-        self.assertEqual(response.code, 200)
-        self.assertEqual(json.loads(response.body.decode('utf-8')), {
-            'project_id': 3,
-        })
+            ) as response:
+                self.assertEqual(response.status, 200)
+                self.assertEqual(await response.json(), {
+                    'project_id': 3,
+                })
 
         # Check imported project
         self.assertEqual(
@@ -1375,31 +1378,34 @@ class TestMultiuser(MyHTTPTestCase):
         )
 
     @with_tempdir
-    def test_export(self, tmp):
+    @gen_test
+    async def test_export(self, tmp):
         # Populate database
         db1 = self.application.DBSession()
         self.make_basic_db(db1, 1)
         db1.commit()
 
         # Login
-        response = self.post('/cookies', dict())
-        self.assertEqual(response.code, 302)
-        self.assertEqual(response.headers['Location'], '/')
-        response = self.get('/login')
-        self.assertEqual(response.code, 200)
-        response = self.post('/login', dict(next='/', login='db1user',
-                                            password='hackme'))
-        self.assertEqual(response.code, 302)
-        self.assertEqual(response.headers['Location'], '/')
+        async with self.apost('/cookies', data=dict()) as response:
+            self.assertEqual(response.status, 302)
+            self.assertEqual(response.headers['Location'], '/')
+        async with self.aget('/login') as response:
+            self.assertEqual(response.status, 200)
+        async with self.apost(
+            '/login',
+            data=dict(next='/', login='db1user', password='hackme'),
+        ) as response:
+            self.assertEqual(response.status, 302)
+            self.assertEqual(response.headers['Location'], '/')
 
         # Export project
         db2_path = os.path.join(tmp, 'db.sqlite3')
-        response = self.get('/project/2/export/project.sqlite3')
-        self.assertEqual(response.code, 200)
-        self.assertEqual(response.headers['Content-Type'],
-                         'application/vnd.sqlite3')
-        with open(db2_path, 'wb') as fp:
-            fp.write(response.body)
+        async with self.aget('/project/2/export/project.sqlite3') as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(response.headers['Content-Type'],
+                             'application/vnd.sqlite3')
+            with open(db2_path, 'wb') as fp:
+                fp.write(await response.read())
         db2 = database.connect('sqlite:///' + db2_path)()
 
         # Check exported project
@@ -1518,10 +1524,11 @@ class TestMultiuser(MyHTTPTestCase):
         )
 
     async def _poll_event(self, proj, from_id):
-        response = await self.aget('/api/project/%d/events?from=%d' % (
-                                   proj, from_id))
-        self.assertEqual(response.code, 200)
-        return json.loads(response.body.decode('utf-8'))
+        async with self.aget(
+            '/api/project/%d/events?from=%d' % (proj, from_id),
+        ) as response:
+            self.assertEqual(response.status, 200)
+            return await response.json()
 
     async def poll_event(self, proj, from_id):
         fut = asyncio.ensure_future(self._poll_event(proj, from_id))
@@ -1553,17 +1560,23 @@ class TestSingleuser(MyHTTPTestCase):
             return self.application
 
     def tearDown(self):
+        super(TestSingleuser, self).tearDown()
         close_all_sessions()
         engine = sqlalchemy.create_engine(DATABASE_URI)
         database.Base.metadata.drop_all(bind=engine)
 
-    def test_login(self):
+    @gen_test
+    async def test_login(self):
         # Fetch index, should have welcome message and no register link
-        response = self.get('/')
-        self.assertEqual(response.code, 200)
-        self.assertIn(b'did not supply a secret token', response.body)
-        self.assertNotIn(b'Register now</a> for free and get started',
-                         response.body)
+        async with self.aget('/') as response:
+            self.assertEqual(response.status, 200)
+            self.assertIn(
+                b'did not supply a secret token',
+                await response.read())
+            self.assertNotIn(
+                b'Register now</a> for free and get started',
+                await response.read(),
+            )
 
         # Only admin so far
         db = self.application.DBSession()
@@ -1572,41 +1585,50 @@ class TestSingleuser(MyHTTPTestCase):
                          ['admin'])
 
         # Fetch registration page: fails
-        response = self.get('/register')
-        self.assertEqual(response.code, 404)
+        async with self.aget('/register') as response:
+            self.assertEqual(response.status, 404)
 
         # Register: fails
-        response = self.post(
-            '/register', dict(login='tester',
-                              password1='hacktoo', password2='hacktoo'))
-        self.assertEqual(response.code, 404)
+        async with self.apost(
+            '/register',
+            data=dict(
+                login='tester',
+                password1='hacktoo', password2='hacktoo',
+            ),
+        ) as response:
+            self.assertEqual(response.status, 404)
 
         # Authenticate with token
-        response = self.get('/?token=' + self.application.single_user_token)
-        self.assertEqual(response.code, 302)
-        self.assertEqual(response.headers['Location'], '/')
+        async with self.aget(
+            '/?token=' + self.application.single_user_token,
+        ) as response:
+            self.assertEqual(response.status, 302)
+            self.assertEqual(response.headers['Location'], '/')
 
         # Fetch index, should have project list
-        response = self.get('/')
-        self.assertEqual(response.code, 200)
-        self.assertIn(b'>Welcome!</h1>', response.body)
-        self.assertIn(b'Here are your projects', response.body)
+        async with self.aget('/') as response:
+            self.assertEqual(response.status, 200)
+            self.assertIn(b'>Welcome!</h1>', await response.read())
+            self.assertIn(b'Here are your projects', await response.read())
 
         # Fetch project creation page
-        response = self.get('/project/new')
-        self.assertEqual(response.code, 200)
+        async with self.aget('/project/new') as response:
+            self.assertEqual(response.status, 200)
 
         # Create a project
-        response = self.post(
-            '/project/new', dict(name='test project', description=''))
-        self.assertEqual(response.code, 302)
-        self.assertEqual(response.headers['Location'], '/project/1')
+        async with self.apost(
+            '/project/new',
+            data=dict(name='test project', description=''),
+        ) as response:
+            self.assertEqual(response.status, 302)
+            self.assertEqual(response.headers['Location'], '/project/1')
 
         # Fetch logout page
-        response = self.get('/logout')
-        self.assertEqual(response.code, 404)
+        async with self.aget('/logout') as response:
+            self.assertEqual(response.status, 404)
 
-    def test_project(self):
+    @gen_test
+    async def test_project(self):
         db = self.application.DBSession()
         projects = [
             database.Project(name="first project", description=""),
@@ -1625,17 +1647,20 @@ class TestSingleuser(MyHTTPTestCase):
         db.commit()
 
         # Authenticate with token
-        response = self.get('/?token=' + self.application.single_user_token)
-        self.assertEqual(response.code, 302)
-        self.assertEqual(response.headers['Location'], '/')
+        async with self.aget(
+            '/?token=' + self.application.single_user_token,
+        ) as response:
+            self.assertEqual(response.status, 302)
+            self.assertEqual(response.headers['Location'], '/')
 
         # Check project list
-        response = self.get('/')
-        self.assertEqual(response.code, 200)
-        self.assertIn(b"first project", response.body)
-        self.assertIn(b"a test", response.body)
-        self.assertNotIn(b"private P", response.body)
-        self.assertIn(b"last project", response.body)
+        async with self.aget('/') as response:
+            self.assertEqual(response.status, 200)
+            body = await response.read()
+        self.assertIn(b"first project", body)
+        self.assertIn(b"a test", body)
+        self.assertNotIn(b"private P", body)
+        self.assertIn(b"last project", body)
 
 
 if __name__ == '__main__':
