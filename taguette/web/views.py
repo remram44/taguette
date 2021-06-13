@@ -489,7 +489,7 @@ class Project(BaseHandler):
     @authenticated
     @PROM_REQUESTS.sync('project')
     def get(self, project_id):
-        project, _ = self.get_project(project_id)
+        project, privileges = self.get_project(project_id)
         documents_json = jinja2.Markup(json.dumps(
             {
                 str(doc.id): {'id': doc.id, 'name': doc.name,
@@ -512,11 +512,7 @@ class Project(BaseHandler):
             self.db.query(database.ProjectMember)
             .filter(database.ProjectMember.project_id == project_id)
         ).all()
-        can_delete_project = any(
-            member.user_login == self.current_user and
-            member.privileges.can_delete_project()
-            for member in members
-        )
+        can_delete_project = privileges.can_delete_project()
         members_json = jinja2.Markup(json.dumps(
             {member.user_login: {'privileges': member.privileges.name}
              for member in members}
