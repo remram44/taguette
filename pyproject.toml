@@ -62,6 +62,7 @@ flake8 = "*"
 readme_renderer = "*"
 babel = "^2.6" # Keep babel and pytz in sync with Dockerfile
 bcrypt = "*"
+aiohttp = "^3.4"
 
 [tool.poetry.scripts]
 taguette = "taguette.main:main"
