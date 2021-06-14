@@ -327,10 +327,17 @@ class BaseHandler(RequestHandler):
             return self._pseudolocale
     else:
         def get_user_locale(self):
-            if self.current_user is not None:
+            language = self.get_secure_cookie('language')
+            if language is not None:
+                language = language.decode('utf-8')
+            elif self.current_user is not None:
                 user = self.db.query(database.User).get(self.current_user)
                 if user is not None and user.language is not None:
-                    return tornado.locale.get(user.language)
+                    language = user.language
+                    self.set_secure_cookie('language', language)
+
+            if language is not None:
+                return tornado.locale.get(language)
 
     def login(self, username):
         logger.info("Logged in as %r", username)
@@ -339,6 +346,7 @@ class BaseHandler(RequestHandler):
     def logout(self):
         logger.info("Logged out")
         self.clear_cookie('user')
+        self.clear_cookie('language')
 
     def render_string(self, template_name, **kwargs):
         template = self.template_env.get_template(template_name)
