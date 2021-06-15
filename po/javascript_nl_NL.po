@@ -1,7 +1,7 @@
 # Translations template for Taguette.
 # Copyright (C) 2018 Remi Rampin
 # This file is distributed under the same license as the Taguette project.
-# Remi Rampin <r@remirampin.com>, 2018.
+# Remi Rampin <remi@rampin.org>, 2018.
 # 
 # Translators:
 # Chris Hartgerink <chris@libscie.org>, 2019
