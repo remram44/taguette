@@ -1,5 +1,5 @@
 # Translations template for Taguette.
-# Copyright (C) 2018 Remi Rampin
+# Copyright (C) 2018 Remi Rampin and Taguette contributors
 # This file is distributed under the same license as the Taguette project.
 # Remi Rampin <remi@rampin.org>, 2018.
 # 
@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Taguette 0.10\n"
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
-"POT-Creation-Date: 2021-02-17 18:03-0500\n"
+"POT-Creation-Date: 2021-06-15 16:20-0400\n"
 "PO-Revision-Date: 2019-05-08 16:49+0000\n"
 "Last-Translator: Frank Ubachs <fjubachs@gmail.com>, 2020\n"
 "Language-Team: Dutch (Netherlands) (https://www.transifex.com/remram44/teams/98824/nl_NL/)\n"
@@ -118,33 +118,32 @@ msgstr "Profiel"
 msgid "Settings"
 msgstr "Voorkeuren"
 
-#: taguette/templates/base.html:45
+#: taguette/templates/base.html:46
+msgid "Terms of Service"
+msgstr ""
+
+#: taguette/templates/base.html:48
 msgid "Log out"
 msgstr "Uitloggen"
 
 #. Link to form
 #. Submit button
-#: taguette/templates/base.html:50 taguette/templates/login.html:9
+#: taguette/templates/base.html:53 taguette/templates/login.html:9
 #: taguette/templates/login.html:41
 msgid "Log in"
 msgstr "Inloggen"
 
-#: taguette/templates/base.html:64
+#: taguette/templates/base.html:67
 #, python-format
 msgid ""
 "Taguette %(version)s is released under a <a "
 "href=\"https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt\">BSD-3-Clause"
-" license</a>, &#169; Rémi Rampin | <a href=\"https://www.taguette.org"
-"/getting-started.html\">User Documentation</a> | Please report issues via <a"
-" href=\"https://gitlab.com/remram44/taguette\">GitLab</a> or <a "
+" license</a>, &#169; Rémi Rampin and Taguette contributors | <a "
+"href=\"https://www.taguette.org/getting-started.html\">User "
+"Documentation</a> | Please report issues via <a "
+"href=\"https://gitlab.com/remram44/taguette\">GitLab</a> or <a "
 "href=\"mailto:hi@taguette.org\">hi@taguette.org</a>!"
 msgstr ""
-"Taguette %(version)s is openbaar gemaakt onder een <a "
-"href=\"https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt\">BSD-3-Clause"
-" licensie</a>, &#169; Rémi Rampin | <a href=\"https://www.taguette.org"
-"/getting-started.html\">Gebruiksdocumentatie</a> | Rapporteer a.u.b. "
-"problemen via <a href=\"https://gitlab.com/remram44/taguette\">GitLab</a> of"
-" <a href=\"mailto:hi@taguette.org\">hi@taguette.org</a>!"
 
 #. Left pane tab, keep short
 #: taguette/templates/project.html:16
@@ -165,8 +164,8 @@ msgstr "Markeringen"
 #. Document change form placeholder
 #. Tag change form
 #. Document creation form
-#: taguette/templates/project.html:32 taguette/templates/project.html:203
-#: taguette/templates/project.html:260 taguette/templates/project_new.html:13
+#: taguette/templates/project.html:32 taguette/templates/project.html:213
+#: taguette/templates/project.html:270 taguette/templates/project_new.html:13
 msgid "Name"
 msgstr "Naam"
 
@@ -174,8 +173,8 @@ msgstr "Naam"
 #. Document add form placeholder
 #. Document change form placeholder
 #. Document creation form
-#: taguette/templates/project.html:36 taguette/templates/project.html:177
-#: taguette/templates/project.html:206 taguette/templates/project.html:261
+#: taguette/templates/project.html:36 taguette/templates/project.html:187
+#: taguette/templates/project.html:216 taguette/templates/project.html:271
 #: taguette/templates/project_new.html:19
 msgid "Description"
 msgstr "Beschrijving"
@@ -184,162 +183,166 @@ msgstr "Beschrijving"
 msgid "Manage collaborators"
 msgstr "Medewerkers beheren"
 
-#: taguette/templates/project.html:49
+#: taguette/templates/project.html:47
+msgid "Export project"
+msgstr ""
+
+#: taguette/templates/project.html:51
 msgid "Export codebook"
 msgstr "Codeboek exporteren"
 
-#: taguette/templates/project.html:52
+#: taguette/templates/project.html:54
 msgid "QDC (XML)"
 msgstr ""
 
-#: taguette/templates/project.html:53 taguette/templates/project.html:100
+#: taguette/templates/project.html:55 taguette/templates/project.html:110
 msgid "Excel"
 msgstr ""
 
-#: taguette/templates/project.html:54 taguette/templates/project.html:101
+#: taguette/templates/project.html:56 taguette/templates/project.html:111
 msgid "CSV"
 msgstr ""
 
-#: taguette/templates/project.html:55 taguette/templates/project.html:97
+#: taguette/templates/project.html:57 taguette/templates/project.html:107
 msgid "HTML"
 msgstr ""
 
-#: taguette/templates/project.html:56 taguette/templates/project.html:98
+#: taguette/templates/project.html:58 taguette/templates/project.html:108
 msgid "DOCX"
 msgstr ""
 
-#: taguette/templates/project.html:57 taguette/templates/project.html:99
+#: taguette/templates/project.html:59 taguette/templates/project.html:109
 msgid "PDF"
 msgstr ""
 
-#: taguette/templates/project.html:62
+#: taguette/templates/project.html:64
 msgid "Delete project"
 msgstr "Project verwijderen"
 
-#: taguette/templates/project.html:69 taguette/templates/project.html:78
-#: taguette/templates/project.html:233
-msgid "Loading..."
-msgstr "Laden..."
-
-#: taguette/templates/project.html:70 taguette/templates/project.html:162
+#: taguette/templates/project.html:72 taguette/templates/project.html:172
 msgid "Add a document"
 msgstr "Document toevoegen"
 
-#: taguette/templates/project.html:72
+#: taguette/templates/project.html:76 taguette/templates/project.html:90
+#: taguette/templates/project.html:243
+msgid "Loading..."
+msgstr "Laden..."
+
+#: taguette/templates/project.html:78
 msgid "Backlight"
 msgstr "Backlight"
 
-#: taguette/templates/project.html:79
+#: taguette/templates/project.html:85
 msgid "See all highlights"
 msgstr "Toon alle markeringen"
 
-#: taguette/templates/project.html:80 taguette/templates/project.html:234
+#: taguette/templates/project.html:86 taguette/templates/project.html:244
 msgid "Create a tag"
 msgstr "Label aanmaken"
 
-#: taguette/templates/project.html:94
+#: taguette/templates/project.html:104
 msgid "Export this view"
 msgstr "Exporteer dit overzicht"
 
-#: taguette/templates/project.html:106
+#: taguette/templates/project.html:116
 msgid "Load a document on the left"
 msgstr "Laad links een document"
 
-#: taguette/templates/project.html:118
+#: taguette/templates/project.html:128
 msgid "Manage Collaborators"
 msgstr "Medewerkers beheren"
 
-#: taguette/templates/project.html:126
+#: taguette/templates/project.html:136
 msgid "Add Collaborators"
 msgstr "Medewerkers toevoegen"
 
 #. Project member form placeholder
-#: taguette/templates/project.html:130
+#: taguette/templates/project.html:140
 msgid "Username"
 msgstr "Gebruikersnaam"
 
 #. Permissions level
-#: taguette/templates/project.html:134
+#: taguette/templates/project.html:144
 msgid "Full permissions"
 msgstr "Volledige toestemming"
 
 #. Permissions level
-#: taguette/templates/project.html:135
+#: taguette/templates/project.html:145
 msgid "Can't change collaborators / delete project"
 msgstr "Kan medewerkers niet wijzigen / project verwijderen"
 
 #. Permissions level
-#: taguette/templates/project.html:136
+#: taguette/templates/project.html:146
 msgid "View & make changes"
 msgstr "Toon & wijzig"
 
 #. Permissions level
-#: taguette/templates/project.html:137
+#: taguette/templates/project.html:147
 msgid "View only"
 msgstr "Alleen tonen"
 
-#: taguette/templates/project.html:140
+#: taguette/templates/project.html:150
 msgid "Add to project"
 msgstr "Aan project toevoegen"
 
-#: taguette/templates/project.html:143
+#: taguette/templates/project.html:153
 msgid "Current Collaborators"
 msgstr "Huidige medewerkers"
 
-#: taguette/templates/project.html:150 taguette/templates/project.html:210
-#: taguette/templates/project.html:239 taguette/templates/project.html:266
+#: taguette/templates/project.html:160 taguette/templates/project.html:220
+#: taguette/templates/project.html:249 taguette/templates/project.html:276
 msgid "Save & Close"
 msgstr "Opslaan & Afsluiten"
 
-#: taguette/templates/project.html:151 taguette/templates/project.html:182
-#: taguette/templates/project.html:267
+#: taguette/templates/project.html:161 taguette/templates/project.html:192
+#: taguette/templates/project.html:277
 msgid "Cancel"
 msgstr "Annuleren"
 
-#: taguette/templates/project.html:171
+#: taguette/templates/project.html:181
 msgid "Enter a document name"
 msgstr "Vul een documentnaam in"
 
-#: taguette/templates/project.html:181
+#: taguette/templates/project.html:191
 msgid "Import"
 msgstr "Importeren"
 
-#: taguette/templates/project.html:193
+#: taguette/templates/project.html:203
 msgid "Edit document"
 msgstr "Document wijzigen"
 
-#: taguette/templates/project.html:211
+#: taguette/templates/project.html:221
 msgid "Delete document"
 msgstr "Document verwijderen"
 
-#: taguette/templates/project.html:222
+#: taguette/templates/project.html:232
 msgid "Highlight"
 msgstr "Markeren"
 
-#: taguette/templates/project.html:240
+#: taguette/templates/project.html:250
 msgid "Delete highlight"
 msgstr "Markering verwijderen"
 
-#: taguette/templates/project.html:251
+#: taguette/templates/project.html:261
 msgid "New tag"
 msgstr "Nieuw label"
 
-#: taguette/templates/project.html:252
+#: taguette/templates/project.html:262
 msgid "Change tag"
 msgstr "Label wijzigen"
 
 #. Button in tag edit window
-#: taguette/templates/project.html:265
+#: taguette/templates/project.html:275
 msgid "Merge..."
 msgstr "Samenvoegen..."
 
-#: taguette/templates/project.html:268
+#: taguette/templates/project.html:278
 msgid "Delete tag"
 msgstr "Label verwijderen"
 
-#: taguette/templates/project.html:335
-msgid "[new highlight]"
-msgstr "[nieuwe markering]"
+#: taguette/templates/project.html:345
+msgid "new highlight"
+msgstr "nieuwe markering"
 
 #: taguette/templates/index.html:10
 #, python-format
@@ -359,8 +362,12 @@ msgid "You have no projects yet."
 msgstr "Je hebt nog geen projecten."
 
 #: taguette/templates/index.html:21
-msgid "Create a project"
-msgstr "Maak een project aan"
+msgid "Create a new project"
+msgstr ""
+
+#: taguette/templates/index.html:22
+msgid "Import a project file"
+msgstr ""
 
 #: taguette/templates/cookies_prompt.html:6
 msgid "Cookie warning"
@@ -416,7 +423,7 @@ msgid "<a href=\"%(url)s\">Register now</a> for free and get started!"
 msgstr "<a href=\"%(url)s\">Registreer nu</a> gratis en begin!"
 
 #. Submit button
-#: taguette/templates/login.html:12 taguette/templates/login.html:85
+#: taguette/templates/login.html:12 taguette/templates/login.html:96
 msgid "Register"
 msgstr "Registratie"
 
@@ -433,6 +440,15 @@ msgstr "Wachtwoord vergeten"
 msgid "Confirm password"
 msgstr "Wachtwoord bevestigen"
 
+#: taguette/templates/login.html:85
+msgid "Terms of service"
+msgstr ""
+
+#: taguette/templates/login.html:89
+#, python-format
+msgid "I accept the <a href=\"%(url)s\">terms of service</a>"
+msgstr ""
+
 #: taguette/templates/new_password.html:10
 msgid "Please enter a new password below:"
 msgstr "Voer hieronder een nieuw wachtwoord in:"
@@ -446,6 +462,13 @@ msgstr "Nieuw wachtwoord aanmaken"
 #: taguette/templates/export_codebook.html:13
 msgid "Taguette Codebook"
 msgstr "Taguette codeboek"
+
+#: taguette/templates/export_codebook.html:16
+#, python-format
+msgid "%(number)d highlight"
+msgid_plural "%(number)d highlights"
+msgstr[0] ""
+msgstr[1] ""
 
 #: taguette/templates/token_needed.html:6
 msgid ""
@@ -524,12 +547,32 @@ msgstr ""
 msgid "This link will expire in 1 day."
 msgstr "Deze link verloopt in 1 dag."
 
+#: taguette/templates/project_import.html:6
+msgid "Import a project"
+msgstr ""
+
+#: taguette/templates/project_import.html:10
+msgid "File:"
+msgstr ""
+
+#: taguette/templates/project_import.html:16
+msgid "Project:"
+msgstr ""
+
+#: taguette/templates/project_import.html:19
+msgid "No file selected..."
+msgstr ""
+
+#: taguette/templates/project_import.html:24
+msgid "Import project"
+msgstr ""
+
 #: taguette/web/views.py:117
 msgid "Invalid login or password"
 msgstr "Foutieve login of wachtwoord"
 
-#: taguette/web/views.py:164 taguette/web/views.py:225
-#: taguette/web/views.py:367
+#: taguette/web/views.py:164 taguette/web/views.py:244
+#: taguette/web/views.py:392
 msgid "Passwords do not match"
 msgstr "Wachtwoorden zijn niet hetzelfde"
 
@@ -541,41 +584,45 @@ msgstr "Gebruikersnaam bezet"
 msgid "Email address is already used"
 msgstr "Email-adres al in gebruik"
 
-#: taguette/web/views.py:258
+#: taguette/web/views.py:183
+msgid "Terms of Service must be accepted"
+msgstr ""
+
+#: taguette/web/views.py:281
 msgid "This email address is not associated with any user"
 msgstr "Dit email-adres is niet gekoppeld aan een gebruiker"
 
-#: taguette/web/views.py:287
+#: taguette/web/views.py:310
 msgid "Password reset for Taguette"
 msgstr "Wachtwoord resetten voor Taguette"
 
-#: taguette/web/views.py:326
+#: taguette/web/views.py:349
 msgid "Invalid token"
 msgstr "Ongeldig teken"
 
-#: taguette/web/views.py:330
+#: taguette/web/views.py:353
 msgid "No user associated with that token"
 msgstr "Er is geen gebruiker aan dit teken gekoppeld"
 
-#: taguette/web/views.py:333
+#: taguette/web/views.py:356
 msgid "Password has already been changed"
 msgstr "Het wachtwoord is al veranderd"
 
 #. Default tag name
-#: taguette/web/views.py:407
+#: taguette/web/views.py:432
 msgid "interesting"
 msgstr "interessant"
 
 #. Default tag description
-#: taguette/web/views.py:409
+#: taguette/web/views.py:434
 msgid "Further review required"
 msgstr "Nadere beoordeling vereist"
 
-#: taguette/web/views.py:433
+#: taguette/web/views.py:465
 msgid "You don't have permission to delete this project"
 msgstr "Je hebt geen toestemming om dit project te verwijderen"
 
-#: taguette/database.py:576
+#: taguette/database.py:687
 msgid ""
 "\n"
 "    The database schema used by Taguette has changed! We will try to\n"
@@ -585,7 +632,7 @@ msgstr ""
 "Het database-schema dat Taguette gebruikt is veranderd! \n"
 "We proberen je werkblad automatisch te updaten.\n"
 
-#: taguette/database.py:585
+#: taguette/database.py:699
 #, python-format
 msgid ""
 "\n"
@@ -599,7 +646,7 @@ msgstr ""
 "zorg dan dat je dit bestand behoudt, en laat het ons weten.\n"
 " %(backup)s\n"
 
-#: taguette/database.py:592
+#: taguette/database.py:707
 #, python-format
 msgid ""
 "\n"
@@ -612,87 +659,83 @@ msgstr ""
 "Omdat je geen SQLite gebruikt zullen we niet proberen om automatisch te migreren; maak een backup van je data en\n"
 "gebruik `taguette --database=%(url)s migrate` wanneer je door wilt gaan."
 
-#: taguette/validate.py:21
+#: taguette/validate.py:23
+msgid "Description is too long"
+msgstr ""
+
+#: taguette/validate.py:29
 msgid "Project name cannot be empty"
 msgstr "Projectnaam mag niet leeg zijn"
 
-#: taguette/validate.py:23
+#: taguette/validate.py:31
 msgid "Project name is too long"
 msgstr "Projectnaam is te lang"
 
-#: taguette/validate.py:28
-msgid "Project description is too long"
-msgstr "Projectbeschrijving is te lang"
-
-#: taguette/validate.py:39
+#: taguette/validate.py:48
 msgid "User login cannot be empty"
 msgstr "Gebruikerslogin mag niet leeg zijn"
 
-#: taguette/validate.py:41
+#: taguette/validate.py:50
 msgid "User login is too long"
 msgstr "Gebruikerslogin is te lang"
 
-#: taguette/validate.py:45
+#: taguette/validate.py:54
 msgid "User login contains forbidden characters"
 msgstr "Gebruikerslogin bevat verboden tekens"
 
-#: taguette/validate.py:51
+#: taguette/validate.py:62
 msgid "Email cannot be empty"
 msgstr "Email mag niet leeg zijn"
 
-#: taguette/validate.py:53
+#: taguette/validate.py:64
 msgid "Invalid email address"
 msgstr "Ongeldig email-adres"
 
-#: taguette/validate.py:58
+#: taguette/validate.py:66
+msgid "Email address is too long"
+msgstr ""
+
+#: taguette/validate.py:74
 msgid "Please use a longer password"
 msgstr "Gebruik a.u.b. een langer wachtwoord"
 
-#: taguette/validate.py:60
+#: taguette/validate.py:76
 msgid "Please use a shorter password"
 msgstr "Gebruik a.u.b een korter wachtwoord"
 
-#: taguette/validate.py:65
+#: taguette/validate.py:84
 msgid "Document name cannot be empty"
 msgstr "Documentnaam mag niet leeg zijn"
 
-#: taguette/validate.py:67
+#: taguette/validate.py:86
 msgid "Document name is too long"
 msgstr "Documentnaam is te lang"
 
-#: taguette/validate.py:72
-msgid "Document description is too long"
-msgstr "Documentbeschrijving is te lang"
-
-#: taguette/validate.py:77
+#: taguette/validate.py:94
 msgid "Tag path cannot be empty"
 msgstr "Label-pad mag niet leeg zijn"
 
-#: taguette/validate.py:79
+#: taguette/validate.py:96
 msgid "Tag path is too long"
 msgstr "Label-pad is te lang"
 
-#: taguette/validate.py:84
-msgid "Tag description is too long"
-msgstr "Labelbeschrijving is te lang"
-
-#: taguette/main.py:182
+#: taguette/main.py:187
 msgid "Port number on which to listen"
 msgstr "Poortnummer om te luisteren"
 
-#: taguette/main.py:184
+#: taguette/main.py:189
 msgid "Address to bind on"
 msgstr "Adres om te binden"
 
-#: taguette/main.py:186
+#: taguette/main.py:191
 msgid "Open web browser to the application"
 msgstr "Open webbrowser naar de applicatie"
 
-#: taguette/main.py:188
+#: taguette/main.py:193
 msgid "Don't open the web browser"
 msgstr "Open de webbrowser niet"
 
-#: taguette/main.py:193
+#: taguette/main.py:198
 #, python-format
 msgid ""
 "Database location or connection string, for example 'project.db' or "
@@ -701,35 +744,35 @@ msgstr ""
 "Locatie van de database of verbindingsteken, bijvoorbeeld 'project.db' of "
 "'postgresql://me:pw@localhost/mydb' (default: %(default)r)"
 
-#: taguette/main.py:200
+#: taguette/main.py:205
 msgid "Set the file creation mask (umask) on systems that support it."
 msgstr ""
 
-#: taguette/main.py:204
+#: taguette/main.py:209
 msgid "Don't change umask on startup"
 msgstr ""
 
-#: taguette/main.py:207
+#: taguette/main.py:215
 msgid "additional commands"
 msgstr "additionele commando's"
 
-#: taguette/main.py:211
+#: taguette/main.py:219
 msgid "Manually trigger a database migration"
 msgstr "Handmatig een database-migratie beginnen"
 
-#: taguette/main.py:220
+#: taguette/main.py:228
 msgid "Print the default server configuration"
 msgstr "Geef de standaard serverconfiguratie weer"
 
-#: taguette/main.py:222
+#: taguette/main.py:230
 msgid "Output to this file rather than stdout"
 msgstr "Schrijf naar dit bestand in plaats van stdout"
 
-#: taguette/main.py:228
+#: taguette/main.py:236
 msgid "Run in server mode, suitable for a multi-user deployment"
 msgstr "In servermodus uitvoeren, toepasselijk voor meerdere gebruikers"
 
-#: taguette/main.py:230
+#: taguette/main.py:238
 msgid ""
 "Configuration file for the server. The default configuration can be "
 "generated using the `default-config` command"
@@ -737,17 +780,17 @@ msgstr ""
 "Configuratiebestand voor de server. De standaard configuratie kan "
 "gegenereerd worden met `default-config` commando"
 
-#: taguette/main.py:238
+#: taguette/main.py:250
 #, python-format
 msgid "Invalid umask: %(arg)s"
 msgstr ""
 
-#: taguette/main.py:260
+#: taguette/main.py:274
 #, python-format
 msgid "Missing required configuration variable %(var)s"
 msgstr "Vereiste configuratie variabele ontbreekt %(var)s"
 
-#: taguette/main.py:334
+#: taguette/main.py:349
 #, python-format
 msgid ""
 "\n"
