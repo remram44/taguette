@@ -839,6 +839,7 @@ class ProjectEvents(BaseHandler):
         self.application.unobserve_project(self.project_id, self.wait_future)
 
     def on_finish(self):
+        super(ProjectEvents, self).on_finish()
         ProjectEvents.polling_clients.discard(self.request.remote_ip)
 
     def _log(self):

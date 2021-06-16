@@ -131,6 +131,7 @@ class Application(tornado.web.Application):
         elif config['MULTIUSER'] and not admin.hashed_password:
             self._set_password(admin)
             db.commit()
+        db.close()
 
         if config['TOS_FILE']:
             with open(config['TOS_FILE']) as fp:
