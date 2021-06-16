@@ -71,6 +71,7 @@
             {% call navlink('-', 'https://app.taguette.org/') %}{% trans %}Try it {{ external_icon }}{% endtrans%}{% endcall %}
             {% call navlink('-', 'https://gitlab.com/remram44/taguette') %}<i class="fab fa-gitlab"></i> <span class="d-lg-none">GitLab</span>{% endcall %}
             {% call navlink('-', 'https://twitter.com/TaguetteProject') %}<i class="fab fa-twitter"></i> <span class="d-lg-none">Twitter</span>{% endcall %}
+            {% call navlink('-', 'https://opencollective.com/taguette') %}<i class="fas fa-donate"></i> <span class="d-lg-none">Open Collective</span>{% endcall %}
           </ul>
         </div>
       </div>
@@ -84,7 +85,7 @@
 
     <footer class="container">
       <hr/>
-      <p>{% trans %}Email: <a href="mailto:hi@taguette.org">hi@taguette.org</a> | Mailing-lists: <a href="https://groups.io/g/taguette">users</a>, <a href="https://groups.io/g/taguette-announce">announce</a> | Twitter: <a href="https://twitter.com/TaguetteProject">@TaguetteProject</a> | Any issue using Taguette? Tell us on <a href="https://gitlab.com/remram44/taguette">GitLab</a>!{% endtrans %}</p>
+      <p>{% trans %}Email: <a href="mailto:hi@taguette.org">hi@taguette.org</a> | Mailing-lists: <a href="https://groups.io/g/taguette">users</a>, <a href="https://groups.io/g/taguette-announce">announce</a> | Twitter: <a href="https://twitter.com/TaguetteProject">@TaguetteProject</a> | Any issue using Taguette? Tell us on <a href="https://gitlab.com/remram44/taguette">GitLab</a>!{% endtrans %} | Want to donate to Taguette? Check out <a href="https://opencollective.com/taguette">our Open Collective</a></p>
       <p>
         Change language:
         {%- for lang in languages -%}
