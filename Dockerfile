@@ -1,4 +1,4 @@
-FROM python:3.7 AS translations
+FROM python:3.8 AS translations
 
 RUN pip install babel==2.9.0 pytz==2021.1  # Keep in sync with poetry.lock
 
@@ -10,7 +10,7 @@ COPY scripts/update_translations.sh scripts/
 RUN scripts/update_translations.sh
 
 
-FROM python:3.7
+FROM python:3.8
 
 # Install Calibre from Ubuntu distro
 RUN apt-get update && \
