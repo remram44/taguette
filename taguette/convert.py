@@ -208,7 +208,13 @@ def is_html_safe(text):
         strip=True,
     )
 
-    return text.strip() == cleaned.strip()
+    # text.strip() == cleaned.strip()
+    # This doesn't work because bleach changed from outputting <br/> to <br>
+
+    return (
+        text.strip().replace('/>', '>')
+        == cleaned.strip().replace('/>', '>')
+    )
 
 
 @prom_async_time(PROM_CALIBRE_TOHTML_TIME)
