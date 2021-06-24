@@ -20,9 +20,9 @@
 
   {% trans %}
   <p>If you so choose, you can simply run the <a href="https://quay.io/repository/remram44/taguette"><code>quay.io/remram44/taguette</code> Docker image</a>. You will be prompted for an 'admin' password the first time. You can persist the data by mounting a volume over <code>/data</code>, like so:</p>
-  <pre>docker run --rm quay.io/remram44/taguette default-config &gt;/srv/taguette/taguette.conf
-edit /srv/taguette/taguette.conf  # Edit configuration file, see below
-docker run -ti -p 80:7465 -v /srv/taguette:/data --restart=always quay.io/remram44/taguette server /data/taguette.conf</pre>
+  <pre>docker run --rm quay.io/remram44/taguette default-config &gt;/srv/taguette/config.py
+edit /srv/taguette/config.py  # Edit configuration file, see below
+docker run -ti -p 80:7465 -v /srv/taguette:/data --restart=always quay.io/remram44/taguette server /data/config.py</pre>
   {% endtrans %}
 
   <h2 id="native">{% trans %}"Native" installation on a server{% endtrans %}</h2>
@@ -37,9 +37,9 @@ apt install calibre python3.5 virtualenv
 virtualenv --python=python3.5 /srv/taguette
 . /srv/taguette/bin/activate
 pip install taguette
-taguette default-config &gt;taguette.conf
-edit taguette.conf  # Edit configuration file, see below
-taguette --no-browser server taguette.conf</pre>
+taguette default-config &gt;config.py
+edit config.py  # Edit configuration file, see below
+taguette --no-browser server config.py</pre>
 
   {% endtrans %}
 
