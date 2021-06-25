@@ -1,7 +1,9 @@
+from datetime import datetime
 import logging
 import os
 import prometheus_client
 import shutil
+import string
 import tempfile
 from tornado.web import authenticated
 
@@ -149,6 +151,17 @@ class ExportHighlightsDoc(BaseHandler):
         return name, mimetype, contents
 
 
+_safe_filename_chars = set(
+    string.ascii_letters
+    + string.digits
+    + ' ()+,-.=@[]_{}~'
+)
+
+
+def safe_filename(name):
+    return ''.join(c for c in name if c in _safe_filename_chars)
+
+
 class ExportDocument(BaseHandler):
     init_PROM_EXPORT('document')
 
@@ -158,8 +171,7 @@ class ExportDocument(BaseHandler):
         PROM_EXPORT.labels('document', ext.lower()).inc()
         doc, _ = self.get_document(project_id, document_id, True)
 
-        # Drop non-ASCII characters from the name
-        name = doc.name.encode('ascii', 'ignore').decode('ascii') or None
+        name = safe_filename(doc.name)
 
         mimetype, contents = await export.highlighted_document(
             self.db,
@@ -261,6 +273,12 @@ class ExportSqlite(BaseHandler):
         PROM_EXPORT.labels('project', 'sqlite3').inc()
         project, _ = self.get_project(project_id)
 
+        # Result filename
+        export_name = '%s_%s.sqlite3' % (
+            datetime.utcnow().strftime('%Y-%m-%d'),
+            safe_filename(project.name),
+        )
+
         with tempfile.TemporaryDirectory(
             prefix='taguette_export_',
         ) as tmp_dir:
@@ -284,7 +302,7 @@ class ExportSqlite(BaseHandler):
             # Send the file
             self.set_header('Content-Type', 'application/vnd.sqlite3')
             self.set_header('Content-Disposition',
-                            'attachment; filename="project.sqlite3"')
+                            'attachment; filename="%s"' % export_name)
             with open(filename, 'rb') as fp:
                 while True:
                     chunk = fp.read(4096)

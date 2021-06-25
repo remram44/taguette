@@ -240,6 +240,18 @@ class TestMeasure(unittest.TestCase):
             )
 
 
+class TestValidate(unittest.TestCase):
+    def test_export_filename(self):
+        self.assertEqual(
+            web.export.safe_filename('**My sweet project / 2**'),
+            'My sweet project  2',
+        )
+        self.assertEqual(
+            web.export.safe_filename("Rémi's project"),
+            "Rmis project",
+        )
+
+
 class MyHTTPTestCase(AsyncHTTPTestCase):
     xsrf = None
 
@@ -1404,6 +1416,11 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(response.status, 200)
             self.assertEqual(response.headers['Content-Type'],
                              'application/vnd.sqlite3')
+            self.assertTrue(re.match(
+                '^attachment; filename='
+                + '"[0-9]{4}-[0-9]{2}-[0-9]{2}_db1project2.sqlite3"$',
+                response.headers['Content-Disposition'],
+            ))
             with open(db2_path, 'wb') as fp:
                 fp.write(await response.read())
         db2 = database.connect('sqlite:///' + db2_path)()
