@@ -31,9 +31,7 @@
       <h2 id="start" class="mt-4">{% trans %}<i class="far fa-play-circle"></i> Open Taguette{% endtrans %}</h2>
 
       {% trans %}
-      <p>If you are working on <a href="https://app.taguette.org">app.taguette.org</a>, after you log in you should see a welcome page where you can create a new project similar to the screenshot below (just 'account' where you see 'single-user mode').</p>
-
-      <p>If you've downloaded and installed Taguette on your computer, you should be able to double-click on the Taguette icon and start it up! You'll see the command line will pop up and be running. This is ok! Don't worry about the terminal but do leave it running. If you exit the terminal, Taguette will stop. Taguette should automatically pop up in your web browser, but if for some reason it doesn't, navigate to <a href="http://localhost:7465"><code>localhost:7465</code></a> to begin working on your projects! It should look something like this:</p>
+      <p>If you've downloaded and installed Taguette on your computer, you should be able to double-click on the Taguette icon and start it up! You'll see the command line will pop up and be running. This is ok! Don't worry about the terminal but do leave it running. If you exit the terminal, Taguette will stop. Taguette should automatically pop up in your web browser, but if for some reason it doesn't, navigate to <a href="http://localhost:7465"><code>localhost:7465</code></a> to begin working on your projects! It should look something like this (if you're using Taguette on a server, you should see 'account' where 'single-user mode' is):</p>
 
       <img src="imgs/01-welcome.png" width="1125" height="341" class="img-fluid border border-dark">
       {% endtrans %}
@@ -79,7 +77,7 @@
       {% trans %}
       <p>If you are working on <a href="https://app.taguette.org">app.taguette.org</a> or hosting Taguette on your own server, you have the option to work with others! In the <strong>Project Info tab</strong> of your Taguette project, you should see a grey button labeled <strong>Manage Collaborators</strong>:</p>
 
-      <img src="imgs/projectCollab.png" width="473" height="478" class="img-fluid border border-dark mb-2">
+      <img src="imgs/projectMenu.png" width="473" height="478" class="img-fluid border border-dark mb-2">
 
       <p>Click that and you should get a modal with the option to add and remove collaborators, as well as change their permissions on the project. You must add their Taguette username and pick from the list of permissions, click <strong>Add to project</strong>, and to make sure that you've fully added your collaborator, next click <strong>Save & Close</strong>.</p>
 
@@ -151,9 +149,10 @@
 
       <img src="imgs/07-addTag.png" width="499" height="292" class="img-fluid border border-dark mb-2">
 
-      <p>You might have noticed that I used the tag <code>tech.floss</code> and you might be wondering why I used that notation. In Taguette, you can use <em>any punctuation</em> to make hierarchies. So <code>tech.floss</code> lives underneath <code>tech</code>. If I click on <code>tech.floss</code>, then I'll see only materials relating to that tag. If I click on <code>tech</code>, I'll see everything in that tag as we as <code>tech.floss</code> and any other sub-tag.
-
       <p>After you give the tag a good name and a bit of description about what it means, you should see it added to the list in alphabetical order.</p>
+
+      <p><strong>A note on hierarchical tagging</strong>: you can use <em>any punctuation</em> to make hierarchies. So <code>tech.floss</code> lives underneath <code>tech</code>. If I click on <code>tech.floss</code>, then I'll see only materials relating to that tag. If I click on <code>tech</code>, I'll see everything in that tag as well as <code>tech.floss</code> and any other sub-tag.</p>
+
       {% endtrans %}
 
       <h2 id="change-tag" class="mt-4">{% trans %}<i class="fas fa-eraser"></i> Delete/change Tags{% endtrans %}</h2>
@@ -211,7 +210,7 @@
 
       <img src="imgs/15-viewHighlightedDoc.png" width="1160" height="187" class="img-fluid border border-dark mb-2">
 
-      <p>If you hover your mouse over a highlighted section of text, you will see tags in a tooltip to the right of your mouse cursor. To explore your highlighted document in a different way, you can try clicking on the <strong>Backlight</strong> checkbox. You can see it underneath the <strong>Add a document</strong> button. It will grey out all the non-highlighted text to make the highlighted text really pop. We found this to be a nice view for exploring the texts differently:</p>
+      <p>If you hover your mouse over a highlighted section of text, you will see tags in a tooltip to the right of your mouse cursor. To explore your highlighted document in a different way, you can try clicking on the <strong>Backlight</strong> checkbox. You can see it at the bottom of the pane. It will grey out all the non-highlighted text to make the highlighted text really pop. We found this to be a nice view for exploring the texts differently:</p>
 
       <img src="imgs/16-backlight.png" width="1160" height="236" class="img-fluid border border-dark mb-2">
       {% endtrans %}
@@ -219,6 +218,8 @@
       <h2 id="export" class="mt-4">{% trans %}<i class="fas fa-file-export"></i> Export Options{% endtrans %}</h2>
 
       {% trans %}
+      <p>You can export everything out of Taguette that you put in: tags, highlights, codebooks, documents, and even the entire project! </p>
+
       <p>To export the codebook of your project - this is a list of all the tags that you've created alongside their description - use the dropdown menu in the <strong>Project</strong> tab in the left pane of Taguette, underneath the project description. There is a variety of export options, including <code>QDC</code> (REFI-QDA standard), <code>CSV</code> (spreadsheet), <code>XLSX</code> (Microsoft Excel), <code>DOCX</code> (Microsoft Word), <code>HTML</code>, and <code>PDF</code>.</p>
 
       <img src="imgs/17-exportCodebook.png" width="462" height="610" class="img-fluid border border-dark mb-2">
@@ -243,9 +244,22 @@
 
       <img src="imgs/22-exportDoc.png" width="1160" height="499" class="img-fluid border border-dark mb-2">
 
-      <p>While you will see the document with all the highlights, right now you won't be able to tell which tags go with the highlights, but we are working on that feature to make this export more useful. This is how it looks with the <code>DOCX</code> export:</p>
+      <p>You will see the document with your highlight in yellow, and the associated tag(s) next to the highlighted text, itself highlighted in light red and in brackets. Yellow = quote, light red = tag(s). This is how it looks with the <code>DOCX</code> export:</p>
 
       <img src="imgs/23-exportDocEXs.png" width="1160" height="542" class="img-fluid border border-dark mb-2">
+
+      <p>You can also import and export projects in Taguette! To export your project, go to the <strong>Project Info</strong> tab in the left pane. You should see a button that says <strong>Export project</strong>. Click that, and you should get a download started of a SQLite3 file. This holds your Taguette project, all files, as well as all highlights and codes:</p>
+
+      <img src="imgs/24-exportProject.png" width="1160" height="542" class="img-fluid border border-dark mb-2">
+
+      <p>To import your project onto another instance of Taguette (for instance, a locally running copy on your computer or another server), go to the welcome screen in Taguette and click "Import a project file":</p>
+
+      <img src="imgs/01-welcome.png" width="1125" height="341" class="img-fluid border border-dark">
+
+      <p>From there, you select a project to upload. It must have the SQLite3 file extension to be uploaded. Click Browse and select the file. Taguette will confirm on this screen the name of the project, and once you hit "Import", all project materials will be imported!</p>
+
+      <img src="imgs/25-importProject.png" width="1160" height="542" class="img-fluid border border-dark mb-2">
+
       {% endtrans %}
     </div>
   </div>
