@@ -1234,7 +1234,7 @@ var members_modal = document.getElementById('members-modal');
 var members_initial = {};
 var members_displayed = {};
 
-function _memberRow(login, user) {
+function _memberRow(login, user, can_edit, is_self) {
   var elem = document.createElement('div');
   elem.className = 'row members-item';
   elem.innerHTML =
@@ -1242,14 +1242,18 @@ function _memberRow(login, user) {
     '  <p class="members-item-login">' + login + '</p>' +
     '</div>' +
     '<div class="col-md-4 form-group">' +
-    '  <select class="form-control">' +
+    '  <select class="form-control"' + (can_edit?'':' disabled') + '>' +
     '    <option value="ADMIN">' + gettext("Full permissions") + '</option>' +
     '    <option value="MANAGE_DOCS">' + gettext("Can't change collaborators / delete project") + '</option>' +
     '    <option value="TAG">' + gettext("View & make changes") + '</option>' +
     '    <option value="READ">' + gettext("View only") + '</option>' +
     '  </select>' +
     '</div>' +
-    '<button type="button" class="btn btn-danger col-md-4 form-group">Remove collaborator</button>';
+    (is_self?
+    '<button type="button" class="btn btn-danger col-md-4 form-group">Leave project</button>'
+    :
+    '<button type="button" class="btn btn-danger col-md-4 form-group"' + (can_edit?'':' disabled') + '>Remove collaborator</button>'
+    );
 
   [].forEach.call(elem.querySelectorAll('option'), function(e) {
     if(e.value == user.privileges) {
@@ -1268,10 +1272,12 @@ function _memberRow(login, user) {
 function showMembers() {
   document.getElementById('members-add').reset();
 
-  if(members[user_login].privileges == 'ADMIN') {
-    document.getElementById('members-fields').removeAttribute('disabled');
+  can_edit = members[user_login].privileges == 'ADMIN';
+
+  if(can_edit) {
+    document.getElementById('members-add-fields').removeAttribute('disabled');
   } else {
-    document.getElementById('members-fields').setAttribute('disabled', 1);
+    document.getElementById('members-add-fields').setAttribute('disabled', 1);
   }
 
   var entries = Object.entries(members);
@@ -1290,14 +1296,7 @@ function showMembers() {
   for(var i = 0; i < entries.length; ++i) {
     var login = entries[i][0];
     var user = entries[i][1];
-    var elem = _memberRow(login, user);
-
-    if(login == user_login) {
-      var to_disable = elem.querySelectorAll('select, button');
-      [].forEach.call(to_disable, function(e) {
-        e.disabled = true;
-      });
-    }
+    var elem = _memberRow(login, user, can_edit, login == user_login);
 
     current_members.appendChild(elem);
   }
@@ -1350,7 +1349,6 @@ function sendMembersPatch() {
   for(var i = 0; i < rows.length; ++i) {
     var row = rows[i];
     var login = row.querySelector('.members-item-login').textContent;
-    if(login == user_login) continue; // Ignore self
     var privileges = row.querySelector('select').value;
 
     // Add to patch, if different from stored version
@@ -1365,7 +1363,6 @@ function sendMembersPatch() {
   // Remove the members that are left
   var entries = Object.entries(members_before);
   for(var i = 0; i < entries.length; ++i) {
-    if(entries[i][0] == user_login) continue; // Ignore self
     patch[entries[i][0]] = null;
   }
 
