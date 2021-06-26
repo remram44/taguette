@@ -96,7 +96,8 @@ class ProjectMeta(BaseHandler):
             return self.send_json({})
         except validate.InvalidFormat as e:
             logger.info("Error validating ProjectMeta: %r", e)
-            return self.send_error_json(e.status_code, e.message, e.reason)
+            return self.send_error_json(e.status_code, self.gettext(e.message),
+                                        e.reason)
 
 
 class DocumentAdd(BaseHandler):
@@ -149,7 +150,7 @@ class DocumentAdd(BaseHandler):
         except validate.InvalidFormat as e:
             logger.info("Error validating DocumentAdd: %r", e)
             return await self.send_error_json(
-                e.status_code, e.message,
+                e.status_code, self.gettext(e.message),
                 e.reason,
             )
 
@@ -182,7 +183,8 @@ class DocumentUpdate(BaseHandler):
             return self.send_json({'id': document.id})
         except validate.InvalidFormat as e:
             logger.info("Error validating DocumentUpdate: %r", e)
-            return self.send_error_json(e.status_code, e.message, e.reason)
+            return self.send_error_json(e.status_code, self.gettext(e.message),
+                                        e.reason)
 
     @api_auth
     @PROM_REQUESTS.sync('document_delete')
@@ -265,7 +267,8 @@ class TagAdd(BaseHandler):
             return self.send_json({'id': tag.id})
         except validate.InvalidFormat as e:
             logger.info("Error validating TagAdd: %r", e)
-            return self.send_error_json(e.status_code, e.message, e.reason)
+            return self.send_error_json(e.status_code, self.gettext(e.message),
+                                        e.reason)
 
 
 class TagUpdate(BaseHandler):
@@ -303,7 +306,8 @@ class TagUpdate(BaseHandler):
             return self.send_json({'id': tag.id})
         except validate.InvalidFormat as e:
             logger.info("Error validating TagUpdate: %r", e)
-            return self.send_error_json(e.status_code, e.message, e.reason)
+            return self.send_error_json(e.status_code, self.gettext(e.message),
+                                        e.reason)
 
     @api_auth
     @PROM_REQUESTS.sync('tag_delete')
