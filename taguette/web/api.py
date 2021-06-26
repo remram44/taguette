@@ -630,6 +630,8 @@ class MembersUpdate(BaseHandler):
             login = validate.user_login(login)
             if not user_info:
                 if login in members:
+                    logger.info("Removing member %r from project %d (%s)",
+                                login, project.id, members[login].privileges)
                     self.db.delete(members.pop(login))
                     cmd = database.Command.member_remove(
                         self.current_user, project.id,
@@ -646,8 +648,13 @@ class MembersUpdate(BaseHandler):
                         "Invalid privileges %r" % user_info.get('privileges'),
                     )
                 if login in members:
+                    logger.info("Changing member %r in project %d: %s -> %s",
+                                login, project.id, members[login].privileges,
+                                privileges)
                     members[login].privileges = privileges
                 else:
+                    logger.info("Adding member %r to project %d (%s)",
+                                login, project.id, privileges)
                     member = database.ProjectMember(project=project,
                                                     user_login=login,
                                                     privileges=privileges)
