@@ -229,7 +229,19 @@ function patchJSON(url='', data={}, args) {
     }
   ).then(function(response) {
     if(response.status != 204) {
-      throw new ApiError(response);
+      return response.json()
+      .then(
+      function(json) {
+        if("error" in json) {
+          throw new ApiError(response, json.error);
+        } else {
+          throw new ApiError(response);
+        }
+      },
+      function() {
+        throw new ApiError(response);
+      }
+      );
     }
   });
 }
