@@ -454,12 +454,12 @@ var project_description_input = document.getElementById('project-description');
 var project_description = project_description_input.value;
 
 function setProjectMetadata(metadata, form=true) {
-  if(project_name == metadata.name
+  if(project_name == metadata.project_name
    && project_description == metadata.description) {
     return;
   }
   // Update globals
-  project_name = metadata.name;
+  project_name = metadata.project_name;
   project_description = metadata.description;
   // Update form
   if(form) {
