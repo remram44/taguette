@@ -310,18 +310,24 @@ def main():
         logger.info("Starting Prometheus exporter on port %d", p_port)
         prometheus_client.start_http_server(p_port, p_addr)
 
-    try:
-        version = subprocess.check_output(
-            ['git', '--git-dir=.git', 'describe'],
-            cwd=os.path.dirname(os.path.dirname(__file__)),
-            stderr=subprocess.PIPE,
-        ).decode('utf-8').strip()
-    except (OSError, subprocess.CalledProcessError):
+    toplevel = os.path.dirname(os.path.dirname(__file__))
+    if os.path.exists(os.path.join(toplevel, '.git')):
+        try:
+            version = subprocess.check_output(
+                ['git', '--git-dir=.git', 'describe'],
+                cwd=toplevel,
+                stderr=subprocess.PIPE,
+            ).decode('utf-8').strip()
+        except (OSError, subprocess.CalledProcessError):
+            version = 'v%s' % __version__
+            logger.info("Can't get version from Git, using version=%s",
+                        version)
+        else:
+            logger.info("Running from Git repository, using version=%s",
+                        version)
+    else:
         version = 'v%s' % __version__
         logger.info("Not a Git repository, using version=%s", version)
-    else:
-        logger.info("Running from Git repository, using version=%s",
-                    version)
     PROM_VERSION.labels(version).set(1)
 
     if 'SENTRY_DSN' in config:
