@@ -19,6 +19,7 @@ from unittest import mock
 from urllib.parse import urlencode, urlparse
 from xml.etree import ElementTree
 
+from taguette import __version__
 from taguette import convert, database, extract, main, validate, web
 
 
@@ -938,14 +939,15 @@ class TestMultiuser(MyHTTPTestCase):
             )
             compare_xml(
                 await response.text(),
-                '<?xml version="1.0" encoding="utf-8"?>\n'
-                + '<CodeBook xmlns="urn:QDA-XML:codebook:1.0" origin="Taguette'
-                + ' 0.10.1"><Codes><Code guid="0D62985D-B147-5D01-A9B5-CAE5DCD'
-                + '98342" name="interesting" isCodable="true"/><Code guid="DFE'
-                + '5C38E-9449-5959-A1F7-E3D895CFA87F" name="people" isCodable='
-                + '"true"/><Code guid="725F0645-9CD3-598A-8D2B-EC3D39AB3C3F" n'
-                + 'ame="interesting.places" isCodable="true"/></Codes><Sets/><'
-                + '/CodeBook>',
+                ('<?xml version="1.0" encoding="utf-8"?>\n'
+                 '<CodeBook xmlns="urn:QDA-XML:codebook:1.0" origin="'
+                 'Taguette {ver}"><Codes><Code guid="0D62985D-B147-5D01-A9B5-'
+                 'CAE5DCD98342" name="interesting" isCodable="true"/><Code '
+                 'guid="DFE5C38E-9449-5959-A1F7-E3D895CFA87F" name="people" '
+                 'isCodable="true"/><Code guid="725F0645-9CD3-598A-8D2B-'
+                 'EC3D39AB3C3F" name="interesting.places" isCodable="true"/>'
+                 '</Codes><Sets/></CodeBook>'
+                 ).format(ver=__version__),
             )
 
         # Merge tag 3 into 2
