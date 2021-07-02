@@ -9,6 +9,7 @@ Bugfixes:
 * Fix the activity detection used to pause/resume polling
 * Fix default-config command outputing logs about umask, which could be piped into the new config file (for example when using Docker with `-t`)
 * Fix migrations on SQLite failing because of foreign key constraints when recreating tables
+* Fix RTF export
 
 Enhancements:
 * Show more details when document export or import fails
@@ -20,6 +21,7 @@ Enhancements:
 * Add an HTML page for 404 errors
 * Improve error message when Calibre is not found
 * Add support for MariaDB (MySQL doesn't work because of error 1093, see https://stackoverflow.com/q/4429319)
+* Add option to import or export a project as a SQLite3 database
 
 0.10.1 (2021-02-22)
 -------------------
