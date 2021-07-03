@@ -611,8 +611,14 @@ class MembersUpdate(BaseHandler):
     def patch(self, project_id):
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
+        obj = self.get_json()
         project, privileges = self.get_project(project_id)
-        if not privileges.can_edit_members():
+
+        if (obj.keys() == {self.current_user} and
+                not obj[self.current_user]):
+            # Special case: you are always allowed to remove yourself
+            pass
+        elif not privileges.can_edit_members():
             return self.send_error_json(403, "Unauthorized")
 
         # Get all members
@@ -623,16 +629,14 @@ class MembersUpdate(BaseHandler):
         members = {member.user_login: member for member in members}
 
         # Go over the JSON patch and update
-        obj = self.get_json()
         commands = []
         for login, user_info in obj.items():
             login = validate.user_login(login)
-            if login == self.current_user:
-                logger.warning("User tried to change own privileges")
-                continue
             if not user_info:
                 if login in members:
-                    self.db.delete(members[login])
+                    logger.info("Removing member %r from project %d (%s)",
+                                login, project.id, members[login].privileges)
+                    self.db.delete(members.pop(login))
                     cmd = database.Command.member_remove(
                         self.current_user, project.id,
                         login,
@@ -648,19 +652,32 @@ class MembersUpdate(BaseHandler):
                         "Invalid privileges %r" % user_info.get('privileges'),
                     )
                 if login in members:
+                    logger.info("Changing member %r in project %d: %s -> %s",
+                                login, project.id, members[login].privileges,
+                                privileges)
                     members[login].privileges = privileges
                 else:
-                    self.db.add(
-                        database.ProjectMember(project=project,
-                                               user_login=login,
-                                               privileges=privileges)
-                    )
+                    logger.info("Adding member %r to project %d (%s)",
+                                login, project.id, privileges)
+                    member = database.ProjectMember(project=project,
+                                                    user_login=login,
+                                                    privileges=privileges)
+                    members[login] = member
+                    self.db.add(member)
                 cmd = database.Command.member_add(
                     self.current_user, project.id,
                     login, privileges,
                 )
                 self.db.add(cmd)
                 commands.append(cmd)
+
+        # Check that there are still admins
+        for member in members.values():
+            if member.privileges == database.Privileges.ADMIN:
+                break
+        else:
+            self.db.rollback()
+            return self.send_error_json(400, "There must be one admin")
 
         self.db.commit()
         for cmd in commands:

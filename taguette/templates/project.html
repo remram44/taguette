@@ -132,9 +132,9 @@
       </div>
       <div class="modal-body">
         <div class="container">
-          <fieldset id="members-fields">
-            <h5>{% trans %}Add Collaborators{% endtrans %}</h5>
-            <form id="members-add">
+          <h5>{% trans %}Add Collaborators{% endtrans %}</h5>
+          <form id="members-add">
+            <fieldset id="members-add-fields">
               <div class="row">
                 <div class="col-md-4 form-group">
                   <input type="text" class="form-control" id="member-add-name" placeholder="{# TRANSLATORS: Project member form placeholder #}{% trans %}Username{% endtrans %}" required />
@@ -149,11 +149,11 @@
                 </div>
                 <button type="submit" class="btn btn-info col-md-4 form-group">{% trans %}Add to project{% endtrans %}</button>
               </div>
-            </form>
-            <h5>{% trans %}Current Collaborators{% endtrans %}</h5>
-            <form id="members-current">
-            </form>
-          </fieldset>
+            </fieldset>
+          </form>
+          <h5>{% trans %}Current Collaborators{% endtrans %}</h5>
+          <form id="members-current">
+          </form>
         </div>
       </div>
       <div class="modal-footer">
