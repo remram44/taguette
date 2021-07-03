@@ -18,7 +18,7 @@ rm -rf dist/taguette
 cp scripts/dist/macos/taguette_console_wrapper dist/Taguette.app/Contents/MacOS/
 cp -a /Applications/calibre.app dist/Taguette.app/Contents/Resources/
 (cd dist/Taguette.app/Contents && patch -p0 <../../../scripts/dist/macos/plist.patch)
-codesign --deep -s Taguette dist/Taguette.app
+codesign --deep --force -s Taguette dist/Taguette.app
 rm -f taguette.dmg
 cp scripts/dist/LICENSE.txt dist/LICENSE.txt
 ln -s /Applications dist/Applications
