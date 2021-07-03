@@ -160,7 +160,7 @@ class Application(tornado.web.Application):
         http_client = AsyncHTTPClient()
         response = await http_client.fetch(
             'https://msg.taguette.org/%s' % version,
-            headers={'Accept': 'application/json'})
+            headers={'Accept': 'application/json', 'User-Agent': 'Taguette'})
         obj = json.loads(response.body.decode('utf-8'))
         self.messages = obj['messages']
         for msg in self.messages:
