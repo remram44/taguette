@@ -22,6 +22,7 @@ Enhancements:
 * Improve error message when Calibre is not found
 * Add support for MariaDB (MySQL doesn't work because of error 1093, see https://stackoverflow.com/q/4429319)
 * Add option to import or export a project as a SQLite3 database
+* Allow a user to remove themselves from a project, without having to ask an admin
 
 0.10.1 (2021-02-22)
 -------------------
