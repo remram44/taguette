@@ -107,16 +107,16 @@ if sys.platform == 'win32':
     # For now we can't use asyncio subprocesses on Windows
     import subprocess
 
-    async def check_call(cmd, timeout):
+    async def check_call(cmd, timeout, env=None):
         async with subprocess_sem:
             return await asyncio.get_event_loop().run_in_executor(
                 None,
-                lambda: subprocess.check_call(cmd, timeout=timeout),
+                lambda: subprocess.check_call(cmd, timeout=timeout, env=env),
             )
 else:
-    async def check_call(cmd, timeout):
+    async def check_call(cmd, timeout, env=None):
         async with subprocess_sem:
-            proc = await asyncio.create_subprocess_exec(cmd[0], *cmd[1:])
+            proc = await asyncio.create_subprocess_exec(*cmd, env=env)
             try:
                 retcode = await asyncio.wait_for(proc.wait(), timeout=timeout)
             except asyncio.TimeoutError:
@@ -218,9 +218,10 @@ def is_html_safe(text):
 
 
 @prom_async_time(PROM_CALIBRE_TOHTML_TIME)
-async def calibre_to_html(input_filename, output_dir, config):
+async def calibre_to_html(input_filename, temp_dir, config):
     PROM_CALIBRE_TOHTML.inc()
 
+    output_dir = os.path.join(temp_dir, 'output')
     output = []
     convert = 'ebook-convert'
     if os.environ.get('CALIBRE'):
@@ -232,12 +233,14 @@ async def calibre_to_html(input_filename, output_dir, config):
     logger.info("Running: %s", ' '.join(cmd_heuristics))
     try:
         try:
-            await check_call(cmd_heuristics, config['CONVERT_TO_HTML_TIMEOUT'])
+            await check_call(cmd_heuristics, config['CONVERT_TO_HTML_TIMEOUT'],
+                             env=dict(os.environ, TMPDIR=temp_dir))
         except asyncio.TimeoutError:
             logger.warning("Calibre timed out, trying again without "
                            "heuristics...")
             try:
-                await check_call(cmd, config['CONVERT_TO_HTML_TIMEOUT'])
+                await check_call(cmd, config['CONVERT_TO_HTML_TIMEOUT'],
+                                 env=dict(os.environ, TMPDIR=temp_dir))
             except asyncio.TimeoutError:
                 raise ConversionError("Calibre took too long and was stopped")
     except OSError:
@@ -419,7 +422,7 @@ async def to_html(body, content_type, filename, config):
             # Run Calibre
             return await calibre_to_html(
                 input_filename,
-                os.path.join(tmp, 'output'),
+                tmp,
                 config,
             )
         finally:
@@ -453,7 +456,8 @@ async def calibre_from_html(html, extension, config):
                '--page-breaks-before=/']
         logger.info("Running: %s", ' '.join(cmd))
         try:
-            await check_call(cmd, config['CONVERT_FROM_HTML_TIMEOUT'])
+            await check_call(cmd, config['CONVERT_FROM_HTML_TIMEOUT'],
+                             env=dict(os.environ, TMPDIR=tmp))
         except OSError:
             raise ConversionError("Calibre is not available")
         except CalledProcessError:
