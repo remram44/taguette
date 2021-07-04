@@ -225,7 +225,7 @@ async def calibre_to_html(input_filename, output_dir, config):
     convert = 'ebook-convert'
     if os.environ.get('CALIBRE'):
         convert = os.path.join(os.environ['CALIBRE'], convert)
-    cmd = [convert, input_filename, output_dir, '--enable-heuristics']
+    cmd = [convert, input_filename, output_dir]
     if os.path.splitext(input_filename)[1].lower() == '.pdf':
         cmd.append('--no-images')
     cmd_heuristics = cmd + ['--enable-heuristics']
