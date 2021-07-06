@@ -1,8 +1,8 @@
 Changelog
 =========
 
-0.11 (???)
-----------
+0.11 (2021-07-06)
+-----------------
 
 Bugfixes:
 * Fix timezone issues on some SQL backends (PostgreSQL, not SQLite). Could cause recorded times to be wrong, and in some cases password reset links could be used multiple times
