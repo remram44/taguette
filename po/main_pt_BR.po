@@ -119,7 +119,7 @@ msgstr "Configurações"
 
 #: taguette/templates/base.html:46
 msgid "Terms of Service"
-msgstr ""
+msgstr "Termos de Uso"
 
 #: taguette/templates/base.html:48
 msgid "Log out"
@@ -143,6 +143,13 @@ msgid ""
 "href=\"https://gitlab.com/remram44/taguette\">GitLab</a> or <a "
 "href=\"mailto:hi@taguette.org\">hi@taguette.org</a>!"
 msgstr ""
+"Taguette %(version)s  é licenciado sob a licença <a "
+"href=\"https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt\">BSD-3-Clause"
+" license</a>, &#169; Rémi Rampin and  voluntários do Taguette | <a "
+"href=\"https://www.taguette.org/getting-started.html\">Documentação de "
+"usuário</a> | Por favor, relate problemas via <a "
+"href=\"https://gitlab.com/remram44/taguette\">GitLab</a> ou <a "
+"href=\"mailto:hi@taguette.org\">hi@taguette.org</a>!"
 
 #. Left pane tab, keep short
 #: taguette/templates/project.html:16
@@ -184,7 +191,7 @@ msgstr "Gerenciar colaboradores"
 
 #: taguette/templates/project.html:47
 msgid "Export project"
-msgstr ""
+msgstr "Exportar projeto"
 
 #: taguette/templates/project.html:51
 msgid "Export codebook"
@@ -362,11 +369,11 @@ msgstr "Você ainda não tem projetos."
 
 #: taguette/templates/index.html:21
 msgid "Create a new project"
-msgstr ""
+msgstr "Criar um novo projeto"
 
 #: taguette/templates/index.html:22
 msgid "Import a project file"
-msgstr ""
+msgstr "Importar um arquivo de projeto"
 
 #: taguette/templates/cookies_prompt.html:6
 msgid "Cookie warning"
@@ -441,12 +448,12 @@ msgstr "Confirme a senha"
 
 #: taguette/templates/login.html:85
 msgid "Terms of service"
-msgstr ""
+msgstr "Termos de uso"
 
 #: taguette/templates/login.html:89
 #, python-format
 msgid "I accept the <a href=\"%(url)s\">terms of service</a>"
-msgstr ""
+msgstr "Eu aceito os <a href=\"%(url)s\">termos de uso</a>"
 
 #: taguette/templates/new_password.html:10
 msgid "Please enter a new password below:"
@@ -466,8 +473,8 @@ msgstr "Caderno de códigos Taguette"
 #, python-format
 msgid "%(number)d highlight"
 msgid_plural "%(number)d highlights"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(number)d destaque"
+msgstr[1] "%(number)d destaques"
 
 #: taguette/templates/token_needed.html:6
 msgid ""
@@ -547,23 +554,23 @@ msgstr "Esse link irá expirar em 1 dia."
 
 #: taguette/templates/project_import.html:6
 msgid "Import a project"
-msgstr ""
+msgstr "Importar um proejto"
 
 #: taguette/templates/project_import.html:10
 msgid "File:"
-msgstr ""
+msgstr "Arquivo:"
 
 #: taguette/templates/project_import.html:16
 msgid "Project:"
-msgstr ""
+msgstr "Projeto:"
 
 #: taguette/templates/project_import.html:19
 msgid "No file selected..."
-msgstr ""
+msgstr "Nenhum arquivo selecionado..."
 
 #: taguette/templates/project_import.html:24
 msgid "Import project"
-msgstr ""
+msgstr "Importar projeto"
 
 #: taguette/web/views.py:117
 msgid "Invalid login or password"
@@ -584,7 +591,7 @@ msgstr "Esse endereço e-mail já está sendo utilizado"
 
 #: taguette/web/views.py:183
 msgid "Terms of Service must be accepted"
-msgstr ""
+msgstr "Os termos de uso precisam ser aceitos"
 
 #: taguette/web/views.py:281
 msgid "This email address is not associated with any user"
@@ -658,7 +665,7 @@ msgstr ""
 
 #: taguette/validate.py:23
 msgid "Description is too long"
-msgstr ""
+msgstr "Descrição muito longa"
 
 #: taguette/validate.py:29
 msgid "Project name cannot be empty"
@@ -690,7 +697,7 @@ msgstr "Endereço de e-mail inválido"
 
 #: taguette/validate.py:66
 msgid "Email address is too long"
-msgstr ""
+msgstr "Endereço de e-mail muito longo"
 
 #: taguette/validate.py:74
 msgid "Please use a longer password"
