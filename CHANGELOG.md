@@ -10,6 +10,8 @@ Bugfixes:
 * Fix default-config command outputing logs about umask, which could be piped into the new config file (for example when using Docker with `-t`)
 * Fix migrations on SQLite failing because of foreign key constraints when recreating tables
 * Fix RTF export
+* Fix retrying Calibre conversion with --enable-heuristics again
+* Fix Calibre leaving behind temporary files if it times out
 
 Enhancements:
 * Show more details when document export or import fails
