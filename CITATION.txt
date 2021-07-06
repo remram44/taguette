@@ -1,16 +1,16 @@
 If you use Taguette for your qualitative analysis, please cite it with the following:
 
-    Rémi Rampin, Vicky Steeves, & Sarah DeMott. (2021, February 22). Taguette (Version 0.10.1). Zenodo. https://doi.org/10.5281/zenodo.4560784
+    Rémi Rampin, Vicky Steeves, & Sarah DeMott. (2021, July 6). Taguette (Version 0.11). Zenodo. https://doi.org/10.5281/zenodo.5075766
 
 BibTex:
 
 @software{Taguette,
   author = {{Rampin, Rémi and Steeves, Vicky and DeMott, Sarah}},
   title = {Taguette},
-  doi = {10.5281/zenodo.4560784},
+  doi = {10.5281/zenodo.5075766},
   url = {https://www.taguette.org}
-  version = {0.10.1},
-  date = {2021-02-22},
+  version = {0.11},
+  date = {2021-07-06},
   publisher = {Zenodo},
   keywords = {qual,  qualitative,  qualitative research,  research,  tags,  tagging,  document,  text-analysis,  highlights,  notes},
   language = {en}
