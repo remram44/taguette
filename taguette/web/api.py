@@ -689,6 +689,10 @@ class MembersUpdate(BaseHandler):
 
 
 class ImportProject(BaseHandler):
+    def prepare(self):
+        if not self.application.config['SQLITE3_IMPORT_ENABLED']:
+            raise HTTPError(403)
+
     @api_auth
     @PROM_REQUESTS.sync('project_import')
     async def post(self):

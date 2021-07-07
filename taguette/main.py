@@ -98,6 +98,9 @@ COOKIES_PROMPT = False
 # Whether new users can create an account
 REGISTRATION_ENABLED = True
 
+# Whether users can import projects from SQLite3 files
+SQLITE3_IMPORT_ENABLED = True
+
 # Set this to true if you are behind a reverse proxy that sets the
 # X-Forwarded-For header.
 # Leave this at False if users are connecting to Taguette directly
@@ -121,6 +124,7 @@ DEFAULT_CONFIG = {
     'MULTIUSER': True,
     'BIND_ADDRESS': '0.0.0.0',
     'REGISTRATION_ENABLED': True,
+    'SQLITE3_IMPORT_ENABLED': True,
     'DEFAULT_LANGUAGE': 'en_US',
     'CONVERT_FROM_HTML_TIMEOUT': 3 * 60,
     'CONVERT_TO_HTML_TIMEOUT': 3 * 60,
@@ -291,6 +295,7 @@ def main():
             MULTIUSER=False,
             BIND_ADDRESS=args.bind,
             X_HEADERS=False,
+            SQLITE3_IMPORT_ENABLED=True,
             PORT=int(args.port),
             DATABASE=prepare_db(args.database),
             TOS_FILE=None,

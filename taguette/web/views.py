@@ -47,7 +47,9 @@ class Index(BaseHandler):
                 self.logout()
             else:
                 return self.render('index.html',
-                                   user=user, projects=user.projects)
+                                   user=user, projects=user.projects,
+                                   can_import_project=self.application.config[
+                                       'SQLITE3_IMPORT_ENABLED'])
         elif not self.application.config['MULTIUSER']:
             token = self.get_query_argument('token', None)
             if token and token == self.application.single_user_token:
@@ -449,6 +451,10 @@ class ProjectAdd(BaseHandler):
 
 
 class ProjectImport(BaseHandler):
+    def prepare(self):
+        if not self.application.config['SQLITE3_IMPORT_ENABLED']:
+            raise HTTPError(403)
+
     @authenticated
     @PROM_REQUESTS.sync('import_project')
     def get(self):
