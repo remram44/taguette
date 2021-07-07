@@ -452,7 +452,7 @@ class ProjectImport(BaseHandler):
     @authenticated
     @PROM_REQUESTS.sync('import_project')
     def get(self):
-        return self.render('project_import.html', projects=None)
+        return self.render('project_import.html')
 
 
 class ProjectDelete(BaseHandler):
