@@ -45,12 +45,12 @@ footer p {
 /************** NAV *******************/
 
 .nav-item {
-  padding-left: 0.8em;
-  padding-right: 0.8em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
 }
 
 .nav-link {
-  font-size: 1.1em !important;
+  font-size: 1.0em !important;
 }
 
 .navbar-brand {
