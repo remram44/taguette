@@ -9,6 +9,7 @@ import jinja2
 import os
 import pkg_resources
 from prometheus_async.aio import time as prom_async_time
+import redis
 import smtplib
 from sqlalchemy.orm import joinedload, undefer
 import tornado.ioloop
@@ -132,6 +133,11 @@ class Application(tornado.web.Application):
             self._set_password(admin)
             db.commit()
         db.close()
+
+        if config['REDIS_SERVER'] is not None:
+            self.redis = redis.Redis.from_url(config['REDIS_SERVER'])
+        else:
+            self.redis = None
 
         if config['TOS_FILE']:
             with open(config['TOS_FILE']) as fp:
