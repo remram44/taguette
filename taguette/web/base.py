@@ -203,8 +203,16 @@ class Application(tornado.web.Application):
     def notify_project(self, project_id, cmd):
         assert isinstance(project_id, int)
         cmd_json = cmd.to_json()
-        for future in self.event_waiters.pop(project_id, []):
-            future.set_result(cmd_json)
+        if self.redis is None:
+            # Local delivery to waiting handlers
+            for future in self.event_waiters.pop(project_id, []):
+                future.set_result(cmd_json)
+        else:
+            # Push to Redis
+            self.redis.publish(
+                'project:%d' % project_id,
+                json.dumps(cmd_json, sort_keys=True, separators=(',', ':')),
+            )
 
     def send_mail(self, msg):
         config = self.config['MAIL_SERVER']
