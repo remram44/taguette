@@ -141,8 +141,6 @@ class Project(Base):
                              passive_deletes=True)
     tags = relationship('Tag', cascade='all,delete-orphan', order_by='Tag.id',
                         passive_deletes=True)
-    groups = relationship('Group', cascade='all,delete-orphan',
-                          passive_deletes=True)
 
     def __repr__(self):
         return '<%s.%s %r %r>' % (
@@ -225,7 +223,6 @@ class Document(Base):
                         nullable=False, index=True)
     project = relationship('Project', back_populates='documents')
     contents = deferred(Column(Text, nullable=False))
-    group = relationship('Group', secondary='document_groups')
     highlights = relationship('Highlight', cascade='all,delete-orphan',
                               passive_deletes=True)
 
@@ -500,52 +497,6 @@ class Highlight(Base):
             self.id,
             self.document_id,
             ' '.join(sorted(t.id for t in self.tags)),
-        )
-
-
-class Group(Base):
-    __tablename__ = 'groups'
-    __table_args__ = ({'sqlite_autoincrement': True},)
-
-    id = Column(Integer, primary_key=True)
-    project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
-                        nullable=False, index=True)
-    project = relationship('Project')
-
-    path = Column(String(200), nullable=False, index=True)
-    description = Column(Text, nullable=False)
-
-    __table_args__ = (
-        UniqueConstraint('project_id', 'path'),
-    ) + __table_args__
-
-    documents = relationship('Document', secondary='document_groups')
-
-    def __repr__(self):
-        return '<%s.%s %r %r project_id=%r>' % (
-            self.__class__.__module__,
-            self.__class__.__name__,
-            self.id,
-            self.path,
-            self.project_id,
-        )
-
-
-class DocumentGroup(Base):
-    __tablename__ = 'document_groups'
-
-    document_id = Column(Integer, ForeignKey('documents.id',
-                                             ondelete='CASCADE'),
-                         primary_key=True)
-    group_id = Column(Integer, ForeignKey('groups.id', ondelete='CASCADE'),
-                      primary_key=True)
-
-    def __repr__(self):
-        return '<%s.%s document_id=%r group_id=%r>' % (
-            self.__class__.__module__,
-            self.__class__.__name__,
-            self.document_id,
-            self.group_id,
         )
 
 
