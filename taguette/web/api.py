@@ -797,8 +797,11 @@ class ProjectEvents(BaseHandler):
             .limit(1)
         ).one_or_none()
 
-        # Wait for an event
-        if cmd is None:
+        if cmd is not None:
+            # Convert to JSON
+            cmd_json = cmd.to_json()
+        else:
+            # Wait for an event (which comes in JSON)
             self.wait_future = Future()
             self.application.observe_project(project.id, self.wait_future)
             self.db.expire_all()
@@ -807,56 +810,14 @@ class ProjectEvents(BaseHandler):
             self.close_db_connection()
 
             try:
-                cmd = await self.wait_future
+                cmd_json = await self.wait_future
             except asyncio.CancelledError:
                 return
 
-        payload = dict(cmd.payload)
-        type_ = payload.pop('type', None)
-        if type_ == 'project_meta':
-            result = {'project_meta': payload}
-        elif type_ == 'document_add':
-            payload['document_id'] = cmd.document_id
-            result = {'document_add': [payload]}
-        elif type_ == 'document_delete':
-            result = {'document_delete': [cmd.document_id]}
-        elif type_ == 'highlight_add':
-            result = {'highlight_add': {cmd.document_id: [payload]}}
-        elif type_ == 'highlight_delete':
-            result = {
-                'highlight_delete': {
-                    cmd.document_id: [payload['highlight_id']],
-                }
-            }
-        elif type_ == 'tag_add':
-            result = {
-                'tag_add': [payload],
-            }
-        elif type_ == 'tag_delete':
-            result = {
-                'tag_delete': [payload['tag_id']],
-            }
-        elif type_ == 'tag_merge':
-            result = {
-                'tag_merge': [payload],
-            }
-        elif type_ == 'member_add':
-            result = {
-                'member_add': [{'member': payload['member'],
-                                'privileges': payload['privileges']}]
-            }
-        elif type_ == 'member_remove':
-            result = {
-                'member_remove': [payload['member']]
-            }
-        else:
-            raise ValueError("Unknown command type %r" % type_)
+        cmd_json = dict(cmd_json)
+        cmd_json.pop('project_id')
 
-        if cmd.tag_count_changes is not None:
-            result['tag_count_changes'] = cmd.tag_count_changes
-
-        result['id'] = cmd.id
-        return await self.send_json(result)
+        return await self.send_json({'events': [cmd_json]})
 
     def on_connection_close(self):
         self.response_cancelled = True

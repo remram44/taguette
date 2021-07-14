@@ -1704,84 +1704,54 @@ function longPollForEvents() {
     {from: last_event}
   )
   .then(function(result) {
-    if('project_meta' in result) {
-      setProjectMetadata(result.project_meta);
-    }
-    if('document_add' in result) {
-      for(var i = 0; i < result.document_add.length; ++i) {
-        var p = result.document_add[i];
+    for(var i = 0; i < result.events.length; ++i) {
+      var event = result.events[i];
+      if(event.type === 'project_meta') {
+        setProjectMetadata({
+          project_name: event.project_name,
+          description: event.description
+        });
+      } else if(event.type === 'document_add') {
         addDocument({
-          id: p.document_id,
-          name: p.document_name,
-          description: p.description
+          id: event.document_id,
+          name: event.document_name,
+          description: event.description
         });
-      }
-    }
-    if('document_delete' in result) {
-      for(var i = 0; i < result.document_delete.length; ++i) {
-        removeDocument(result.document_delete[i]);
-      }
-    }
-    if('highlight_add' in result) {
-      var added = result.highlight_add['' + current_document];
-      if(added) {
-        for(var i = 0; i < added.length; ++i) {
-          var p = added[i];
-          setHighlight({
-            id: p.highlight_id,
-            start_offset: p.start_offset,
-            end_offset: p.end_offset,
-            tags: p.tags
-          });
-        }
-      }
-    }
-    if('highlight_delete' in result) {
-      var removed = result.highlight_delete['' + current_document];
-      if(removed) {
-        for(var i = 0; i < removed.length; ++i) {
-          removeHighlight(removed[i]);
-        }
-      }
-    }
-    if('tag_add' in result) {
-      for(var i = 0; i < result.tag_add.length; ++i) {
-        var p = result.tag_add[i]
+      } else if(event.type === 'document_delete') {
+        removeDocument(event.document_id);
+      } else if(event.type === 'highlight_add') {
+        setHighlight({
+          id: event.highlight_id,
+          start_offset: event.start_offset,
+          end_offset: event.end_offset,
+          tags: event.tags
+        });
+      } else if(event.type === 'highlight_delete') {
+        removeHighlight(event.highlight_id);
+      } else if(event.type === 'tag_add') {
         addTag({
-          id: p.tag_id,
-          path: p.tag_path,
-          description: p.description
+          id: event.tag_id,
+          path: event.tag_path,
+          description: event.description
         });
+      } else if(event.type === 'tag_delete') {
+        removeTag(event.tag_id);
+      } else if(event.type === 'tag_merge') {
+        mergeTags(event.src_tag_id, event.dest_tag_id);
+      } else if(event.type === 'member_add') {
+        addMember(event.member, event.privileges);
+      } else if(event.type === 'member_remove') {
+        removeMember(event.member);
       }
-    }
-    if('tag_delete' in result) {
-      for(var i = 0; i < result.tag_delete.length; ++i) {
-        removeTag(result.tag_delete[i]);
+
+      if('tag_count_changes' in event) {
+        var entries = Object.entries(event.tag_count_changes);
+        for(var i = 0; i < entries.length; ++i) {
+          updateTagCount(entries[i][0], entries[i][1]);
+        }
       }
+      last_event = event.id;
     }
-    if('tag_merge' in result) {
-      for(var i = 0; i < result.tag_merge.length; ++i) {
-        mergeTags(result.tag_merge[i].src_tag_id, result.tag_merge[i].dest_tag_id);
-      }
-    }
-    if('member_add' in result) {
-      for(var i = 0; i < result.member_add.length; ++i) {
-        addMember(result.member_add[i]['member'],
-                  result.member_add[i]['privileges']);
-      }
-    }
-    if('member_remove' in result) {
-      for(var i = 0; i < result.member_remove.length; ++i) {
-        removeMember(result.member_remove[i]);
-      }
-    }
-    if('tag_count_changes' in result) {
-      var entries = Object.entries(result.tag_count_changes);
-      for(var i = 0; i < entries.length; ++i) {
-        updateTagCount(entries[i][0], entries[i][1]);
-      }
-    }
-    last_event = result.id;
 
     // Re-open connection
     setTimeout(longPollForEvents, 1);
