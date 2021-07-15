@@ -1,0 +1,10 @@
+digraph G {
+    frontend [label="frontend\nHTML, JavaScript"];
+    server [label="server\nPython"];
+    database [label="SQL database"];
+
+    frontend -> server [label="HTTP+JSON API"];
+    server -> frontend [label="Long-polling"];
+    server -> database;
+    server -> Calibre [label="Command-line"];
+}

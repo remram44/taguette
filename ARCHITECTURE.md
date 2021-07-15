@@ -6,6 +6,8 @@ To learn more about Taguette, see the [Taguette Website](https://www.taguette.or
 
 # Architecture
 
+![Architecture diagram](architecture.svg)
+
 ## The server
 
 A server, written in Python, handles most of the business logic. It is responsible for importing documents, adding tags and highlights, etc. This is the process you are starting when you run `taguette`.
