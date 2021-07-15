@@ -756,7 +756,14 @@ function addTag(tag) {
 }
 
 function removeTag(tag_id) {
+  // Remove from list of tags
   delete tags['' + tag_id];
+  // Remove from all highlights
+  var hl_entries = Object.entries(highlights);
+  for(var i = 0; i < hl_entries.length; ++i) {
+    var hl = hl_entries[i][1];
+    hl.tags = hl.tags.filter(function(v) { return v != tag_id; });
+  }
   updateTagsList();
 }
 
