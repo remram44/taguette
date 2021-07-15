@@ -38,15 +38,17 @@ bibliography: paper.bib
 
 Taguette[@Taguette] is an open source computer-assited qualitative data analysis software (CAQDAS) [@caqdas]. CAQDAS software help researchers using qualitative methods to organize, annotate, collaborate on, analyze, and visualize their work. Qualitative methods are used in a wide range of fields, such as anthropology, education, nursing, psychology, sociology, and marketing. Qualitative data has a similarly wide range: observations, interviews, documents, audiovisual materials, and more.
 
+The software is a web application which can be run both on a desktop machine, in single-user mode, or on a server, where it allows real-time collaboration. In addition, we have been running a server at [app.taguette.org](https://app.taguette.org/) for anyone to use since March 2019, where we have about 2,000 monthly users.
+
+Taguette is multiplatform, with installers provided for MacOS and Windows, a Docker image, and on the Python package Index (PyPI). It is available in 7 languages.
+
 # Statement of Need
 
 For commercial qualitative software, the lowest subscription price is $20/month, and the lowest desktop application price is $520 (MaxQDA). There have been fewer than twenty open source CAQDAS available **ever**, and fewer than five are being currently maintained, including Taguette.
 
 It's not right or fair that qualitative researchers without massive research funds cannot afford the basic software to do their research. So, to bolster a fair and equitable entry into qualitative methods, we made Taguette.
 
-# Related Work
-
-Other open-source CAQDAS packages include: QualCoder[@qualcoder], qcoder[@qcoder], and qdap[@qdap]. qcoder and qdap are both R packages, and require knowledge of R and RStudio to use. QualCoder has
+# TODO: Details?
 
 * Web application written in Python
 * Can be run either as a service, with user accounts, permissions, and live changes; or on a desktop machine, where it needs nothing else and will open a browser window (like Jupyter or OpenRefine)
@@ -59,6 +61,12 @@ Other open-source CAQDAS packages include: QualCoder[@qualcoder], qcoder[@qcoder
 * Available since October 2018, app.taguette.org running since March 2019
 * Installers for MacOS and Windows, available on pypi.org
 
+# Related Work
+
+Other open-source CAQDAS packages include: QualCoder[@qualcoder], qcoder[@qcoder], and qdap[@qdap]. qcoder and qdap are both R packages, and require knowledge of R and RStudio to use. QualCoder has
+
 # Acknowledgments
+
+We thank Sarah whose qualitative work triggered the creation of Taguette. We would also like to thank our contributors on GitLab and our translators on Transifex, and the qualitative analysis community for their warm welcome and feedback.
 
 # References
