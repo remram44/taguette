@@ -790,16 +790,16 @@ class ProjectEvents(BaseHandler):
         self.project_id = int(project_id)
 
         # Check for immediate update
-        cmd = (
+        cmds = (
             self.db.query(database.Command)
             .filter(database.Command.id > from_id)
             .filter(database.Command.project_id == project.id)
-            .limit(1)
-        ).one_or_none()
+            .limit(50)
+        ).all()
 
-        if cmd is not None:
+        if cmds:
             # Convert to JSON
-            cmd_json = cmd.to_json()
+            cmds_json = [cmd.to_json() for cmd in cmds]
         else:
             # Wait for an event (which comes in JSON)
             self.wait_future = Future()
@@ -810,14 +810,19 @@ class ProjectEvents(BaseHandler):
             self.close_db_connection()
 
             try:
-                cmd_json = await self.wait_future
+                cmds_json = [await self.wait_future]
             except asyncio.CancelledError:
                 return
 
-        cmd_json = dict(cmd_json)
-        cmd_json.pop('project_id')
+        # Remove 'project_id' from each event
+        def _change_cmd_json(old):
+            new = dict(old)
+            new.pop('project_id')
+            return new
 
-        return await self.send_json({'events': [cmd_json]})
+        cmds_json = [_change_cmd_json(cmd) for cmd in cmds_json]
+
+        return await self.send_json({'events': cmds_json})
 
     def on_connection_close(self):
         self.response_cancelled = True
