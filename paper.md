@@ -5,33 +5,48 @@ Preview this with https://whedon.theoj.org/
 ---
 title: 'Taguette: open source qualitative data analysis'
 tags:
-  - Python
   - qualitative
-  - CAQDAS
-  - SQLite
+  - qualitative data analysis
   - qual
+  - document
+  - text
+  - tagging
+  - tags
+  - coding
+  - highlights
+  - notes
+  - text-analysis
+  - highlighting
+  - caqdas
+  - python
+  - SQLite
 authors:
   - name: Rémi Rampin
     orcid: 0000-0002-0524-2282
     affiliation: 1
-  - name: Vicky Ramin
+  - name: Vicky Rampin
+    orcid: 0000-0003-4298-168X
     affiliation: 1
 affiliations:
  - name: Independent Researcher
-   orcid: 0000-0003-4298-168X
    index: 1
-date: 2 July 2021
-bibliography: bibliography.bib
+date: 15 July 2021
+bibliography: paper.bib
 ---
 
 # Summary
- 
-Taguette[@Taguette] is an open source computer-assited qualitative data analysis software (CAQDAS) [@caqdas]. CAQDAS software help researchers using qualitative methods to organize, annotate, collaborate on, analyze, and visualize their work. Qualitative methods are used in a wide range of fields, such as anthropology, education, nursing, psychology, sociology, and marketing. Qualitative data has a similarly wide range: observations, interviews, documents, audiovisual materials, and more. 
 
-For commercial qualitative software, the lowest subscription price is $20/month, and the lowest desktop application price is $520 (MaxQDA). There have been fewer than twenty open source CAQDAS available **ever**, and fewer than five are being currently maintained, including Taguette. Others include: QualCoder[@qualcoder], qcoder[@qcoder], and qdap[@qdap]. qcoder and qdap are both R packages, and require knowledge of R and RStudio to use. QualCoder has
+Taguette[@Taguette] is an open source computer-assited qualitative data analysis software (CAQDAS) [@caqdas]. CAQDAS software help researchers using qualitative methods to organize, annotate, collaborate on, analyze, and visualize their work. Qualitative methods are used in a wide range of fields, such as anthropology, education, nursing, psychology, sociology, and marketing. Qualitative data has a similarly wide range: observations, interviews, documents, audiovisual materials, and more.
 
+# Statement of Need
+
+For commercial qualitative software, the lowest subscription price is $20/month, and the lowest desktop application price is $520 (MaxQDA). There have been fewer than twenty open source CAQDAS available **ever**, and fewer than five are being currently maintained, including Taguette.
 
 It's not right or fair that qualitative researchers without massive research funds cannot afford the basic software to do their research. So, to bolster a fair and equitable entry into qualitative methods, we made Taguette.
+
+# Related Work
+
+Other open-source CAQDAS packages include: QualCoder[@qualcoder], qcoder[@qcoder], and qdap[@qdap]. qcoder and qdap are both R packages, and require knowledge of R and RStudio to use. QualCoder has
 
 * Web application written in Python
 * Can be run either as a service, with user accounts, permissions, and live changes; or on a desktop machine, where it needs nothing else and will open a browser window (like Jupyter or OpenRefine)
@@ -45,6 +60,5 @@ It's not right or fair that qualitative researchers without massive research fun
 * Installers for MacOS and Windows, available on pypi.org
 
 # Acknowledgments
-We would like to acknowledge the Taguette community members who have 
 
 # References
