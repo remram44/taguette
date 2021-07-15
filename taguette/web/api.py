@@ -789,13 +789,19 @@ class ProjectEvents(BaseHandler):
         project, _ = self.get_project(project_id)
         self.project_id = int(project_id)
 
+        # Limit over which we won't send update but rather reload the frontend
+        LIMIT = 20
+
         # Check for immediate update
         cmds = (
             self.db.query(database.Command)
             .filter(database.Command.id > from_id)
             .filter(database.Command.project_id == project.id)
-            .limit(50)
+            .limit(LIMIT)
         ).all()
+
+        if len(cmds) == LIMIT:
+            return await self.send_json({'reload': True})
 
         if cmds:
             # Convert to JSON

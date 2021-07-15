@@ -1704,6 +1704,11 @@ function longPollForEvents() {
     {from: last_event}
   )
   .then(function(result) {
+    if(result.reload) {
+      console.log("Server sent signal to reload");
+      window.location.reload();
+      return;
+    }
     for(var i = 0; i < result.events.length; ++i) {
       var event = result.events[i];
       if(event.type === 'project_meta') {
