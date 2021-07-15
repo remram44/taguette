@@ -9,6 +9,7 @@ import jinja2
 import os
 import pkg_resources
 from prometheus_async.aio import time as prom_async_time
+import redis
 import smtplib
 from sqlalchemy.orm import joinedload, undefer
 import tornado.ioloop
@@ -100,6 +101,7 @@ class Application(tornado.web.Application):
     def __init__(self, handlers,
                  config, **kwargs):
         self.config = config
+        self.io_loop = asyncio.get_event_loop()
 
         # Don't reuse the secret
         cookie_secret = config['SECRET_KEY']
@@ -132,6 +134,16 @@ class Application(tornado.web.Application):
             self._set_password(admin)
             db.commit()
         db.close()
+
+        if config['REDIS_SERVER'] is not None:
+            self.redis = redis.Redis.from_url(config['REDIS_SERVER'])
+            self.redis_pubsub = self.redis.pubsub()
+            # FIXME: Can't call run_in_thread with no subscription
+            self.redis_pubsub.subscribe(_fixme=lambda msg: None)
+            self.redis_pubsub.run_in_thread(daemon=True)
+        else:
+            self.redis = None
+            self.redis_pubsub = None
 
         if config['TOS_FILE']:
             with open(config['TOS_FILE']) as fp:
@@ -175,10 +187,10 @@ class Application(tornado.web.Application):
             logger.exception("Error getting messages")
 
     def check_messages(self):
-        f_msg = asyncio.get_event_loop().create_task(self._check_messages())
+        f_msg = self.io_loop.create_task(self._check_messages())
         f_msg.add_done_callback(self._check_messages_callback)
-        asyncio.get_event_loop().call_later(86400,  # 24 hours
-                                            self.check_messages)
+        self.io_loop.call_later(86400,  # 24 hours
+                                self.check_messages)
 
     def _set_password(self, user):
         import getpass
@@ -187,18 +199,49 @@ class Application(tornado.web.Application):
 
     def observe_project(self, project_id, future):
         assert isinstance(project_id, int)
+        # Add to dict either way
         self.event_waiters.setdefault(project_id, set()).add(future)
+        if self.redis is not None:
+            # Listen for Redis messages
+            self.redis_pubsub.subscribe(**{
+                'project:%d' % project_id: self._on_redis_message_thread,
+            })
+
+    def _on_redis_message_thread(self, msg):
+        # Call _on_redis_message on loop thread from Redis thread
+        self.io_loop.call_soon_threadsafe(lambda: self._on_redis_message(msg))
+
+    def _on_redis_message(self, msg):
+        cmd_json = json.loads(msg['data'])
+        project_id = cmd_json['project_id']
+        # Deliver to waiting handlers
+        for future in self.event_waiters.pop(project_id, []):
+            future.set_result(cmd_json)
+        # Unsubscribe
+        self.redis_pubsub.unsubscribe('project:%d' % project_id)
 
     def unobserve_project(self, project_id, future):
         assert isinstance(project_id, int)
+        # Remove from dict either way
         if project_id in self.event_waiters:
             self.event_waiters[project_id].discard(future)
+        # Maybe unsubscribe
+        if self.redis is not None and not self.event_waiters[project_id]:
+            self.redis_pubsub.unsubscribe('project:%d' % project_id)
 
     def notify_project(self, project_id, cmd):
         assert isinstance(project_id, int)
         cmd_json = cmd.to_json()
-        for future in self.event_waiters.pop(project_id, []):
-            future.set_result(cmd_json)
+        if self.redis is None:
+            # Local delivery to waiting handlers
+            for future in self.event_waiters.pop(project_id, []):
+                future.set_result(cmd_json)
+        else:
+            # Push to Redis
+            self.redis.publish(
+                'project:%d' % project_id,
+                json.dumps(cmd_json, sort_keys=True, separators=(',', ':')),
+            )
 
     def send_mail(self, msg):
         config = self.config['MAIL_SERVER']

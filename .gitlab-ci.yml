@@ -20,6 +20,21 @@ sqlite3:
     paths:
       - htmlcov
 
+sqlite3_redis:
+  stage: test
+  image: python:3.8
+  services:
+    - redis:latest
+  script:
+    - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.4
+    - /root/.poetry/bin/poetry config virtualenvs.create false
+    - $HOME/.poetry/bin/poetry install --no-interaction
+    - scripts/update_translations.sh
+    - TAGUETTE_TEST_REDIS=redis://redis:6379 python tests.py
+  artifacts:
+    paths:
+      - htmlcov
+
 sqlite3_latest:
   stage: test
   image: python:3.8
