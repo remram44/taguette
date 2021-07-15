@@ -979,7 +979,7 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertNotDone(poll_proj1)
         self.assertNotDone(poll_proj2)
 
-    @gen_test
+    @gen_test(timeout=20)
     async def test_reset_password(self):
         # Accept cookies
         async with self.apost('/cookies', data=dict()) as response:
