@@ -859,7 +859,7 @@ function updateTagsList() {
   if(entries.length == 0) {
     var elem = document.createElement('li');
     elem.textContent = gettext("no tags");
-    tags_modal_list.appendChild(elem);
+    tags_modal_list.insertBefore(elem, before);
   }
 
   console.log("Tags list updated");
