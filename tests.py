@@ -27,6 +27,10 @@ if 'TAGUETTE_TEST_DB' in os.environ:
     DATABASE_URI = os.environ['TAGUETTE_TEST_DB']
 else:
     DATABASE_URI = 'sqlite://'
+if 'TAGUETTE_TEST_REDIS' in os.environ:
+    REDIS = os.environ['TAGUETTE_TEST_REDIS']
+else:
+    REDIS = None
 
 
 def _compare_xml(e1, e2):
@@ -318,6 +322,7 @@ class TestMultiuser(MyHTTPTestCase):
                 main.DEFAULT_CONFIG,
                 NAME="Test Taguette instance", PORT=7465,
                 DATABASE=DATABASE_URI,
+                REDIS_SERVER=REDIS,
                 TOS_FILE=None,
                 EMAIL='test@example.com',
                 MAIL_SERVER={'host': 'localhost', 'port': 25},
@@ -1567,6 +1572,7 @@ class TestSingleuser(MyHTTPTestCase):
                     main.DEFAULT_CONFIG,
                     NAME="Test Taguette instance", PORT=7465,
                     DATABASE=DATABASE_URI,
+                    REDIS_SERVER=REDIS,
                     TOS_FILE=None,
                     EMAIL='test@example.com',
                     MAIL_SERVER={'host': 'localhost', 'port': 25},
