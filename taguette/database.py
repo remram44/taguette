@@ -273,6 +273,17 @@ class Command(Base):
             PROM_COMMAND.labels(kwargs['payload']['type']).inc()
         super(Command, self).__init__(**kwargs)
 
+    def to_json(self):
+        cmd_json = dict(self.payload)
+        cmd_json['id'] = self.id
+        cmd_json['user_login'] = self.user_login
+        cmd_json['project_id'] = self.project_id
+        if self.document_id is not None:
+            cmd_json['document_id'] = self.document_id
+        if self.tag_count_changes is not None:
+            cmd_json['tag_count_changes'] = self.tag_count_changes
+        return cmd_json
+
     TYPES = {'project_meta', 'document_add', 'document_delete',
              'highlight_add', 'highlight_delete', 'tag_add', 'tag_delete',
              'tag_merge', 'member_add', 'member_remove', 'project_import'}

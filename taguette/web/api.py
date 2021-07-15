@@ -789,16 +789,25 @@ class ProjectEvents(BaseHandler):
         project, _ = self.get_project(project_id)
         self.project_id = int(project_id)
 
+        # Limit over which we won't send update but rather reload the frontend
+        LIMIT = 20
+
         # Check for immediate update
-        cmd = (
+        cmds = (
             self.db.query(database.Command)
             .filter(database.Command.id > from_id)
             .filter(database.Command.project_id == project.id)
-            .limit(1)
-        ).one_or_none()
+            .limit(LIMIT)
+        ).all()
 
-        # Wait for an event
-        if cmd is None:
+        if len(cmds) == LIMIT:
+            return await self.send_json({'reload': True})
+
+        if cmds:
+            # Convert to JSON
+            cmds_json = [cmd.to_json() for cmd in cmds]
+        else:
+            # Wait for an event (which comes in JSON)
             self.wait_future = Future()
             self.application.observe_project(project.id, self.wait_future)
             self.db.expire_all()
@@ -807,56 +816,19 @@ class ProjectEvents(BaseHandler):
             self.close_db_connection()
 
             try:
-                cmd = await self.wait_future
+                cmds_json = [await self.wait_future]
             except asyncio.CancelledError:
                 return
 
-        payload = dict(cmd.payload)
-        type_ = payload.pop('type', None)
-        if type_ == 'project_meta':
-            result = {'project_meta': payload}
-        elif type_ == 'document_add':
-            payload['document_id'] = cmd.document_id
-            result = {'document_add': [payload]}
-        elif type_ == 'document_delete':
-            result = {'document_delete': [cmd.document_id]}
-        elif type_ == 'highlight_add':
-            result = {'highlight_add': {cmd.document_id: [payload]}}
-        elif type_ == 'highlight_delete':
-            result = {
-                'highlight_delete': {
-                    cmd.document_id: [payload['highlight_id']],
-                }
-            }
-        elif type_ == 'tag_add':
-            result = {
-                'tag_add': [payload],
-            }
-        elif type_ == 'tag_delete':
-            result = {
-                'tag_delete': [payload['tag_id']],
-            }
-        elif type_ == 'tag_merge':
-            result = {
-                'tag_merge': [payload],
-            }
-        elif type_ == 'member_add':
-            result = {
-                'member_add': [{'member': payload['member'],
-                                'privileges': payload['privileges']}]
-            }
-        elif type_ == 'member_remove':
-            result = {
-                'member_remove': [payload['member']]
-            }
-        else:
-            raise ValueError("Unknown command type %r" % type_)
+        # Remove 'project_id' from each event
+        def _change_cmd_json(old):
+            new = dict(old)
+            new.pop('project_id')
+            return new
 
-        if cmd.tag_count_changes is not None:
-            result['tag_count_changes'] = cmd.tag_count_changes
+        cmds_json = [_change_cmd_json(cmd) for cmd in cmds_json]
 
-        result['id'] = cmd.id
-        return await self.send_json(result)
+        return await self.send_json({'events': cmds_json})
 
     def on_connection_close(self):
         self.response_cancelled = True

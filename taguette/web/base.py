@@ -10,7 +10,7 @@ import os
 import pkg_resources
 from prometheus_async.aio import time as prom_async_time
 import smtplib
-from sqlalchemy.orm import joinedload, undefer, make_transient
+from sqlalchemy.orm import joinedload, undefer
 import tornado.ioloop
 from tornado.httpclient import AsyncHTTPClient
 import tornado.locale
@@ -196,9 +196,9 @@ class Application(tornado.web.Application):
 
     def notify_project(self, project_id, cmd):
         assert isinstance(project_id, int)
-        make_transient(cmd)
+        cmd_json = cmd.to_json()
         for future in self.event_waiters.pop(project_id, []):
-            future.set_result(cmd)
+            future.set_result(cmd_json)
 
     def send_mail(self, msg):
         config = self.config['MAIL_SERVER']
