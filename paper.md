@@ -54,7 +54,7 @@ Taguette is multiplatform, with installers provided for MacOS and Windows, a Doc
 
 ## Importing
 
-Work in Taguette begins with importing a document. We support a variety of text formats, from HTML to RTF to EPUB, including PDF, DOCX, Markdown, etc. Documents are converted to HTML using the `ebook-convert` command, part of the Calibre ebook manager[@Calibre] or wvWare[@wvWave] for old Microsoft Word 97 `.doc` documents.
+Work in Taguette begins with importing a document. We support a variety of text formats, from HTML to RTF to EPUB, including PDF, DOCX, Markdown, etc. Documents are converted to HTML using the `ebook-convert` command, part of the Calibre ebook manager[@Calibre] or wvWare[@wvWare] for old Microsoft Word 97 `.doc` documents.
 
 A copy of Calibre is included in our installers so that users don't have to set up any additional software. After conversion, the document is sanitized to remove unwanted formating and embedded media, and avoid security issues such as cross-site scripting.
 
