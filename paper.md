@@ -82,7 +82,7 @@ Other open-source CAQDAS packages include: QualCoder[@qualcoder], qcoder[@qcoder
 
 # Acknowledgments
 
-We thank Sarah whose qualitative work triggered the creation of Taguette. We would also like to thank our contributors on GitLab and our translators on Transifex, and the qualitative analysis community for their warm welcome and feedback.
+We thank Sarah DeMott whose qualitative work triggered the creation of Taguette. We would also like to thank our contributors on GitLab and our translators on Transifex, and the qualitative analysis community for their warm welcome and feedback.
 
 In addition, we have recently started an [OpenCollective](https://opencollective.com/taguette) to support the development of Taguette, with the initial goal to cover the cost of a dedicated server for our hosted service.
 
