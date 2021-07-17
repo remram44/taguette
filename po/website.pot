@@ -8,25 +8,25 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-04-18 14:20-0400\n"
+"POT-Creation-Date: 2021-07-17 11:18-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.9.0\n"
+"Generated-By: Babel 2.8.0\n"
 
 #. HTML description
 #: _layout.html:6
 msgid ""
-"Taguette is a free an opensource text tagging tool for qualitative data "
+"Taguette is a free an open-source text tagging tool for qualitative data "
 "analysis and qualitative research"
 msgstr ""
 
 #. Page title
 #: _layout.html:20 faq.html:4 index.html:4
-msgid "Taguette, the free and opensource qualitative data analysis tool"
+msgid "Taguette, the free and open-source qualitative data analysis tool"
 msgstr ""
 
 #: _layout.html:37
@@ -72,19 +72,19 @@ msgstr ""
 msgid "Try it %(external_icon)s"
 msgstr ""
 
-#: _layout.html:87
+#: _layout.html:88
 msgid ""
 "Email: <a href=\"mailto:hi@taguette.org\">hi@taguette.org</a> | Mailing-"
 "lists: <a href=\"https://groups.io/g/taguette\">users</a>, <a "
 "href=\"https://groups.io/g/taguette-announce\">announce</a> | Twitter: <a"
-" href=\"https://twitter.com/TaguetteProject\">@TaguetteProject</a> | Any "
-"issue using Taguette? Tell us on <a "
+" href=\"https://twitter.com/TaguetteProject\">@TaguetteProject</a> | "
+"Found a bug in Taguette? Tell us on <a "
 "href=\"https://gitlab.com/remram44/taguette\">GitLab</a>!"
 msgstr ""
 
 #. Page title
 #: about.html:4
-msgid "About Taguette, the free and opensource qualitative data analysis tool"
+msgid "About Taguette, the free and open-source qualitative data analysis tool"
 msgstr ""
 
 #: about.html:9
@@ -95,7 +95,7 @@ msgstr ""
 msgid ""
 "\n"
 "  <p>A spin on the phrase \"tag it!\", <a "
-"href=\"https://www.taguette.org/\">Taguette</a> is a free and open source"
+"href=\"https://www.taguette.org/\">Taguette</a> is a free and open-source"
 " qualitative research tool (which works on all operating systems!) that "
 "allows users to:</p>\n"
 "\n"
@@ -103,13 +103,12 @@ msgid ""
 "    <li>Import PDFs, Word Docs (.docx), Text files (.txt), HTML, EPUB, "
 "MOBI, Open Documents (.odt), and Rich Text Files (.rtf).</li>\n"
 "    <li>Highlight words, sentences, or paragraphs and tag them with the "
-"codes *you* create.</li>\n"
+"codes you create.</li>\n"
 "    <li>Work collaboratively with other users (if <a href=\"self-"
 "host.html\">self-hosting</a> or using <a "
 "href=\"https://app.taguette.org\">app.taguette.org</a>).</li>\n"
-"    <li>Export tagged documents, highlights for a specific tag, "
-"highlights for all tags, and a list of tags with their descriptions.</li>"
-"\n"
+"    <li>Your data stays your own; export everything including your "
+"project, highlights, documents, and codes.</li>\n"
 "  </ul>\n"
 "\n"
 "  <p>...and much more! You can view our development queue on GitLab here:"
@@ -134,11 +133,11 @@ msgid ""
 "\n"
 "  <p>Qualitative methods generate rich, detailed research materials that "
 "leave individuals’ perspectives intact as well as provide multiple "
-"contexts for understanding phenomenon under study. Qualitative methods "
-"are used by a wide range of fields, such as anthropology, education, "
-"nursing, psychology, sociology, and marketing. Qualitative data has a "
-"similarly wide range: observations, interviews, documents, audiovisual "
-"materials, and more.</p>\n"
+"contexts for understanding the phenomenon under study. Qualitative "
+"methods are used in a wide range of fields, such as anthropology, "
+"education, nursing, psychology, sociology, and marketing. Qualitative "
+"data has a similarly wide range: observations, interviews, documents, "
+"audiovisual materials, and more.</p>\n"
 "\n"
 "  <p>However - the software options for qualitative researchers are "
 "either <strong>far too expensive</strong>, don't allow for the seminal "
@@ -215,14 +214,18 @@ msgid ""
 "you can read here: <a "
 "href=\"https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt\">gitlab.com/remram44/taguette/blob/master/LICENSE.txt</a>.</p>"
 "\n"
+"          <p>If you would like to make a donation to Taguette, you can do"
+" so at our Open Collective: <a "
+"href=\"https://opencollective.com/taguette\">opencollective.com/taguette</a>."
+" Contributions will go towards maintenance work.</p>\n"
 "          "
 msgstr ""
 
-#: faq.html:49
+#: faq.html:50
 msgid "Where can I install Taguette?"
 msgstr ""
 
-#: faq.html:54
+#: faq.html:55
 msgid ""
 "You can install Taguette on your own personal computer running macOS, "
 "Windows, or Linux &mdash; full instructions and download links can be "
@@ -232,11 +235,11 @@ msgid ""
 "\">self-host guide</a>."
 msgstr ""
 
-#: faq.html:62
+#: faq.html:63
 msgid "How do I learn to use Taguette?"
 msgstr ""
 
-#: faq.html:67
+#: faq.html:68
 msgid ""
 "You could begin over at our <a href=\"getting-started.html\">getting "
 "started guide</a>, which walks through all the current functionality of "
@@ -248,11 +251,11 @@ msgid ""
 "one!"
 msgstr ""
 
-#: faq.html:75
+#: faq.html:76
 msgid "Where can I get support for Taguette?"
 msgstr ""
 
-#: faq.html:80
+#: faq.html:81
 msgid ""
 "\n"
 "          <p>Feel free to shoot us an email over at <a "
@@ -269,11 +272,11 @@ msgid ""
 "          "
 msgstr ""
 
-#: faq.html:91
+#: faq.html:92
 msgid "Which file formats can I use with Taguette?"
 msgstr ""
 
-#: faq.html:96
+#: faq.html:97
 msgid ""
 "\n"
 "          <p>Taguette uses <a href=\"https://calibre-"
@@ -293,31 +296,31 @@ msgid ""
 "          "
 msgstr ""
 
-#: faq.html:115
+#: faq.html:116
 msgid ""
 "I used Taguette for research and I want to cite you/give you credit "
 "&mdash; how can I do that?"
 msgstr ""
 
-#: faq.html:120
+#: faq.html:121
 msgid ""
 "A mention is always appreciated! If you use Taguette for your research, "
 "please cite it with the following:"
 msgstr ""
 
-#: faq.html:122
+#: faq.html:123
 msgid "If you need Bibtex, please use the following:"
 msgstr ""
 
-#: faq.html:139
+#: faq.html:140
 msgid "Desktop/Single-user Info"
 msgstr ""
 
-#: faq.html:144
+#: faq.html:145
 msgid "Why do you call the desktop version of Taguette 'single user mode'?"
 msgstr ""
 
-#: faq.html:149
+#: faq.html:150
 msgid ""
 "Simply because you cannot collaborate with others using our desktop "
 "version of Taguette! If you want to be able to collaborate, see our <a "
@@ -325,19 +328,19 @@ msgid ""
 " to install Taguette on a server for multi-user collaboration."
 msgstr ""
 
-#: faq.html:157
+#: faq.html:158
 msgid "Does Taguette work on all operating systems?"
 msgstr ""
 
-#: faq.html:162
+#: faq.html:163
 msgid "Yes! You can install Taguette on macOS, Windows, and Linux."
 msgstr ""
 
-#: faq.html:170
+#: faq.html:171
 msgid "When I use Taguette on my personal computer, where is the data?"
 msgstr ""
 
-#: faq.html:175
+#: faq.html:176
 msgid ""
 "All your projects and documents are kept in a single database file. On "
 "macOS and Linux, you can find it at "
@@ -345,13 +348,13 @@ msgid ""
 "can find it at: <code>My Documents/Taguette/taguette.sqlite3</code>."
 msgstr ""
 
-#: faq.html:183
+#: faq.html:184
 msgid ""
 "SQLite is ok, but I prefer another database system. Can I change what "
 "Taguette uses?"
 msgstr ""
 
-#: faq.html:188
+#: faq.html:189
 msgid ""
 "\n"
 "          <p>Yes! On the terminal, use the <code>--database</code> option"
@@ -376,15 +379,15 @@ msgid ""
 "          "
 msgstr ""
 
-#: faq.html:203
+#: faq.html:204
 msgid "Self-hosting/multiuser mode Info"
 msgstr ""
 
-#: faq.html:208
+#: faq.html:209
 msgid "Can I install Taguette on my own server?"
 msgstr ""
 
-#: faq.html:213
+#: faq.html:214
 msgid ""
 "Absolutely! We know that putting choice in the hands of our users is what"
 " open source is all about 😊 You can install Taguette on your server via "
@@ -393,13 +396,13 @@ msgid ""
 "guide</a>."
 msgstr ""
 
-#: faq.html:221
+#: faq.html:222
 msgid ""
 "I thought I followed the instructions but something went wrong -- what "
 "should I look at first?"
 msgstr ""
 
-#: faq.html:226
+#: faq.html:227
 msgid ""
 "\n"
 "          <p>Make sure you have <strong>correctly installed all the "
@@ -418,17 +421,17 @@ msgid ""
 "          "
 msgstr ""
 
-#: faq.html:237
+#: faq.html:238
 #, python-format
 msgid "%(hosted_app_link)s Info"
 msgstr ""
 
-#: faq.html:242
+#: faq.html:243
 msgid "What is app.taguette.org?"
 msgstr ""
 
 #. About app.taguette.org
-#: faq.html:247
+#: faq.html:248
 msgid ""
 "It is a version of Taguette hosted on our servers for free use by anyone!"
 " We host this from a rented dedicated server from <a "
@@ -436,13 +439,13 @@ msgid ""
 "server's location is in France."
 msgstr ""
 
-#: faq.html:255
+#: faq.html:256
 msgid ""
 "What do we need to register for an account, and what do you do with our "
 "account information?"
 msgstr ""
 
-#: faq.html:260
+#: faq.html:261
 msgid ""
 "To use <a href=\"https://app.taguette.org\">app.taguette.org</a>, you "
 "need to register with a username and a password. You can provide an email"
@@ -451,11 +454,11 @@ msgid ""
 "it to log you into your account."
 msgstr ""
 
-#: faq.html:268
+#: faq.html:269
 msgid "What type of data should I upload to app.taguette.org?"
 msgstr ""
 
-#: faq.html:273
+#: faq.html:274
 msgid ""
 "\n"
 "          <p>TL;DR: do not upload sensitive data (e.g. patient "
@@ -483,11 +486,11 @@ msgid ""
 "          "
 msgstr ""
 
-#: faq.html:287
+#: faq.html:288
 msgid "Do you back up the data on app.taguette.org?"
 msgstr ""
 
-#: faq.html:292
+#: faq.html:293
 msgid ""
 "Yes, we back up <a href=\"https://app.taguette.org\">app.taguette.org</a>"
 " daily and keep those backups for a year. We send backups to a bucket in "
@@ -497,7 +500,7 @@ msgstr ""
 #. Page title
 #: getting-started.html:4
 msgid ""
-"Start With Taguette, the free and opensource qualitative data analysis "
+"Start With Taguette, the free and open-source qualitative data analysis "
 "tool"
 msgstr ""
 
@@ -563,12 +566,6 @@ msgstr ""
 #: getting-started.html:33
 msgid ""
 "\n"
-"      <p>If you are working on <a "
-"href=\"https://app.taguette.org\">app.taguette.org</a>, after you log-in "
-"you should see a welcome page where you can create a new project similar "
-"to the screenshot below (just 'account' where you see 'single-user "
-"mode').</p>\n"
-"\n"
 "      <p>If you've downloaded and installed Taguette on your computer, "
 "you should be able to double-click on the Taguette icon and start it up! "
 "You'll see the command line will pop up and be running. This is ok! Don't"
@@ -576,18 +573,20 @@ msgid ""
 "terminal, Taguette will stop. Taguette should automatically pop up in "
 "your web browser, but if for some reason it doesn't, navigate to <a "
 "href=\"http://localhost:7465\"><code>localhost:7465</code></a> to begin "
-"working on your projects! It should look something like this:</p>\n"
+"working on your projects! It should look something like this (if you're "
+"using Taguette on a server, you should see 'account' where 'single-user "
+"mode' is):</p>\n"
 "\n"
 "      <img src=\"imgs/01-welcome.png\" width=\"1125\" height=\"341\" "
 "class=\"img-fluid border border-dark\">\n"
 "      "
 msgstr ""
 
-#: getting-started.html:41
+#: getting-started.html:39
 msgid "<i class=\"fas fa-folder-plus\"></i> Start a project"
 msgstr ""
 
-#: getting-started.html:43
+#: getting-started.html:41
 msgid ""
 "\n"
 "      <p>You will see a page that greets you as the admin and has a "
@@ -598,7 +597,7 @@ msgid ""
 "      <img src=\"imgs/02-createProj.png\" width=\"1164\" height=\"365\" "
 "class=\"img-fluid border border-dark mb-2\">\n"
 "\n"
-"      <p>Upon clicking <strong>Create</strong>, you'll be taken the "
+"      <p>Upon clicking <strong>Create</strong>, you'll be taken to the "
 "<strong>Project View</strong>, which has a left and a right pane. The "
 "left pane contains the information about your project information "
 "('Project Info'), uploaded materials ('Documents'), and tags "
@@ -611,11 +610,11 @@ msgid ""
 "      "
 msgstr ""
 
-#: getting-started.html:53
+#: getting-started.html:51
 msgid "<i class=\"fas fa-upload\"></i> Upload materials"
 msgstr ""
 
-#: getting-started.html:55
+#: getting-started.html:53
 msgid ""
 "\n"
 "      <p>To get an idea of how to work in Taguette, let's upload a "
@@ -646,20 +645,20 @@ msgid ""
 "      "
 msgstr ""
 
-#: getting-started.html:67
+#: getting-started.html:65
 msgid "<i class=\"fas fa-language\"></i> Change interface language (server only)"
 msgstr ""
 
-#: getting-started.html:69
+#: getting-started.html:67
 msgid ""
 "\n"
 "      <p>If you are working on <a "
 "href=\"https://app.taguette.org\">app.taguette.org</a> or hosting "
-"Taguette on your own server, you have the option change the language of "
-"the interface. In the upper righthand corner, you should see a dropdown "
-"menu labeled \"Account\". Click that dropdown, and then click "
+"Taguette on your own server, you have the option to change the language "
+"of the interface. In the upper righthand corner, you should see a "
+"dropdown menu labeled \"Account\". Click that dropdown, and then click "
 "\"Settings.\" You will see a dropdown menu in your profile settings to "
-"change the language that Taguette will be in. By default, it will auto "
+"change the language that Taguette will be in. By default, it will auto-"
 "detect a language from your Internet browser.</p>\n"
 "\n"
 "      <p>If you do not see your language represented in this list, we "
@@ -674,11 +673,11 @@ msgid ""
 "      "
 msgstr ""
 
-#: getting-started.html:77
+#: getting-started.html:75
 msgid "<i class=\"fas fa-users\"></i> Adding collaborators (server only)"
 msgstr ""
 
-#: getting-started.html:79
+#: getting-started.html:77
 msgid ""
 "\n"
 "      <p>If you are working on <a "
@@ -688,7 +687,7 @@ msgid ""
 "should see a grey button labeled <strong>Manage "
 "Collaborators</strong>:</p>\n"
 "\n"
-"      <img src=\"imgs/projectCollab.png\" width=\"473\" height=\"478\" "
+"      <img src=\"imgs/projectMenu.png\" width=\"473\" height=\"478\" "
 "class=\"img-fluid border border-dark mb-2\">\n"
 "\n"
 "      <p>Click that and you should get a modal with the option to add and"
@@ -705,59 +704,59 @@ msgid ""
 "      "
 msgstr ""
 
-#: getting-started.html:94
+#: getting-started.html:92
 msgid "Permission level"
 msgstr ""
 
-#: getting-started.html:95
+#: getting-started.html:93
 msgid "View project"
 msgstr ""
 
-#: getting-started.html:96
+#: getting-started.html:94
 msgid "Change highlights"
 msgstr ""
 
-#: getting-started.html:97
+#: getting-started.html:95
 msgid "Change tags"
 msgstr ""
 
-#: getting-started.html:98
+#: getting-started.html:96
 msgid "Add/delete documents"
 msgstr ""
 
-#: getting-started.html:99
+#: getting-started.html:97
 msgid "Change collaborators"
 msgstr ""
 
-#: getting-started.html:100
+#: getting-started.html:98
 msgid "Delete project"
 msgstr ""
 
 #. Has to match the permission level name in the app
-#: getting-started.html:105
+#: getting-started.html:103
 msgid "Full permission"
 msgstr ""
 
 #. Has to match the permission level name in the app
-#: getting-started.html:114
+#: getting-started.html:112
 msgid "Can't change collaborators/delete project"
 msgstr ""
 
 #. Has to match the permission level name in the app
-#: getting-started.html:123
+#: getting-started.html:121
 msgid "View and make changes"
 msgstr ""
 
 #. Has to match the permission level name in the app
-#: getting-started.html:132
+#: getting-started.html:130
 msgid "View Only"
 msgstr ""
 
-#: getting-started.html:143
+#: getting-started.html:141
 msgid "<i class=\"fas fa-tags\"></i> Create Tags"
 msgstr ""
 
-#: getting-started.html:145
+#: getting-started.html:143
 msgid ""
 "\n"
 "      <p>Taguette ships with one existing tag (or <em>codes</em>, if "
@@ -780,26 +779,25 @@ msgid ""
 "      <img src=\"imgs/07-addTag.png\" width=\"499\" height=\"292\" class"
 "=\"img-fluid border border-dark mb-2\">\n"
 "\n"
-"      <p>You might have noticed that I used the tag "
-"<code>tech.floss</code> and you might be wondering why I used that "
-"notation. In Taguette, you can use <em>any punctuation</em> to make "
-"hierarchies. So <code>tech.floss</code> lives underneath "
-"<code>tech</code>. If I click on <code>tech.floss</code>, then I'll see "
-"only materials relating to that tag. If I click on <code>tech</code>, "
-"I'll see everything in that tag as we as <code>tech.floss</code> and any "
-"other sub-tag.\n"
-"\n"
 "      <p>After you give the tag a good name and a bit of description "
 "about what it means, you should see it added to the list in alphabetical "
 "order.</p>\n"
+"\n"
+"      <p><strong>A note on hierarchical tagging</strong>: you can use "
+"<em>any punctuation</em> to make hierarchies. So <code>tech.floss</code> "
+"lives underneath <code>tech</code>. If I click on "
+"<code>tech.floss</code>, then I'll see only materials relating to that "
+"tag. If I click on <code>tech</code>, I'll see everything in that tag as "
+"well as <code>tech.floss</code> and any other sub-tag.</p>\n"
+"\n"
 "      "
 msgstr ""
 
-#: getting-started.html:159
+#: getting-started.html:158
 msgid "<i class=\"fas fa-eraser\"></i> Delete/change Tags"
 msgstr ""
 
-#: getting-started.html:161
+#: getting-started.html:160
 msgid ""
 "\n"
 "      <p>You can also change or delete a tag by clicking the "
@@ -813,11 +811,11 @@ msgid ""
 "      "
 msgstr ""
 
-#: getting-started.html:167
+#: getting-started.html:166
 msgid "<i class=\"far fa-object-group\"></i> Merge Tags"
 msgstr ""
 
-#: getting-started.html:169
+#: getting-started.html:168
 msgid ""
 "\n"
 "      <p>If you want to merge one tag into another, you can also do this "
@@ -826,19 +824,19 @@ msgid ""
 "popup for editing and deleting a tag. Instead, if you click "
 "<strong>Merge</strong>, then you will be prompted to select the tag that "
 "you want to merge into. Once you select a tag and click <strong>Merge "
-"tags</strong>, then all the highlights for the first tag be moved to the "
-"second tag.</p>\n"
+"tags</strong>, then all the highlights for the first tag will be moved to"
+" the second tag.</p>\n"
 "\n"
 "      <img src=\"imgs/merge-tag.png\" width=\"498\" height=\"310\" class"
 "=\"img-fluid border border-dark mb-2\">\n"
 "      "
 msgstr ""
 
-#: getting-started.html:175
+#: getting-started.html:174
 msgid "<i class=\"fas fa-highlighter\"></i> Highlighting"
 msgstr ""
 
-#: getting-started.html:177
+#: getting-started.html:176
 msgid ""
 "\n"
 "      <p>Once uploaded, you should see the document in the 'Documents' "
@@ -887,16 +885,16 @@ msgid ""
 "      "
 msgstr ""
 
-#: getting-started.html:199
+#: getting-started.html:198
 msgid "<i class=\"fas fa-file-invoice\"></i> View highlighted &amp; tagged text"
 msgstr ""
 
-#: getting-started.html:201
+#: getting-started.html:200
 msgid ""
 "\n"
 "      <p>If you want to see all the highlighted text associated with a "
 "given tag, first go to the <strong>Highlights</strong> tab in the left "
-"pane. Click a tag, and in the right pane you will see a list of quotes "
+"pane. Click a tag, and in the right pane, you will see a list of quotes "
 "with a blue link to the document where they originated from and all their"
 " associated tags with a black badge. The tag on the left pane will also "
 "be highlighted:</p>\n"
@@ -923,23 +921,26 @@ msgid ""
 "\n"
 "      <p>If you hover your mouse over a highlighted section of text, you "
 "will see tags in a tooltip to the right of your mouse cursor. To explore "
-"your highlighted document in a different way, you can try clicking on "
-"<strong>Backlight</strong> checkbox. You can see it underneath the "
-"<strong>Add a document</strong> button. It will grey out all the non-"
-"highlighted text to make the highlighted text really pop. We found this "
-"to be a nice view for exploring the texts differently:</p>\n"
+"your highlighted document in a different way, you can try clicking on the"
+" <strong>Backlight</strong> checkbox. You can see it at the bottom of the"
+" pane. It will grey out all the non-highlighted text to make the "
+"highlighted text really pop. We found this to be a nice view for "
+"exploring the texts differently:</p>\n"
 "\n"
 "      <img src=\"imgs/16-backlight.png\" width=\"1160\" height=\"236\" "
 "class=\"img-fluid border border-dark mb-2\">\n"
 "      "
 msgstr ""
 
-#: getting-started.html:219
+#: getting-started.html:218
 msgid "<i class=\"fas fa-file-export\"></i> Export Options"
 msgstr ""
 
-#: getting-started.html:221
+#: getting-started.html:220
 msgid ""
+"\n"
+"      <p>You can export everything out of Taguette that you put in: tags,"
+" highlights, codebooks, documents, and even the entire project! </p>\n"
 "\n"
 "      <p>To export the codebook of your project - this is a list of all "
 "the tags that you've created alongside their description - use the "
@@ -953,7 +954,7 @@ msgid ""
 "      <img src=\"imgs/17-exportCodebook.png\" width=\"462\" "
 "height=\"610\" class=\"img-fluid border border-dark mb-2\">\n"
 "\n"
-"      <p>To export all the associated highlights for a given tag, first "
+"      <p>To export all the associated highlights for a given tag, "
 "navigate to the <strong>Highlights</strong> tab in the left pane, and "
 "click on the tag of the highlights you'd want to export. Then you can use"
 " the <strong>Export this view</strong> dropdown menu at the top right in "
@@ -974,12 +975,12 @@ msgid ""
 "      <img src=\"imgs/19-exportTagEX.png\" width=\"1160\" height=\"513\" "
 "class=\"img-fluid border border-dark mb-2\">\n"
 "\n"
-"      <p>To export all the tags with all associated highlights, first "
-"navigate to the <strong>Highlights</strong> tab in the left pane, and "
-"click on <strong>See all highlights</strong>. Then you can use the "
-"<strong>Export this view</strong> dropdown menu at the top right in the "
-"right pane. Again, you will have a choice of <code>HTML</code>, "
-"<code>DOCX</code>, or <code>PDF</code>.</p>\n"
+"      <p>To export all the tags with all associated highlights, navigate "
+"to the <strong>Highlights</strong> tab in the left pane, and click on "
+"<strong>See all highlights</strong>. Then you can use the <strong>Export "
+"this view</strong> dropdown menu at the top right in the right pane. "
+"Again, you will have a choice of <code>HTML</code>, <code>DOCX</code>, or"
+" <code>PDF</code>.</p>\n"
 "\n"
 "      <img src=\"imgs/20-exportAllTags.png\" width=\"1160\" "
 "height=\"370\" class=\"img-fluid border border-dark mb-2\">\n"
@@ -1002,13 +1003,40 @@ msgid ""
 "      <img src=\"imgs/22-exportDoc.png\" width=\"1160\" height=\"499\" "
 "class=\"img-fluid border border-dark mb-2\">\n"
 "\n"
-"      <p>While you will see the document with all the highlights, right "
-"now you won't be able to tell which tags go with the highlights, but we "
-"are working on that feature to make this export more useful. This is how "
-"it looks with the <code>DOCX</code> export:</p>\n"
+"      <p>You will see the document with your highlight in yellow, and the"
+" associated tag(s) next to the highlighted text, itself highlighted in "
+"light red and in brackets. Yellow = quote, light red = tag(s). This is "
+"how it looks with the <code>DOCX</code> export:</p>\n"
 "\n"
 "      <img src=\"imgs/23-exportDocEXs.png\" width=\"1160\" height=\"542\""
 " class=\"img-fluid border border-dark mb-2\">\n"
+"\n"
+"      <p>You can also import and export projects in Taguette! To export "
+"your project, go to the <strong>Project Info</strong> tab in the left "
+"pane. You should see a button that says <strong>Export project</strong>. "
+"Click that, and you should get a download started of a SQLite3 file. This"
+" holds your Taguette project, all files, as well as all highlights and "
+"codes:</p>\n"
+"\n"
+"      <img src=\"imgs/24-exportProject.png\" width=\"1160\" "
+"height=\"542\" class=\"img-fluid border border-dark mb-2\">\n"
+"\n"
+"      <p>To import your project onto another instance of Taguette (for "
+"instance, a locally running copy on your computer or another server), go "
+"to the welcome screen in Taguette and click \"Import a project "
+"file\":</p>\n"
+"\n"
+"      <img src=\"imgs/01-welcome.png\" width=\"1125\" height=\"341\" "
+"class=\"img-fluid border border-dark\">\n"
+"\n"
+"      <p>From there, you select a project to upload. It must have the "
+"SQLite3 file extension to be uploaded. Click Browse and select the file. "
+"Taguette will confirm on this screen the name of the project, and once "
+"you hit \"Import\", all project materials will be imported!</p>\n"
+"\n"
+"      <img src=\"imgs/25-importProject.png\" width=\"1160\" "
+"height=\"542\" class=\"img-fluid border border-dark mb-2\">\n"
+"\n"
 "      "
 msgstr ""
 
@@ -1021,7 +1049,7 @@ msgstr ""
 msgid ""
 "Have you ever searched \"free qualitative research software\" only to be "
 "disappointed that nothing lets you tag your materials? Search no more! "
-"Taguette is a <strong>free and open source</strong> tool for qualitative "
+"Taguette is a <strong>free and open-source</strong> tool for qualitative "
 "research. You can import your research materials, highlight and tag "
 "quotes, and export the results!"
 msgstr ""
@@ -1076,9 +1104,9 @@ msgstr ""
 #: index.html:31
 msgid ""
 "After you've done your work highlighting materials in Taguette, you can "
-"export in a variety of ways -- your codebook, all your highlighted quotes"
-" (or ones for a specific tag!), and highlighted documents. It's a good "
-"practice to keep an archival copy of your work!"
+"export in a variety of ways -- your whole project, codebook, all your "
+"highlighted quotes (or ones for a specific tag!), and highlighted "
+"documents. It's a good practice to keep an archival copy of your work!"
 msgstr ""
 
 #. Button
@@ -1088,7 +1116,7 @@ msgstr ""
 
 #. Page title
 #: install.html:4
-msgid "Install Taguette, the free and opensource qualitative data analysis tool"
+msgid "Install Taguette, the free and open-source qualitative data analysis tool"
 msgstr ""
 
 #: install.html:9
@@ -1153,18 +1181,18 @@ msgid ""
 "\n"
 "          <p>Download the DMG file from <a href=\"%(download_page)s\">our"
 " latest release page</a>.</p>\n"
-"          <p><img src=\"imgs/mac-01.png\" width=\"543\" "
-"height=\"158\"/></p>\n"
+"          <p><img src=\"imgs/mac-01.png\" width=\"543\" height=\"158\" "
+"class=\"mx-auto d-block\"/></p>\n"
 "          <p>When you open it, you will see a Finder window. You should "
 "drag the \"Taguette.app\" file to the \"Applications\" folder.</p>\n"
-"          <p><img src=\"imgs/mac-02.png\" width=\"543\" "
-"height=\"158\"/></p>\n"
+"          <p><img src=\"imgs/mac-02.png\" width=\"543\" height=\"158\" "
+"class=\"mx-auto d-block\"/></p>\n"
 "          <p>Then double-click on \"Applications\", and right-click on "
 "\"Taguette.app\" and choose \"Open\".</p>\n"
-"          <p><img src=\"imgs/mac-03.png\" width=\"780\" "
-"height=\"238\"/></p>\n"
-"          <p><img src=\"imgs/mac-04.png\" width=\"491\" "
-"height=\"163\"></p>\n"
+"          <p><img src=\"imgs/mac-03.png\" width=\"780\" height=\"238\" "
+"class=\"mx-auto d-block\"/></p>\n"
+"          <p><img src=\"imgs/mac-04.png\" width=\"262\" height=\"386\" "
+"class=\"mx-auto d-block\"></p>\n"
 "          <p>You will only have to do this the first time. After this, "
 "you will be able to start Taguette from the Launchpad or Spotlight.</p>\n"
 "          "
@@ -1190,7 +1218,7 @@ msgid ""
 "\n"
 "  <p>You first need to install <a "
 "href=\"https://www.python.org/downloads/\">Python 3</a> and <a "
-"href=\"https://calibre-ebook.com/\">Calibre</a>, the open source e-book "
+"href=\"https://calibre-ebook.com/\">Calibre</a>, the open-source e-book "
 "management software. Taguette uses a part of Calibre to convert documents"
 " into HTML, allowing you to highlight and tag parts of them.</p>\n"
 "\n"
@@ -1254,8 +1282,8 @@ msgstr ""
 #. Page title
 #: self-host.html:4
 msgid ""
-"Self Hosting Taguette, the free and opensource qualitative data analysis "
-"tool"
+"Self Hosting Taguette, the free and open-source qualitative data analysis"
+" tool"
 msgstr ""
 
 #: self-host.html:9
@@ -1270,9 +1298,9 @@ msgid ""
 "    <li>On your machine, after <a href=\"install.html\">installing "
 "it</a>. This requires no complex setup, and your data never has to leave "
 "your machine!</li>\n"
-"    <li>On a server. This is more difficult to setup, but users can then "
-"use that installed version with nothing more than their web browser! We "
-"host a publicly-available Taguette server at <a "
+"    <li>On a server. This is more difficult to set up, but users can then"
+" use that installed version with nothing more than their web browser! We "
+"host a publicly available Taguette server at <a "
 "href=\"https://app.taguette.org/\">app.taguette.org</a> at the moment, so"
 " you can feel free to use that. If you want to deploy your own server for"
 " your organization, read on!</li>\n"
@@ -1293,10 +1321,10 @@ msgid ""
 " time. You can persist the data by mounting a volume over "
 "<code>/data</code>, like so:</p>\n"
 "  <pre>docker run --rm quay.io/remram44/taguette default-config "
-"&gt;/srv/taguette/taguette.conf\n"
-"edit /srv/taguette/taguette.conf  # Edit configuration file, see below\n"
+"&gt;/srv/taguette/config.py\n"
+"edit /srv/taguette/config.py  # Edit configuration file, see below\n"
 "docker run -ti -p 80:7465 -v /srv/taguette:/data --restart=always "
-"quay.io/remram44/taguette server /data/taguette.conf</pre>\n"
+"quay.io/remram44/taguette server /data/config.py</pre>\n"
 "  "
 msgstr ""
 
@@ -1320,9 +1348,9 @@ msgid ""
 "virtualenv --python=python3.5 /srv/taguette\n"
 ". /srv/taguette/bin/activate\n"
 "pip install taguette\n"
-"taguette default-config &gt;taguette.conf\n"
-"edit taguette.conf  # Edit configuration file, see below\n"
-"taguette --no-browser server taguette.conf</pre>\n"
+"taguette default-config &gt;config.py\n"
+"edit config.py  # Edit configuration file, see below\n"
+"taguette --no-browser server config.py</pre>\n"
 "\n"
 "  "
 msgstr ""
@@ -1341,7 +1369,7 @@ msgid ""
 "  <p>You can make Taguette print a configuration file for you to edit "
 "using <code>taguette default-config</code>.</p>\n"
 "  <p>You might want to change the <code>PORT</code> to <code>80</code>, "
-"or better yet configure a webserver to act as a proxy, see below.</p>\n"
+"or better yet configure a web-server to act as a proxy, see below.</p>\n"
 "  "
 msgstr ""
 
@@ -1353,14 +1381,14 @@ msgstr ""
 msgid ""
 "\n"
 "  <p>For performance or security reasons, or simply because you want to "
-"host multiple sites on your machine, you might want to put a webserver "
+"host multiple sites on your machine, you might want to put a web-server "
 "(such as <a href=\"https://nginx.org/\">nginx</a> or <a "
 "href=\"https://httpd.apache.org/\">Apache</a>) in front of Taguette. That"
 " server will then simply relay connections to Taguette (a setup we call "
 "reverse proxy). You can use it to provide encryption using TLS "
 "(recommended) for example using <a "
 "href=\"https://letsencrypt.org/\">Let's Encrypt</a>, free.</p>\n"
-"  <p>To help with this this, we provide <a "
+"  <p>To help with this, we provide <a "
 "href=\"https://gitlab.com/remram44/taguette/tree/master/scripts/dist/server_configs\">example"
 " configuration files</a> that you can use.</p>\n"
 "  "
@@ -1379,12 +1407,17 @@ msgid ""
 "    <li>a SQLite database file (note the 4 slashes): "
 "<code>sqlite:////srv/taguette/taguette.sqlite3</code></li>\n"
 "    <li>a PostgreSQL database: "
-"<code>postgresql://user:secretpassword@localhost/taguette</code></li>\n"
-"    <li>a MySQL or MariaDB database: "
-"<code>mysql://user:secretpassword@localhost/taguette</code></li>\n"
+"<code>postgresql://user:secretpassword@localhost/taguette</code> (you "
+"need to <code>pip install psycopg2-binary</code>)</li>\n"
+"    <li>a MariaDB database (<a "
+"href=\"https://gitlab.com/remram44/taguette/-/merge_requests/84\">MySQL "
+"currently doesn't work</a>): "
+"<code>mysql+pymysql://user:secretpassword@localhost/taguette</code> (you "
+"need to <code>pip install pymysql cryptography</code>)</li>\n"
 "    <li>... or any of the <a "
 "href=\"https://docs.sqlalchemy.org/en/13/core/engines.html\">other "
-"databases supported by SQLAlchemy</a></li>\n"
+"databases supported by SQLAlchemy</a>. Note that we don't test any other "
+"database, so you might run into issues.</li>\n"
 "  </ul>\n"
 "  "
 msgstr ""
