@@ -52,6 +52,12 @@ In addition, we have been running a server at [app.taguette.org](https://app.tag
 
 Taguette is multiplatform, with installers provided for MacOS and Windows, a Docker image, and on the Python package Index (PyPI). It is available in 7 languages and has been downloaded over 12,000 times.
 
+![Document view, where highlights are created and associated with tags](01-document.png)
+
+![List of highlights for a given tag](02-view-tag.png)
+
+![Adding collaborators through the interface](03-collabs.png)
+
 ## Importing
 
 Work in Taguette begins with importing a document. We support a variety of text formats, from HTML to RTF to EPUB, including PDF, DOCX, Markdown, etc. Documents are converted to HTML using the `ebook-convert` command, part of the Calibre ebook manager[@Calibre] or wvWare[@wvWare] for old Microsoft Word 97 `.doc` documents.
