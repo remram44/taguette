@@ -80,6 +80,12 @@ From then on, any change made by a different user is reflected immediately for t
 
 Other open-source CAQDAS packages include: QualCoder[@qualcoder], qcoder[@qcoder], and qdap[@qdap]. qcoder and qdap are both R packages, and require knowledge of R and RStudio to use. QualCoder has
 
+@CAT
+
+@AQUAD
+
+@RQDA
+
 # Acknowledgments
 
 We thank Sarah DeMott whose qualitative work triggered the creation of Taguette. We would also like to thank our contributors on GitLab and our translators on Transifex, and the qualitative analysis community for their warm welcome and feedback.
