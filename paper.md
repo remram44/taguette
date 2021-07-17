@@ -42,7 +42,7 @@ Taguette is an free and open source computer-assisted qualitative data analysis 
 
 Taguette fills a specific research need for qualitative researchers who cannot afford access to the software to do their work. For commercial CAQDAS, the lowest subscription price is 20 USD/month, and the lowest desktop application price is 520 USD [@caqdas]. There have been fewer than twenty open source CAQDAS available **ever**, and fewer than five are being currently maintained, including Taguette.
 
-Taguette directly supports qualitative inquiry of text materials (see \autoref{fig:document}). It is unique in that it provides a free and open source tool for qualitative reseachers who want real-time collaboration (see \autoref{fig:collabs}). Taguette has already been used in multiple research publications, which we have compiled in a Zotero library [@taguette-zotero], and also is being self-hosted by research institutions on behalf of their communities (example: (Digitalization Research Cluster, Leiden University)[https://taguette.leiden.digital/]).
+Taguette directly supports qualitative inquiry of text materials (see \autoref{fig:document}). It is unique in that it provides a free and open source tool for qualitative reseachers who want real-time collaboration (see \autoref{fig:collabs}). Taguette has already been used in multiple research publications, which we have compiled in a Zotero library [@taguette-zotero], and also is being self-hosted by research institutions on behalf of their communities (example: [Digitalization Research Cluster, Leiden University](https://taguette.leiden.digital/)).
 
 # Taguette
 
