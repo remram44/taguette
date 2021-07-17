@@ -1,10 +1,13 @@
 import asyncio
 from datetime import timedelta, datetime
 from email.message import EmailMessage
+import io
+import itertools
 import json
 import logging
 from markupsafe import Markup
 import prometheus_client
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import aliased
 import time
 import tornado.locale
@@ -12,6 +15,7 @@ from tornado.web import authenticated, HTTPError
 from urllib.parse import urlunparse
 
 from .. import database
+from .. import import_codebook
 from .. import validate
 from .base import BaseHandler, PromMeasureRequest, _f
 
@@ -521,6 +525,89 @@ class ImportCodebook(BaseHandler):
                 "You don't have permission to import a codebook",
             ))
         return self.render('project_import_codebook.html', project=project)
+
+    @authenticated
+    @PROM_REQUESTS.sync('import_codebook')
+    def post(self, project_id):
+        project, privileges = self.get_project(project_id)
+        if not privileges.can_import_codebook():
+            self.set_status(403)
+            return self.render(
+                'project_import_codebook.html',
+                project=project,
+                error=self.gettext(
+                    "You don't have permission to import a codebook",
+                ),
+            )
+
+        if 'file' in self.request.files and len(self.request.files) >= 1:
+            uploaded_file = self.request.files['file'][0]
+
+            reader = io.BytesIO(uploaded_file.body)
+            try:
+                tags = import_codebook.list_tags(reader)
+            except import_codebook.InvalidCodebook as e:
+                self.set_status(400)
+                return self.render(
+                    'project_import_codebook.html',
+                    project=project,
+                    error=self.gettext(e.message),
+                )
+
+            return self.render(
+                'project_import_codebook_confirm.html',
+                project=project,
+                tags=tags,
+            )
+        elif self.get_body_argument('tag0-path', None):
+            errors = []
+            for i in itertools.count():
+                enabled = self.get_body_argument('tag%d-enabled' % i, '')
+                path = self.get_body_argument('tag%d-path' % i, None)
+                description = self.get_body_argument(
+                    'tag%d-description' % i,
+                    '',
+                )
+                if path is None:
+                    break
+                if not enabled:
+                    continue
+
+                try:
+                    validate.tag_path(path)
+                    validate.description(description)
+                except validate.InvalidFormat as e:
+                    errors.append(self.gettext(e.message))
+                    continue
+
+                try:
+                    self.db.add(database.Tag(
+                        project_id=project.id,
+                        path=path,
+                        description=description,
+                    ))
+                except IntegrityError:
+                    # Ignore existing tag
+                    continue
+
+            if errors:
+                self.db.rollback()
+                self.set_status(400)
+                return self.render(
+                    'project_import_codebook.html',
+                    project=project,
+                    error=jinja2.Markup('<br>'.join(jinja2.escape(errors))),
+                )
+            else:
+                self.db.commit()
+                return self.redirect(self.reverse_url('project', project.id))
+        else:
+            self.set_status(400)
+            return self.render(
+                'project_import_codebook.html',
+                project=project,
+                error=self.gettext("No file provided"),
+            )
 
 
 class Project(BaseHandler):
