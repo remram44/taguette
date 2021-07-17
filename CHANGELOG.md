@@ -1,8 +1,8 @@
 Changelog
 =========
 
-1.0.0 (???)
------------
+1.0.0 (2021-07-17)
+------------------
 
 Bugfixes:
 * Fix highlights disappearing when one of their tags is deleted
