@@ -3,7 +3,7 @@ Preview this with https://whedon.theoj.org/
 -->
 
 ---
-title: 'Taguette: open source qualitative data analysis'
+title: 'Taguette: open-source qualitative data analysis'
 tags:
   - qualitative
   - qualitative data analysis
@@ -36,13 +36,13 @@ bibliography: paper.bib
 
 # Summary
 
-Taguette is an free and open source computer-assisted qualitative data analysis software (CAQDAS) [@caqdas]. CAQDAS software help researchers using qualitative methods to organize, annotate, collaborate on, analyze, and visualize their work. Qualitative methods are used in a wide range of fields, such as anthropology, education, nursing, psychology, sociology, and marketing. Qualitative data has a similarly wide range: interviews, focus groups, enthnographies, and more.
+Taguette is a free and open-source computer-assisted qualitative data analysis software (CAQDAS) [@caqdas]. CAQDAS software help researchers using qualitative methods to organize, annotate, collaborate on, analyze, and visualize their work. Qualitative methods are used in a wide range of fields, such as anthropology, education, nursing, psychology, sociology, and marketing. Qualitative data has a similarly wide range: interviews, focus groups, ethnographies, and more.
 
 # Statement of Need
 
-Taguette fills a specific research need for qualitative researchers who cannot afford access to the software to do their work. For commercial CAQDAS, the lowest subscription price is 20 USD/month, and the lowest desktop application price is 520 USD [@caqdas]. There have been fewer than twenty open source CAQDAS available **ever**, and fewer than five are being currently maintained, including Taguette.
+Taguette fills a specific research need for qualitative researchers who cannot afford access to the software to do their work. For commercial CAQDAS, the lowest subscription price is 20 USD/month, and the lowest desktop application price is 520 USD [@caqdas]. There have been fewer than twenty open-source CAQDAS available **ever**, and fewer than five are being currently maintained, including Taguette.
 
-Taguette directly supports qualitative inquiry of text materials (see \autoref{fig:document}). It is unique in that it provides a free and open source tool for qualitative reseachers who want real-time collaboration (see \autoref{fig:collabs}). Taguette has already been used in multiple research publications, which we have compiled in a Zotero library [@taguette-zotero], and also is being self-hosted by research institutions on behalf of their communities (example: [Digitalization Research Cluster, Leiden University](https://taguette.leiden.digital/)).
+Taguette directly supports qualitative inquiry of text materials (see \autoref{fig:document}). It is unique in that it provides a free and open-source tool for qualitative researchers who want real-time collaboration (see \autoref{fig:collabs}). Taguette has already been used in multiple research publications, which we have compiled in a Zotero library [@taguette-zotero], and also is being self-hosted by research institutions on behalf of their communities (example: [Digitalization Research Cluster, Leiden University](https://taguette.leiden.digital/)).
 
 # Taguette
 
@@ -54,7 +54,7 @@ Work in Taguette begins with importing a document. We support a variety of text 
 
 ## Analysis
 
-After a user has imported a document into Taguette, they can then qualitatively highlight sections of text (see \autoref{fig:document}). Those highlights are organized in hierarchical tags that can be created, merged together, and recalled at will (see \autoref{fig:view-tag}). Data for all projects including documents, tags, and highlights is stored in a SQL database, which allow for easy exploration and scripting should the user need to go beyond the capabilities offered by our interface. In single-user mode, Taguette automatically creates a SQLite database in the user's home directory, and perform schema migrations automatically when a new version of Taguette is installed.
+After a user has imported a document into Taguette, they can then qualitatively highlight sections of text (see \autoref{fig:document}). Those highlights are organized in hierarchical tags that can be created, merged together, and recalled at will (see \autoref{fig:view-tag}). Data for all projects including documents, tags, and highlights is stored in a SQL database, which allows for easy exploration and scripting should the user need to go beyond the capabilities offered by our interface. In single-user mode, Taguette automatically creates a SQLite database in the user's home directory, and perform schema migrations automatically when a new version of Taguette is installed.
 
 ![Document view, where highlights are created and associated with tags.\label{fig:document}](01-document.png)
 
@@ -62,11 +62,11 @@ After a user has imported a document into Taguette, they can then qualitatively 
 
 ## Live collaboration
 
-The multi-user verison of Taguette allows for live collaboration of multiple users in a single project. It is possible to add other accounts as collaborators to your project, with a choice of permissions: some users can only tag, some can change documents, and others have full control including adding or removing collaborators.
+The multi-user version of Taguette allows for live collaboration of multiple users in a single project. It is possible to add other accounts as collaborators to your project, with a choice of permissions: some users can only tag, some can change documents, and others have full control including adding or removing collaborators.
 
 ![Adding collaborators through the interface.\label{fig:collabs}](03-collabs.png)
 
-From then on, any change made by a different user is reflected immediately for the other users. This allows for faster annotation of large projects, without having to exchange partially processed documents via email for example. Taguette is currently the only free and open source CAQDAS that supports this.
+From then on, any change made by a different user is reflected immediately for the other users. This allows for faster annotation of large projects, without having to exchange partially processed documents via email for example. Taguette is currently the only free and open-source CAQDAS that supports this.
 
 ## Exporting
 
