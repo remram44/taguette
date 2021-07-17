@@ -50,7 +50,7 @@ Taguette is a web application written in Python. It is designed to run both on a
 
 ## Importing Documents
 
-Work in Taguette begins with importing a document. We support a variety of text formats, including HTML, RTF, EPUB, PDF, DOCX, Markdown, and more. Documents are converted to HTML using the `ebook-convert` command, part of the Calibre ebook manager[@Calibre] or wvWare[@wvWare] for old Microsoft Word 97 `.doc` documents. A copy of Calibre is included in our installers so that users don't have to set up any additional software. After conversion, the document is sanitized to remove unwanted formatting and embedded media, and avoid security issues such as cross-site scripting.
+Work in Taguette begins with importing a document. We support a variety of text formats, including HTML, RTF, EPUB, PDF, DOCX, Markdown, and more. Documents are converted to HTML using the `ebook-convert` command, part of the Calibre ebook manager [@Calibre] or wvWare [@wvWare] for old Microsoft Word 97 `.doc` documents. A copy of Calibre is included in our installers so that users don't have to set up any additional software. After conversion, the document is sanitized to remove unwanted formatting and embedded media, and avoid security issues such as cross-site scripting.
 
 ## Analysis
 
@@ -78,7 +78,7 @@ It is also possible to export a project as a SQLite3 database, in Taguette's nat
 
 # Related Work
 
-Other currently maintained open-source CAQDAS packages include: QualCoder[@qualcoder], qcoder[@qcoder], and qdap[@qdap]. qcoder and qdap are both R packages that support qualitative analysis of text, and require knowledge of R and RStudio to use. Both provide an interface to use the results of qualitative analysis with the rest of the R ecosystem. QualCoder is a desktop application (made with Python and PyQt5) that allows users to qualitatively analyze text and audiovisual materials. Each currently maintained tool fulfills different needs across the qualitative community, including Taguette. Previously maintained qualitative include Aquad[@AQUAD], RQDA[@RQDA], and the Coding Analysis Toolkit (CAT) [@CAT].
+Other currently maintained open-source CAQDAS packages include: QualCoder [@qualcoder], qcoder [@qcoder], and qdap [@qdap]. qcoder and qdap are both R packages that support qualitative analysis of text, and require knowledge of R and RStudio to use. Both provide an interface to use the results of qualitative analysis with the rest of the R ecosystem. QualCoder is a desktop application (made with Python and PyQt5) that allows users to qualitatively analyze text and audiovisual materials. Each currently maintained tool fulfills different needs across the qualitative community, including Taguette. Previously maintained qualitative include Aquad [@AQUAD], RQDA [@RQDA], and the Coding Analysis Toolkit (CAT) [@CAT].
 
 # Acknowledgments
 
