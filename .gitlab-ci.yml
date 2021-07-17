@@ -6,6 +6,8 @@ sqlite3:
   stage: test
   image: python:3.8
   script:
+    - curl -sSL -o /usr/local/bin/tidy 'https://gitlab.com/remram44/taguette/-/snippets/2150886/raw/main/tidy-5.8.0?inline=false'
+    - chmod +x /usr/local/bin/tidy
     - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.4
     - /root/.poetry/bin/poetry config virtualenvs.create false
     - $HOME/.poetry/bin/poetry install --no-interaction
@@ -26,6 +28,8 @@ sqlite3_redis:
   services:
     - redis:latest
   script:
+    - curl -sSL -o /usr/local/bin/tidy 'https://gitlab.com/remram44/taguette/-/snippets/2150886/raw/main/tidy-5.8.0?inline=false'
+    - chmod +x /usr/local/bin/tidy
     - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.4
     - /root/.poetry/bin/poetry config virtualenvs.create false
     - $HOME/.poetry/bin/poetry install --no-interaction
@@ -39,6 +43,8 @@ sqlite3_latest:
   stage: test
   image: python:3.8
   script:
+    - curl -sSL -o /usr/local/bin/tidy 'https://gitlab.com/remram44/taguette/-/snippets/2150886/raw/main/tidy-5.8.0?inline=false'
+    - chmod +x /usr/local/bin/tidy
     - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.4
     - /root/.poetry/bin/poetry config virtualenvs.create false
     - rm poetry.lock
@@ -56,6 +62,8 @@ postgres:
     POSTGRES_PASSWORD: taguette
     TAGUETTE_TEST_DB: postgresql://taguette:taguette@postgres/taguette
   script:
+    - curl -sSL -o /usr/local/bin/tidy 'https://gitlab.com/remram44/taguette/-/snippets/2150886/raw/main/tidy-5.8.0?inline=false'
+    - chmod +x /usr/local/bin/tidy
     - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.4
     - /root/.poetry/bin/poetry config virtualenvs.create false
     - $HOME/.poetry/bin/poetry install --no-interaction
@@ -75,6 +83,8 @@ mariadb:
     MYSQL_PASSWORD: taguette
     TAGUETTE_TEST_DB: mysql+pymysql://taguette:taguette@mariadb/taguette
   script:
+    - curl -sSL -o /usr/local/bin/tidy 'https://gitlab.com/remram44/taguette/-/snippets/2150886/raw/main/tidy-5.8.0?inline=false'
+    - chmod +x /usr/local/bin/tidy
     - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.4
     - /root/.poetry/bin/poetry config virtualenvs.create false
     - $HOME/.poetry/bin/poetry install --no-interaction
@@ -86,6 +96,8 @@ sqlite3_pypy:
   stage: test
   image: pypy:3.7
   script:
+    - curl -sSL -o /usr/local/bin/tidy 'https://gitlab.com/remram44/taguette/-/snippets/2150886/raw/main/tidy-5.8.0?inline=false'
+    - chmod +x /usr/local/bin/tidy
     - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.4
     - /root/.poetry/bin/poetry config virtualenvs.create false
     - pypy3 -m venv /tmp/venv
@@ -98,6 +110,8 @@ sqlite3_py35:
   stage: test
   image: python:3.5
   script:
+    - curl -sSL -o /usr/local/bin/tidy 'https://gitlab.com/remram44/taguette/-/snippets/2150886/raw/main/tidy-5.8.0?inline=false'
+    - chmod +x /usr/local/bin/tidy
     - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.4
     - /root/.poetry/bin/poetry config virtualenvs.create false
     - $HOME/.poetry/bin/poetry install --no-interaction
@@ -108,6 +122,8 @@ sqlite3_py39:
   stage: test
   image: python:3.9
   script:
+    - curl -sSL -o /usr/local/bin/tidy 'https://gitlab.com/remram44/taguette/-/snippets/2150886/raw/main/tidy-5.8.0?inline=false'
+    - chmod +x /usr/local/bin/tidy
     - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.4
     - /root/.poetry/bin/poetry config virtualenvs.create false
     - $HOME/.poetry/bin/poetry install --no-interaction
