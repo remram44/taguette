@@ -42,7 +42,7 @@ Taguette is an free and open source computer-assisted qualitative data analysis 
 
 Taguette fills a specific research need for qualitative researchers who cannot afford access to the software to do their work. For commercial CAQDAS, the lowest subscription price is 20 USD/month, and the lowest desktop application price is 520 USD [@caqdas]. There have been fewer than twenty open source CAQDAS available **ever**, and fewer than five are being currently maintained, including Taguette.
 
-Taguette directly supports qualitative inquiry of text materials (see Fig. 1). It is unique in that it provides a free and open source tool for qualitative reseachers who want real-time collaboration (see Fig. 3). Taguette has already been used in multiple research publications, which we have compiled in a Zotero library [@taguette-zotero], and also is being self-hosted by research institutions on behalf of their communities (example: (Digitalization Research Cluster, Leiden University)[https://taguette.leiden.digital/]).
+Taguette directly supports qualitative inquiry of text materials (see \autoref{fig:document}). It is unique in that it provides a free and open source tool for qualitative reseachers who want real-time collaboration (see \autoref{fig:collabs}). Taguette has already been used in multiple research publications, which we have compiled in a Zotero library [@taguette-zotero], and also is being self-hosted by research institutions on behalf of their communities (example: (Digitalization Research Cluster, Leiden University)[https://taguette.leiden.digital/]).
 
 # Taguette
 
@@ -54,29 +54,27 @@ Work in Taguette begins with importing a document. We support a variety of text 
 
 ## Analysis
 
-After a user has imported a document into Taguette, they can then qualitatively tag sections of text.
+After a user has imported a document into Taguette, they can then qualitatively highlight sections of text (see \autoref{fig:document}). Those highlights are organized in hierarchical tags that can be created, merged together, and recalled at will (see \autoref{fig:view-tag}). Data for all projects including documents, tags, and highlights is stored in a SQL database, which allow for easy exploration and scripting should the user need to go beyond the capabilities offered by our interface. In single-user mode, Taguette automatically creates a SQLite database in the user's home directory, and perform schema migrations automatically when a new version of Taguette is installed.
 
-// TODO something about db
+![Document view, where highlights are created and associated with tags.\label{fig:document}](01-document.png)
 
-![Document view, where highlights are created and associated with tags](01-document.png)
-
-![List of highlights for a given tag](02-view-tag.png)
+![List of highlights for a given tag.\label{fig:view-tag}](02-view-tag.png)
 
 ## Live collaboration
 
 The multi-user verison of Taguette allows for live collaboration of multiple users in a single project. It is possible to add other accounts as collaborators to your project, with a choice of permissions: some users can only tag, some can change documents, and others have full control including adding or removing collaborators.
 
-![Adding collaborators through the interface](03-collabs.png)
+![Adding collaborators through the interface.\label{fig:collabs}](03-collabs.png)
 
 From then on, any change made by a different user is reflected immediately for the other users. This allows for faster annotation of large projects, without having to exchange partially processed documents via email for example. Taguette is currently the only free and open source CAQDAS that supports this.
 
 ## Exporting
 
-Taguette offers a variety of exporting options. A user can export a codebook as a document or spreadsheet, which is the list of all the tags, with their description and the number of associated highlights, throughout the project. Another option is to export a highlighted document, where the sections highlighted by the user are marked and each annotated with the associated tags. Finally, it is possible to export a list of all the highlights across documents, either for all tags or for a specific tag or hierarchy of tags.
+Taguette offers a variety of exporting options. A user can export a codebook as a document or spreadsheet, which is the list of all the tags, with their description and the number of associated highlights, throughout the project. Another option is to export a highlighted document, where the sections highlighted by the user are marked and each annotated with the associated tags. Finally, it is possible to export a list of all the highlights across documents, either for all tags or for a specific tag or hierarchy of tags (see \autoref{fig:export}).
 
-![A highlighted document exported from Taguette and opened in MS Word](04-export.png)
+![A highlighted document exported from Taguette and opened in LibreOffice.\label{fig:export}](04-export.png)
 
-It is also possible to export a project as a SQLite3 database, in Taguette's native schema, which contains all the information necessary to continue work on another instance of Taguette. It is even possible to import them on our hosted version, [app.taguette.org](https://), or to export from there to a local copy. Older versions of the schema are automatically recognized and converted to the latest version if needed.
+It is also possible to export a project as a SQLite3 database, in Taguette's native schema, which contains all the information necessary to continue work on another instance of Taguette. It is even possible to import them on our hosted version, [app.taguette.org](https://app.taguette.org/), or to export from there to a local copy. Older versions of the schema are automatically recognized and converted to the latest version if needed.
 
 # Related Work
 
