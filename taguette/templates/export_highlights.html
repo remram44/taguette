@@ -2,7 +2,11 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>{{ name }}</title>
+    {%- if path %}
+    <title>{% trans %}Taguette highlights: {{ path }}{% endtrans %}</title>
+    {%- else %}
+    <title>{% trans %}Taguette highlights{% endtrans %}</title>
+    {% endif %}
     <style>
       h1 {
         margin-bottom: 1em;

@@ -834,7 +834,7 @@ class TestMultiuser(MyHTTPTestCase):
                     <html>
                       <head>
                         <meta charset="UTF-8">
-                        <title></title>
+                        <title>Taguette highlights: interesting</title>
                         <style>
                           h1 {
                             margin-bottom: 1em;
