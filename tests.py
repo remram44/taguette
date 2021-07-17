@@ -3,6 +3,7 @@ import asyncio
 import concurrent.futures
 from datetime import datetime
 import functools
+import io
 import itertools
 import json
 import os
@@ -21,7 +22,8 @@ from urllib.parse import urlencode, urlparse
 from xml.etree import ElementTree
 
 from taguette import __version__
-from taguette import convert, database, extract, main, validate, web
+from taguette import convert, database, extract, import_codebook, main, \
+    validate, web
 
 
 if 'TAGUETTE_TEST_DB' in os.environ:
@@ -263,6 +265,64 @@ class TestValidate(unittest.TestCase):
         self.assertEqual(
             web.export.safe_filename("Rémi's project"),
             "Rmis project",
+        )
+
+
+class TestReadCodebook(unittest.TestCase):
+    def test_valid_csv(self):
+        self.assertEqual(
+            import_codebook.list_tags(io.BytesIO(
+                (
+                    'name,other,description\n'
+                    + 'interesting,1,\n'
+                    + 'people,2,Named persons\n'
+                ).encode('utf-8'),
+            )),
+            [
+                {'path': 'interesting', 'description': ''},
+                {'path': 'people', 'description': 'Named persons'},
+            ]
+        )
+
+        self.assertEqual(
+            import_codebook.list_tags(io.BytesIO(
+                (
+                    'other,path\n'
+                    + '1,interesting\n'
+                    + '2,people\n'
+                ).encode('utf-8'),
+            )),
+            [
+                {'path': 'interesting', 'description': ''},
+                {'path': 'people', 'description': ''},
+            ]
+        )
+
+    def test_invalid_csv(self):
+        with self.assertRaises(import_codebook.InvalidCodebook) as err:
+            import_codebook.list_tags(io.BytesIO(
+                (
+                    'name,other,path\n'
+                    + 'a,b,c\n'
+                    + 'd,e,f\n'
+                ).encode('utf-8'),
+            ))
+        self.assertEqual(
+            err.exception.message,
+            "Not sure which column to use for tag name",
+        )
+
+        with self.assertRaises(import_codebook.InvalidCodebook) as err:
+            import_codebook.list_tags(io.BytesIO(
+                (
+                    'col1,col2,col3\n'
+                    + 'a,b,c\n'
+                    + 'd,e,f\n'
+                ).encode('utf-8'),
+            ))
+        self.assertEqual(
+            err.exception.message,
+            "No 'tag', 'name', or 'path' column",
         )
 
 
