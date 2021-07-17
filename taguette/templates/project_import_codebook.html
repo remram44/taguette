@@ -5,6 +5,9 @@
 {% block contents %}
 <h1>Import a codebook</h1>
 <p>Use this form to import an existing codebook into your project. Existing tags will not be deleted, new tags will be added alongside them.</p>
+{% if error %}
+<div class="alert alert-danger">{{ error }}</div>
+{% endif %}
 <form action="{{ reverse_url('import_codebook', project.id) }}" method="post" enctype='multipart/form-data'>
   {{ xsrf_form_html() }}
   <div class="form-group row">
