@@ -1604,6 +1604,127 @@ class TestMultiuser(MyHTTPTestCase):
             [(1, 2), (2, 1)],
         )
 
+    @gen_test
+    async def test_import_codebook(self):
+        # Login
+        async with self.apost('/cookies', data=dict()) as response:
+            self.assertEqual(response.status, 302)
+            self.assertEqual(response.headers['Location'], '/')
+        async with self.aget('/login') as response:
+            self.assertEqual(response.status, 200)
+        async with self.apost(
+            '/login',
+            data=dict(next='/', login='admin', password='hackme'),
+        ) as response:
+            self.assertEqual(response.status, 302)
+            self.assertEqual(response.headers['Location'], '/')
+
+        # Create project 1
+        async with self.aget('/project/new') as response:
+            self.assertEqual(response.status, 200)
+        async with self.apost(
+            '/project/new',
+            data=dict(name='my project', description=''),
+        ) as response:
+            self.assertEqual(response.status, 302)
+            self.assertEqual(response.headers['Location'], '/project/1')
+
+        # Export codebook of project 1 to CSV
+        async with self.aget('/project/1/export/codebook.csv') as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(
+                response.headers['Content-Type'],
+                'text/csv; charset=utf-8',
+            )
+            self.assertEqual(
+                await response.text(),
+                textwrap.dedent('''\
+                    tag,description,number of highlights
+                    interesting,Further review required,0
+                    ''').replace('\n', '\r\n'),
+            )
+
+        # Import invalid codebooks
+        codebooks = [
+            (
+                'a,b,c\nd,e,f\n',
+                "No &#39;tag&#39;, &#39;name&#39;, or &#39;path&#39; column",
+            ),
+            (
+                'tag,name\na,b\nc,d\n',
+                "Not sure which column to use for tag name",
+            )
+        ]
+        for codebook, error in codebooks:
+            async with self.apost(
+                '/project/1/import_codebook',
+                data={},
+                files=dict(file=('codebook.csv', 'application/octet-stream',
+                                 codebook)),
+            ) as response:
+                self.assertEqual(response.status, 400)
+                text = await response.text()
+                self.assertNotEqual(text.find(error), -1)
+
+        # Import codebook
+        codebook = (
+            'path,description\ninteresting,no replace\npeople,new\n'
+            + 'other,disabled\n'
+        )
+        async with self.apost(
+            '/project/1/import_codebook',
+            data={},
+            files=dict(file=('codebook.csv', 'application/octet-stream',
+                             codebook)),
+        ) as response:
+            self.assertEqual(response.status, 200)
+            text = await response.text()
+
+            def find(s):
+                self.assertNotEqual(text.find(s), -1)
+
+            find('name="tag0-path" value="interesting"')
+            find('name="tag0-description" value="no replace"')
+            find('name="tag1-path" value="people"')
+            find('name="tag1-description" value="new"')
+            find('name="tag2-path" value="other"')
+            find('name="tag2-description" value="disabled"')
+
+        # Create tags
+        async with self.apost(
+            '/project/1/import_codebook',
+            data={
+                'tag0-enabled': 'on',
+                'tag0-path': 'interesting',
+                'tag0-description': 'no replace',
+                'tag1-enabled': 'on',
+                'tag1-path': 'people',
+                'tag1-description': 'new',
+                # tag2-enabled not set
+                'tag2-path': 'other',
+                'tag2-description': 'disabled',
+            },
+        ) as response:
+            self.assertEqual(response.status, 302)
+            self.assertEqual(response.headers['Location'],
+                             '/project/1')
+
+        # Export codebook of project 1 to CSV
+        async with self.aget('/project/1/export/codebook.csv') as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(
+                response.headers['Content-Type'],
+                'text/csv; charset=utf-8',
+            )
+            self.assertEqual(
+                await response.text(),
+                textwrap.dedent('''\
+                    tag,description,number of highlights
+                    interesting,Further review required,0
+                    people,new,0
+                    ''').replace('\n', '\r\n'),
+            )
+
     async def _poll_event(self, proj, from_id):
         async with self.aget(
             '/api/project/%d/events?from=%d' % (proj, from_id),
