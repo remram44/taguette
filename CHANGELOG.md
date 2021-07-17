@@ -1,6 +1,18 @@
 Changelog
 =========
 
+1.0.0 (???)
+-----------
+
+Bugfixes:
+* Fix highlights disappearing when one of their tags is deleted
+* Fix highlight modal showing "no tags" multiple times after removing the last tag repeatedly
+* Add missing title in exported highlights HTML
+
+Enhancements:
+* Allow disabling SQLite3 file import from the configuration file
+* Add option to use Redis to coordinate live collaboration if running Taguette in multiple processes
+
 0.11 (2021-07-06)
 -----------------
 
