@@ -1,19 +1,15 @@
 import os
 import re
 import string
-from tornado.web import HTTPError
 
 from .web.base import _f
 
 
-class InvalidFormat(HTTPError):
+class InvalidFormat(ValueError):
     """User-supplied value doesn't pass validation."""
-    def __init__(self, message, status_code=400):
-        HTTPError.__init__(self, status_code, message)
+    def __init__(self, message):
+        super(InvalidFormat, self).__init__(message)
         self.message = message
-
-    def __repr__(self):
-        return "InvalidFormat(%r, %d)" % (self.message, self.status_code)
 
 
 def description(descr):

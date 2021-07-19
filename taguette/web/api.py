@@ -96,8 +96,7 @@ class ProjectMeta(BaseHandler):
             return self.send_json({})
         except validate.InvalidFormat as e:
             logger.info("Error validating ProjectMeta: %r", e)
-            return self.send_error_json(e.status_code, self.gettext(e.message),
-                                        e.reason)
+            return self.send_error_json(400, self.gettext(e.message))
 
 
 class DocumentAdd(BaseHandler):
@@ -149,10 +148,7 @@ class DocumentAdd(BaseHandler):
                 return await self.send_json({'created': doc.id})
         except validate.InvalidFormat as e:
             logger.info("Error validating DocumentAdd: %r", e)
-            return await self.send_error_json(
-                e.status_code, self.gettext(e.message),
-                e.reason,
-            )
+            return await self.send_error_json(400, self.gettext(e.message))
 
 
 class DocumentUpdate(BaseHandler):
@@ -183,8 +179,7 @@ class DocumentUpdate(BaseHandler):
             return self.send_json({'id': document.id})
         except validate.InvalidFormat as e:
             logger.info("Error validating DocumentUpdate: %r", e)
-            return self.send_error_json(e.status_code, self.gettext(e.message),
-                                        e.reason)
+            return self.send_error_json(400, self.gettext(e.message))
 
     @api_auth
     @PROM_REQUESTS.sync('document_delete')
@@ -267,8 +262,7 @@ class TagAdd(BaseHandler):
             return self.send_json({'id': tag.id})
         except validate.InvalidFormat as e:
             logger.info("Error validating TagAdd: %r", e)
-            return self.send_error_json(e.status_code, self.gettext(e.message),
-                                        e.reason)
+            return self.send_error_json(400, self.gettext(e.message))
 
 
 class TagUpdate(BaseHandler):
@@ -306,8 +300,7 @@ class TagUpdate(BaseHandler):
             return self.send_json({'id': tag.id})
         except validate.InvalidFormat as e:
             logger.info("Error validating TagUpdate: %r", e)
-            return self.send_error_json(e.status_code, self.gettext(e.message),
-                                        e.reason)
+            return self.send_error_json(400, self.gettext(e.message))
 
     @api_auth
     @PROM_REQUESTS.sync('tag_delete')
@@ -631,7 +624,10 @@ class MembersUpdate(BaseHandler):
         # Go over the JSON patch and update
         commands = []
         for login, user_info in obj.items():
-            login = validate.user_login(login)
+            try:
+                login = validate.user_login(login)
+            except validate.InvalidFormat as e:
+                return self.send_error_json(400, self.gettext(e.message))
             if not user_info:
                 if login in members:
                     logger.info("Removing member %r from project %d (%s)",
