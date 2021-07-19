@@ -19,6 +19,11 @@ PROM_HIGHLIGHT_TIME = prometheus_client.Histogram(
 
 
 def split_utf8(s, pos):
+    """Split a string at a given UTF-8 byte position.
+
+    If the position falls inside of a codepoint, the string will be split after
+    that codepoint.
+    """
     s = s.encode('utf-8')
     while pos < len(s) and 0x80 <= s[pos] <= 0xBF:
         pos += 1
