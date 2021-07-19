@@ -1730,5 +1730,113 @@ class SeleniumTest(MyHTTPTestCase):
         await self.s_click(correct_button)
 
 
+class TestSeleniumMultiuser(SeleniumTest):
+    def get_app(self):
+        with mock.patch.object(web.Application, '_set_password',
+                               new=set_dumb_password):
+            self.application = web.make_app(dict(
+                main.DEFAULT_CONFIG,
+                NAME="Test Taguette instance", PORT=7465,
+                DATABASE=DATABASE_URI,
+                REDIS_SERVER=REDIS,
+                TOS_FILE=None,
+                EMAIL='test@example.com',
+                MAIL_SERVER={'host': 'localhost', 'port': 25},
+                COOKIES_PROMPT=True,
+                MULTIUSER=True,
+                SECRET_KEY='2PbQ/5Rs005G/nTuWfibaZTUAo3Isng3QuRirmBK',
+            ))
+            return self.application
+
+    @gen_test(timeout=120)
+    async def test_login(self):
+        # Fetch index, should have welcome message and register link
+        await self.s_get('/')
+        self.assertEqual(self.driver.title, 'Welcome | Taguette')
+        self.assertEqual(
+            [el.text for el in self.driver.find_elements_by_tag_name('h1')],
+            ['Welcome'],
+        )
+        self.assertIn(
+            'Register now',
+            [el.text for el in self.driver.find_elements_by_tag_name('a')],
+        )
+
+        # Only admin so far
+        db = self.application.DBSession()
+        self.assertEqual([user.login
+                          for user in db.query(database.User).all()],
+                         ['admin'])
+
+        # Fetch registration page, should hit cookies prompt
+        await self.s_get('/register')
+        self.assertEqual(self.s_path, '/cookies?next=%2Fregister')
+
+        # Accept cookies
+        await self.s_click_button('Accept cookies')
+        self.assertEqual(self.s_path, '/register')
+
+        # Register
+        elem = self.driver.find_element_by_id('register-login')
+        elem.send_keys('Tester')
+        elem = self.driver.find_element_by_id('register-password1')
+        elem.send_keys('hacktoo')
+        elem = self.driver.find_element_by_id('register-password2')
+        elem.send_keys('hacktoo')
+        await self.s_click_button('Register')
+
+        # User exists in database
+        db = self.application.DBSession()
+        self.assertEqual([user.login
+                          for user in db.query(database.User).all()],
+                         ['admin', 'tester'])
+
+        # Fetch index, should have project list
+        await self.s_get('/')
+        self.assertEqual(
+            [el.text for el in self.driver.find_elements_by_tag_name('h1')],
+            ['Welcome tester'],
+        )
+        self.assertIn(
+            'Here are your projects:',
+            [el.text for el in self.driver.find_elements_by_tag_name('p')],
+        )
+
+        # Fetch project creation page
+        await self.s_get('/project/new')
+
+        # Create a project
+        elem = self.driver.find_element_by_id('project-name')
+        elem.send_keys('test project')
+        await self.s_click_button('Create')
+        self.assertEqual(self.s_path, '/project/1')
+
+        # Log out
+        await self.s_get('/logout')
+        self.assertEqual(self.s_path, '/')
+
+        # Hit error page
+        await self.s_get('/api/project/1/highlights/')
+        self.assertNotEqual(
+            self.driver.find_element_by_tag_name('body').text.find(
+                '"Not logged in"',
+            ),
+            -1,
+        )
+
+        # Login
+        await self.s_get('/login?' + urlencode(dict(next='/project/1')))
+        elem = self.driver.find_element_by_id('log-in-login')
+        elem.send_keys('Tester')
+        elem = self.driver.find_element_by_id('log-in-password')
+        elem.send_keys('hacktoo')
+        await self.s_click_button('Log in')
+        self.assertEqual(self.s_path, '/project/1')
+
+        # Check redirect to account
+        await self.s_get('/.well-known/change-password')
+        self.assertEqual(self.s_path, '/account')
+
+
 if __name__ == '__main__':
     unittest.main()
