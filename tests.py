@@ -1720,6 +1720,10 @@ class SeleniumTest(MyHTTPTestCase):
         )
 
 
+@unittest.skipUnless(
+    os.environ.get('TAGUETTE_TEST_WEBDRIVER', ''),
+    "TAGUETTE_TEST_WEBDRIVER not set",
+)
 class TestSeleniumMultiuser(SeleniumTest):
     def get_app(self):
         with mock.patch.object(web.Application, '_set_password',
