@@ -1,7 +1,3 @@
-<!--
-Preview this with https://whedon.theoj.org/
--->
-
 ---
 title: 'Taguette: open-source qualitative data analysis'
 tags:
