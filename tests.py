@@ -1694,7 +1694,13 @@ class SeleniumTest(MyHTTPTestCase):
 
         from selenium import webdriver
 
-        self.driver = webdriver.Firefox()
+        driver_name = os.environ['TAGUETTE_TEST_WEBDRIVER'].lower()
+        if driver_name == 'chromium':
+            self.driver = webdriver.Chrome()
+        elif driver_name == 'firefox':
+            self.driver = webdriver.Firefox()
+        else:
+            raise EnvironmentError
 
     def tearDown(self):
         super(SeleniumTest, self).tearDown()
