@@ -1688,5 +1688,37 @@ class TestSingleuser(MyHTTPTestCase):
         self.assertIn(b"last project", body)
 
 
+class SeleniumTest(MyHTTPTestCase):
+    def setUp(self):
+        super(SeleniumTest, self).setUp()
+
+        from selenium import webdriver
+
+        self.driver = webdriver.Firefox()
+
+    def tearDown(self):
+        super(SeleniumTest, self).tearDown()
+
+        self.driver.quit()
+
+    @property
+    def s_path(self):
+        m = re.match('^http://127.0.0.1:[0-9]+(.+)$', self.driver.current_url)
+        return m.group(1)
+
+    def s_get(self, url):
+        url = self.get_url(url)
+        return asyncio.get_event_loop().run_in_executor(
+            None,
+            lambda: self.driver.get(url),
+        )
+
+    def s_click(self, element):
+        return asyncio.get_event_loop().run_in_executor(
+            None,
+            lambda: element.click(),
+        )
+
+
 if __name__ == '__main__':
     unittest.main()
