@@ -1,5 +1,6 @@
 import aiohttp
 import asyncio
+import concurrent.futures
 from datetime import datetime
 import functools
 import itertools
@@ -1686,6 +1687,494 @@ class TestSingleuser(MyHTTPTestCase):
         self.assertIn(b"a test", body)
         self.assertNotIn(b"private P", body)
         self.assertIn(b"last project", body)
+
+
+class SeleniumTest(MyHTTPTestCase):
+    def setUp(self):
+        super(SeleniumTest, self).setUp()
+
+        from selenium import webdriver
+
+        self.driver = webdriver.Firefox()
+        self.driver_pool = concurrent.futures.ThreadPoolExecutor(1)
+
+    def tearDown(self):
+        super(SeleniumTest, self).tearDown()
+
+        self.driver.quit()
+
+    @staticmethod
+    def extract_path(url):
+        m = re.match('^http://127.0.0.1:[0-9]+(.+)$', url)
+        return m.group(1)
+
+    @property
+    def s_path(self):
+        return self.extract_path(self.driver.current_url)
+
+    def s_get(self, url):
+        url = self.get_url(url)
+        return asyncio.get_event_loop().run_in_executor(
+            self.driver_pool,
+            lambda: self.driver.get(url),
+        )
+
+    def s_click(self, element):
+        return asyncio.get_event_loop().run_in_executor(
+            self.driver_pool,
+            lambda: element.click(),
+        )
+
+    async def s_click_button(self, text, tag='button'):
+        buttons = self.driver.find_elements_by_tag_name(tag)
+        correct_button, = [
+            button for button in buttons
+            if button.text == text
+        ]
+        await self.s_click(correct_button)
+
+    async def s_perform_action(self, action):
+        return asyncio.get_event_loop().run_in_executor(
+            self.driver_pool,
+            lambda: action.perform(),
+        )
+
+
+@unittest.skipUnless(
+    os.environ.get('TAGUETTE_TEST_WEBDRIVER', ''),
+    "TAGUETTE_TEST_WEBDRIVER not set",
+)
+class TestSeleniumMultiuser(SeleniumTest):
+    def get_app(self):
+        with mock.patch.object(web.Application, '_set_password',
+                               new=set_dumb_password):
+            self.application = web.make_app(dict(
+                main.DEFAULT_CONFIG,
+                NAME="Test Taguette instance", PORT=7465,
+                DATABASE=DATABASE_URI,
+                REDIS_SERVER=REDIS,
+                TOS_FILE=None,
+                EMAIL='test@example.com',
+                MAIL_SERVER={'host': 'localhost', 'port': 25},
+                COOKIES_PROMPT=True,
+                MULTIUSER=True,
+                SECRET_KEY='2PbQ/5Rs005G/nTuWfibaZTUAo3Isng3QuRirmBK',
+            ))
+            return self.application
+
+    @gen_test(timeout=120)
+    async def test_login(self):
+        # Fetch index, should have welcome message and register link
+        await self.s_get('/')
+        self.assertEqual(self.driver.title, 'Welcome | Taguette')
+        self.assertEqual(
+            [el.text for el in self.driver.find_elements_by_tag_name('h1')],
+            ['Welcome'],
+        )
+        self.assertIn(
+            'Register now',
+            [el.text for el in self.driver.find_elements_by_tag_name('a')],
+        )
+
+        # Only admin so far
+        db = self.application.DBSession()
+        self.assertEqual([user.login
+                          for user in db.query(database.User).all()],
+                         ['admin'])
+
+        # Fetch registration page, should hit cookies prompt
+        await self.s_get('/register')
+        self.assertEqual(self.s_path, '/cookies?next=%2Fregister')
+
+        # Accept cookies
+        await self.s_click_button('Accept cookies')
+        self.assertEqual(self.s_path, '/register')
+
+        # Register
+        elem = self.driver.find_element_by_id('register-login')
+        elem.send_keys('Tester')
+        elem = self.driver.find_element_by_id('register-password1')
+        elem.send_keys('hacktoo')
+        elem = self.driver.find_element_by_id('register-password2')
+        elem.send_keys('hacktoo')
+        await self.s_click_button('Register')
+
+        # User exists in database
+        db = self.application.DBSession()
+        self.assertEqual([user.login
+                          for user in db.query(database.User).all()],
+                         ['admin', 'tester'])
+
+        # Fetch index, should have project list
+        await self.s_get('/')
+        self.assertEqual(
+            [el.text for el in self.driver.find_elements_by_tag_name('h1')],
+            ['Welcome tester'],
+        )
+        self.assertIn(
+            'Here are your projects:',
+            [el.text for el in self.driver.find_elements_by_tag_name('p')],
+        )
+
+        # Fetch project creation page
+        await self.s_get('/project/new')
+
+        # Create a project
+        elem = self.driver.find_element_by_id('project-name')
+        elem.send_keys('test project')
+        await self.s_click_button('Create')
+        self.assertEqual(self.s_path, '/project/1')
+
+        # Log out
+        await self.s_get('/logout')
+        self.assertEqual(self.s_path, '/')
+
+        # Hit error page
+        await self.s_get('/api/project/1/highlights/')
+        self.assertNotEqual(
+            self.driver.find_element_by_tag_name('body').text.find(
+                '"Not logged in"',
+            ),
+            -1,
+        )
+
+        # Login
+        await self.s_get('/login?' + urlencode(dict(next='/project/1')))
+        elem = self.driver.find_element_by_id('log-in-login')
+        elem.send_keys('Tester')
+        elem = self.driver.find_element_by_id('log-in-password')
+        elem.send_keys('hacktoo')
+        await self.s_click_button('Log in')
+        self.assertEqual(self.s_path, '/project/1')
+
+        # Check redirect to account
+        await self.s_get('/.well-known/change-password')
+        self.assertEqual(self.s_path, '/account')
+
+    @gen_test(timeout=120)
+    async def test_projects(self):
+        # project 1
+        # ---------
+        # create
+        # (tag 1 'interesting')
+        # tag 2 'people'
+        # tag 3 'interesting.places'
+        # doc 1
+        # change project metadata
+        # doc 2
+        # hl 1 doc=1 tags=[3]
+        # hl 2 doc=1 tags=[1, 2]
+        # hl 3 doc=2 tags=[2]
+        # highlights 'people*': [2, 3]
+        # highlights 'interesting.places*': [1]
+        # highlights 'interesting*': [1, 2]
+        # highlights: [1, 2, 3]
+        # export doc 1
+        # merge tag 2 -> 1
+        # highlights: [1, 2, 3]
+
+        from selenium.webdriver import ActionChains
+        from selenium.webdriver.common.keys import Keys
+        from selenium.webdriver.support.select import Select
+
+        # Accept cookies
+        await self.s_get('/cookies')
+        await self.s_click_button('Accept cookies')
+        self.assertEqual(self.s_path, '/')
+
+        # Log in
+        await self.s_get('/login')
+        elem = self.driver.find_element_by_id('log-in-login')
+        elem.send_keys('admin')
+        elem = self.driver.find_element_by_id('log-in-password')
+        elem.send_keys('hackme')
+        await self.s_click_button('Log in')
+        self.assertEqual(self.s_path, '/')
+
+        # Create project 1
+        await self.s_get('/project/new')
+        elem = self.driver.find_element_by_id('project-name')
+        elem.send_keys('one')
+        elem = self.driver.find_element_by_id('project-description')
+        elem.send_keys("Remi's project")
+        await self.s_click_button('Create')
+        self.assertEqual(self.s_path, '/project/1')
+
+        # Check project page
+        expected = (
+            '  var user_login = "admin";\n'
+            '  var project_id = 1;\n'
+            '  var last_event = -1;\n'
+            '  var documents = {};\n'
+            '  var highlights = {};\n'
+            '  var tags = %s;\n'
+            '  var members = {"admin": {"privileges": "ADMIN"}};\n'
+            '' % json.dumps(
+                {
+                    "1": {
+                        "count": 0, "id": 1, "path": "interesting",
+                        "description": "Further review required",
+                    },
+                },
+                sort_keys=True,
+            )
+        )
+        self.assertTrue(any(
+            expected.strip() == script.get_property('textContent').strip()
+            for script in self.driver.find_elements_by_tag_name('script')
+        ))
+
+        # Create tags in project 1
+        await self.s_click(self.driver.find_element_by_id('tags-tab'))
+        await self.s_click_button('Create a tag', tag='a')
+        elem = self.driver.find_element_by_id('tag-add-path')
+        elem.send_keys('people')
+        elem = self.driver.find_element_by_id('tag-add-description')
+        elem.send_keys('People of interest')
+        await self.s_click_button('Save & Close')
+
+        await self.s_click_button('Create a tag', tag='a')
+        elem = self.driver.find_element_by_id('tag-add-path')
+        elem.send_keys('interesting.places')
+        await self.s_click_button('Save & Close')
+
+        tag_links = (
+            self.driver.find_element_by_id('tags-list')
+            .find_elements_by_class_name('tag-name')
+        )
+        self.assertEqual(
+            [link.text for link in tag_links],
+            ['interesting', 'interesting.places', 'people'],
+        )
+
+        # Create document 1 in project 1
+        await self.s_click(self.driver.find_element_by_id('documents-tab'))
+        await self.s_click_button('Add a document', tag='a')
+        elem = self.driver.find_element_by_id('document-add-name')
+        elem.send_keys('otherdoc')
+        elem = self.driver.find_element_by_id('document-add-file')
+        with tempfile.NamedTemporaryFile('wb', suffix='.html') as tmp:
+            tmp.write(b'different content')
+            tmp.flush()
+            elem.send_keys(tmp.name)
+            await self.s_click_button('Import')
+        db = self.application.DBSession()
+        doc = db.query(database.Document).get(1)
+        self.assertEqual(doc.name, 'otherdoc')
+        self.assertEqual(doc.description, '')
+        self.assertTrue(doc.filename, os.path.basename(tmp.name))
+
+        # Change project 2 metadata
+        self.assertEqual(
+            self.driver.find_element_by_class_name('project-name').text,
+            'one',
+        )
+        await self.s_click(self.driver.find_element_by_id('project-tab'))
+        elem = self.driver.find_element_by_id('project-name')
+        await self.s_perform_action(
+            ActionChains(self.driver)
+            .click(elem)
+            .key_down(Keys.CONTROL).send_keys('a').key_up(Keys.CONTROL)
+            .send_keys('new project')
+        )
+        elem = self.driver.find_element_by_id('project-description')
+        elem.click()
+        await asyncio.sleep(0.5)
+        await self.s_perform_action(
+            ActionChains(self.driver)
+            .key_down(Keys.CONTROL).send_keys('a').key_up(Keys.CONTROL)
+        )
+        await asyncio.sleep(0.5)
+        elem.send_keys('Meaningful')
+        await self.s_click(self.driver.find_element_by_id('document-contents'))
+        await asyncio.sleep(1)  # Wait for XHR
+        self.assertEqual(
+            self.driver.find_element_by_class_name('project-name').text,
+            'new project',
+        )
+        db = self.application.DBSession()
+        proj = db.query(database.Project).get(1)
+        self.assertEqual(proj.name, 'new project')
+        self.assertEqual(proj.description, 'Meaningful')
+
+        # Create document 2 in project 1
+        await self.s_click(self.driver.find_element_by_id('documents-tab'))
+        await self.s_click_button('Add a document', tag='a')
+        elem = self.driver.find_element_by_id('document-add-name')
+        elem.send_keys('third')
+        elem = self.driver.find_element_by_id('document-add-description')
+        elem.send_keys('Last one')
+        elem = self.driver.find_element_by_id('document-add-file')
+        with tempfile.NamedTemporaryFile('wb', suffix='.html') as tmp:
+            tmp.write(b'<strong>Opinions</strong> and <em>facts</em>!')
+            tmp.flush()
+            elem.send_keys(tmp.name)
+            await self.s_click_button('Import')
+        db = self.application.DBSession()
+        doc = db.query(database.Document).get(1)
+        self.assertEqual(doc.name, 'otherdoc')
+        self.assertEqual(doc.description, '')
+        self.assertTrue(doc.filename, os.path.basename(tmp.name))
+
+        # Create highlight 1 in document 1
+        await self.s_click(
+            self.driver.find_element_by_id('document-link-1')
+            .find_element_by_class_name('document-link-a')
+        )
+        self.driver.execute_script('restoreSelection([0, 4]);')
+        await self.s_click_button('new highlight', tag='a')
+        await self.s_click(
+            self.driver.find_element_by_id('highlight-add-tags-3'),
+        )
+        await self.s_click_button('Save & Close')
+
+        # Create highlight 2 in document 1
+        self.driver.execute_script('restoreSelection([13, 17]);')
+        await self.s_click_button('new highlight', tag='a')
+        await self.s_click(
+            self.driver.find_element_by_id('highlight-add-tags-1'),
+        )
+        await self.s_click(
+            self.driver.find_element_by_id('highlight-add-tags-2'),
+        )
+        await self.s_click_button('Save & Close')
+
+        # Create highlight 3 in document 2
+        await self.s_click(
+            self.driver.find_element_by_id('document-link-2')
+            .find_element_by_class_name('document-link-a')
+        )
+        self.driver.execute_script('restoreSelection([0, 7]);')
+        await self.s_click_button('new highlight', tag='a')
+        await self.s_click(
+            self.driver.find_element_by_id('highlight-add-tags-2'),
+        )
+        await self.s_click_button('Save & Close')
+
+        # List highlights in project 1 under 'people'
+        await self.s_click(self.driver.find_element_by_id('tags-tab'))
+        await self.s_click(self.driver.find_element_by_id('tag-link-2'))
+        self.assertEqual(self.s_path, '/project/1/highlights/people')
+        self.assertEqual(
+            self.driver.find_element_by_id('document-contents').text,
+            'tent otherdoc interesting people\nOpinion third people',
+        )
+
+        # List highlights in project 1 under 'interesting.places'
+        await self.s_get('/project/1/highlights/interesting.places')
+        await asyncio.sleep(1)  # Wait for XHR
+        self.assertEqual(
+            self.driver.find_element_by_id('document-contents').text,
+            'diff otherdoc interesting.places',
+        )
+
+        # List highlights in project 1 under 'interesting'
+        await self.s_get('/project/1/highlights/interesting')
+        await asyncio.sleep(1)  # Wait for XHR
+        self.assertEqual(
+            self.driver.find_element_by_id('document-contents').text,
+            ('diff otherdoc interesting.places\n'
+             'tent otherdoc interesting people'),
+        )
+
+        # List all highlights in project 1
+        await self.s_click(self.driver.find_element_by_id('tags-tab'))
+        await self.s_click_button('See all highlights', tag='a')
+        await asyncio.sleep(1)  # Wait for XHR
+        self.assertEqual(self.s_path, '/project/1/highlights/')
+        self.assertEqual(
+            self.driver.find_element_by_id('document-contents').text,
+            ('diff otherdoc interesting.places\n'
+             'tent otherdoc interesting people\n'
+             'Opinion third people'),
+        )
+
+        # Check export options for document 1
+        await self.s_get('/project/1/document/1')
+        await asyncio.sleep(1)  # Wait for XHR
+        await self.s_click_button('Export this view')
+        links = [
+            (link.text, self.extract_path(link.get_attribute('href')))
+            for link in (
+                self.driver.find_element_by_id('export-button')
+                .find_elements_by_tag_name('a')
+            )
+            if link.text
+        ]
+        self.assertEqual(links, [
+            ('HTML', '/project/1/export/document/1.html'),
+            ('DOCX', '/project/1/export/document/1.docx'),
+            ('PDF', '/project/1/export/document/1.pdf'),
+        ])
+
+        # Check export options for highlights in project 1 under 'interesting'
+        await self.s_get('/project/1/highlights/interesting')
+        await asyncio.sleep(1)  # Wait for XHR
+        await self.s_click_button('Export this view')
+        links = [
+            (link.text, self.extract_path(link.get_attribute('href')))
+            for link in (
+                self.driver.find_element_by_id('export-button')
+                .find_elements_by_tag_name('a')
+            )
+            if link.text
+        ]
+        self.assertEqual(links, [
+            ('HTML', '/project/1/export/highlights/interesting.html'),
+            ('DOCX', '/project/1/export/highlights/interesting.docx'),
+            ('PDF', '/project/1/export/highlights/interesting.pdf'),
+            ('Excel', '/project/1/export/highlights/interesting.xlsx'),
+            ('CSV', '/project/1/export/highlights/interesting.csv'),
+        ])
+
+        # Check codebook export options of project 1
+        await self.s_click(self.driver.find_element_by_id('project-tab'))
+        await self.s_click_button('Export codebook')
+        links = [
+            (link.text, self.extract_path(link.get_attribute('href')))
+            for link in (
+                self.driver.find_element_by_id('dropdown-codebook')
+                .find_element_by_xpath('./..')
+                .find_elements_by_tag_name('a')
+            )
+            if link.text
+        ]
+        self.assertEqual(links, [
+            ('QDC (XML)', '/project/1/export/codebook.qdc'),
+            ('Excel', '/project/1/export/codebook.xlsx'),
+            ('CSV', '/project/1/export/codebook.csv'),
+            ('HTML', '/project/1/export/codebook.html'),
+            ('DOCX', '/project/1/export/codebook.docx'),
+            ('PDF', '/project/1/export/codebook.pdf'),
+        ])
+
+        # Merge tag 2 into 1
+        await self.s_click(self.driver.find_element_by_id('tags-tab'))
+        edit_button, = [
+            b
+            for b in (
+                self.driver.find_element_by_id('tag-link-2')
+                .find_element_by_xpath('./../..')
+                .find_elements_by_tag_name('a')
+            )
+            if b.text == 'Edit'
+        ]
+        await self.s_click(edit_button)
+        await self.s_click_button('Merge...')
+        select = Select(self.driver.find_element_by_id('tag-merge-dest'))
+        select.select_by_value('1')
+        await self.s_click_button('Merge tags')
+
+        # List all highlights in project 1
+        await self.s_click_button('See all highlights', tag='a')
+        await asyncio.sleep(1)  # Wait for XHR
+        self.assertEqual(self.s_path, '/project/1/highlights/')
+        self.assertEqual(
+            self.driver.find_element_by_id('document-contents').text,
+            ('diff otherdoc interesting.places\n'
+             'tent otherdoc interesting\n'
+             'Opinion third interesting'),
+        )
 
 
 if __name__ == '__main__':

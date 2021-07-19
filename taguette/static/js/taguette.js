@@ -1499,6 +1499,7 @@ function loadTag(tag_path, page) {
       elem.className = 'highlight-entry';
       elem.setAttribute('id', 'highlight-entry-' + hl.id);
       elem.innerHTML = result.highlights[i].content;
+      elem.appendChild(document.createTextNode(' '));
 
       var doclink = document.createElement('a');
       doclink.className = 'badge badge-light';
