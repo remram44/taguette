@@ -261,7 +261,7 @@ class MyHTTPTestCase(AsyncHTTPTestCase):
     xsrf = None
 
     def setUp(self):
-        web.Application.check_messages = lambda *a: None
+        web.Application.check_messages = lambda s: s.messages_event.set()
         validate.filename.windows = True  # escape device names
         super(MyHTTPTestCase, self).setUp()
         # Tornado's http client doesn't support cookies
