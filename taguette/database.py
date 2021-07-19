@@ -507,7 +507,7 @@ class Highlight(Base):
             self.__class__.__name__,
             self.id,
             self.document_id,
-            ' '.join(sorted(t.id for t in self.tags)),
+            ' '.join(sorted(str(t.id) for t in self.tags)),
         )
 
 
