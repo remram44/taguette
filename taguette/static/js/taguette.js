@@ -1412,6 +1412,7 @@ var export_button = document.getElementById('export-button');
 
 function loadDocument(document_id) {
   if(document_id === null) {
+    document_contents.style.direction = 'ltr';
     document_contents.innerHTML = '<p style="font-style: oblique; text-align: center;">' + gettext("Load a document on the left") + '</p>';
     return;
   }
@@ -1430,6 +1431,11 @@ function loadDocument(document_id) {
       elem.innerHTML = chunk.contents;
       document_contents.appendChild(elem);
       chunk_offsets.push(chunk.offset);
+    }
+    if(result.text_direction === 'RIGHT_TO_LEFT') {
+      document_contents.style.direction = 'rtl';
+    } else {
+      document_contents.style.direction = 'ltr';
     }
     current_document = document_id;
     var document_links = document.getElementsByClassName('document-link-current');

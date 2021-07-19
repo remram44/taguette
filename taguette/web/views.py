@@ -503,7 +503,8 @@ class Project(BaseHandler):
         documents_json = jinja2.Markup(json.dumps(
             {
                 str(doc.id): {'id': doc.id, 'name': doc.name,
-                              'description': doc.description}
+                              'description': doc.description,
+                              'text_direction': doc.text_direction.name}
                 for doc in project.documents
             },
             sort_keys=True,

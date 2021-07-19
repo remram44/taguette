@@ -777,6 +777,7 @@ class TestMultiuser(MyHTTPTestCase):
                     {'id': 3, 'start_offset': 13, 'end_offset': 17,
                      'tags': [2, 3]},
                 ],
+                'text_direction': 'LEFT_TO_RIGHT',
             })
 
         # Export document 2 to HTML

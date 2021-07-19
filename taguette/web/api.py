@@ -220,6 +220,7 @@ class DocumentContents(BaseHandler):
             'contents': [
                 {'offset': 0, 'contents': document.contents},
             ],
+            'text_direction': document.text_direction.name,
             'highlights': [
                 {'id': hl.id,
                  'start_offset': hl.start_offset,

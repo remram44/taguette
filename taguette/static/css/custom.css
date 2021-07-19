@@ -242,6 +242,7 @@ li.document-link-current a.document-link-a {
   border: 2px solid #dee2e6;
   padding: 2.2em 0.3em 1.2em 0.3em;
   position: relative;
+  text-align: initial; /* Reset alignment so RTL works */
 }
 
 li.tag-current {
