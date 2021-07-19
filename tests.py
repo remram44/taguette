@@ -721,8 +721,9 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(await response.json(), {
                 'highlights': [
                     {'id': 3, 'document_id': 2, 'tags': [2, 3],
-                     'content': "tent"},
+                     'text_direction': 'LEFT_TO_RIGHT', 'content': "tent"},
                     {'id': 4, 'document_id': 3, 'tags': [3],
+                     'text_direction': 'RIGHT_TO_LEFT',
                      'content': "<strong>Opinion</strong>"},
                 ],
                 'pages': 1,
@@ -736,7 +737,7 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(await response.json(), {
                 'highlights': [
                     {'id': 2, 'document_id': 2, 'tags': [4],
-                     'content': "diff"},
+                     'text_direction': 'LEFT_TO_RIGHT', 'content': "diff"},
                 ],
                 'pages': 1,
             })
@@ -749,9 +750,9 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(await response.json(), {
                 'highlights': [
                     {'id': 2, 'document_id': 2, 'tags': [4],
-                     'content': "diff"},
+                     'text_direction': 'LEFT_TO_RIGHT', 'content': "diff"},
                     {'id': 3, 'document_id': 2, 'tags': [2, 3],
-                     'content': "tent"},
+                     'text_direction': 'LEFT_TO_RIGHT', 'content': "tent"},
                 ],
                 'pages': 1,
             })
@@ -762,10 +763,11 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(await response.json(), {
                 'highlights': [
                     {'id': 2, 'document_id': 2, 'tags': [4],
-                     'content': "diff"},
+                     'text_direction': 'LEFT_TO_RIGHT', 'content': "diff"},
                     {'id': 3, 'document_id': 2, 'tags': [2, 3],
-                     'content': "tent"},
+                     'text_direction': 'LEFT_TO_RIGHT', 'content': "tent"},
                     {'id': 4, 'document_id': 3, 'tags': [3],
+                     'text_direction': 'RIGHT_TO_LEFT',
                      'content': "<strong>Opinion</strong>"},
                 ],
                 'pages': 1,
@@ -978,10 +980,11 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(await response.json(), {
                 'highlights': [
                     {'id': 2, 'document_id': 2, 'tags': [4],
-                     'content': "diff"},
+                     'text_direction': 'LEFT_TO_RIGHT', 'content': "diff"},
                     {'id': 3, 'document_id': 2, 'tags': [2],
-                     'content': "tent"},
+                     'text_direction': 'LEFT_TO_RIGHT', 'content': "tent"},
                     {'id': 4, 'document_id': 3, 'tags': [2],
+                     'text_direction': 'RIGHT_TO_LEFT',
                      'content': "<strong>Opinion</strong>"},
                 ],
                 'pages': 1,
@@ -2075,7 +2078,7 @@ class TestSeleniumMultiuser(SeleniumTest):
         self.assertEqual(self.s_path, '/project/1/highlights/people')
         self.assertEqual(
             self.driver.find_element_by_id('document-contents').text,
-            'tent otherdoc interesting people\nOpinion third people',
+            'tent\notherdoc interesting people\nOpinion\nthird people',
         )
 
         # List highlights in project 1 under 'interesting.places'
@@ -2083,7 +2086,7 @@ class TestSeleniumMultiuser(SeleniumTest):
         await asyncio.sleep(1)  # Wait for XHR
         self.assertEqual(
             self.driver.find_element_by_id('document-contents').text,
-            'diff otherdoc interesting.places',
+            'diff\notherdoc interesting.places',
         )
 
         # List highlights in project 1 under 'interesting'
@@ -2091,8 +2094,8 @@ class TestSeleniumMultiuser(SeleniumTest):
         await asyncio.sleep(1)  # Wait for XHR
         self.assertEqual(
             self.driver.find_element_by_id('document-contents').text,
-            ('diff otherdoc interesting.places\n'
-             'tent otherdoc interesting people'),
+            ('diff\notherdoc interesting.places\n'
+             'tent\notherdoc interesting people'),
         )
 
         # List all highlights in project 1
@@ -2102,9 +2105,9 @@ class TestSeleniumMultiuser(SeleniumTest):
         self.assertEqual(self.s_path, '/project/1/highlights/')
         self.assertEqual(
             self.driver.find_element_by_id('document-contents').text,
-            ('diff otherdoc interesting.places\n'
-             'tent otherdoc interesting people\n'
-             'Opinion third people'),
+            ('diff\notherdoc interesting.places\n'
+             'tent\notherdoc interesting people\n'
+             'Opinion\nthird people'),
         )
 
         # Check export options for document 1
@@ -2189,9 +2192,9 @@ class TestSeleniumMultiuser(SeleniumTest):
         self.assertEqual(self.s_path, '/project/1/highlights/')
         self.assertEqual(
             self.driver.find_element_by_id('document-contents').text,
-            ('diff otherdoc interesting.places\n'
-             'tent otherdoc interesting\n'
-             'Opinion third interesting'),
+            ('diff\notherdoc interesting.places\n'
+             'tent\notherdoc interesting\n'
+             'Opinion\nthird interesting'),
         )
 
 

@@ -1502,6 +1502,7 @@ function loadTag(tag_path, page) {
   )
   .then(function(result) {
     console.log("Loaded highlights for tag", tag_path || "''");
+    document_contents.style.direction = 'ltr';
     current_tag = tag_path;
     current_document = null;
     var document_links = document.getElementsByClassName('document-link-current');
@@ -1513,10 +1514,17 @@ function loadTag(tag_path, page) {
     highlights = {};
     for(var i = 0; i < result.highlights.length; ++i) {
       var hl = result.highlights[i];
+      var content = document.createElement('div');
+      if(hl.text_direction === 'RIGHT_TO_LEFT') {
+        content.style.direction = 'rtl';
+      } else {
+        content.style.direction = 'ltr';
+      }
+      content.innerHTML = result.highlights[i].content;
       var elem = document.createElement('div');
       elem.className = 'highlight-entry';
       elem.setAttribute('id', 'highlight-entry-' + hl.id);
-      elem.innerHTML = result.highlights[i].content;
+      elem.appendChild(content);
       elem.appendChild(document.createTextNode(' '));
 
       var doclink = document.createElement('a');

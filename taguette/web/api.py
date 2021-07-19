@@ -570,11 +570,13 @@ class Highlights(BaseHandler):
         if path:
             tag = aliased(database.Tag)
             hltag = aliased(database.HighlightTag)
+            document = aliased(database.Document)
             query = (
-                self.db.query(database.Highlight)
+                self.db.query(database.Highlight, document.text_direction)
                 .options(joinedload(database.Highlight.tags))
                 .join(hltag, hltag.highlight_id == database.Highlight.id)
                 .join(tag, hltag.tag_id == tag.id)
+                .join(document, document.id == database.Highlight.document_id)
                 .filter(tag.path.startswith(path))
                 .filter(tag.project == project)
                 .order_by(database.Highlight.document_id,
@@ -585,7 +587,7 @@ class Highlights(BaseHandler):
             # highlights that have no tag at all
             document = aliased(database.Document)
             query = (
-                self.db.query(database.Highlight)
+                self.db.query(database.Highlight, document.text_direction)
                 .options(joinedload(database.Highlight.tags))
                 .join(document, document.id == database.Highlight.document_id)
                 .filter(document.project == project)
@@ -608,8 +610,9 @@ class Highlights(BaseHandler):
                     'document_id': hl.document_id,
                     'content': hl.snippet,
                     'tags': [t.id for t in hl.tags],
+                    'text_direction': direction.name,
                 }
-                for hl in highlights
+                for hl, direction in highlights
             ],
             'pages': math.ceil(total / self.PAGE_SIZE),
         })
