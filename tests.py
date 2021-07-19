@@ -574,13 +574,15 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(
             await poll_proj1,
             {'type': 'document_add', 'id': 3, 'document_id': 1,
+             'text_direction': 'LEFT_TO_RIGHT',
              'document_name': name, 'description': ''})
         poll_proj1 = await self.poll_event(1, 3)
 
         # Create document 2 in project 2
         async with self.apost(
             '/api/project/2/document/new',
-            data=dict(name='otherdoc', description='Other one'),
+            data=dict(name='otherdoc', description='Other one',
+                      direction='LEFT_TO_RIGHT'),
             files=dict(
                 file=('../otherdoc.html', 'text/plain', b'different content'),
             ),
@@ -595,6 +597,7 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(
             await poll_proj2,
             {'type': 'document_add', 'id': 4, 'document_id': 2,
+             'text_direction': 'LEFT_TO_RIGHT',
              'document_name': 'otherdoc', 'description': 'Other one'})
         poll_proj2 = await self.poll_event(2, 4)
 
@@ -640,6 +643,7 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(
             await poll_proj2,
             {'type': 'document_add', 'id': 7, 'document_id': 3,
+             'text_direction': 'RIGHT_TO_LEFT',
              'document_name': 'third', 'description': 'Last one'})
         poll_proj2 = await self.poll_event(2, 7)
 
@@ -1332,12 +1336,15 @@ class TestMultiuser(MyHTTPTestCase):
                 # commands 1-13 exported as 27-39
                 (27, 'db1user', 3, 7,
                  {'type': 'document_add', 'description': '',
+                  'text_direction': 'LEFT_TO_RIGHT',
                   'document_name': 'db2doc11.txt'}),
                 (28, 'db1user', 3, -3,
                  {'type': 'document_add', 'description': '',
+                  'text_direction': 'LEFT_TO_RIGHT',
                   'document_name': 'db2doc1100.txt'}),
                 (29, 'db1user', 3, 8,
                  {'type': 'document_add', 'description': '',
+                  'text_direction': 'RIGHT_TO_LEFT',
                   'document_name': 'db2doc12.txt'}),
                 (30, 'db1user', 3, -3, {'type': 'document_delete'}),
                 (31, 'db1user', 3, None,
@@ -1484,12 +1491,15 @@ class TestMultiuser(MyHTTPTestCase):
                 # commands 14-26 exported as 1-13
                 (1, 'admin', 1, 1,
                  {'type': 'document_add', 'description': '',
+                  'text_direction': 'LEFT_TO_RIGHT',
                   'document_name': 'db1doc21.txt'}),
                 (2, 'admin', 1, -6,
                  {'type': 'document_add', 'description': '',
+                  'text_direction': 'LEFT_TO_RIGHT',
                   'document_name': 'db1doc2100.txt'}),
                 (3, 'admin', 1, 2,
                  {'type': 'document_add', 'description': '',
+                  'text_direction': 'RIGHT_TO_LEFT',
                   'document_name': 'db1doc22.txt'}),
                 (4, 'admin', 1, -6, {'type': 'document_delete'}),
                 (5, 'admin', 1, None,
