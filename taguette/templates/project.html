@@ -184,7 +184,19 @@
               <input type="file" class="form-control-file" id="document-add-file" name="document-add-file" required />
             </div>
           </div>
-          <textarea class="form-control mb-3" id="document-add-description" name="document-add-description" placeholder="{# TRANSLATORS: Document add form placeholder #}{% trans %}Description{% endtrans %}"></textarea>
+          <div class="row">
+            <div class="col-12 form-group">
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="document-add-direction" id="document-add-direction-ltr" value="LEFT_TO_RIGHT" checked />
+                <label class="form-check-label" for="document-add-direction-ltr">Left to right</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="document-add-direction" id="document-add-direction-rtl" value="RIGHT_TO_LEFT" />
+                <label class="form-check-label" for="document-add-direction-rtl">Right to left</label>
+              </div>
+            </div>
+          </div>
+          <textarea class="form-control" id="document-add-description" name="document-add-description" placeholder="{# TRANSLATORS: Document add form placeholder #}{% trans %}Description{% endtrans %}"></textarea>
         </div>
       </div>
       <div class="modal-footer">
@@ -211,6 +223,18 @@
           <div class="row">
             <div class="col-md-6 form-group">
               <input type="text" class="form-control mb-3" id="document-change-name" name="document-change-name" placeholder="{# TRANSLATORS: Document change form placeholder #}{% trans %}Name{% endtrans %}" required />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 form-group">
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="document-change-direction" id="document-change-direction-ltr" value="LEFT_TO_RIGHT" checked />
+                <label class="form-check-label" for="document-change-direction-ltr">{% trans %}Left to right{% endtrans %}</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="document-change-direction" id="document-change-direction-rtl" value="RIGHT_TO_LEFT" />
+                <label class="form-check-label" for="document-change-direction-rtl">{% trans %}Right to left{% endtrans %}</label>
+              </div>
             </div>
           </div>
           <textarea class="form-control" id="document-change-description" name="document-change-description" placeholder="{# TRANSLATORS: Document change form placeholder #}{% trans %}Description{% endtrans %}"></textarea>

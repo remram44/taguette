@@ -117,6 +117,13 @@ class DocumentAdd(BaseHandler):
                 raise MissingArgumentError('file')
             content_type = file.content_type
             filename = validate.filename(file.filename)
+            direction = self.get_body_argument('text_direction',
+                                               'LEFT_TO_RIGHT')
+            try:
+                direction = database.TextDirection[direction]
+            except KeyError:
+                return await self.send_error_json(400,
+                                                  "Invalid text direction")
 
             try:
                 body = await convert.to_html_chunks(
@@ -131,6 +138,7 @@ class DocumentAdd(BaseHandler):
                     description=description,
                     filename=filename,
                     project=project,
+                    text_direction=direction,
                     contents=body,
                 )
                 self.db.add(doc)
@@ -167,6 +175,14 @@ class DocumentUpdate(BaseHandler):
                 if 'description' in obj:
                     validate.description(obj['description'])
                     document.description = obj['description']
+                if 'text_direction' in obj:
+                    direction = obj['text_direction']
+                    try:
+                        direction = database.TextDirection[direction]
+                    except KeyError:
+                        return self.send_error_json(400,
+                                                    "Invalid text direction")
+                    document.text_direction = direction
                 cmd = database.Command.document_add(
                     self.current_user,
                     document,

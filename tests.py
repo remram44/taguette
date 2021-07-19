@@ -582,7 +582,7 @@ class TestMultiuser(MyHTTPTestCase):
         async with self.apost(
             '/api/project/2/document/new',
             data=dict(name='otherdoc', description='Other one',
-                      direction='LEFT_TO_RIGHT'),
+                      text_direction='LEFT_TO_RIGHT'),
             files=dict(
                 file=('../otherdoc.html', 'text/plain', b'different content'),
             ),
@@ -631,7 +631,8 @@ class TestMultiuser(MyHTTPTestCase):
         # Create document 3 in project 2
         async with self.apost(
             '/api/project/2/document/new',
-            data=dict(name='third', description='Last one'),
+            data=dict(name='third', description='Last one',
+                      text_direction='RIGHT_TO_LEFT'),
             files=dict(file=(
                 'C:\\Users\\Vicky\\Documents\\study.html',
                 'text/html',
@@ -1974,6 +1975,8 @@ class TestSeleniumMultiuser(SeleniumTest):
         doc = db.query(database.Document).get(1)
         self.assertEqual(doc.name, 'otherdoc')
         self.assertEqual(doc.description, '')
+        self.assertEqual(doc.text_direction,
+                         database.TextDirection.LEFT_TO_RIGHT)
         self.assertTrue(doc.filename, os.path.basename(tmp.name))
 
         # Change project 2 metadata
@@ -2016,6 +2019,7 @@ class TestSeleniumMultiuser(SeleniumTest):
         elem.send_keys('third')
         elem = self.driver.find_element_by_id('document-add-description')
         elem.send_keys('Last one')
+        await self.s_click_button('Right to left', tag='label')
         elem = self.driver.find_element_by_id('document-add-file')
         with tempfile.NamedTemporaryFile('wb', suffix='.html') as tmp:
             tmp.write(b'<strong>Opinions</strong> and <em>facts</em>!')
@@ -2026,6 +2030,8 @@ class TestSeleniumMultiuser(SeleniumTest):
         doc = db.query(database.Document).get(2)
         self.assertEqual(doc.name, 'third')
         self.assertEqual(doc.description, 'Last one')
+        self.assertEqual(doc.text_direction,
+                         database.TextDirection.RIGHT_TO_LEFT)
         self.assertTrue(doc.filename, os.path.basename(tmp.name))
 
         # Create highlight 1 in document 1
