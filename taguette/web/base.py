@@ -1,4 +1,5 @@
 import asyncio
+import bleach
 import contextlib
 import functools
 import hashlib
@@ -174,7 +175,17 @@ class Application(tornado.web.Application):
             'https://msg.taguette.org/%s' % version,
             headers={'Accept': 'application/json', 'User-Agent': 'Taguette'})
         obj = json.loads(response.body.decode('utf-8'))
-        self.messages = obj['messages']
+        self.messages = [
+            {
+                'text': msg['text'],
+                'html': bleach.clean(
+                    msg['html'],
+                    tags=['a', 'br', 'strong', 'em'],
+                    attributes={'a': ['href', 'title']},
+                )
+            }
+            for msg in obj['messages']
+        ]
         for msg in self.messages:
             logger.warning("Taguette message: %s", msg['text'])
         self.messages_event.set()
