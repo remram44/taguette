@@ -2011,9 +2011,9 @@ class TestSeleniumMultiuser(SeleniumTest):
             elem.send_keys(tmp.name)
             await self.s_click_button('Import')
         db = self.application.DBSession()
-        doc = db.query(database.Document).get(1)
-        self.assertEqual(doc.name, 'otherdoc')
-        self.assertEqual(doc.description, '')
+        doc = db.query(database.Document).get(2)
+        self.assertEqual(doc.name, 'third')
+        self.assertEqual(doc.description, 'Last one')
         self.assertTrue(doc.filename, os.path.basename(tmp.name))
 
         # Create highlight 1 in document 1
