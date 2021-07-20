@@ -18,7 +18,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Install Poetry
-RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.4 && /root/.poetry/bin/poetry config virtualenvs.create false
+RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.7 && /root/.poetry/bin/poetry config virtualenvs.create false
 
 # Set up app
 RUN mkdir -p /usr/src/app
