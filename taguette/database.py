@@ -209,6 +209,11 @@ class ProjectMember(Base):
         )
 
 
+class TextDirection(enum.Enum):
+    LEFT_TO_RIGHT = 0
+    RIGHT_TO_LEFT = 1
+
+
 class Document(Base):
     __tablename__ = 'documents'
     __table_args__ = ({'sqlite_autoincrement': True},)
@@ -222,6 +227,7 @@ class Document(Base):
     project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
                         nullable=False, index=True)
     project = relationship('Project', back_populates='documents')
+    text_direction = Column(Enum(TextDirection), nullable=False)
     contents = deferred(Column(Text, nullable=False))
     highlights = relationship('Highlight', cascade='all,delete-orphan',
                               passive_deletes=True)
@@ -308,7 +314,7 @@ class Command(Base):
     @classmethod
     @command_fields(
         columns=['project_id', 'document_id'],
-        payload_fields=['document_name', 'description'],
+        payload_fields=['document_name', 'description', 'text_direction'],
     )
     def document_add(cls, user_login, document):
         return cls(
@@ -317,7 +323,8 @@ class Command(Base):
             document_id=document.id,
             payload={'type': 'document_add',  # keep in sync above
                      'document_name': document.name,
-                     'description': document.description},
+                     'description': document.description,
+                     'text_direction': document.text_direction.name},
         )
 
     @classmethod
@@ -803,6 +810,13 @@ def copy_project(
         condition=HighlightTag.tag_id.in_(mapping_tags.keys()),
     )
 
+    def validate_text_direction(direction):
+        try:
+            TextDirection[direction]
+        except KeyError:
+            raise ValueError("Invalid text direction")
+        return True
+
     # Copy commands
     def transform_command(cmd):
         payload = cmd['payload']
@@ -834,6 +848,7 @@ def copy_project(
             description=validate.description,
             project_name=validate.project_name,
             document_name=validate.document_name,
+            text_direction=validate_text_direction,
             highlight_id=lambda v: isinstance(v, int),
             start_offset=lambda v: isinstance(v, int) and v >= 0,
             end_offset=lambda v: isinstance(v, int) and v > 0,

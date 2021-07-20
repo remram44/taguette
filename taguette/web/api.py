@@ -117,6 +117,13 @@ class DocumentAdd(BaseHandler):
                 raise MissingArgumentError('file')
             content_type = file.content_type
             filename = validate.filename(file.filename)
+            direction = self.get_body_argument('text_direction',
+                                               'LEFT_TO_RIGHT')
+            try:
+                direction = database.TextDirection[direction]
+            except KeyError:
+                return await self.send_error_json(400,
+                                                  "Invalid text direction")
 
             try:
                 body = await convert.to_html_chunks(
@@ -131,6 +138,7 @@ class DocumentAdd(BaseHandler):
                     description=description,
                     filename=filename,
                     project=project,
+                    text_direction=direction,
                     contents=body,
                 )
                 self.db.add(doc)
@@ -167,6 +175,14 @@ class DocumentUpdate(BaseHandler):
                 if 'description' in obj:
                     validate.description(obj['description'])
                     document.description = obj['description']
+                if 'text_direction' in obj:
+                    direction = obj['text_direction']
+                    try:
+                        direction = database.TextDirection[direction]
+                    except KeyError:
+                        return self.send_error_json(400,
+                                                    "Invalid text direction")
+                    document.text_direction = direction
                 cmd = database.Command.document_add(
                     self.current_user,
                     document,
@@ -220,6 +236,7 @@ class DocumentContents(BaseHandler):
             'contents': [
                 {'offset': 0, 'contents': document.contents},
             ],
+            'text_direction': document.text_direction.name,
             'highlights': [
                 {'id': hl.id,
                  'start_offset': hl.start_offset,
@@ -553,11 +570,13 @@ class Highlights(BaseHandler):
         if path:
             tag = aliased(database.Tag)
             hltag = aliased(database.HighlightTag)
+            document = aliased(database.Document)
             query = (
-                self.db.query(database.Highlight)
+                self.db.query(database.Highlight, document.text_direction)
                 .options(joinedload(database.Highlight.tags))
                 .join(hltag, hltag.highlight_id == database.Highlight.id)
                 .join(tag, hltag.tag_id == tag.id)
+                .join(document, document.id == database.Highlight.document_id)
                 .filter(tag.path.startswith(path))
                 .filter(tag.project == project)
                 .order_by(database.Highlight.document_id,
@@ -568,7 +587,7 @@ class Highlights(BaseHandler):
             # highlights that have no tag at all
             document = aliased(database.Document)
             query = (
-                self.db.query(database.Highlight)
+                self.db.query(database.Highlight, document.text_direction)
                 .options(joinedload(database.Highlight.tags))
                 .join(document, document.id == database.Highlight.document_id)
                 .filter(document.project == project)
@@ -591,8 +610,9 @@ class Highlights(BaseHandler):
                     'document_id': hl.document_id,
                     'content': hl.snippet,
                     'tags': [t.id for t in hl.tags],
+                    'text_direction': direction.name,
                 }
-                for hl in highlights
+                for hl, direction in highlights
             ],
             'pages': math.ceil(total / self.PAGE_SIZE),
         })

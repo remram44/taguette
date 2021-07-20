@@ -578,6 +578,14 @@ updateDocumentsList();
 
 function addDocument(document) {
   documents['' + document.id] = document;
+  if(document.id === current_document) {
+    // Text direction is the only meaningful thing that can be mutated
+    if(document.text_direction === 'RIGHT_TO_LEFT') {
+      document_contents.style.direction = 'rtl';
+    } else {
+      document_contents.style.direction = 'ltr';
+    }
+  }
   updateDocumentsList();
 }
 
@@ -626,6 +634,8 @@ document.getElementById('document-add-form').addEventListener('submit', function
                    document.getElementById('document-add-description').value);
   form_data.append('file',
                    document.getElementById('document-add-file').files[0]);
+  form_data.append('text_direction',
+                   document.getElementById('document-add-form').elements['document-add-direction'].value);
   form_data.append('_xsrf', getCookie('_xsrf'));
 
   var xhr = new XMLHttpRequest();
@@ -671,6 +681,7 @@ function editDocument(doc_id) {
   document.getElementById('document-change-id').value = '' + doc_id;
   document.getElementById('document-change-name').value = '' + documents['' + doc_id].name;
   document.getElementById('document-change-description').value = '' + documents['' + doc_id].description;
+  document.getElementById('document-change-form').elements['document-change-direction'].value = documents['' + doc_id].text_direction;
   $(document_change_modal).modal();
 }
 
@@ -680,7 +691,8 @@ document.getElementById('document-change-form').addEventListener('submit', funct
 
   var update = {
     name: document.getElementById('document-change-name').value,
-    description: document.getElementById('document-change-description').value
+    description: document.getElementById('document-change-description').value,
+    text_direction: document.getElementById('document-change-form').elements['document-change-direction'].value
   };
   if(!update.name || update.name.length == 0) {
     alert(gettext("Document name cannot be empty"));
@@ -1412,6 +1424,7 @@ var export_button = document.getElementById('export-button');
 
 function loadDocument(document_id) {
   if(document_id === null) {
+    document_contents.style.direction = 'ltr';
     document_contents.innerHTML = '<p style="font-style: oblique; text-align: center;">' + gettext("Load a document on the left") + '</p>';
     return;
   }
@@ -1430,6 +1443,11 @@ function loadDocument(document_id) {
       elem.innerHTML = chunk.contents;
       document_contents.appendChild(elem);
       chunk_offsets.push(chunk.offset);
+    }
+    if(result.text_direction === 'RIGHT_TO_LEFT') {
+      document_contents.style.direction = 'rtl';
+    } else {
+      document_contents.style.direction = 'ltr';
     }
     current_document = document_id;
     var document_links = document.getElementsByClassName('document-link-current');
@@ -1484,6 +1502,7 @@ function loadTag(tag_path, page) {
   )
   .then(function(result) {
     console.log("Loaded highlights for tag", tag_path || "''");
+    document_contents.style.direction = 'ltr';
     current_tag = tag_path;
     current_document = null;
     var document_links = document.getElementsByClassName('document-link-current');
@@ -1495,10 +1514,17 @@ function loadTag(tag_path, page) {
     highlights = {};
     for(var i = 0; i < result.highlights.length; ++i) {
       var hl = result.highlights[i];
+      var content = document.createElement('div');
+      if(hl.text_direction === 'RIGHT_TO_LEFT') {
+        content.style.direction = 'rtl';
+      } else {
+        content.style.direction = 'ltr';
+      }
+      content.innerHTML = result.highlights[i].content;
       var elem = document.createElement('div');
       elem.className = 'highlight-entry';
       elem.setAttribute('id', 'highlight-entry-' + hl.id);
-      elem.innerHTML = result.highlights[i].content;
+      elem.appendChild(content);
       elem.appendChild(document.createTextNode(' '));
 
       var doclink = document.createElement('a');
@@ -1721,7 +1747,8 @@ function longPollForEvents() {
         addDocument({
           id: event.document_id,
           name: event.document_name,
-          description: event.description
+          description: event.description,
+          text_direction: event.text_direction
         });
       } else if(event.type === 'document_delete') {
         removeDocument(event.document_id);

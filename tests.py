@@ -574,13 +574,15 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(
             await poll_proj1,
             {'type': 'document_add', 'id': 3, 'document_id': 1,
+             'text_direction': 'LEFT_TO_RIGHT',
              'document_name': name, 'description': ''})
         poll_proj1 = await self.poll_event(1, 3)
 
         # Create document 2 in project 2
         async with self.apost(
             '/api/project/2/document/new',
-            data=dict(name='otherdoc', description='Other one'),
+            data=dict(name='otherdoc', description='Other one',
+                      text_direction='LEFT_TO_RIGHT'),
             files=dict(
                 file=('../otherdoc.html', 'text/plain', b'different content'),
             ),
@@ -595,6 +597,7 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(
             await poll_proj2,
             {'type': 'document_add', 'id': 4, 'document_id': 2,
+             'text_direction': 'LEFT_TO_RIGHT',
              'document_name': 'otherdoc', 'description': 'Other one'})
         poll_proj2 = await self.poll_event(2, 4)
 
@@ -628,7 +631,8 @@ class TestMultiuser(MyHTTPTestCase):
         # Create document 3 in project 2
         async with self.apost(
             '/api/project/2/document/new',
-            data=dict(name='third', description='Last one'),
+            data=dict(name='third', description='Last one',
+                      text_direction='RIGHT_TO_LEFT'),
             files=dict(file=(
                 'C:\\Users\\Vicky\\Documents\\study.html',
                 'text/html',
@@ -640,6 +644,7 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(
             await poll_proj2,
             {'type': 'document_add', 'id': 7, 'document_id': 3,
+             'text_direction': 'RIGHT_TO_LEFT',
              'document_name': 'third', 'description': 'Last one'})
         poll_proj2 = await self.poll_event(2, 7)
 
@@ -716,8 +721,9 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(await response.json(), {
                 'highlights': [
                     {'id': 3, 'document_id': 2, 'tags': [2, 3],
-                     'content': "tent"},
+                     'text_direction': 'LEFT_TO_RIGHT', 'content': "tent"},
                     {'id': 4, 'document_id': 3, 'tags': [3],
+                     'text_direction': 'RIGHT_TO_LEFT',
                      'content': "<strong>Opinion</strong>"},
                 ],
                 'pages': 1,
@@ -731,7 +737,7 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(await response.json(), {
                 'highlights': [
                     {'id': 2, 'document_id': 2, 'tags': [4],
-                     'content': "diff"},
+                     'text_direction': 'LEFT_TO_RIGHT', 'content': "diff"},
                 ],
                 'pages': 1,
             })
@@ -744,9 +750,9 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(await response.json(), {
                 'highlights': [
                     {'id': 2, 'document_id': 2, 'tags': [4],
-                     'content': "diff"},
+                     'text_direction': 'LEFT_TO_RIGHT', 'content': "diff"},
                     {'id': 3, 'document_id': 2, 'tags': [2, 3],
-                     'content': "tent"},
+                     'text_direction': 'LEFT_TO_RIGHT', 'content': "tent"},
                 ],
                 'pages': 1,
             })
@@ -757,10 +763,11 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(await response.json(), {
                 'highlights': [
                     {'id': 2, 'document_id': 2, 'tags': [4],
-                     'content': "diff"},
+                     'text_direction': 'LEFT_TO_RIGHT', 'content': "diff"},
                     {'id': 3, 'document_id': 2, 'tags': [2, 3],
-                     'content': "tent"},
+                     'text_direction': 'LEFT_TO_RIGHT', 'content': "tent"},
                     {'id': 4, 'document_id': 3, 'tags': [3],
+                     'text_direction': 'RIGHT_TO_LEFT',
                      'content': "<strong>Opinion</strong>"},
                 ],
                 'pages': 1,
@@ -777,6 +784,7 @@ class TestMultiuser(MyHTTPTestCase):
                     {'id': 3, 'start_offset': 13, 'end_offset': 17,
                      'tags': [2, 3]},
                 ],
+                'text_direction': 'LEFT_TO_RIGHT',
             })
 
         # Export document 2 to HTML
@@ -972,10 +980,11 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(await response.json(), {
                 'highlights': [
                     {'id': 2, 'document_id': 2, 'tags': [4],
-                     'content': "diff"},
+                     'text_direction': 'LEFT_TO_RIGHT', 'content': "diff"},
                     {'id': 3, 'document_id': 2, 'tags': [2],
-                     'content': "tent"},
+                     'text_direction': 'LEFT_TO_RIGHT', 'content': "tent"},
                     {'id': 4, 'document_id': 3, 'tags': [2],
+                     'text_direction': 'RIGHT_TO_LEFT',
                      'content': "<strong>Opinion</strong>"},
                 ],
                 'pages': 1,
@@ -1120,7 +1129,7 @@ class TestMultiuser(MyHTTPTestCase):
     def make_basic_project(db, db_num, project_num):
         # Creates 1 project, 2 (+1 deleted) documents, 2 (+1 deleted) tags,
         # 2 (+1 deleted) highlights, 13 commands total
-        def doc(project, number):
+        def doc(project, number, dir=database.TextDirection.LEFT_TO_RIGHT):
             text = 'db%ddoc%d%d' % (db_num, project_num, number)
             return database.Document(
                 name=text + '.txt',
@@ -1128,6 +1137,7 @@ class TestMultiuser(MyHTTPTestCase):
                 filename=text + '.txt',
                 project=project,
                 contents=text,
+                text_direction=dir,
             )
 
         user = 'db%duser' % db_num
@@ -1139,7 +1149,7 @@ class TestMultiuser(MyHTTPTestCase):
         db.flush()
         document1 = doc(project1, 1)
         db.add(document1)
-        document2 = doc(project1, 2)
+        document2 = doc(project1, 2, database.TextDirection.RIGHT_TO_LEFT)
         db.add(document2)
         tag1 = database.Tag(
             project=project1,
@@ -1330,12 +1340,15 @@ class TestMultiuser(MyHTTPTestCase):
                 # commands 1-13 exported as 27-39
                 (27, 'db1user', 3, 7,
                  {'type': 'document_add', 'description': '',
+                  'text_direction': 'LEFT_TO_RIGHT',
                   'document_name': 'db2doc11.txt'}),
                 (28, 'db1user', 3, -3,
                  {'type': 'document_add', 'description': '',
+                  'text_direction': 'LEFT_TO_RIGHT',
                   'document_name': 'db2doc1100.txt'}),
                 (29, 'db1user', 3, 8,
                  {'type': 'document_add', 'description': '',
+                  'text_direction': 'RIGHT_TO_LEFT',
                   'document_name': 'db2doc12.txt'}),
                 (30, 'db1user', 3, -3, {'type': 'document_delete'}),
                 (31, 'db1user', 3, None,
@@ -1482,12 +1495,15 @@ class TestMultiuser(MyHTTPTestCase):
                 # commands 14-26 exported as 1-13
                 (1, 'admin', 1, 1,
                  {'type': 'document_add', 'description': '',
+                  'text_direction': 'LEFT_TO_RIGHT',
                   'document_name': 'db1doc21.txt'}),
                 (2, 'admin', 1, -6,
                  {'type': 'document_add', 'description': '',
+                  'text_direction': 'LEFT_TO_RIGHT',
                   'document_name': 'db1doc2100.txt'}),
                 (3, 'admin', 1, 2,
                  {'type': 'document_add', 'description': '',
+                  'text_direction': 'RIGHT_TO_LEFT',
                   'document_name': 'db1doc22.txt'}),
                 (4, 'admin', 1, -6, {'type': 'document_delete'}),
                 (5, 'admin', 1, None,
@@ -1962,6 +1978,8 @@ class TestSeleniumMultiuser(SeleniumTest):
         doc = db.query(database.Document).get(1)
         self.assertEqual(doc.name, 'otherdoc')
         self.assertEqual(doc.description, '')
+        self.assertEqual(doc.text_direction,
+                         database.TextDirection.LEFT_TO_RIGHT)
         self.assertTrue(doc.filename, os.path.basename(tmp.name))
 
         # Change project 2 metadata
@@ -2004,6 +2022,7 @@ class TestSeleniumMultiuser(SeleniumTest):
         elem.send_keys('third')
         elem = self.driver.find_element_by_id('document-add-description')
         elem.send_keys('Last one')
+        await self.s_click_button('Right to left', tag='label')
         elem = self.driver.find_element_by_id('document-add-file')
         with tempfile.NamedTemporaryFile('wb', suffix='.html') as tmp:
             tmp.write(b'<strong>Opinions</strong> and <em>facts</em>!')
@@ -2014,6 +2033,8 @@ class TestSeleniumMultiuser(SeleniumTest):
         doc = db.query(database.Document).get(2)
         self.assertEqual(doc.name, 'third')
         self.assertEqual(doc.description, 'Last one')
+        self.assertEqual(doc.text_direction,
+                         database.TextDirection.RIGHT_TO_LEFT)
         self.assertTrue(doc.filename, os.path.basename(tmp.name))
 
         # Create highlight 1 in document 1
@@ -2057,7 +2078,7 @@ class TestSeleniumMultiuser(SeleniumTest):
         self.assertEqual(self.s_path, '/project/1/highlights/people')
         self.assertEqual(
             self.driver.find_element_by_id('document-contents').text,
-            'tent otherdoc interesting people\nOpinion third people',
+            'tent\notherdoc interesting people\nOpinion\nthird people',
         )
 
         # List highlights in project 1 under 'interesting.places'
@@ -2065,7 +2086,7 @@ class TestSeleniumMultiuser(SeleniumTest):
         await asyncio.sleep(1)  # Wait for XHR
         self.assertEqual(
             self.driver.find_element_by_id('document-contents').text,
-            'diff otherdoc interesting.places',
+            'diff\notherdoc interesting.places',
         )
 
         # List highlights in project 1 under 'interesting'
@@ -2073,8 +2094,8 @@ class TestSeleniumMultiuser(SeleniumTest):
         await asyncio.sleep(1)  # Wait for XHR
         self.assertEqual(
             self.driver.find_element_by_id('document-contents').text,
-            ('diff otherdoc interesting.places\n'
-             'tent otherdoc interesting people'),
+            ('diff\notherdoc interesting.places\n'
+             'tent\notherdoc interesting people'),
         )
 
         # List all highlights in project 1
@@ -2084,9 +2105,9 @@ class TestSeleniumMultiuser(SeleniumTest):
         self.assertEqual(self.s_path, '/project/1/highlights/')
         self.assertEqual(
             self.driver.find_element_by_id('document-contents').text,
-            ('diff otherdoc interesting.places\n'
-             'tent otherdoc interesting people\n'
-             'Opinion third people'),
+            ('diff\notherdoc interesting.places\n'
+             'tent\notherdoc interesting people\n'
+             'Opinion\nthird people'),
         )
 
         # Check export options for document 1
@@ -2171,9 +2192,9 @@ class TestSeleniumMultiuser(SeleniumTest):
         self.assertEqual(self.s_path, '/project/1/highlights/')
         self.assertEqual(
             self.driver.find_element_by_id('document-contents').text,
-            ('diff otherdoc interesting.places\n'
-             'tent otherdoc interesting\n'
-             'Opinion third interesting'),
+            ('diff\notherdoc interesting.places\n'
+             'tent\notherdoc interesting\n'
+             'Opinion\nthird interesting'),
         )
 
 
