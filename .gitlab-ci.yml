@@ -108,9 +108,9 @@ sqlite3_pypy:
     - scripts/update_translations.sh
     - python -Wd tests.py
 
-sqlite3_py35:
+sqlite3_py37:
   stage: test
-  image: python:3.5
+  image: python:3.7
   script:
     - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.4
     - /root/.poetry/bin/poetry config virtualenvs.create false

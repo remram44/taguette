@@ -43,7 +43,7 @@ include = [
 # When updating dependencies: update 'translation' stage in Dockerfile
 
 [tool.poetry.dependencies]
-python = "^3.5.3"
+python = "^3.7"
 tornado = ">=6.1"
 sqlalchemy = "~1"
 redis = "^3"
