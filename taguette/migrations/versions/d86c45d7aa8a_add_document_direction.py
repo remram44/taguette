@@ -8,6 +8,7 @@ Create Date: 2021-06-09 13:17:10.397016
 from alembic import op
 import json
 import sqlalchemy as sa
+from sqlalchemy.dialects import postgresql
 
 
 # revision identifiers, used by Alembic.
@@ -67,12 +68,27 @@ def _do_map(map_func):
 
 
 def upgrade():
+    # Add textdirection enum type
+    connection = op.get_bind()
+    if connection.dialect.name == 'postgresql':
+        direction_enum = postgresql.ENUM(
+            'LEFT_TO_RIGHT', 'RIGHT_TO_LEFT',
+            name='textdirection',
+            create_type=False,
+        )
+        direction_enum.create(connection)
+    else:
+        direction_enum = sa.Enum(
+            'LEFT_TO_RIGHT', 'RIGHT_TO_LEFT',
+            name='textdirection',
+        )
+
     # Add column to 'documents'
     op.add_column(
         'documents',
         sa.Column(
             'text_direction',
-            sa.Enum('LEFT_TO_RIGHT', 'RIGHT_TO_LEFT', name='textdirection'),
+            direction_enum,
             nullable=True,
         ),
     )
@@ -101,3 +117,8 @@ def downgrade():
     # Remove column from 'documents'
     with op.batch_alter_table('documents', schema=None) as batch_op:
         batch_op.drop_column('text_direction')
+
+    # Remove textdirection enum type
+    connection = op.get_bind()
+    if connection.dialect.name == 'postgresql':
+        op.execute("DROP TYPE textdirection;")
