@@ -748,7 +748,7 @@ def copy_project(
         raise KeyError("project ID not found")
     validate.project_name(project['name'])
     validate.description(project['description'])
-    project = dict(project.items())
+    project = dict(project)
     project.pop('id')
     new_project_id, = insert(Project, project).inserted_primary_key
     mapping_project = {project_id: new_project_id}
@@ -936,7 +936,7 @@ def copy_table(
     orig_pkey = None  # Avoids warning
     while batch:
         for row in batch:
-            row = dict(row.items())
+            row = dict(row)
             # Get primary key, remove it
             if pkey is not None:
                 orig_pkey = row[pkey]
