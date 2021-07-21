@@ -102,7 +102,8 @@ def upgrade():
 
     # Add field to commands
     def add_field(payload):
-        payload['text_direction'] = 'LEFT_TO_RIGHT'
+        if payload['type'] == 'document_add':
+            payload['text_direction'] = 'LEFT_TO_RIGHT'
         return payload
 
     _do_map(add_field)
