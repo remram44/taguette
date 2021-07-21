@@ -555,7 +555,7 @@ testing = ["pathlib2", "unittest2", "jaraco.itertools", "func-timeout"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.5.3"
-content-hash = "6d92b2ae1c011e17149a41817bdd6f9d3fc8c2f1a5192efba312ecf7a811c8f5"
+content-hash = "75771ad30880c46a9f72c9b672a98269acd2c03e73892b2f074d85681acdc6cf"
 
 [metadata.files]
 aiohttp = [
