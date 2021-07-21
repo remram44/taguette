@@ -1,4 +1,4 @@
-FROM python:3.8 AS translations
+FROM python:3.9 AS translations
 
 RUN pip install babel==2.9.1 pytz==2021.1  # Keep in sync with poetry.lock
 
@@ -10,7 +10,7 @@ COPY scripts/update_translations.sh scripts/
 RUN scripts/update_translations.sh
 
 
-FROM python:3.8
+FROM python:3.9
 
 # Install Calibre from Ubuntu distro
 RUN apt-get update && \
@@ -18,7 +18,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Install Poetry
-RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.4 && /root/.poetry/bin/poetry config virtualenvs.create false
+RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.7 && /root/.poetry/bin/poetry config virtualenvs.create false
 
 # Set up app
 RUN mkdir -p /usr/src/app

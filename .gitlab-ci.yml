@@ -51,11 +51,12 @@ frontend:
 
 sqlite3_latest:
   stage: test
-  image: python:3.8
+  image: python:3.9
   script:
     - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.4
     - /root/.poetry/bin/poetry config virtualenvs.create false
     - rm poetry.lock
+    - sed -i 's/^python = ".*$/python = "^3.9"/' pyproject.toml
     - $HOME/.poetry/bin/poetry install --no-interaction
     - scripts/update_translations.sh
     - python -Wd tests.py
@@ -108,9 +109,9 @@ sqlite3_pypy:
     - scripts/update_translations.sh
     - python -Wd tests.py
 
-sqlite3_py35:
+sqlite3_py37:
   stage: test
-  image: python:3.5
+  image: python:3.7
   script:
     - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.4
     - /root/.poetry/bin/poetry config virtualenvs.create false
