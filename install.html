@@ -57,11 +57,15 @@
   {% trans %}
   <p>You first need to install <a href="https://www.python.org/downloads/">Python 3</a> and <a href="https://calibre-ebook.com/">Calibre</a>, the open-source e-book management software. Taguette uses a part of Calibre to convert documents into HTML, allowing you to highlight and tag parts of them.</p>
 
-  <p>Once you've installed Python, you can install Taguette with its dependencies from the command line with the following:</p>
+  <p>On Debian or Ubuntu, you can run <code>sudo apt install python3 calibre</code></p>
 
-  <pre>pip3 install taguette</pre>
+  <p>Once you've installed Python, you can create a Python 3 virtual environment and install Taguette with its dependencies from the command line with the following:</p>
 
-  <p>After which you can simply run <code>taguette</code> in the terminal to get it going. You'll see the command line will still be running. This is ok! Don't worry about the terminal, but do leave it running. A browser window should appear, pointing you to <a href="http://localhost:7465/"><code>localhost:7465</code></a>, and you can begin working on your projects!</p>
+  <pre>python3 -m venv taguette.virtualenv
+. taguette.virtualenv/bin/activate
+pip install taguette</pre>
+
+  <p>After which you can simply run <code>taguette.virtualenv/bin/taguette</code> in the terminal to get it going. You'll see the command line will still be running. This is ok! Don't worry about the terminal, but do leave it open. A browser window should appear, pointing you to <a href="http://localhost:7465/"><code>localhost:7465</code></a>, and you can begin working on your projects!</p>
   {% endtrans %}
 
   <h2 id="long">{% trans %}Development set-up{% endtrans %}</h2>
