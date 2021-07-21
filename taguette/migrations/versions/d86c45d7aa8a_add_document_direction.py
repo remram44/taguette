@@ -115,6 +115,8 @@ def downgrade():
         payload.pop('text_direction', None)
         return payload
 
+    _do_map(remove_field)
+
     # Remove column from 'documents'
     with op.batch_alter_table('documents', schema=None) as batch_op:
         batch_op.drop_column('text_direction')
