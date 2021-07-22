@@ -1,6 +1,14 @@
 Changelog
 =========
 
+1.0.1 (2021-07-22)
+------------------
+
+This is a pip-only fix: binary installers, Docker, Poetry install are NOT affected.
+
+Bugfixes:
+* Fix incompatibility with SQLAlchemy 1.4
+
 1.0.0 (2021-07-17)
 ------------------
 
