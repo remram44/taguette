@@ -1749,7 +1749,7 @@ class SeleniumTest(MyHTTPTestCase):
         ]
         await self.s_click(correct_button)
 
-    async def s_perform_action(self, action):
+    def s_perform_action(self, action):
         return asyncio.get_event_loop().run_in_executor(
             self.driver_pool,
             lambda: action.perform(),
