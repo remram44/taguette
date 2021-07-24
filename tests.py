@@ -1714,9 +1714,16 @@ class SeleniumTest(MyHTTPTestCase):
         if os.environ['TAGUETTE_TEST_WEBDRIVER'] == 'firefox':
             self.driver = webdriver.Firefox()
         elif os.environ['TAGUETTE_TEST_WEBDRIVER'] == 'chromium':
-            self.driver = webdriver.Chrome(options)
+            from selenium.webdriver.chrome.options import Options
+
+            options = Options()
+            options.add_argument('--disable-gpu')
+            options.add_argument('--disable-dev-shm-usage')
+            options.add_argument('--no-sandbox')
+            self.driver = webdriver.Chrome(options=options)
         else:
             raise EnvironmentError
+        self.driver.set_window_size(1024, 768)
         self.driver_pool = concurrent.futures.ThreadPoolExecutor(1)
 
     def tearDown(self):
