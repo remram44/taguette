@@ -1740,20 +1740,23 @@ class SeleniumTest(MyHTTPTestCase):
     def s_path(self):
         return self.extract_path(self.driver.current_url)
 
-    def s_get(self, url):
+    async def s_get(self, url):
         url = self.get_url(url)
-        return asyncio.get_event_loop().run_in_executor(
+        await asyncio.get_event_loop().run_in_executor(
             self.driver_pool,
             lambda: self.driver.get(url),
         )
+        await asyncio.sleep(0.2)
 
-    def s_click(self, element):
-        return asyncio.get_event_loop().run_in_executor(
+    async def s_click(self, element):
+        await asyncio.get_event_loop().run_in_executor(
             self.driver_pool,
             lambda: element.click(),
         )
+        await asyncio.sleep(0.2)
 
     async def s_click_button(self, text, tag='button'):
+        await asyncio.sleep(0.2)
         buttons = self.driver.find_elements_by_tag_name(tag)
         correct_button, = [
             button for button in buttons
@@ -1761,11 +1764,12 @@ class SeleniumTest(MyHTTPTestCase):
         ]
         await self.s_click(correct_button)
 
-    def s_perform_action(self, action):
-        return asyncio.get_event_loop().run_in_executor(
+    async def s_perform_action(self, action):
+        await asyncio.get_event_loop().run_in_executor(
             self.driver_pool,
             lambda: action.perform(),
         )
+        await asyncio.sleep(0.2)
 
 
 @unittest.skipUnless(
