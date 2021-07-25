@@ -105,6 +105,7 @@ sqlite3_pypy:
     - /root/.poetry/bin/poetry config virtualenvs.create false
     - pypy3 -m venv /tmp/venv
     - . /tmp/venv/bin/activate
+    - pypy3 -m pip install -U pip
     - $HOME/.poetry/bin/poetry install --no-interaction
     - scripts/update_translations.sh
     - python -Wd tests.py
