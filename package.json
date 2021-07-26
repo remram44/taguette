@@ -7,7 +7,7 @@
     "test": "jest",
     "lint": "eslint ui-src/ --ext .js,.jsx,.ts,.tsx",
     "typecheck": "tsc -p tsconfig.json",
-    "build": "esbuild ui-src/main.ts --bundle --minify --sourcemap=external --outfile=dist/esbuild/browser.js",
+    "build": "esbuild ui-src/main.ts --bundle --minify --sourcemap=external --outfile=taguette/static/js/taguette.js",
     "clean": "rm -rf dist build",
     "ts-node": "ts-node"
   },
