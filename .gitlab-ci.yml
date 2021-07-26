@@ -35,7 +35,7 @@ sqlite3_redis:
     paths:
       - htmlcov
 
-frontend:
+frontend_firefox:
   stage: test
   image: python:3.8
   script:
@@ -47,7 +47,18 @@ frontend:
     - /root/.poetry/bin/poetry config virtualenvs.create false
     - $HOME/.poetry/bin/poetry install --no-interaction
     - scripts/update_translations.sh
-    - TAGUETTE_TEST_WEBDRIVER=1 xvfb-run python tests.py TestSeleniumMultiuser
+    - TAGUETTE_TEST_WEBDRIVER=firefox xvfb-run python tests.py TestSeleniumMultiuser
+
+frontend_chromium:
+  stage: test
+  image: python:3.8
+  script:
+    - apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -yy xvfb chromium-driver
+    - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.4
+    - /root/.poetry/bin/poetry config virtualenvs.create false
+    - $HOME/.poetry/bin/poetry install --no-interaction
+    - scripts/update_translations.sh
+    - TAGUETTE_TEST_WEBDRIVER=chromium xvfb-run python tests.py TestSeleniumMultiuser
 
 sqlite3_latest:
   stage: test

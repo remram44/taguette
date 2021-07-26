@@ -1711,11 +1711,29 @@ class SeleniumTest(MyHTTPTestCase):
 
         from selenium import webdriver
 
-        self.driver = webdriver.Firefox()
+        if os.environ['TAGUETTE_TEST_WEBDRIVER'] == 'firefox':
+            self.driver = webdriver.Firefox()
+        elif os.environ['TAGUETTE_TEST_WEBDRIVER'] == 'chromium':
+            from selenium.webdriver.chrome.options import Options
+
+            options = Options()
+            options.add_argument('--disable-gpu')
+            options.add_argument('--disable-dev-shm-usage')
+            options.add_argument('--no-sandbox')
+            self.driver = webdriver.Chrome(options=options)
+        else:
+            raise EnvironmentError
+        self.driver.set_window_size(1024, 768)
         self.driver_pool = concurrent.futures.ThreadPoolExecutor(1)
+
+        self.logs = []
 
     def tearDown(self):
         super(SeleniumTest, self).tearDown()
+
+        if self.logs:
+            raise ValueError("Error in browser console: %s"
+                             % self.logs[0]['message'])
 
         self.driver.quit()
 
@@ -1728,20 +1746,25 @@ class SeleniumTest(MyHTTPTestCase):
     def s_path(self):
         return self.extract_path(self.driver.current_url)
 
-    def s_get(self, url):
+    async def s_get(self, url):
+        self.store_logs()
         url = self.get_url(url)
-        return asyncio.get_event_loop().run_in_executor(
+        await asyncio.get_event_loop().run_in_executor(
             self.driver_pool,
             lambda: self.driver.get(url),
         )
+        await asyncio.sleep(0.2)
 
-    def s_click(self, element):
-        return asyncio.get_event_loop().run_in_executor(
+    async def s_click(self, element):
+        self.store_logs()
+        await asyncio.get_event_loop().run_in_executor(
             self.driver_pool,
             lambda: element.click(),
         )
+        await asyncio.sleep(0.2)
 
     async def s_click_button(self, text, tag='button'):
+        await asyncio.sleep(0.2)
         buttons = self.driver.find_elements_by_tag_name(tag)
         correct_button, = [
             button for button in buttons
@@ -1749,11 +1772,44 @@ class SeleniumTest(MyHTTPTestCase):
         ]
         await self.s_click(correct_button)
 
-    def s_perform_action(self, action):
-        return asyncio.get_event_loop().run_in_executor(
+    async def s_perform_action(self, action):
+        self.store_logs()
+        await asyncio.get_event_loop().run_in_executor(
             self.driver_pool,
             lambda: action.perform(),
         )
+        await asyncio.sleep(0.2)
+
+    def _filter_logs(self, logs):
+        return [
+            line
+            for line in logs
+            if 'Polling failed:' not in line['message']
+        ]
+
+    def store_logs(self):
+        from selenium import webdriver
+
+        if isinstance(self.driver, webdriver.Chrome):
+            logs = self.driver.get_log('browser')
+            logs = self._filter_logs(logs)
+            if self.logs:
+                for i in reversed(range(len(logs))):
+                    if logs[i] == self.logs[-1]:
+                        self.logs.extend(logs[i + 1:])
+                        return
+            self.logs.extend(logs)
+
+    def get_logs(self):
+        from selenium import webdriver
+
+        if isinstance(self.driver, webdriver.Chrome):
+            self.store_logs()
+            logs = self.logs
+            self.logs = []
+            return logs
+        else:
+            return None
 
 
 @unittest.skipUnless(
@@ -1853,6 +1909,14 @@ class TestSeleniumMultiuser(SeleniumTest):
             ),
             -1,
         )
+        logs = self.get_logs()
+        if logs is not None:
+            self.assertEqual(len(logs), 1)
+            self.assertTrue(re.search(
+                r'Failed to load resource: the server responded with a status '
+                + r'of 403 \(Forbidden\)',
+                logs[0]['message'],
+            ))
 
         # Login
         await self.s_get('/login?' + urlencode(dict(next='/project/1')))
