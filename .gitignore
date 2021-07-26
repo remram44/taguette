@@ -12,6 +12,10 @@ taguette.conf
 po/*.mo
 taguette/l10n
 
+# Generated files
+taguette/static/js/taguette.js
+taguette/static/js/taguette.js.map
+
 # Packages
 *.egg
 *.egg-info
