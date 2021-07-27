@@ -20,10 +20,10 @@
  */
 
 if(!Object.entries) {
-  Object.entries = function(obj) {
-    var ownProps = Object.keys(obj),
-      i = ownProps.length,
-      resArray = new Array(i); // preallocate the Array
+  Object.entries = function<T>(obj: {[k: string]: T}): [string, T][] {
+    const ownProps = Object.keys(obj);
+    let i = ownProps.length;
+    const resArray = new Array(i); // preallocate the Array
     while(i--) {
       resArray[i] = [ownProps[i], obj[ownProps[i]]];
     }
@@ -32,7 +32,7 @@ if(!Object.entries) {
   };
 }
 
-function sortByKey(array, key) {
+function sortByKey<T>(array: T[], key: (key: T) => any): void {
   array.sort(function(a, b) {
     if(key(a) < key(b)) {
       return -1;
@@ -44,7 +44,7 @@ function sortByKey(array, key) {
   });
 }
 
-function encodeGetParams(params) {
+function encodeGetParams(params: {[k: string]: string}): string {
   return Object.entries(params)
     .filter(function(kv) { return kv[1] !== undefined; })
     .map(function(kv) { return kv.map(encodeURIComponent).join("="); })
@@ -52,12 +52,12 @@ function encodeGetParams(params) {
 }
 
 // Don't use RegExp literals https://github.com/python-babel/babel/issues/640
-var _escapeA = new RegExp('&', 'g'),
-    _escapeL = new RegExp('<', 'g'),
-    _escapeG = new RegExp('>', 'g'),
-    _escapeQ = new RegExp('"', 'g'),
-    _escapeP = new RegExp("'", 'g');
-function escapeHtml(s) {
+const _escapeA = new RegExp('&', 'g'),
+      _escapeL = new RegExp('<', 'g'),
+      _escapeG = new RegExp('>', 'g'),
+      _escapeQ = new RegExp('"', 'g'),
+      _escapeP = new RegExp("'", 'g');
+function escapeHtml(s: string): string {
   return s
     .replace(_escapeA, "&amp;")
     .replace(_escapeL, "&lt;")
@@ -66,14 +66,16 @@ function escapeHtml(s) {
     .replace(_escapeP, "&#039;");
 }
 
-function nextElement(node) {
+function nextElement(node: Node | null): Node | null {
   while(node && !node.nextSibling) {
     node = node.parentNode;
   }
   if(!node) {
     return null;
   }
-  node = node.nextSibling;
+  // If the loop above finished, either !node or node.nextSibling != null
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  node = node.nextSibling!;
   while(node.firstChild) {
     node = node.firstChild;
   }
@@ -81,36 +83,41 @@ function nextElement(node) {
 }
 
 function getScrollPos() {
-  var doc = document.scrollingElement || document.documentElement, body = document.body;
-  var x = (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc.clientLeft || 0);
-  var y = (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc.clientTop || 0);
+  const doc = document.scrollingElement || document.documentElement, body = document.body;
+  const x = (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc.clientLeft || 0);
+  const y = (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc.clientTop || 0);
   return {x: x, y: y};
 }
 
-function getCookie(name) {
-  var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
+function getCookie(name: string): string | undefined {
+  const r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
   return r ? r[1] : undefined;
 }
 
-function ApiError(response, message) {
-  if(!message) {
-    message = "Status " + response.status;
-  }
-  this.status = response.status;
-  this.message = message;
-}
-ApiError.prototype.toString = function() {
-  return this.message;
-};
+class ApiError {
+  status: number;
+  message: string;
 
-function getJSON(url='', args) {
+  constructor(response: Response, message?: string) {
+    if(!message) {
+      message = "Status " + response.status;
+    }
+    this.status = response.status;
+    this.message = message;
+  }
+
+  toString() {
+    return this.message;
+  }
+}
+
+function getJSON(url='', args?: {[k: string]: string}) {
+  let query = '';
   if(args) {
-    args = '?' + encodeGetParams(args);
-  } else {
-    args = '';
+    query = '?' + encodeGetParams(args);
   }
   return fetch(
-    url + args,
+    url + query,
     {
       credentials: 'same-origin',
       mode: 'same-origin',
@@ -136,15 +143,14 @@ function getJSON(url='', args) {
   });
 }
 
-function deleteURL(url='', args) {
+function deleteURL(url='', args?: {[k: string]: string}) {
+  let query = ''
   if(args) {
-    args = encodeGetParams(args);
-  } else {
-    args = '';
+    query = encodeGetParams(args);
   }
-  var xsrf = getCookie('_xsrf');
+  const xsrf = getCookie('_xsrf');
   return fetch(
-    url + '?' + (xsrf !== undefined ? '_xsrf=' + encodeURIComponent(xsrf) + '&' : '') + args,
+    url + '?' + (xsrf !== undefined ? '_xsrf=' + encodeURIComponent(xsrf) + '&' : '') + query,
     {
       credentials: 'same-origin',
       mode: 'same-origin',
@@ -159,15 +165,14 @@ function deleteURL(url='', args) {
   });
 }
 
-function postJSON(url='', data={}, args) {
+function postJSON(url='', data={}, args?: {[k: string]: string}) {
+  let query = ''
   if(args) {
-    args = encodeGetParams(args);
-  } else {
-    args = '';
+    query = encodeGetParams(args);
   }
-  var xsrf = getCookie('_xsrf');
+  const xsrf = getCookie('_xsrf');
   return fetch(
-    url + '?' + (xsrf !== undefined ? '_xsrf=' + encodeURIComponent(xsrf) + '&' : '') + args,
+    url + '?' + (xsrf !== undefined ? '_xsrf=' + encodeURIComponent(xsrf) + '&' : '') + query,
     {
       credentials: 'same-origin',
       mode: 'same-origin',
@@ -199,15 +204,14 @@ function postJSON(url='', data={}, args) {
   });
 }
 
-function patchJSON(url='', data={}, args) {
+function patchJSON(url='', data={}, args?: {[k: string]: string}) {
+  let query = ''
   if(args) {
-    args = encodeGetParams(args);
-  } else {
-    args = '';
+    query = encodeGetParams(args);
   }
-  var xsrf = getCookie('_xsrf');
+  const xsrf = getCookie('_xsrf');
   return fetch(
-    url + '?' + (xsrf !== undefined ? '_xsrf=' + encodeURIComponent(xsrf) + '&' : '') + args,
+    url + '?' + (xsrf !== undefined ? '_xsrf=' + encodeURIComponent(xsrf) + '&' : '') + query,
     {
       credentials: 'same-origin',
       mode: 'same-origin',
@@ -242,22 +246,24 @@ function patchJSON(url='', data={}, args) {
 
 // Returns the byte length of a string encoded in UTF-8
 // https://stackoverflow.com/q/5515869/711380
-if(window.TextEncoder) {
-  function lengthUTF8(s) {
-    return (new TextEncoder('utf-8').encode(s)).length;
-  }
-} else {
-  function lengthUTF8(s) {
-    var l = s.length;
-    for(var i = s.length - 1; i >= 0; --i) {
-      var code = s.charCodeAt(i);
-      if(code > 0x7f && code <= 0x7ff) ++l;
-      else if(code > 0x7ff && code <= 0xffff) l += 2;
-      if (code >= 0xDC00 && code <= 0xDFFF) i--; // trailing surrogate
+const lengthUTF8 = (function() {
+  if(window.TextEncoder) {
+    return function lengthUTF8(s: string) {
+      return (new TextEncoder('utf-8').encode(s)).length;
     }
-    return l;
+  } else {
+    return function lengthUTF8(s: string) {
+      let l = s.length;
+      for(let i = s.length - 1; i >= 0; --i) {
+        const code = s.charCodeAt(i);
+        if(code > 0x7f && code <= 0x7ff) ++l;
+        else if(code > 0x7ff && code <= 0xffff) l += 2;
+        if (code >= 0xDC00 && code <= 0xDFFF) i--; // trailing surrogate
+      }
+      return l;
+    }
   }
-}
+})();
 
 window.addEventListener('load', function() {
   // https://css-tricks.com/snippets/jquery/draggable-without-jquery-ui/
@@ -314,10 +320,10 @@ function hideSpinner() {
  * Selection stuff
  */
 
-var chunk_offsets = [];
+let chunk_offsets: number[] = [];
 
 // Get the document offset from a position
-function describePos(node, offset) {
+function describePos(node: HTMLElement, offset: number): number | null {
   // Convert current offset from character to bytes
   offset = lengthUTF8(node.textContent.substring(0, offset));
   while(!node.id) {
@@ -335,18 +341,18 @@ function describePos(node, offset) {
 }
 
 // Find a position from the document offset
-function locatePos(pos) {
+function locatePos(pos: number): [Node, number] {
   // Find the right chunk
-  var chunk_start = 0;
-  for(var i = 0; i < chunk_offsets.length; ++i) {
+  let chunk_start = 0;
+  for(let i = 0; i < chunk_offsets.length; ++i) {
     if(chunk_offsets[i] > pos) {
       break;
     }
     chunk_start = chunk_offsets[i];
   }
 
-  var offset = pos - chunk_start;
-  var node = document.getElementById('doc-offset-' + chunk_start);
+  let offset = pos - chunk_start;
+  let node = document.getElementById('doc-offset-' + chunk_start);
   while(node.firstChild) {
     node = node.firstChild;
   }
@@ -361,16 +367,16 @@ function locatePos(pos) {
   return [node, offset]
 }
 
-var current_selection = null;
+let current_selection = null;
 
 // Describe the selection e.g. [14, 56]
-function describeSelection() {
-  var sel = window.getSelection();
-  if(sel.rangeCount != 0) {
-    var range = sel.getRangeAt(0);
+function describeSelection(): [number, number] | null {
+  const sel = window.getSelection();
+  if(sel && sel.rangeCount != 0) {
+    const range = sel.getRangeAt(0);
     if(!range.collapsed) {
-      var start = describePos(range.startContainer, range.startOffset);
-      var end = describePos(range.endContainer, range.endOffset);
+      const start = describePos(range.startContainer, range.startOffset);
+      const end = describePos(range.endContainer, range.endOffset);
       if(start !== null && end !== null) {
         return [start, end];
       }
@@ -380,21 +386,22 @@ function describeSelection() {
 }
 
 // Restore a described selection
-function restoreSelection(saved) {
-  var sel = window.getSelection();
+function restoreSelection(saved: [number, number] | null) {
+  const sel = window.getSelection();
   sel.removeAllRanges();
   if(saved !== null) {
-    var range = document.createRange();
-    var start = locatePos(saved[0]);
-    var end = locatePos(saved[1]);
+    const range = document.createRange();
+    const start = locatePos(saved[0]);
+    const end = locatePos(saved[1]);
     range.setStart(start[0], start[1]);
     range.setEnd(end[0], end[1]);
     sel.addRange(range);
   }
 }
 
-function splitAtPos(pos, after) {
-  var node = pos[0], idx = pos[1];
+function splitAtPos(pos: [HTMLElement, number], after: boolean): Node {
+  const node = pos[0];
+  let idx = pos[1];
   if(idx === 0) {
     // Leftmost index: return current node
     return node;
@@ -403,9 +410,9 @@ function splitAtPos(pos, after) {
     return nextElement(node);
   } else {
     // Find the character index from the byte index
-    var idx_char = 0;
+    let idx_char = 0;
     while(idx > 0) {
-      var code = node.textContent.charCodeAt(idx_char);
+      const code = node.textContent.charCodeAt(idx_char);
       if(code <= 0x7f) idx -= 1;
       else if(code <= 0x7ff) idx -= 2;
       else if(code <= 0xffff) idx -= 3;
@@ -422,21 +429,19 @@ function splitAtPos(pos, after) {
 }
 
 // Highlight a described selection
-function highlightSelection(saved, id, clickedCallback, title) {
+function highlightSelection(saved, id, clickedCallback, title: string) {
   console.log("Highlighting", saved);
   if(saved === null) {
     return;
   }
-  var start = locatePos(saved[0]);
-  start = splitAtPos(start, false);
-  var end = locatePos(saved[1]);
-  end = splitAtPos(end, true);
+  const start = splitAtPos(locatePos(saved[0]), false);
+  const end = splitAtPos(locatePos(saved[1]), true);
 
-  var node = start;
+  let node = start;
   while(node != end) {
-    var next = nextElement(node);
+    const next = nextElement(node);
     if(node.nodeType == 3 && node.textContent) { // TEXT_NODE
-      var span = document.createElement('a');
+      const span = document.createElement('a');
       span.className = 'highlight highlight-' + id;
       span.setAttribute('data-highlight-id', '' + id);
       span.setAttribute('title', title);
@@ -453,11 +458,11 @@ function highlightSelection(saved, id, clickedCallback, title) {
  * Project metadata
  */
 
-var project_name_input = document.getElementById('project-name');
-var project_name = project_name_input.value;
+const project_name_input: HTMLInputElement = document.getElementById('project-name');
+let project_name = project_name_input.value;
 
-var project_description_input = document.getElementById('project-description');
-var project_description = project_description_input.value;
+const project_description_input: HTMLInputElement = document.getElementById('project-description');
+let project_description = project_description_input.value;
 
 function setProjectMetadata(metadata, form=true) {
   if(project_name == metadata.project_name
@@ -473,8 +478,8 @@ function setProjectMetadata(metadata, form=true) {
     project_description_input.value = project_description;
   }
   // Update elements
-  var elems = document.getElementsByClassName('project-name');
-  for(var i = 0; i < elems.length; ++i) {
+  const elems = document.getElementsByClassName('project-name');
+  for(let i = 0; i < elems.length; ++i) {
     elems[i].textContent = project_name;
   }
   console.log("Project metadata updated");
@@ -484,7 +489,7 @@ function projectMetadataChanged() {
   if(project_name_input.value != project_name
    || project_description_input.value != project_description) {
     console.log("Posting project metadata update");
-    var meta = {
+    const meta = {
       name: project_name_input.value,
       description: project_description_input.value
     };
@@ -516,12 +521,12 @@ project_description_input.addEventListener('blur', projectMetadataChanged);
  * Documents list
  */
 
-var current_document = null;
-var current_tag = null;
-var documents_list = document.getElementById('documents-list');
+let current_document = null;
+let current_tag = null;
+const documents_list = document.getElementById('documents-list');
 
-function linkDocument(elem, doc_id) {
-  var url = '/project/' + project_id + '/document/' + doc_id;
+function linkDocument(elem: HTMLElement, doc_id: number) {
+  const url = '/project/' + project_id + '/document/' + doc_id;
   elem.setAttribute('href', url);
   elem.addEventListener('click', function(e) {
     e.preventDefault();
@@ -533,7 +538,7 @@ function linkDocument(elem, doc_id) {
 function updateDocumentsList() {
   // Empty the list
   while(documents_list.firstChild) {
-    var first = documents_list.firstChild;
+    const first = documents_list.firstChild;
     if(first.classList
      && first.classList.contains('special-item-button')) {
       break;
@@ -542,12 +547,12 @@ function updateDocumentsList() {
   }
 
   // Fill up the list again
-  var before = documents_list.firstChild;
-  var entries = Object.entries(documents);
+  const before = documents_list.firstChild;
+  const entries = Object.entries(documents);
   sortByKey(entries, function(e) { return e[1].name; });
-  for(var i = 0; i < entries.length; ++i) {
-    var doc = entries[i][1];
-    var elem = document.createElement('li');
+  for(let i = 0; i < entries.length; ++i) {
+    const doc = entries[i][1];
+    const elem = document.createElement('li');
     elem.setAttribute('id', 'document-link-' + doc.id);
     elem.className = 'list-group-item document-link';
     elem.innerHTML =
@@ -556,11 +561,11 @@ function updateDocumentsList() {
       '  <a href="javascript:editDocument(' + doc.id + ');" class="btn btn-primary btn-sm">' + gettext("Edit") + '</a>' +
       '</div>';
     documents_list.insertBefore(elem, before);
-    var links = elem.getElementsByTagName('a');
+    const links = elem.getElementsByTagName('a');
     linkDocument(links[0], doc.id);
   }
   if(entries.length == 0) {
-    var elem = document.createElement('div');
+    const elem = document.createElement('div');
     elem.className = 'list-group-item disabled';
     elem.textContent = gettext("There are no documents in this project yet.");
     documents_list.insertBefore(elem, before);
@@ -583,7 +588,7 @@ function addDocument(document) {
   updateDocumentsList();
 }
 
-function removeDocument(document_id) {
+function removeDocument(document_id: number) {
   delete documents['' + document_id];
   updateDocumentsList();
   if(current_document == document_id) {
@@ -597,16 +602,16 @@ function removeDocument(document_id) {
  * Add document
  */
 
-var document_add_modal = document.getElementById('document-add-modal');
+const document_add_modal = document.getElementById('document-add-modal');
 
-function createDocument() {
+export function createDocument(): void {
   document.getElementById('document-add-form').reset();
   $(document_add_modal).modal();
 }
 
-function basename(filename) {
+function basename(filename: string): string {
   if(filename) {
-    var idx = Math.max(filename.lastIndexOf('/'), filename.lastIndexOf('\\'));
+    const idx = Math.max(filename.lastIndexOf('/'), filename.lastIndexOf('\\'));
     if(idx > -1) {
       filename = filename.substring(idx + 1);
     }
@@ -618,8 +623,8 @@ document.getElementById('document-add-form').addEventListener('submit', function
   e.preventDefault();
   console.log("Uploading document...");
 
-  var form_data = new FormData();
-  var name = document.getElementById('document-add-name').value;
+  const form_data = new FormData();
+  let name = document.getElementById('document-add-name').value;
   if(!name) {
     name = basename(document.getElementById('document-add-file').value);
   }
@@ -632,7 +637,7 @@ document.getElementById('document-add-form').addEventListener('submit', function
                    document.getElementById('document-add-form').elements['document-add-direction'].value);
   form_data.append('_xsrf', getCookie('_xsrf'));
 
-  var xhr = new XMLHttpRequest();
+  const xhr = new XMLHttpRequest();
   xhr.responseType = 'json';
   xhr.open('POST', '/api/project/' + project_id + '/document/new');
   showSpinner();
@@ -643,7 +648,7 @@ document.getElementById('document-add-form').addEventListener('submit', function
       console.log("Document upload complete");
     } else {
       console.error("Document upload failed: status", xhr.status);
-      var error = null;
+      let error = null;
       try {
         error = xhr.response.error;
       } catch(e) {
@@ -668,9 +673,9 @@ document.getElementById('document-add-form').addEventListener('submit', function
  * Change document
  */
 
-var document_change_modal = document.getElementById('document-change-modal');
+const document_change_modal = document.getElementById('document-change-modal');
 
-function editDocument(doc_id) {
+export function editDocument(doc_id: number): void {
   document.getElementById('document-change-form').reset();
   document.getElementById('document-change-id').value = '' + doc_id;
   document.getElementById('document-change-name').value = '' + documents['' + doc_id].name;
@@ -683,7 +688,7 @@ document.getElementById('document-change-form').addEventListener('submit', funct
   e.preventDefault();
   console.log("Changing document...");
 
-  var update = {
+  const update = {
     name: document.getElementById('document-change-name').value,
     description: document.getElementById('document-change-description').value,
     text_direction: document.getElementById('document-change-form').elements['document-change-direction'].value
@@ -693,7 +698,7 @@ document.getElementById('document-change-form').addEventListener('submit', funct
     return;
   }
 
-  var doc_id = document.getElementById('document-change-id').value;
+  const doc_id = document.getElementById('document-change-id').value;
   showSpinner();
   postJSON(
     '/api/project/' + project_id + '/document/' + doc_id,
@@ -714,7 +719,7 @@ document.getElementById('document-change-form').addEventListener('submit', funct
 document.getElementById('document-change-delete').addEventListener('click', function(e) {
   e.preventDefault();
 
-  var doc_id = document.getElementById('document-change-id').value;
+  const doc_id = document.getElementById('document-change-id').value;
   if(!window.confirm(gettext("Are you sure you want to delete the document '%(doc)s'?", {doc: documents[doc_id].name}))) {
     return;
   }
@@ -736,11 +741,11 @@ document.getElementById('document-change-delete').addEventListener('click', func
  * Tags list
  */
 
-var tags_list = document.getElementById('tags-list');
-var tags_modal_list = document.getElementById('highlight-add-tags');
+const tags_list = document.getElementById('tags-list');
+const tags_modal_list = document.getElementById('highlight-add-tags');
 
-function linkTag(elem, tag_path) {
-  var url = '/project/' + project_id + '/highlights/' + encodeURIComponent(tag_path);
+function linkTag(elem: HTMLElement, tag_path: string) {
+  const url = '/project/' + project_id + '/highlights/' + encodeURIComponent(tag_path);
   elem.setAttribute('href', url);
   elem.addEventListener('click', function(e) {
     e.preventDefault();
@@ -761,25 +766,25 @@ function addTag(tag) {
   updateTagsList();
 }
 
-function removeTag(tag_id) {
+function removeTag(tag_id: number) {
   // Remove from list of tags
   delete tags['' + tag_id];
   // Remove from all highlights
-  var hl_entries = Object.entries(highlights);
-  for(var i = 0; i < hl_entries.length; ++i) {
-    var hl = hl_entries[i][1];
+  const hl_entries = Object.entries(highlights);
+  for(let i = 0; i < hl_entries.length; ++i) {
+    const hl = hl_entries[i][1];
     hl.tags = hl.tags.filter(function(v) { return v != tag_id; });
   }
   updateTagsList();
 }
 
-function mergeTags(tag_src, tag_dest) {
-  for(var id in highlights) {
-    var hl_tags = highlights[id].tags;
+function mergeTags(tag_src: number, tag_dest: number) {
+  for(const id in highlights) {
+    const hl_tags = highlights[id].tags;
 
     if(hl_tags.includes(tag_src)) {
       // Remove src tag
-      var idx = hl_tags.indexOf(tag_src);
+      const idx = hl_tags.indexOf(tag_src);
       hl_tags.splice(idx, 1);
 
       if(!hl_tags.includes(tag_dest)) {
@@ -793,86 +798,88 @@ function mergeTags(tag_src, tag_dest) {
 }
 
 function updateTagsList() {
-  var entries = Object.entries(tags);
+  const entries = Object.entries(tags);
   sortByKey(entries, function(e) { return e[1].path; });
 
   // The list in the left panel
-
-  // Empty the list
-  while(tags_list.firstChild) {
-    var first = tags_list.firstChild;
-    if(first.classList
-     && first.classList.contains('special-item-button')) {
-      break;
+  {
+    // Empty the list
+    while(tags_list.firstChild) {
+      const first = tags_list.firstChild;
+      if(first.classList
+       && first.classList.contains('special-item-button')) {
+        break;
+      }
+      tags_list.removeChild(first);
     }
-    tags_list.removeChild(first);
-  }
-  // Fill up the list again
-  // TODO: Show this as a tree
-  var tree = {};
-  var before = tags_list.firstChild;
-  for(var i = 0; i < entries.length; ++i) {
-    var tag = entries[i][1];
-    var elem = document.createElement('li');
-    elem.className = 'list-group-item';
-    if(current_tag !== null && tag.path.substr(0, current_tag.length) == current_tag) {
-      elem.classList.add('tag-current');
+    // Fill up the list again
+    // TODO: Show this as a tree
+    const tree = {};
+    const before = tags_list.firstChild;
+    for(let i = 0; i < entries.length; ++i) {
+      const tag = entries[i][1];
+      const elem = document.createElement('li');
+      elem.className = 'list-group-item';
+      if(current_tag !== null && tag.path.substr(0, current_tag.length) == current_tag) {
+        elem.classList.add('tag-current');
+      }
+      elem.innerHTML =
+        '<div class="d-flex justify-content-between align-items-center">' +
+        '  <div class="tag-name">' +
+        '    <a id="tag-link-' + tag.id + '">' + escapeHtml(tag.path) + '</a>' +
+        '  </div>' +
+        '  <div style="white-space: nowrap;">' +
+        '    <span class="badge badge-secondary badge-pill" id="tag-' + tag.id + '-count">' + tag.count + '</span>' +
+        '    <a href="javascript:editTag(' + tag.id + ');" class="btn btn-primary btn-sm">' + gettext("Edit") + '</a>' +
+        '  </div>' +
+        '</div>';
+      tags_list.insertBefore(elem, before);
+      linkTag(document.getElementById('tag-link-' + tag.id), tag.path);
     }
-    elem.innerHTML =
-      '<div class="d-flex justify-content-between align-items-center">' +
-      '  <div class="tag-name">' +
-      '    <a id="tag-link-' + tag.id + '">' + escapeHtml(tag.path) + '</a>' +
-      '  </div>' +
-      '  <div style="white-space: nowrap;">' +
-      '    <span class="badge badge-secondary badge-pill" id="tag-' + tag.id + '-count">' + tag.count + '</span>' +
-      '    <a href="javascript:editTag(' + tag.id + ');" class="btn btn-primary btn-sm">' + gettext("Edit") + '</a>' +
-      '  </div>' +
-      '</div>';
-    tags_list.insertBefore(elem, before);
-    linkTag(document.getElementById('tag-link-' + tag.id), tag.path);
-  }
-  if(entries.length == 0) {
-    var elem = document.createElement('div');
-    elem.className = 'list-group-item disabled';
-    elem.textContent = gettext("There are no tags in this project yet.");
-    tags_list.insertBefore(elem, before);
+    if(entries.length == 0) {
+      const elem = document.createElement('div');
+      elem.className = 'list-group-item disabled';
+      elem.textContent = gettext("There are no tags in this project yet.");
+      tags_list.insertBefore(elem, before);
+    }
   }
 
   // The list in the highlight modal
-
-  // Empty the list
-  while(tags_modal_list.firstChild) {
-    var first = tags_modal_list.firstChild;
-    if(first.classList
-     && first.classList.contains('special-item-button')) {
-      break;
+  {
+    // Empty the list
+    while(tags_modal_list.firstChild) {
+      const first = tags_modal_list.firstChild;
+      if(first.classList
+       && first.classList.contains('special-item-button')) {
+        break;
+      }
+      tags_modal_list.removeChild(first);
     }
-    tags_modal_list.removeChild(first);
-  }
-  // Fill up the list again
-  // TODO: Show this as a tree
-  var tree = {};
-  var before = tags_modal_list.firstChild;
-  for(var i = 0; i < entries.length; ++i) {
-    var tag = entries[i][1];
-    var elem = document.createElement('li');
-    elem.className = 'tag-name form-check';
-    elem.innerHTML =
-      '<input type="checkbox" class="form-check-input" value="' + tag.id + '" name="highlight-add-tags" id="highlight-add-tags-' + tag.id + '" />' +
-      '<label for="highlight-add-tags-' + tag.id + '" class="form-check-label">' + escapeHtml(tag.path) + '</label>';
-    tags_modal_list.insertBefore(elem, before);
-  }
-  if(entries.length == 0) {
-    var elem = document.createElement('li');
-    elem.textContent = gettext("no tags");
-    tags_modal_list.insertBefore(elem, before);
+    // Fill up the list again
+    // TODO: Show this as a tree
+    const tree = {};
+    const before = tags_modal_list.firstChild;
+    for(let i = 0; i < entries.length; ++i) {
+      const tag = entries[i][1];
+      const elem = document.createElement('li');
+      elem.className = 'tag-name form-check';
+      elem.innerHTML =
+        '<input type="checkbox" class="form-check-input" value="' + tag.id + '" name="highlight-add-tags" id="highlight-add-tags-' + tag.id + '" />' +
+        '<label for="highlight-add-tags-' + tag.id + '" class="form-check-label">' + escapeHtml(tag.path) + '</label>';
+      tags_modal_list.insertBefore(elem, before);
+    }
+    if(entries.length == 0) {
+      const elem = document.createElement('li');
+      elem.textContent = gettext("no tags");
+      tags_modal_list.insertBefore(elem, before);
+    }
   }
 
   console.log("Tags list updated");
 
   // Re-set all highlights, to update titles
-  var hl_entries = Object.entries(highlights);
-  for(var i = 0; i < hl_entries.length; ++i) {
+  const hl_entries = Object.entries(highlights);
+  for(let i = 0; i < hl_entries.length; ++i) {
     setHighlight(hl_entries[i][1]);
   }
 
@@ -881,16 +888,16 @@ function updateTagsList() {
 
 updateTagsList();
 
-function updateTagCount(id, delta) {
-  var tag = tags['' + id];
+function updateTagCount(id: number, delta: number) {
+  const tag = tags['' + id];
   tag.count += delta;
-  var elem = document.getElementById('tag-' + id + '-count');
+  const elem = document.getElementById('tag-' + id + '-count');
   elem.textContent = tag.count;
 }
 
-var tag_add_modal = document.getElementById('tag-add-modal');
+const tag_add_modal = document.getElementById('tag-add-modal');
 
-function createTag() {
+export function createTag(): void {
   document.getElementById('tag-add-form').reset();
   document.getElementById('tag-add-id').value = '';
   document.getElementById('tag-add-label-new').style.display = '';
@@ -901,7 +908,7 @@ function createTag() {
   $(tag_add_modal).modal();
 }
 
-function editTag(tag_id) {
+export function editTag(tag_id: number): void {
   document.getElementById('tag-add-form').reset();
   document.getElementById('tag-add-id').value = '' + tag_id;
   document.getElementById('tag-add-path').value = tags['' + tag_id].path;
@@ -918,18 +925,18 @@ function editTag(tag_id) {
 document.getElementById('tag-add-form').addEventListener('submit', function(e) {
   e.preventDefault();
 
-  var tag_id = document.getElementById('tag-add-id').value;
+  const tag_id = document.getElementById('tag-add-id').value;
   if(tag_id) {
     tag_id = parseInt(tag_id);
   } else {
     tag_id = null;
   }
-  var tag_path = document.getElementById('tag-add-path').value;
+  const tag_path = document.getElementById('tag-add-path').value;
   if(!tag_path) {
     alert(gettext("Invalid tag name"));
     return;
   }
-  var req;
+  let req;
   if(tag_id !== null) {
     console.log("Posting update for tag " + tag_id);
     req = postJSON(
@@ -960,13 +967,13 @@ document.getElementById('tag-add-form').addEventListener('submit', function(e) {
 
 // Delete tag button
 document.getElementById('tag-add-delete').addEventListener('click', function(e) {
-  var tag_id = document.getElementById('tag-add-id').value;
-  if(tag_id) {
+  const tag_id_str = document.getElementById('tag-add-id').value;
+  if(tag_id_str) {
+    const tag_id = parseInt(tag_id_str);
     if(!window.confirm(gettext("Are you sure you want to delete the tag '%(tag)s'?", {tag: tags[tag_id].path}))) {
       e.preventDefault();
       return;
     }
-    tag_id = parseInt(tag_id);
     console.log("Posting tag " + tag_id + " deletion");
     deleteURL(
       '/api/project/' + project_id + '/tag/' + tag_id
@@ -986,10 +993,10 @@ document.getElementById('tag-add-delete').addEventListener('click', function(e) 
 document.getElementById('tag-add-merge').addEventListener('click', function(e) {
   e.preventDefault();
 
-  var tag_id = document.getElementById('tag-add-id').value;
-  if(!tag_id)
+  const tag_id_str = document.getElementById('tag-add-id').value;
+  if(!tag_id_str)
     return;
-  tag_id = parseInt(tag_id);
+  const tag_id = parseInt(tag_id_str);
 
   document.getElementById('tag-merge-form').reset();
 
@@ -998,18 +1005,18 @@ document.getElementById('tag-add-merge').addEventListener('click', function(e) {
   document.getElementById('tag-merge-src-name').value = tags['' + tag_id].path;
 
   // Empty target tag <select>
-  var target = document.getElementById('tag-merge-dest');
+  const target = document.getElementById('tag-merge-dest');
   target.innerHTML = '';
 
   // Fill target tag <select>
-  var entries = Object.entries(tags);
+  const entries = Object.entries(tags);
   sortByKey(entries, function(e) { return e[1].path; });
-  for(var i = 0; i < entries.length; ++i) {
+  for(let i = 0; i < entries.length; ++i) {
     if(entries[i][0] == '' + tag_id) {
       // Can't merge into itself
       continue;
     }
-    var option = document.createElement('option');
+    const option = document.createElement('option');
     option.setAttribute('value', entries[i][0]);
     option.innerText = entries[i][1].path;
     target.appendChild(option);
@@ -1022,15 +1029,15 @@ document.getElementById('tag-add-merge').addEventListener('click', function(e) {
 document.getElementById('tag-merge-form').addEventListener('submit', function(e) {
   e.preventDefault();
 
-  var tag_src = document.getElementById('tag-merge-src-id').value;
-  if(!tag_src)
+  const tag_src_str = document.getElementById('tag-merge-src-id').value;
+  if(!tag_src_str)
     return;
-  tag_src = parseInt(tag_src);
+  const tag_src = parseInt(tag_src_str);
 
-  var tag_dest = document.getElementById('tag-merge-dest').value;
-  if(!tag_dest)
+  const tag_dest_str = document.getElementById('tag-merge-dest').value;
+  if(!tag_dest_str)
     return;
-  tag_dest = parseInt(tag_dest);
+  const tag_dest = parseInt(tag_dest_str);
 
   console.log(
     "Merging tag " + tag_src + " (" + tags['' + tag_src].path +
@@ -1058,12 +1065,12 @@ document.getElementById('tag-merge-form').addEventListener('submit', function(e)
 
 // Add or replace a highlight
 function setHighlight(highlight) {
-  var id = '' + highlight.id;
+  const id = '' + highlight.id;
   if(highlights[id]) {
     removeHighlight(id);
   }
   highlights[id] = highlight;
-  var tag_names = highlight.tags.map(function(id) { return tags[id].path; });
+  let tag_names = highlight.tags.map(function(id) { return tags[id].path; });
   sortByKey(tag_names, function(path) { return path; });
   tag_names = tag_names.join(", ");
   try {
@@ -1078,7 +1085,7 @@ function setHighlight(highlight) {
 }
 
 // Remove a highlight
-function removeHighlight(id) {
+function removeHighlight(id: number) {
   id = '' + id;
   if(!highlights[id]) {
     return;
@@ -1088,10 +1095,10 @@ function removeHighlight(id) {
   console.log("Highlight removed:", id);
 
   // Loop over highlight-<id> elements
-  var elements = document.getElementsByClassName('highlight-' + id);
-  for(var i = 0; i < elements.length; ++i) {
+  const elements = document.getElementsByClassName('highlight-' + id);
+  for(let i = 0; i < elements.length; ++i) {
     // Move children up and delete this element
-    var node = elements[i];
+    const node = elements[i];
     while(node.firstChild) {
       node.parentNode.insertBefore(node.firstChild, node);
     }
@@ -1100,11 +1107,11 @@ function removeHighlight(id) {
 }
 
 // Backlight
-var backlight_checkbox = document.getElementById('backlight');
+const backlight_checkbox = document.getElementById('backlight');
 backlight_checkbox.addEventListener('change', function() {
-  var classes = document.getElementById('document-view').classList;
+  const classes = document.getElementById('document-view').classList;
   if(backlight_checkbox.checked == classes.contains('backlight')) {
-    ; // all good
+    // all good
   } else if(backlight_checkbox.checked) {
     classes.add('backlight');
   } else {
@@ -1117,20 +1124,20 @@ backlight_checkbox.addEventListener('change', function() {
  * Add highlight
  */
 
-var highlight_add_modal = document.getElementById('highlight-add-modal');
+const highlight_add_modal = document.getElementById('highlight-add-modal');
 
 // Updates current_selection and visibility of the controls
 function selectionChanged() {
   current_selection = describeSelection();
-  var hlinfo = document.getElementById('hlinfo');
+  const hlinfo = document.getElementById('hlinfo');
   if(current_selection !== null) {
-    var current_range = window.getSelection().getRangeAt(0);
+    const current_range = window.getSelection().getRangeAt(0);
     if(current_range.endOffset > 0) {
-      var last_char_range = document.createRange();
+      const last_char_range = document.createRange();
       last_char_range.setStart(current_range.endContainer, current_range.endOffset - 1);
       last_char_range.setEnd(current_range.endContainer, current_range.endOffset);
-      var rect = last_char_range.getClientRects().item(0);
-      var scrollPos = getScrollPos();
+      const rect = last_char_range.getClientRects().item(0);
+      const scrollPos = getScrollPos();
       hlinfo.style.left = ((rect.x || rect.left) + rect.width) + 'px';
       hlinfo.style.top = ((rect.y || rect.top) + rect.height + scrollPos.y + 20) + 'px';
       hlinfo.style.display = 'block';
@@ -1144,7 +1151,7 @@ function selectionChanged() {
 }
 document.addEventListener('selectionchange', selectionChanged);
 
-function createHighlight(selection) {
+export function createHighlight(selection: [number, number]): void {
   document.getElementById('highlight-add-id').value = '';
   document.getElementById('highlight-add-start').value = selection[0];
   document.getElementById('highlight-add-end').value = selection[1];
@@ -1154,12 +1161,12 @@ function createHighlight(selection) {
 
 function editHighlight() {
   document.getElementById('highlight-add-form').reset();
-  var id = this.getAttribute('data-highlight-id');
+  const id = this.getAttribute('data-highlight-id');
   document.getElementById('highlight-add-id').value = id;
   document.getElementById('highlight-add-start').value = highlights[id].start_offset;
   document.getElementById('highlight-add-end').value = highlights[id].end_offset;
-  var hl_tags = highlights['' + id].tags;
-  for(var i = 0; i < hl_tags.length; ++i) {
+  const hl_tags = highlights['' + id].tags;
+  for(let i = 0; i < hl_tags.length; ++i) {
     document.getElementById('highlight-add-tags-' + hl_tags[i]).checked = true;
   }
   $(highlight_add_modal).modal().drags({handle: '.modal-header'});
@@ -1168,20 +1175,20 @@ function editHighlight() {
 // Save highlight button
 document.getElementById('highlight-add-form').addEventListener('submit', function(e) {
   e.preventDefault();
-  var highlight_id = document.getElementById('highlight-add-id').value;
-  var selection = [
+  const highlight_id = document.getElementById('highlight-add-id').value;
+  const selection = [
     parseInt(document.getElementById('highlight-add-start').value),
     parseInt(document.getElementById('highlight-add-end').value)
   ];
-  var hl_tags = [];
-  var entries = Object.entries(tags);
-  for(var i = 0; i < entries.length; ++i) {
-    var id = entries[i][1].id;
+  const hl_tags = [];
+  const entries = Object.entries(tags);
+  for(let i = 0; i < entries.length; ++i) {
+    const id = entries[i][1].id;
     if(document.getElementById('highlight-add-tags-' + id).checked) {
       hl_tags.push(id);
     }
   }
-  var req;
+  let req;
   if(highlight_id) {
     console.log("Posting update for highlight " + highlight_id);
     req = postJSON(
@@ -1214,7 +1221,7 @@ document.getElementById('highlight-add-form').addEventListener('submit', functio
 
 // Delete highlight button
 document.getElementById('highlight-delete').addEventListener('click', function() {
-  var highlight_id = document.getElementById('highlight-add-id').value;
+  let highlight_id = document.getElementById('highlight-add-id').value;
   if(highlight_id) {
     highlight_id = parseInt(highlight_id);
     console.log("Posting highlight " + highlight_id + " deletion");
@@ -1237,20 +1244,20 @@ document.getElementById('highlight-delete').addEventListener('click', function()
  * Members
  */
 
-function addMember(login, privileges) {
+function addMember(login: string, privileges: string) {
   members[login] = {privileges: privileges};
 }
 
-function removeMember(login) {
+function removeMember(login: string) {
   delete members[login];
 }
 
-var members_modal = document.getElementById('members-modal');
-var members_initial = {};
-var members_displayed = {};
+const members_modal = document.getElementById('members-modal');
+const members_initial = {};
+const members_displayed = {};
 
-function _memberRow(login, user, can_edit, is_self) {
-  var elem = document.createElement('div');
+function _memberRow(login: string, user: {privileges: string}, can_edit: boolean, is_self: boolean) {
+  const elem = document.createElement('div');
   elem.className = 'row members-item';
   elem.innerHTML =
     '<div class="col-md-4">' +
@@ -1284,7 +1291,7 @@ function _memberRow(login, user, can_edit, is_self) {
   return elem;
 }
 
-function showMembers() {
+export function showMembers(): void {
   document.getElementById('members-add').reset();
 
   can_edit = members[user_login].privileges == 'ADMIN';
@@ -1295,7 +1302,7 @@ function showMembers() {
     document.getElementById('members-add-fields').setAttribute('disabled', 1);
   }
 
-  var entries = Object.entries(members);
+  const entries = Object.entries(members);
   sortByKey(entries, function(e) { return e[0]; });
   console.log(
     "Members:",
@@ -1304,14 +1311,14 @@ function showMembers() {
   );
 
   // Empty the list
-  var current_members = document.getElementById('members-current');
+  const current_members = document.getElementById('members-current');
   current_members.innerHTML = '';
 
   // Fill it back up
-  for(var i = 0; i < entries.length; ++i) {
-    var login = entries[i][0];
-    var user = entries[i][1];
-    var elem = _memberRow(login, user, can_edit, login == user_login);
+  for(let i = 0; i < entries.length; ++i) {
+    const login = entries[i][0];
+    const user = entries[i][1];
+    const elem = _memberRow(login, user, can_edit, login == user_login);
 
     current_members.appendChild(elem);
   }
@@ -1326,9 +1333,9 @@ function showMembers() {
 document.getElementById('members-add').addEventListener('submit', function(e) {
   e.preventDefault();
 
-  var login = document.getElementById('member-add-name').value.toLowerCase();
+  const login = document.getElementById('member-add-name').value.toLowerCase();
   if(!login) { return; }
-  var privileges = document.getElementById('member-add-privileges').value;
+  const privileges = document.getElementById('member-add-privileges').value;
 
   // Check login
   if(login in members_displayed) {
@@ -1343,8 +1350,8 @@ document.getElementById('members-add').addEventListener('submit', function(e) {
   .then(function(result) {
     if(result.exists) {
       // Add it at the top
-      var elem = _memberRow(login, {privileges: privileges});
-      var current_members = document.getElementById('members-current');
+      const elem = _memberRow(login, {privileges: privileges});
+      const current_members = document.getElementById('members-current');
       current_members.insertBefore(elem, current_members.firstChild);
       members_displayed[login] = true;
 
@@ -1356,15 +1363,15 @@ document.getElementById('members-add').addEventListener('submit', function(e) {
 });
 
 function sendMembersPatch() {
-  var patch = {};
+  const patch = {};
 
-  var members_before = Object.assign({}, members_initial);
+  const members_before = Object.assign({}, members_initial);
 
-  var rows = document.getElementById('members-current').querySelectorAll('.members-item');
-  for(var i = 0; i < rows.length; ++i) {
-    var row = rows[i];
-    var login = row.querySelector('.members-item-login').textContent;
-    var privileges = row.querySelector('select').value;
+  const rows = document.getElementById('members-current').querySelectorAll('.members-item');
+  for(let i = 0; i < rows.length; ++i) {
+    const row = rows[i];
+    const login = row.querySelector('.members-item-login').textContent;
+    const privileges = row.querySelector('select').value;
 
     // Add to patch, if different from stored version
     if(!members_before[login] || members_before[login].privileges != privileges) {
@@ -1376,8 +1383,8 @@ function sendMembersPatch() {
   }
 
   // Remove the members that are left
-  var entries = Object.entries(members_before);
-  for(var i = 0; i < entries.length; ++i) {
+  const entries = Object.entries(members_before);
+  for(let i = 0; i < entries.length; ++i) {
     patch[entries[i][0]] = null;
   }
 
@@ -1415,10 +1422,10 @@ document.getElementById('members-current').addEventListener('submit', function(e
  * Load contents
  */
 
-var document_contents = document.getElementById('document-contents');
-var export_button = document.getElementById('export-button');
+const document_contents = document.getElementById('document-contents');
+const export_button = document.getElementById('export-button');
 
-function loadDocument(document_id) {
+function loadDocument(document_id: number | null) {
   if(document_id === null) {
     document_contents.style.direction = 'ltr';
     document_contents.innerHTML = '<p style="font-style: oblique; text-align: center;">' + gettext("Load a document on the left") + '</p>';
@@ -1432,9 +1439,9 @@ function loadDocument(document_id) {
     document_contents.innerHTML = '';
     highlights = {};
     chunk_offsets = [];
-    for(var i = 0; i < result.contents.length; ++i) {
-      var chunk = result.contents[i];
-      var elem = document.createElement('div');
+    for(let i = 0; i < result.contents.length; ++i) {
+      const chunk = result.contents[i];
+      const elem = document.createElement('div');
       elem.setAttribute('id', 'doc-offset-' + chunk.offset);
       elem.innerHTML = chunk.contents;
       document_contents.appendChild(elem);
@@ -1446,27 +1453,27 @@ function loadDocument(document_id) {
       document_contents.style.direction = 'ltr';
     }
     current_document = document_id;
-    var document_links = document.getElementsByClassName('document-link-current');
-    for(var i = document_links.length - 1; i >= 0; --i) {
+    const document_links = document.getElementsByClassName('document-link-current');
+    for(let i = document_links.length - 1; i >= 0; --i) {
       document_links[i].classList.remove('document-link-current');
     }
     document.getElementById('document-link-' + current_document).classList.add('document-link-current');
     current_tag = null;
-    var tag_links = document.getElementsByClassName('tag-current');
-    for(var i = tag_links.length - 1; i >= 0; --i) {
+    const tag_links = document.getElementsByClassName('tag-current');
+    for(let i = tag_links.length - 1; i >= 0; --i) {
       tag_links[i].classList.remove('tag-current');
     }
     console.log("Loaded document", document_id);
-    for(var i = 0; i < result.highlights.length; ++i) {
+    for(let i = 0; i < result.highlights.length; ++i) {
       setHighlight(result.highlights[i]);
     }
     console.log("Loaded " + result.highlights.length + " highlights");
 
     // Update export button
     export_button.style.display = '';
-    var items = export_button.getElementsByClassName('dropdown-item');
-    for(var i = 0; i < items.length; ++i) {
-      var ext = items[i].getAttribute('data-extension');
+    const items = export_button.getElementsByClassName('dropdown-item');
+    for(let i = 0; i < items.length; ++i) {
+      const ext = items[i].getAttribute('data-extension');
       if(items[i].getAttribute('data-document') !== 'false') {
         items[i].setAttribute(
           'href',
@@ -1488,7 +1495,7 @@ function loadDocument(document_id) {
   .then(hideSpinner);
 }
 
-function loadTag(tag_path, page) {
+function loadTag(tag_path: string, page?: number) {
   if(page === undefined) {
     page = 1;
   }
@@ -1501,42 +1508,42 @@ function loadTag(tag_path, page) {
     document_contents.style.direction = 'ltr';
     current_tag = tag_path;
     current_document = null;
-    var document_links = document.getElementsByClassName('document-link-current');
-    for(var i = document_links.length - 1; i >= 0; --i) {
+    const document_links = document.getElementsByClassName('document-link-current');
+    for(let i = document_links.length - 1; i >= 0; --i) {
       document_links[i].classList.remove('document-link-current');
     }
     // No need to clear the 'tag-current', we are calling updateTagsList() below
     document_contents.innerHTML = '';
     highlights = {};
-    for(var i = 0; i < result.highlights.length; ++i) {
-      var hl = result.highlights[i];
-      var content = document.createElement('div');
+    for(let i = 0; i < result.highlights.length; ++i) {
+      const hl = result.highlights[i];
+      const content = document.createElement('div');
       if(hl.text_direction === 'RIGHT_TO_LEFT') {
         content.style.direction = 'rtl';
       } else {
         content.style.direction = 'ltr';
       }
       content.innerHTML = result.highlights[i].content;
-      var elem = document.createElement('div');
+      const elem = document.createElement('div');
       elem.className = 'highlight-entry';
       elem.setAttribute('id', 'highlight-entry-' + hl.id);
       elem.appendChild(content);
       elem.appendChild(document.createTextNode(' '));
 
-      var doclink = document.createElement('a');
+      const doclink = document.createElement('a');
       doclink.className = 'badge badge-light';
       doclink.textContent = documents['' + hl.document_id].name;
       linkDocument(doclink, hl.document_id);
       elem.appendChild(doclink);
       elem.appendChild(document.createTextNode(' '));
 
-      var tag_names = hl.tags.map(function(tag) { return tags['' + tag].path; });
+      const tag_names = hl.tags.map(function(tag) { return tags['' + tag].path; });
       tag_names.sort();
-      for(var j = 0; j < tag_names.length; ++j) {
+      for(let j = 0; j < tag_names.length; ++j) {
         if(j > 0) {
           elem.appendChild(document.createTextNode(' '));
         }
-        var taglink = document.createElement('a');
+        const taglink = document.createElement('a');
         taglink.className = 'badge badge-dark';
         taglink.textContent = tag_names[j];
         linkTag(taglink, taglink.textContent);
@@ -1551,7 +1558,7 @@ function loadTag(tag_path, page) {
 
     // Pagination controls
     function makePageLink(page_nb, label, current, enabled) {
-      var item;
+      let item;
       if(current) {
         item = document.createElement('li');
         item.className = 'page-item active';
@@ -1563,7 +1570,7 @@ function loadTag(tag_path, page) {
       } else {
         item = document.createElement('li');
         item.className = 'page-item';
-        var link = document.createElement('a');
+        const link = document.createElement('a');
         link.className = 'page-link';
         link.setAttribute('href', '#');
         link.innerText = label;
@@ -1581,10 +1588,10 @@ function loadTag(tag_path, page) {
       }
       pagination = document.createElement('nav');
       pagination.setAttribute('aria-label', "Page navigation");
-      var pagination_ul = document.createElement('ul');
+      const pagination_ul = document.createElement('ul');
       pagination_ul.className = 'pagination justify-content-center';
-      var min_page = Math.max(2, page - 2);
-      var max_page = Math.min(result.pages - 1, page + 2);
+      const min_page = Math.max(2, page - 2);
+      const max_page = Math.min(result.pages - 1, page + 2);
 
       // Previous button
       pagination_ul.appendChild(makePageLink(page - 1, "Previous", false, page > 1));
@@ -1595,7 +1602,7 @@ function loadTag(tag_path, page) {
         pagination_ul.appendChild(makePageLink(page, "...", false, false));
       }
       // Other pages
-      for(var i = min_page; i <= max_page; ++i) {
+      for(let i = min_page; i <= max_page; ++i) {
         pagination_ul.appendChild(makePageLink(i, i, i === page, i !== page));
       }
       // "..." between other pages and last page, if appropriate
@@ -1615,9 +1622,9 @@ function loadTag(tag_path, page) {
 
     // Update export button
     export_button.style.display = '';
-    var items = export_button.getElementsByClassName('dropdown-item');
-    for(var i = 0; i < items.length; ++i) {
-      var ext = items[i].getAttribute('data-extension');
+    const items = export_button.getElementsByClassName('dropdown-item');
+    for(let i = 0; i < items.length; ++i) {
+      const ext = items[i].getAttribute('data-extension');
       if(items[i].getAttribute('data-highlights') !== 'false') {
         items[i].setAttribute(
           'href',
@@ -1642,17 +1649,23 @@ function loadTag(tag_path, page) {
 // Load the document if the URL includes one
 setTimeout(
   function() {
-    var _document_url = new RegExp('/project/([0-9]+)/document/([0-9]+)');
-    // Don't use RegExp literals https://github.com/python-babel/babel/issues/640
-    var m = window.location.pathname.match(_document_url);
-    if(m) {
-      loadDocument(parseInt(m[2]));
+    {
+      const document_url_re = new RegExp('/project/([0-9]+)/document/([0-9]+)');
+      // Don't use RegExp literals https://github.com/python-babel/babel/issues/640
+      const m = window.location.pathname.match(document_url_re);
+      if(m) {
+        loadDocument(parseInt(m[2]));
+        return;
+      }
     }
     // Or a tag
-    var _tag_url = new RegExp('/project/([0-9]+)/highlights/([^/]*)');
-    m = window.location.pathname.match(_tag_url);
-    if(m) {
-      loadTag(decodeURIComponent(m[2]));
+    {
+      const tag_url_re = new RegExp('/project/([0-9]+)/highlights/([^/]*)');
+      const m = window.location.pathname.match(tag_url_re);
+      if(m) {
+        loadTag(decodeURIComponent(m[2]));
+        return;
+      }
     }
   },
   0,
@@ -1681,7 +1694,7 @@ window.onpopstate = function(e) {
 
 // null: active now
 // Date: inactive since then
-var windowLastActive = new Date();
+let windowLastActive = new Date();
 if(document.hasFocus()) {
   windowLastActive = null; // Focused now
 }
@@ -1703,8 +1716,8 @@ window.addEventListener('blur', function() {
   windowLastActive = new Date();
 });
 
-var lastPoll = null;
-var polling = true;
+let lastPoll = null;
+let polling = true;
 
 function maybeResumePolling() {
   if(!polling) {
@@ -1732,8 +1745,8 @@ function longPollForEvents() {
       window.location.reload();
       return;
     }
-    for(var i = 0; i < result.events.length; ++i) {
-      var event = result.events[i];
+    for(let i = 0; i < result.events.length; ++i) {
+      const event = result.events[i];
       if(event.type === 'project_meta') {
         setProjectMetadata({
           project_name: event.project_name,
@@ -1774,8 +1787,8 @@ function longPollForEvents() {
       }
 
       if('tag_count_changes' in event) {
-        var entries = Object.entries(event.tag_count_changes);
-        for(var i = 0; i < entries.length; ++i) {
+        const entries = Object.entries(event.tag_count_changes);
+        for(let i = 0; i < entries.length; ++i) {
           updateTagCount(entries[i][0], entries[i][1]);
         }
       }
