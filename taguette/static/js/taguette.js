@@ -12,6 +12,7 @@
  * - Members
  * - Load contents
  * - Long polling
+ */
 
 
 /*
@@ -131,18 +132,19 @@ function getJSON(url='', args) {
       }
       );
     }
-    return response.json().catch(function(error) { throw new ApiError(response, "Invalid JSON"); });
+    return response.json().catch(function() { throw new ApiError(response, "Invalid JSON"); });
   });
 }
 
 function deleteURL(url='', args) {
   if(args) {
-    args = '&' + encodeGetParams(args);
+    args = encodeGetParams(args);
   } else {
     args = '';
   }
+  var xsrf = getCookie('_xsrf');
   return fetch(
-    url + '?_xsrf=' + encodeURIComponent(getCookie('_xsrf')) + args,
+    url + '?' + (xsrf !== undefined ? '_xsrf=' + encodeURIComponent(xsrf) + '&' : '') + args,
     {
       credentials: 'same-origin',
       mode: 'same-origin',
@@ -159,12 +161,13 @@ function deleteURL(url='', args) {
 
 function postJSON(url='', data={}, args) {
   if(args) {
-    args = '&' + encodeGetParams(args);
+    args = encodeGetParams(args);
   } else {
     args = '';
   }
+  var xsrf = getCookie('_xsrf');
   return fetch(
-    url + '?_xsrf=' + encodeURIComponent(getCookie('_xsrf')) + args,
+    url + '?' + (xsrf !== undefined ? '_xsrf=' + encodeURIComponent(xsrf) + '&' : '') + args,
     {
       credentials: 'same-origin',
       mode: 'same-origin',
@@ -192,18 +195,19 @@ function postJSON(url='', data={}, args) {
       }
       );
     }
-    return response.json().catch(function(error) { throw new ApiError(response, "Invalid JSON"); });
+    return response.json().catch(function() { throw new ApiError(response, "Invalid JSON"); });
   });
 }
 
 function patchJSON(url='', data={}, args) {
   if(args) {
-    args = '&' + encodeGetParams(args);
+    args = encodeGetParams(args);
   } else {
     args = '';
   }
+  var xsrf = getCookie('_xsrf');
   return fetch(
-    url + '?_xsrf=' + encodeURIComponent(getCookie('_xsrf')) + args,
+    url + '?' + (xsrf !== undefined ? '_xsrf=' + encodeURIComponent(xsrf) + '&' : '') + args,
     {
       credentials: 'same-origin',
       mode: 'same-origin',
@@ -230,6 +234,8 @@ function patchJSON(url='', data={}, args) {
         throw new ApiError(response);
       }
       );
+    } else {
+      return null;
     }
   });
 }
@@ -486,7 +492,7 @@ function projectMetadataChanged() {
       '/api/project/' + project_id,
       meta
     )
-    .then(function(result) {
+    .then(function() {
       setProjectMetadata(meta, false);
     })
     .catch(function(error) {
@@ -978,6 +984,8 @@ document.getElementById('tag-add-delete').addEventListener('click', function(e) 
 
 // Merge tags button in tag edit modal: shows merge modal
 document.getElementById('tag-add-merge').addEventListener('click', function(e) {
+  e.preventDefault();
+
   var tag_id = document.getElementById('tag-add-id').value;
   if(!tag_id)
     return;
@@ -1076,7 +1084,6 @@ function removeHighlight(id) {
     return;
   }
 
-  var highlight = highlights[id];
   delete highlights[id];
   console.log("Highlight removed:", id);
 
@@ -1094,7 +1101,7 @@ function removeHighlight(id) {
 
 // Backlight
 var backlight_checkbox = document.getElementById('backlight');
-backlight_checkbox.addEventListener('change', function(e) {
+backlight_checkbox.addEventListener('change', function() {
   var classes = document.getElementById('document-view').classList;
   if(backlight_checkbox.checked == classes.contains('backlight')) {
     ; // all good
@@ -1115,6 +1122,7 @@ var highlight_add_modal = document.getElementById('highlight-add-modal');
 // Updates current_selection and visibility of the controls
 function selectionChanged() {
   current_selection = describeSelection();
+  var hlinfo = document.getElementById('hlinfo');
   if(current_selection !== null) {
     var current_range = window.getSelection().getRangeAt(0);
     if(current_range.endOffset > 0) {
@@ -1131,7 +1139,7 @@ function selectionChanged() {
       // an empty node. We just don't move the popup, seems to work in practice
     }
   } else {
-    document.getElementById('hlinfo').style.display = 'none';
+    hlinfo.style.display = 'none';
   }
 }
 document.addEventListener('selectionchange', selectionChanged);
@@ -1144,7 +1152,7 @@ function createHighlight(selection) {
   $(highlight_add_modal).modal().drags({handle: '.modal-header'});
 }
 
-function editHighlight(e) {
+function editHighlight() {
   document.getElementById('highlight-add-form').reset();
   var id = this.getAttribute('data-highlight-id');
   document.getElementById('highlight-add-id').value = id;
@@ -1205,7 +1213,7 @@ document.getElementById('highlight-add-form').addEventListener('submit', functio
 });
 
 // Delete highlight button
-document.getElementById('highlight-delete').addEventListener('click', function(e) {
+document.getElementById('highlight-delete').addEventListener('click', function() {
   var highlight_id = document.getElementById('highlight-add-id').value;
   if(highlight_id) {
     highlight_id = parseInt(highlight_id);
@@ -1268,7 +1276,7 @@ function _memberRow(login, user, can_edit, is_self) {
     }
   });
 
-  elem.querySelector('button').addEventListener('click', function(e) {
+  elem.querySelector('button').addEventListener('click', function() {
     elem.parentNode.removeChild(elem);
     delete members_displayed[login];
   });
