@@ -21,7 +21,9 @@
     "outDir": "./dist/tsc/",
     "types": [
       "node",
-      "jest"
+      "jest",
+      "bootstrap",
+      "jquery"
     ],
     "lib": [
       "ES6",
