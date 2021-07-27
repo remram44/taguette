@@ -86,18 +86,6 @@ function getScrollPos() {
   return {x: x, y: y};
 }
 
-function getPageXY(e) {
-  // from jQuery
-  // Calculate pageX/Y if missing
-  if(e.pageX === null) {
-    var scrollPos = getScrollPos();
-    var x = e.clientX + scrollPos.x;
-    var y = e.clientY + scrollPos.y;
-    return {x: x, y: y};
-  }
-  return {x: e.pageX, y: e.pageY};
-}
-
 function getCookie(name) {
   var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
   return r ? r[1] : undefined;
