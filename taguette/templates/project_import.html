@@ -36,7 +36,7 @@ projectFile.addEventListener('change', function() {
   var file = projectFile.files[0];
   var form_data = new FormData();
   form_data.append('file', file);
-  var xsrf = document.cookie.match('\\b' + '_xsrf' + '=([^;]*)\\b')
+  var xsrf = document.cookie.match('\\b' + '_xsrf' + '=([^;]*)\\b');
   if(xsrf) {
     form_data.append('_xsrf', xsrf[1]);
   }
