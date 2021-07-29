@@ -143,28 +143,8 @@ REQUIRED_CONFIG = ['NAME', 'PORT', 'SECRET_KEY', 'DATABASE', 'TOS_FILE',
                    'OPF_OUT_SIZE_LIMIT', 'HTML_OUT_SIZE_LIMIT']
 
 
-def main():
-    logging.root.handlers.clear()
-    logging.basicConfig(level=logging.INFO,
-                        format="%(asctime)s %(levelname)s: %(message)s")
-    locale.setlocale(locale.LC_ALL, '')
-    lang = locale.getlocale()[0]
-    lang = [lang] if lang else []
-    d = pkg_resources.resource_filename('taguette', 'l10n')
-    trans = gettext.translation('taguette_main', d, lang, fallback=True)
-    taguette._trans = trans
-    _ = trans.gettext
-
-    if sys.platform == 'win32' and sys.version_info >= (3, 8):
-        # https://github.com/tornadoweb/tornado/issues/2608
-        try:
-            from asyncio import WindowsSelectorEventLoopPolicy
-        except ImportError:
-            pass
-        else:
-            policy = asyncio.get_event_loop_policy()
-            if not isinstance(policy, WindowsSelectorEventLoopPolicy):
-                asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())
+def parse_arguments(argv=None):
+    _ = taguette._trans.gettext
 
     if sys.platform == 'win32':
         import ctypes.wintypes
@@ -263,23 +243,13 @@ def main():
                                       "default configuration can be generated "
                                       "using the `default-config` command"))
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
-    if args.func1:
-        args.func1(args)
-        sys.exit(0)
+    return args
 
-    if args.umask is not None:
-        if not re.match(r'^[0-7][0-7][0-7]$', args.umask):
-            print(_("Invalid umask: %(arg)s") % dict(arg=args.umask),
-                  file=sys.stderr, flush=True)
-            sys.exit(2)
-        logger.info("Setting umask to %s", args.umask)
-        os.umask(int(args.umask, 8))
 
-    if args.func:
-        args.func(args)
-        sys.exit(0)
+def build_config(args):
+    _ = taguette._trans.gettext
 
     if args.cmd == 'server':
         # Set configuration from config file
@@ -324,6 +294,52 @@ def main():
             COOKIES_PROMPT=False,
             HTML_OUT_SIZE_LIMIT=5000000,  # 5 MB
         )
+
+    return config
+
+
+def main():
+    logging.root.handlers.clear()
+    logging.basicConfig(level=logging.INFO,
+                        format="%(asctime)s %(levelname)s: %(message)s")
+    locale.setlocale(locale.LC_ALL, '')
+    lang = locale.getlocale()[0]
+    lang = [lang] if lang else []
+    d = pkg_resources.resource_filename('taguette', 'l10n')
+    trans = gettext.translation('taguette_main', d, lang, fallback=True)
+    taguette._trans = trans
+    _ = trans.gettext
+
+    if sys.platform == 'win32' and sys.version_info >= (3, 8):
+        # https://github.com/tornadoweb/tornado/issues/2608
+        try:
+            from asyncio import WindowsSelectorEventLoopPolicy
+        except ImportError:
+            pass
+        else:
+            policy = asyncio.get_event_loop_policy()
+            if not isinstance(policy, WindowsSelectorEventLoopPolicy):
+                asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())
+
+    args = parse_arguments()
+
+    if args.func1:
+        args.func1(args)
+        sys.exit(0)
+
+    if args.umask is not None:
+        if not re.match(r'^[0-7][0-7][0-7]$', args.umask):
+            print(_("Invalid umask: %(arg)s") % dict(arg=args.umask),
+                  file=sys.stderr, flush=True)
+            sys.exit(2)
+        logger.info("Setting umask to %s", args.umask)
+        os.umask(int(args.umask, 8))
+
+    if args.func:
+        args.func(args)
+        sys.exit(0)
+
+    config = build_config(args)
 
     if config.get('LOG_FILE') is not None:
         if config.get('LOG_FILE_ROTATE_COUNT') is not None:
