@@ -4,6 +4,7 @@ import base64
 import gettext
 import locale
 import logging
+import logging.handlers
 import os
 import pkg_resources
 import prometheus_client
@@ -178,14 +179,20 @@ def main():
         default_db = os.path.join(buf.value, 'Taguette', 'taguette.sqlite3')
         default_db_show = os.path.join(os.path.basename(buf.value),
                                        'Taguette', 'taguette.sqlite3')
+        default_log = os.path.join(buf.value, 'Taguette', 'taguette.log')
+        default_log_show = os.path.join(os.path.basename(buf.value),
+                                        'Taguette', 'desktop.log')
     else:
         data = os.environ.get('XDG_DATA_HOME')
         if not data:
             data = os.path.join(os.environ['HOME'], '.local', 'share')
             default_db_show = '$HOME/.local/share/taguette/taguette.sqlite3'
+            default_log_show = '$HOME/.local/share/taguette/desktop.log'
         else:
             default_db_show = '$XDG_DATA_HOME/taguette/taguette.sqlite3'
+            default_log_show = '$XDG_DATA_HOME/taguette/desktop.log'
         default_db = os.path.join(data, 'taguette', 'taguette.sqlite3')
+        default_log = os.path.join(data, 'taguette', 'desktop.log')
 
     parser = argparse.ArgumentParser(
         description="Document tagger for qualitative analysis",
@@ -209,6 +216,14 @@ def main():
                                "'postgresql://me:pw@localhost/mydb' "
                                "(default: %(default)r)") %
                         dict(default=default_db_show))
+    parser.add_argument('--log-file', action='store',
+                        default=default_log,
+                        help=_("Log file location (default: %(default)r)") %
+                        dict(default=default_log_show))
+    parser.add_argument('--no-log-file', action='store_const',
+                        dest='log_file', const=None,
+                        default=default_log,
+                        help=_("Disable log file"))
     parser.add_argument('--set-umask', action='store', dest='umask',
                         default="077",
                         help=_("Set the file creation mask (umask) on systems "
@@ -297,6 +312,7 @@ def main():
         # Set configuration from command-line
         config = dict(
             DEFAULT_CONFIG,
+            LOG_FILE=args.log_file,
             MULTIUSER=False,
             BIND_ADDRESS=args.bind,
             X_HEADERS=False,
@@ -308,6 +324,20 @@ def main():
             COOKIES_PROMPT=False,
             HTML_OUT_SIZE_LIMIT=5000000,  # 5 MB
         )
+
+    if config.get('LOG_FILE') is not None:
+        if config.get('LOG_FILE_ROTATE_COUNT') is not None:
+            logging.root.addHandler(logging.handlers.RotatingFileHandler(
+                config['LOG_FILE'],
+                mode='a', delay=False,
+                maxBytes=config.get('LOG_FILE_ROTATE_SIZE', 400000),
+                backupCount=config['LOG_FILE_ROTATE_COUNT'],
+            ))
+        else:
+            logging.root.addHandler(logging.FileHandler(
+                config['LOG_FILE'],
+                mode='a', delay=False,
+            ))
 
     if 'PROMETHEUS_LISTEN' in config:
         p_addr = None
