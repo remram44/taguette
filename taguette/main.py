@@ -358,7 +358,7 @@ def main():
     loop = tornado.ioloop.IOLoop.current()
 
     if args.debug:
-        logging.warning("Debug mode is ON")
+        logger.warning("Debug mode is ON")
         asyncio.get_event_loop().set_debug(True)
 
     token = app.single_user_token
