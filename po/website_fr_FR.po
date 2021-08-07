@@ -1002,7 +1002,7 @@ msgstr ""
 "          <p><img src=\"imgs/mac-02.png\" width=\"543\" height=\"158\" class=\"mx-auto d-block\"/></p>\n"
 "          <p>Ensuite, double-cliquez sur \"Applications\" et faites un clic droit sur \"Taguette.app\" puis choisissez \"Ouvrir\".</p>\n"
 "          <p><img src=\"imgs/mac-03.png\" width=\"780\" height=\"238\" class=\"mx-auto d-block\"/></p>\n"
-"          <p><img src=\"imgs/mac-04.png\" width=\"262\" height=\"386\" class=\"mx-auto d-block\"></p>\n"
+"          <p><img src=\"imgs/mac-04.png\" width=\"262\" height=\"386\" class=\"mx-auto d-block\"/></p>\n"
 "          <p>Cette dernière opération n'est nécessaire que la première fois. Vous pourrez ensuite ouvrir Taguette depuis le Launchpad ou Spotlight.</p>\n"
 "          "
 

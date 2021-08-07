@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-07-17 11:18-0400\n"
+"POT-Creation-Date: 2021-08-07 10:31-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1164,18 +1164,23 @@ msgid ""
 "\n"
 "          <p>Download the EXE file from <a href=\"%(download_page)s\">our"
 " latest release page</a>.</p>\n"
-"          <p>Open it, and click through the installer wizard's steps. A "
-"\"Taguette\" entry will appear in your Start Menu and on your Desktop, if"
-" you selected that option.</p>\n"
+"          <p>Open it. On some versions of Windows, you might get a "
+"warning that Taguette comes from an \"unknown publisher\". In that case, "
+"click on \"more info\" then \"run anyway\".</p>\n"
+"          <p><img src=\"imgs/windows.png\" width=\"696\" height=\"319\" "
+"class=\"mx-auto d-block\"/></p>\n"
+"          <p>Click through the installer wizard's steps. A \"Taguette\" "
+"entry will appear in your Start Menu and on your Desktop, if you selected"
+" that option.</p>\n"
 "          "
 msgstr ""
 
 #. Popup for MacOS installation instructions
-#: install.html:36
+#: install.html:38
 msgid "On macOS..."
 msgstr ""
 
-#: install.html:38
+#: install.html:40
 #, python-format
 msgid ""
 "\n"
@@ -1192,13 +1197,13 @@ msgid ""
 "          <p><img src=\"imgs/mac-03.png\" width=\"780\" height=\"238\" "
 "class=\"mx-auto d-block\"/></p>\n"
 "          <p><img src=\"imgs/mac-04.png\" width=\"262\" height=\"386\" "
-"class=\"mx-auto d-block\"></p>\n"
+"class=\"mx-auto d-block\"/></p>\n"
 "          <p>You will only have to do this the first time. After this, "
 "you will be able to start Taguette from the Launchpad or Spotlight.</p>\n"
 "          "
 msgstr ""
 
-#: install.html:53
+#: install.html:55
 msgid ""
 "Once you start the application, you will see a terminal window appear. "
 "This is normal! You can ignore it completely and use Taguette from your "
@@ -1209,11 +1214,11 @@ msgid ""
 "stop Taguette."
 msgstr ""
 
-#: install.html:55
+#: install.html:57
 msgid "Installation using pip"
 msgstr ""
 
-#: install.html:57
+#: install.html:59
 msgid ""
 "\n"
 "  <p>You first need to install <a "
@@ -1222,25 +1227,32 @@ msgid ""
 "management software. Taguette uses a part of Calibre to convert documents"
 " into HTML, allowing you to highlight and tag parts of them.</p>\n"
 "\n"
-"  <p>Once you've installed Python, you can install Taguette with its "
-"dependencies from the command line with the following:</p>\n"
+"  <p>On Debian or Ubuntu, you can run <code>sudo apt install python3 "
+"calibre</code></p>\n"
 "\n"
-"  <pre>pip3 install taguette</pre>\n"
+"  <p>Once you've installed Python, you can create a Python 3 virtual "
+"environment and install Taguette with its dependencies from the command "
+"line with the following:</p>\n"
 "\n"
-"  <p>After which you can simply run <code>taguette</code> in the terminal"
-" to get it going. You'll see the command line will still be running. This"
-" is ok! Don't worry about the terminal, but do leave it running. A "
-"browser window should appear, pointing you to <a "
+"  <pre>python3 -m venv taguette.virtualenv\n"
+". taguette.virtualenv/bin/activate\n"
+"pip install taguette</pre>\n"
+"\n"
+"  <p>After which you can simply run "
+"<code>taguette.virtualenv/bin/taguette</code> in the terminal to get it "
+"going. You'll see the command line will still be running. This is ok! "
+"Don't worry about the terminal, but do leave it open. A browser window "
+"should appear, pointing you to <a "
 "href=\"http://localhost:7465/\"><code>localhost:7465</code></a>, and you "
 "can begin working on your projects!</p>\n"
 "  "
 msgstr ""
 
-#: install.html:67
+#: install.html:73
 msgid "Development set-up"
 msgstr ""
 
-#: install.html:69
+#: install.html:75
 msgid ""
 "\n"
 "  <p>You can also install from a local clone of this repository, which "
@@ -1273,7 +1285,7 @@ msgid ""
 "  "
 msgstr ""
 
-#: install.html:83
+#: install.html:89
 msgid ""
 "Learn about using Taguette at our <a href=\"getting-"
 "started.html\">getting started</a> page!"
