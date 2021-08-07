@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-07-17 11:18-0400\n"
+"POT-Creation-Date: 2021-08-07 10:31-0400\n"
 "PO-Revision-Date: 2021-03-01 04:12+0000\n"
 "Last-Translator: Rémi Rampin <remirampin@gmail.com>, 2021\n"
 "Language-Team: French (https://www.transifex.com/remram44/teams/98824/fr/)\n"
@@ -968,20 +968,24 @@ msgstr "Sur Windows..."
 msgid ""
 "\n"
 "          <p>Download the EXE file from <a href=\"%(download_page)s\">our latest release page</a>.</p>\n"
-"          <p>Open it, and click through the installer wizard's steps. A \"Taguette\" entry will appear in your Start Menu and on your Desktop, if you selected that option.</p>\n"
+"          <p>Open it. On some versions of Windows, you might get a warning that Taguette comes from an \"unknown publisher\". In that case, click on \"more info\" then \"run anyway\".</p>\n"
+"          <p><img src=\"imgs/windows.png\" width=\"696\" height=\"319\" class=\"mx-auto d-block\"/></p>\n"
+"          <p>Click through the installer wizard's steps. A \"Taguette\" entry will appear in your Start Menu and on your Desktop, if you selected that option.</p>\n"
 "          "
 msgstr ""
 "\n"
 "          <p>Téléchargez le ficher EXE depuis <a href=\"%(download_page)s\">la page de notre dernière version</a>.</p>\n"
-"          <p>Ouvrez-le et cliquez votre chemin à travers le programme d'installation. Un bouton \"Taguette\" apparaîtra dans votre menu \"démarrer\" et sur votre bureau, si vous avez sélectionné cette option.</p>\n"
+"          <p>Ouvrez-le. Sur certaines versions de Windows, you verrez un message vous avertissant que Taguette vient d'un \"éditeur inconnu\". Dans ce cas, cliquez sur \"information complémentaires\" puis \"exécuter quand même\".</p>\n"
+"          <p><img src=\"imgs/windows.png\" width=\"696\" height=\"319\" class=\"mx-auto d-block\"/></p>\n"
+"          <p>Suivez le programme d'installation. Un bouton \"Taguette\" apparaîtra dans votre menu \"démarrer\" et sur votre bureau, si vous avez sélectionné cette option.</p>\n"
 "          "
 
 #. Popup for MacOS installation instructions
-#: install.html:36
+#: install.html:38
 msgid "On macOS..."
 msgstr "Sur macOS..."
 
-#: install.html:38
+#: install.html:40
 #, python-format
 msgid ""
 "\n"
@@ -991,7 +995,7 @@ msgid ""
 "          <p><img src=\"imgs/mac-02.png\" width=\"543\" height=\"158\" class=\"mx-auto d-block\"/></p>\n"
 "          <p>Then double-click on \"Applications\", and right-click on \"Taguette.app\" and choose \"Open\".</p>\n"
 "          <p><img src=\"imgs/mac-03.png\" width=\"780\" height=\"238\" class=\"mx-auto d-block\"/></p>\n"
-"          <p><img src=\"imgs/mac-04.png\" width=\"262\" height=\"386\" class=\"mx-auto d-block\"></p>\n"
+"          <p><img src=\"imgs/mac-04.png\" width=\"262\" height=\"386\" class=\"mx-auto d-block\"/></p>\n"
 "          <p>You will only have to do this the first time. After this, you will be able to start Taguette from the Launchpad or Spotlight.</p>\n"
 "          "
 msgstr ""
@@ -1006,7 +1010,7 @@ msgstr ""
 "          <p>Cette dernière opération n'est nécessaire que la première fois. Vous pourrez ensuite ouvrir Taguette depuis le Launchpad ou Spotlight.</p>\n"
 "          "
 
-#: install.html:53
+#: install.html:55
 msgid ""
 "Once you start the application, you will see a terminal window appear. This "
 "is normal! You can ignore it completely and use Taguette from your web "
@@ -1023,37 +1027,45 @@ msgstr ""
 " jusqu'à ce que vous ayez fini d'utiliser Taguette, après quoi vous pouvez "
 "fermer cette fenêtre pour arrêter Taguette."
 
-#: install.html:55
+#: install.html:57
 msgid "Installation using pip"
 msgstr "Installation avec pip"
 
-#: install.html:57
+#: install.html:59
 msgid ""
 "\n"
 "  <p>You first need to install <a href=\"https://www.python.org/downloads/\">Python 3</a> and <a href=\"https://calibre-ebook.com/\">Calibre</a>, the open-source e-book management software. Taguette uses a part of Calibre to convert documents into HTML, allowing you to highlight and tag parts of them.</p>\n"
 "\n"
-"  <p>Once you've installed Python, you can install Taguette with its dependencies from the command line with the following:</p>\n"
+"  <p>On Debian or Ubuntu, you can run <code>sudo apt install python3 calibre</code></p>\n"
 "\n"
-"  <pre>pip3 install taguette</pre>\n"
+"  <p>Once you've installed Python, you can create a Python 3 virtual environment and install Taguette with its dependencies from the command line with the following:</p>\n"
 "\n"
-"  <p>After which you can simply run <code>taguette</code> in the terminal to get it going. You'll see the command line will still be running. This is ok! Don't worry about the terminal, but do leave it running. A browser window should appear, pointing you to <a href=\"http://localhost:7465/\"><code>localhost:7465</code></a>, and you can begin working on your projects!</p>\n"
+"  <pre>python3 -m venv taguette.virtualenv\n"
+". taguette.virtualenv/bin/activate\n"
+"pip install taguette</pre>\n"
+"\n"
+"  <p>After which you can simply run <code>taguette.virtualenv/bin/taguette</code> in the terminal to get it going. You'll see the command line will still be running. This is ok! Don't worry about the terminal, but do leave it open. A browser window should appear, pointing you to <a href=\"http://localhost:7465/\"><code>localhost:7465</code></a>, and you can begin working on your projects!</p>\n"
 "  "
 msgstr ""
 "\n"
 "  <p>Vous devez tout d'abord installer <a href=\"https://www.python.org/downloads/\">Python 3</a> et <a href=\"https://calibre-ebook.com/\">Calibre</a>, le logiciel libre de gestion de livres numériques. Taguette uses utilise une partie de Calibre pour convertir des documents en HTML, ce qui vous permet de les marquer et tagger dans Taguette.</p>\n"
 "\n"
-"  <p>Une fois que vous avez installé Python, vous pouvez installer Taguette avec ses dépendances logicielles depuis la ligne de commandes comme suit :</p>\n"
+"  <p>Sur Debian ou Ubuntu, vous pouvez faire <code>sudo apt install python3 calibre</code></p>\n"
 "\n"
-"  <pre>pip3 install taguette</pre>\n"
+"  <p>Une fois que vous avez installé Python, vous pouvez créer un environment virtuel Python et installer Taguette avec ses dépendances logicielles depuis la ligne de commandes comme suit :</p>\n"
 "\n"
-"  <p>Après quoi vous pouvez simplement entrer <code>taguette</code> dans le terminal pour lancer l'application. Vous verrez que l'activité continue dans le terminal. C'est normal ! Ne vous inquiétez pas du terminal, mais laissez-le ouvert. Une fenêtre de navigateur devrait apparaître, dirigée vers <a href=\"http://localhost:7465/\"><code>localhost:7465</code></a>, et vous pouvez commencer à travailler sur vos projets !</p>\n"
+"  <pre>python3 -m venv taguette.virtualenv\n"
+". taguette.virtualenv/bin/activate\n"
+"pip install taguette</pre>\n"
+"\n"
+"  <p>Après quoi vous pouvez simplement entrer <code>taguette.virtualenv/bin/taguette</code> dans le terminal pour lancer l'application. Vous verrez que l'activité continue dans le terminal. C'est normal ! Ne vous inquiétez pas du terminal, mais laissez-le ouvert. Une fenêtre de navigateur devrait apparaître, dirigée vers <a href=\"http://localhost:7465/\"><code>localhost:7465</code></a>, et vous pouvez commencer à travailler sur vos projets !</p>\n"
 "  "
 
-#: install.html:67
+#: install.html:73
 msgid "Development set-up"
 msgstr "Configuration pour le développement"
 
-#: install.html:69
+#: install.html:75
 msgid ""
 "\n"
 "  <p>You can also install from a local clone of this repository, which will allow you to easily change the sources to suit your needs:</p>\n"
@@ -1083,7 +1095,7 @@ msgstr ""
 "  </ol>\n"
 "  "
 
-#: install.html:83
+#: install.html:89
 msgid ""
 "Learn about using Taguette at our <a href=\"getting-started.html\">getting "
 "started</a> page!"
