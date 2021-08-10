@@ -140,3 +140,13 @@ sqlite3_py3.9:
     - $HOME/.poetry/bin/poetry install --no-interaction
     - scripts/update_translations.sh
     - python -Wd tests.py
+
+sqlite3_py3.10:
+  stage: test
+  image: python:3.10-rc
+  script:
+    - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.8
+    - /root/.poetry/bin/poetry config virtualenvs.create false
+    - $HOME/.poetry/bin/poetry install --no-interaction
+    - scripts/update_translations.sh
+    - python -Wd tests.py
