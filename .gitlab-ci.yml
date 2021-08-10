@@ -121,7 +121,7 @@ sqlite3_pypy:
     - scripts/update_translations.sh
     - python -Wd tests.py
 
-sqlite3_py37:
+sqlite3_py3.7:
   stage: test
   image: python:3.7
   script:
@@ -131,7 +131,7 @@ sqlite3_py37:
     - scripts/update_translations.sh
     - python -Wd tests.py
 
-sqlite3_py39:
+sqlite3_py3.9:
   stage: test
   image: python:3.9
   script:
