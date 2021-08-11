@@ -622,6 +622,7 @@ document.getElementById('document-add-form').addEventListener('submit', function
   var name = document.getElementById('document-add-name').value;
   if(!name) {
     name = basename(document.getElementById('document-add-file').value);
+    name = name.substring(0, 50);
   }
   form_data.append('name', name);
   form_data.append('description',
