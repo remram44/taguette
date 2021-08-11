@@ -24,7 +24,7 @@ authors:
     orcid: 0000-0003-4298-168X
     affiliation: 1
 affiliations:
- - name:
+ - name: Independent Researcher
    index: 1
 date: 15 July 2021
 bibliography: paper.bib
