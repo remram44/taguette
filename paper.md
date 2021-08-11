@@ -42,7 +42,7 @@ Taguette directly supports qualitative inquiry of text materials (see \autoref{f
 
 # Taguette
 
-Taguette is a web application written in Python. It is designed to run both on a desktop machine, in single-user mode, or on a server, where it allows real-time collaboration. In addition, we have been running a server at [app.taguette.org](https://app.taguette.org/) for anyone to use since March 2019, where we have about 2,000 monthly active users. Taguette is multiplatform, with installers provided for MacOS and Windows, a Docker image, and on the Python package Index (PyPI). It is available in 7 languages and has been downloaded over 12,000 times.
+Taguette is a web application written in Python [@python] with the Tornado Web Framework [@tornado]. It is designed to run both on a desktop machine, in single-user mode, or on a server, where it allows real-time collaboration. In addition, we have been running a server at [app.taguette.org](https://app.taguette.org/) for anyone to use since March 2019, where we have about 2,000 monthly active users. Taguette is multiplatform, with installers provided for MacOS and Windows, a Docker image, and on the Python package Index (PyPI). It is available in 7 languages and has been downloaded over 12,000 times.
 
 ## Importing Documents
 
@@ -50,7 +50,7 @@ Work in Taguette begins with importing a document. We support a variety of text 
 
 ## Analysis
 
-After a user has imported a document into Taguette, they can then qualitatively highlight sections of text (see \autoref{fig:document}). Those highlights are organized in hierarchical tags that can be created, merged together, and recalled at will (see \autoref{fig:view-tag}). Data for all projects including documents, tags, and highlights is stored in a SQL database, which allows for easy exploration and scripting should the user need to go beyond the capabilities offered by our interface. In single-user mode, Taguette automatically creates a SQLite database in the user's home directory, and perform schema migrations automatically when a new version of Taguette is installed.
+After a user has imported a document into Taguette, they can then qualitatively highlight sections of text (see \autoref{fig:document}). Those highlights are organized in hierarchical tags that can be created, merged together, and recalled at will (see \autoref{fig:view-tag}). Data for all projects including documents, tags, and highlights is stored in a SQL database, which allows for easy exploration and scripting should the user need to go beyond the capabilities offered by our interface. In single-user mode, Taguette automatically creates a SQLite database in the user's home directory, and perform schema migrations automatically when a new version of Taguette is installed. Taguette can also use the other SQL backends supported by SQLAlchemy [@sqlalchemy].
 
 ![Document view, where highlights are created and associated with tags.\label{fig:document}](01-document.png)
 
@@ -70,7 +70,7 @@ Taguette offers a variety of exporting options. A user can export a codebook as 
 
 ![A highlighted document exported from Taguette and opened in LibreOffice.\label{fig:export}](04-export.png)
 
-It is also possible to export a project as a SQLite3 database, in Taguette's native schema, which contains all the information necessary to continue work on another instance of Taguette. It is even possible to import them on our hosted version, [app.taguette.org](https://app.taguette.org/), or to export from there to a local copy. Older versions of the schema are automatically recognized and converted to the latest version if needed.
+It is also possible to export a project as a SQLite3 database [@sqlite], in Taguette's native schema, which contains all the information necessary to continue work on another instance of Taguette. It is even possible to import them on our hosted version, [app.taguette.org](https://app.taguette.org/), or to export from there to a local copy. Older versions of the schema are automatically recognized and converted to the latest version if needed.
 
 # Related Work
 
