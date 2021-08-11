@@ -104,6 +104,14 @@ class TestConvert(AsyncTestCase):
         self.assertEqual(validate.filename('ééé.pdf'), '_.pdf')
         self.assertEqual(validate.filename('/tmp/NUL.pdf'), '_NUL.pdf')
         self.assertEqual(validate.filename('/tmp/nul.pdf'), '_nul.pdf')
+        self.assertEqual(
+            validate.filename('a_very_long_file_name.pdf'),
+            'a_very_long_file_nam.pdf',
+        )
+        self.assertEqual(
+            validate.filename('a_very_long_file_name'),
+            'a_very_long_file_nam',
+        )
 
 
 class TestPassword(unittest.TestCase):
