@@ -7,6 +7,7 @@ import hmac
 import json
 import logging
 import jinja2
+from markupsafe import Markup
 import os
 import pkg_resources
 from prometheus_async.aio import time as prom_async_time
@@ -311,7 +312,7 @@ class BaseHandler(RequestHandler):
 
     @jinja2.contextfunction
     def _tpl_xsrf_form_html(context):
-        return jinja2.Markup(context['handler'].xsrf_form_html())
+        return Markup(context['handler'].xsrf_form_html())
     template_env.globals['xsrf_form_html'] = _tpl_xsrf_form_html
 
     def __init__(self, application, request, **kwargs):

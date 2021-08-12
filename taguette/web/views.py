@@ -2,7 +2,7 @@ from datetime import timedelta, datetime
 from email.message import EmailMessage
 import json
 import logging
-import jinja2
+from markupsafe import Markup
 import prometheus_client
 from sqlalchemy.orm import aliased
 import time
@@ -202,7 +202,7 @@ class TermsOfService(BaseHandler):
         if self.application.terms_of_service:
             return self.render(
                 'tos.html',
-                tos_text=jinja2.Markup(self.application.terms_of_service),
+                tos_text=Markup(self.application.terms_of_service),
             )
         else:
             raise HTTPError(404)
@@ -500,7 +500,7 @@ class Project(BaseHandler):
     @PROM_REQUESTS.sync('project')
     def get(self, project_id):
         project, privileges = self.get_project(project_id)
-        documents_json = jinja2.Markup(json.dumps(
+        documents_json = Markup(json.dumps(
             {
                 str(doc.id): {'id': doc.id, 'name': doc.name,
                               'description': doc.description,
@@ -509,7 +509,7 @@ class Project(BaseHandler):
             },
             sort_keys=True,
         ))
-        tags_json = jinja2.Markup(json.dumps(
+        tags_json = Markup(json.dumps(
             {
                 str(tag.id): {'id': tag.id,
                               'path': tag.path,
@@ -524,7 +524,7 @@ class Project(BaseHandler):
             .filter(database.ProjectMember.project_id == project_id)
         ).all()
         can_delete_project = privileges.can_delete_project()
-        members_json = jinja2.Markup(json.dumps(
+        members_json = Markup(json.dumps(
             {member.user_login: {'privileges': member.privileges.name}
              for member in members}
         ))
@@ -536,7 +536,7 @@ class Project(BaseHandler):
                         if project.last_event is not None
                         else -1),
             documents=documents_json,
-            user_login=jinja2.Markup(
+            user_login=Markup(
                 json.dumps(self.current_user)
             ),
             tags=tags_json,

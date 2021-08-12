@@ -1,5 +1,4 @@
 import gettext
-import jinja2
 import json
 import logging
 from markupsafe import Markup
@@ -32,8 +31,8 @@ class TranslationJs(BaseHandler):
             if isinstance(gettext_trans, gettext.GNUTranslations):
                 catalog = gettext_trans._catalog
 
-        language = jinja2.Markup(json.dumps(self.locale.code))
-        catalog = jinja2.Markup(json.dumps(catalog))
+        language = Markup(json.dumps(self.locale.code))
+        catalog = Markup(json.dumps(catalog))
         self.set_header('Content-Type', 'text/javascript')
         return self.render('trans.js',
                            language=language,
