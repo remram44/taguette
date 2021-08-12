@@ -439,7 +439,7 @@ class BaseHandler(RequestHandler):
         except ValueError:
             raise HTTPError(404)
 
-        q = (
+        query = (
             self.db.query(database.ProjectMember, database.Document)
             .filter(database.Document.project_id == project_id)
             .filter(database.Document.id == document_id)
@@ -447,8 +447,8 @@ class BaseHandler(RequestHandler):
             .filter(database.ProjectMember.project_id == project_id)
         )
         if contents:
-            q = q.options(undefer(database.Document.contents))
-        res = q.one_or_none()
+            query = query.options(undefer(database.Document.contents))
+        res = query.one_or_none()
         if res is None:
             raise HTTPError(404)
         member, document = res
