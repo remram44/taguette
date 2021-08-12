@@ -299,18 +299,18 @@ class BaseHandler(RequestHandler):
         extensions=['jinja2.ext.i18n'],
     )
 
-    @jinja2.contextfunction
+    @jinja2.pass_context
     def _tpl_static_url(context, path):
         v = not context['handler'].application.settings.get('debug', False)
         return context['handler'].static_url(path, include_version=v)
     template_env.globals['static_url'] = _tpl_static_url
 
-    @jinja2.contextfunction
+    @jinja2.pass_context
     def _tpl_reverse_url(context, path, *args):
         return context['handler'].reverse_url(path, *args)
     template_env.globals['reverse_url'] = _tpl_reverse_url
 
-    @jinja2.contextfunction
+    @jinja2.pass_context
     def _tpl_xsrf_form_html(context):
         return Markup(context['handler'].xsrf_form_html())
     template_env.globals['xsrf_form_html'] = _tpl_xsrf_form_html
