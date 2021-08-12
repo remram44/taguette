@@ -570,9 +570,12 @@ class HighlightTag(Base):
 Tag.highlights_count = column_property(
     select(
         [functions.count(HighlightTag.highlight_id)],
-    ).where(
+    )
+    .where(
         HighlightTag.tag_id == Tag.id,
-    ).correlate_except(HighlightTag)
+    )
+    .correlate_except(HighlightTag)
+    .scalar_subquery()
 )
 
 
