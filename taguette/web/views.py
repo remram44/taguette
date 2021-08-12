@@ -53,10 +53,17 @@ class Index(BaseHandler):
                 self.logout()
                 # Fall through to welcome page
             else:
-                return self.render('index.html',
-                                   user=user, projects=user.projects,
-                                   can_import_project=self.application.config[
-                                       'SQLITE3_IMPORT_ENABLED'])
+                return self.render(
+                    'index.html',
+                    user=user,
+                    projects=[
+                        membership.project
+                        for membership in user.projects
+                    ],
+                    can_import_project=self.application.config[
+                        'SQLITE3_IMPORT_ENABLED'
+                    ],
+                )
         elif not self.application.config['MULTIUSER']:
             token = self.get_query_argument('token', None)
             if token and token == self.application.single_user_token:
@@ -694,10 +701,12 @@ class Project(BaseHandler):
         ))
         tags_json = Markup(json.dumps(
             {
-                str(tag.id): {'id': tag.id,
-                              'path': tag.path,
-                              'description': tag.description,
-                              'count': tag.highlights_count}
+                str(tag.id): {
+                    'id': tag.id,
+                    'path': tag.path,
+                    'description': tag.description,
+                    'count': tag.highlights_count,
+                }
                 for tag in project.tags
             },
             sort_keys=True,

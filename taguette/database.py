@@ -76,7 +76,7 @@ class User(Base):
     language = Column(String(10), nullable=True)
     email = Column(String(256), nullable=True, index=True, unique=True)
     email_sent = Column(DateTime, nullable=True)
-    projects = relationship('Project', secondary='project_members')
+    projects = relationship('ProjectMember', back_populates='user')
 
     def set_password(self, password, method='pbkdf2'):
         if method == 'bcrypt':
@@ -137,7 +137,7 @@ class Project(Base):
     description = Column(Text, nullable=False)
     created = Column(DateTime, nullable=False,
                      default=lambda: datetime.utcnow())
-    members = relationship('User', secondary='project_members')
+    members = relationship('ProjectMember', back_populates='project')
     commands = relationship('Command', cascade='all,delete-orphan',
                             passive_deletes=True, back_populates='project')
     documents = relationship('Document', cascade='all,delete-orphan',
@@ -198,12 +198,12 @@ class ProjectMember(Base):
 
     project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
                         primary_key=True, index=True)
-    project = relationship('Project')
+    project = relationship('Project', back_populates='members')
     user_login = Column(String(30),
                         ForeignKey('users.login',
                                    ondelete='CASCADE', onupdate='CASCADE'),
                         primary_key=True, index=True)
-    user = relationship('User')
+    user = relationship('User', back_populates='projects')
     privileges = Column(Enum(Privileges), nullable=False)
 
     def __repr__(self):
@@ -515,7 +515,7 @@ class Highlight(Base):
     start_offset = Column(Integer, nullable=False)
     end_offset = Column(Integer, nullable=False)
     snippet = Column(Text, nullable=False)
-    tags = relationship('Tag', secondary='highlight_tags')
+    tags = relationship('HighlightTag', back_populates='highlight')
 
     def __repr__(self):
         return '<%s.%s %r document_id=%r tags=[%s]>' % (
@@ -523,7 +523,7 @@ class Highlight(Base):
             self.__class__.__name__,
             self.id,
             self.document_id,
-            ' '.join(sorted(str(t.id) for t in self.tags)),
+            ' '.join(sorted(str(t.tag_id) for t in self.tags)),
         )
 
 
@@ -543,7 +543,7 @@ class Tag(Base):
         UniqueConstraint('project_id', 'path'),
     ) + __table_args__
 
-    highlights = relationship('Highlight', secondary='highlight_tags')
+    highlights = relationship('HighlightTag', back_populates='tag')
 
     def __repr__(self):
         return '<%s.%s %r %r project_id=%r>' % (
@@ -561,11 +561,11 @@ class HighlightTag(Base):
     highlight_id = Column(Integer, ForeignKey('highlights.id',
                                               ondelete='CASCADE'),
                           primary_key=True, index=True)
-    highlight = relationship('Highlight')
+    highlight = relationship('Highlight', back_populates='tags')
     tag_id = Column(Integer, ForeignKey('tags.id',
                                         ondelete='CASCADE'),
                     primary_key=True, index=True)
-    tag = relationship('Tag')
+    tag = relationship('Tag', back_populates='highlights')
 
     def __repr__(self):
         return '<%s.%s highlight_id=%r tag_id=%r>' % (

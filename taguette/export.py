@@ -246,11 +246,14 @@ async def highlighted_document(db, document, ext, *, config, locale):
         db.query(database.Highlight)
         .filter(database.Highlight.document_id == document.id)
         .order_by(database.Highlight.start_offset)
-        .options(joinedload(database.Highlight.tags))
+        .options(
+            joinedload(database.Highlight.tags)
+            .joinedload(database.HighlightTag.tag)
+        )
     ).all()
 
     highlights = [
-        (hl.start_offset, hl.end_offset, [t.path for t in hl.tags])
+        (hl.start_offset, hl.end_offset, [hl_t.tag.path for hl_t in hl.tags])
         for hl in highlights
     ]
 

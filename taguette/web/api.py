@@ -175,7 +175,6 @@ class Document(BaseHandler):
             .filter(database.Highlight.document_id == document.id)
             .order_by(database.Highlight.start_offset)
             .options(joinedload(database.Highlight.tags))
-            .options(defer('tags.highlights_count'))
         ).all()
         return self.send_json({
             'text_direction': document.text_direction.name,
@@ -183,7 +182,7 @@ class Document(BaseHandler):
                 {'id': hl.id,
                  'start_offset': hl.start_offset,
                  'end_offset': hl.end_offset,
-                 'tags': [t.id for t in hl.tags]}
+                 'tags': [hl_t.tag_id for hl_t in hl.tags]}
                 for hl in highlights
             ],
         })
@@ -620,7 +619,7 @@ class Highlights(BaseHandler):
                 .join(tag, hltag.tag_id == tag.id)
                 .join(document, document.id == database.Highlight.document_id)
                 .filter(tag.path.startswith(path))
-                .filter(tag.project == project)
+                .filter(tag.project_id == project.id)
                 .order_by(database.Highlight.document_id,
                           database.Highlight.start_offset)
             )
@@ -632,7 +631,7 @@ class Highlights(BaseHandler):
                 self.db.query(database.Highlight, document.text_direction)
                 .options(joinedload(database.Highlight.tags))
                 .join(document, document.id == database.Highlight.document_id)
-                .filter(document.project == project)
+                .filter(document.project_id == project.id)
                 .order_by(database.Highlight.document_id,
                           database.Highlight.start_offset)
             )
@@ -651,7 +650,7 @@ class Highlights(BaseHandler):
                     'id': hl.id,
                     'document_id': hl.document_id,
                     'content': hl.snippet,
-                    'tags': [t.id for t in hl.tags],
+                    'tags': [hl_t.tag_id for hl_t in hl.tags],
                     'text_direction': direction.name,
                 }
                 for hl, direction in highlights
