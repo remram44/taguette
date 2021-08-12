@@ -273,11 +273,15 @@ class MyHTTPTestCase(AsyncHTTPTestCase):
         web.Application.check_messages = lambda s: s.messages_event.set()
         validate.filename.windows = True  # escape device names
         super(MyHTTPTestCase, self).setUp()
-        # Tornado's http client doesn't support cookies
-        self.http_client = aiohttp.ClientSession(
-            # Need to set 'unsafe' to work when host is an IP address
-            cookie_jar=aiohttp.cookiejar.CookieJar(unsafe=True),
-        )
+
+        # Tornado's http client doesn't support cookies, use aiohttp instead
+        @self.io_loop.run_sync
+        async def async_init():
+            self.http_client = aiohttp.ClientSession(
+                # Need to set 'unsafe' to work when host is an IP address
+                cookie_jar=aiohttp.cookiejar.CookieJar(unsafe=True),
+            )
+            await self.http_client.__aenter__()
 
     def tearDown(self):
         self.io_loop.run_sync(
