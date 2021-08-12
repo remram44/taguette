@@ -139,11 +139,11 @@ class Project(Base):
                      default=lambda: datetime.utcnow())
     members = relationship('User', secondary='project_members')
     commands = relationship('Command', cascade='all,delete-orphan',
-                            passive_deletes=True)
+                            passive_deletes=True, back_populates='project')
     documents = relationship('Document', cascade='all,delete-orphan',
-                             passive_deletes=True)
+                             passive_deletes=True, back_populates='project')
     tags = relationship('Tag', cascade='all,delete-orphan', order_by='Tag.id',
-                        passive_deletes=True)
+                        passive_deletes=True, back_populates='project')
 
     def __repr__(self):
         return '<%s.%s %r %r>' % (
@@ -236,7 +236,7 @@ class Document(Base):
     text_direction = Column(Enum(TextDirection), nullable=False)
     contents = deferred(Column(Text, nullable=False))
     highlights = relationship('Highlight', cascade='all,delete-orphan',
-                              passive_deletes=True)
+                              passive_deletes=True, back_populates='document')
 
     def __repr__(self):
         return '<%s.%s %r %r project_id=%r>' % (
@@ -269,7 +269,7 @@ class Command(Base):
     user = relationship('User')
     project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
                         nullable=False, index=True)
-    project = relationship('Project')
+    project = relationship('Project', back_populates='commands')
     document_id = Column(Integer,  # Not ForeignKey, document can go away
                          nullable=True, index=True)
     payload = Column(JSON, nullable=False)
@@ -534,7 +534,7 @@ class Tag(Base):
     id = Column(Integer, primary_key=True)
     project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
                         nullable=False, index=True)
-    project = relationship('Project')
+    project = relationship('Project', back_populates='tags')
 
     path = Column(String(200), nullable=False, index=True)
     description = Column(Text, nullable=False)
