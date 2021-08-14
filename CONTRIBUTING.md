@@ -80,6 +80,22 @@ The merge request should automatically update to reflect your changes.
 
 That's it! Following these guidelines will ensure that your additions are approved quickly and integrated into the project. Thanks for your contribution!
 
+## Running tests
+
+This projects includes automated tests. Should you send us your changes in the form of a merge request on GitLab, the tests will be run automatically by GitLab CI to check that your version still works. You can also run the tests locally in a terminal:
+
+```
+python tests.py
+```
+
+Some tests control a web browser. You will need to install Chrome/Chromium or Firefox and get the corresponding webdriver ([geckodriver](https://github.com/mozilla/geckodriver) for Firefox and [chromedriver](https://chromedriver.chromium.org/downloads) for Chrome/Chromium). You can then enable those tests by running:
+
+```
+TAGUETTE_TEST_WEBDRIVER=firefox python tests.py
+# or
+TAGUETTE_TEST_WEBDRIVER=chromium python tests.py
+```
+
 # Attribution
 
 This CONTRIBUTING.md was adapted from [ProjectPorcupine](https://github.com/TeamPorcupine/ProjectPorcupine)'s [CONTRIBUTING.md](https://github.com/TeamPorcupine/ProjectPorcupine/blob/master/CONTRIBUTING.md)
