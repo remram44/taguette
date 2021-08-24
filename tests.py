@@ -2174,9 +2174,11 @@ class TestSeleniumMultiuser(SeleniumTest):
         # Finish editing highlight 1 in document 1
         self.assertEqual(
             self.get_highlight_add_tags(),
-            # TODO: 1 should be selected, issue #142
             # TODO: 3 should be selected, issue #135
-            {1: False, 2: False, 3: False},
+            {1: True, 2: False, 3: False},
+        )
+        await self.s_click(
+            self.driver.find_element_by_id('highlight-add-tags-1')
         )
         await self.s_click(
             self.driver.find_element_by_id('highlight-add-tags-3')
