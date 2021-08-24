@@ -1775,9 +1775,11 @@ class SeleniumTest(MyHTTPTestCase):
         )
         await asyncio.sleep(0.2)
 
-    async def s_click_button(self, text, tag='button'):
+    async def s_click_button(self, text, tag='button', parent=None):
         await asyncio.sleep(0.2)
-        buttons = self.driver.find_elements_by_tag_name(tag)
+        if parent is None:
+            parent = self.driver
+        buttons = parent.find_elements_by_tag_name(tag)
         correct_button, = [
             button for button in buttons
             if button.text == text
@@ -1943,6 +1945,17 @@ class TestSeleniumMultiuser(SeleniumTest):
         await self.s_get('/.well-known/change-password')
         self.assertEqual(self.s_path, '/account')
 
+    def get_highlight_add_tags(self):
+        tags = {}
+        form = self.driver.find_element_by_id('highlight-add-form')
+        for elem in form.find_elements_by_tag_name('input'):
+            if elem.get_attribute('type') == 'checkbox':
+                id = elem.get_attribute('id')
+                self.assertTrue(id.startswith('highlight-add-tags-'))
+                id = int(id[19:])
+                tags[id] = elem.get_property('checked')
+        return tags
+
     @gen_test(timeout=120)
     async def test_projects(self):
         # project 1
@@ -1950,13 +1963,14 @@ class TestSeleniumMultiuser(SeleniumTest):
         # create
         # (tag 1 'interesting')
         # tag 2 'people'
-        # tag 3 'interesting.places'
         # doc 1
         # change project metadata
         # doc 2
-        # hl 1 doc=1 tags=[3]
+        # hl 1 doc=1 tags=[1]
         # hl 2 doc=1 tags=[1, 2]
         # hl 3 doc=2 tags=[2]
+        # tag 3 'interesting.places'
+        # hl 1 doc=1 tags=[3] (edit)
         # highlights 'people*': [2, 3]
         # highlights 'interesting.places*': [1]
         # highlights 'interesting*': [1, 2]
@@ -2016,7 +2030,7 @@ class TestSeleniumMultiuser(SeleniumTest):
             for script in self.driver.find_elements_by_tag_name('script')
         ))
 
-        # Create tags in project 1
+        # Create tag 2 in project 1
         await self.s_click(self.driver.find_element_by_id('tags-tab'))
         await self.s_click_button('Create a tag', tag='a')
         elem = self.driver.find_element_by_id('tag-add-path')
@@ -2025,18 +2039,14 @@ class TestSeleniumMultiuser(SeleniumTest):
         elem.send_keys('People of interest')
         await self.s_click_button('Save & Close')
 
-        await self.s_click_button('Create a tag', tag='a')
-        elem = self.driver.find_element_by_id('tag-add-path')
-        elem.send_keys('interesting.places')
-        await self.s_click_button('Save & Close')
-
+        # Check tags
         tag_links = (
             self.driver.find_element_by_id('tags-list')
             .find_elements_by_class_name('tag-name')
         )
         self.assertEqual(
             [link.text for link in tag_links],
-            ['interesting', 'interesting.places', 'people'],
+            ['interesting', 'people'],
         )
 
         # Create document 1 in project 1
@@ -2120,14 +2130,22 @@ class TestSeleniumMultiuser(SeleniumTest):
         )
         self.driver.execute_script('restoreSelection([0, 4]);')
         await self.s_click_button('new highlight', tag='a')
+        self.assertEqual(
+            self.get_highlight_add_tags(),
+            {1: False, 2: False},
+        )
         await self.s_click(
-            self.driver.find_element_by_id('highlight-add-tags-3'),
+            self.driver.find_element_by_id('highlight-add-tags-1'),
         )
         await self.s_click_button('Save & Close')
 
         # Create highlight 2 in document 1
         self.driver.execute_script('restoreSelection([13, 17]);')
         await self.s_click_button('new highlight', tag='a')
+        self.assertEqual(
+            self.get_highlight_add_tags(),
+            {1: False, 2: False},
+        )
         await self.s_click(
             self.driver.find_element_by_id('highlight-add-tags-1'),
         )
@@ -2136,13 +2154,64 @@ class TestSeleniumMultiuser(SeleniumTest):
         )
         await self.s_click_button('Save & Close')
 
+        # Edit highlight 1 in document 1
+        hl, = self.driver.find_elements_by_class_name('highlight-1')
+        await self.s_click(hl)
+        self.assertEqual(
+            self.get_highlight_add_tags(),
+            {1: True, 2: False},
+        )
+
+        # Create tag 3 in project 1
+        await self.s_click_button('Create a tag', tag='a')
+        elem = self.driver.find_element_by_id('tag-add-path')
+        elem.send_keys('interesting.places')
+        await self.s_click_button(
+            'Save & Close',
+            parent=self.driver.find_element_by_id('tag-add-form'),
+        )
+
+        # Finish editing highlight 1 in document 1
+        self.assertEqual(
+            self.get_highlight_add_tags(),
+            # TODO: 3 should be selected, issue #135
+            {1: True, 2: False, 3: False},
+        )
+        await self.s_click(
+            self.driver.find_element_by_id('highlight-add-tags-1')
+        )
+        await self.s_click(
+            self.driver.find_element_by_id('highlight-add-tags-3')
+        )
+        self.assertEqual(
+            self.get_highlight_add_tags(),
+            {1: False, 2: False, 3: True},
+        )
+        await self.s_click_button('Save & Close')
+
+        # Check tags
+        await self.s_click(self.driver.find_element_by_id('tags-tab'))
+        tag_links = (
+            self.driver.find_element_by_id('tags-list')
+            .find_elements_by_class_name('tag-name')
+        )
+        self.assertEqual(
+            [link.text for link in tag_links],
+            ['interesting', 'interesting.places', 'people'],
+        )
+
         # Create highlight 3 in document 2
+        await self.s_click(self.driver.find_element_by_id('documents-tab'))
         await self.s_click(
             self.driver.find_element_by_id('document-link-2')
             .find_element_by_class_name('document-link-a')
         )
         self.driver.execute_script('restoreSelection([0, 7]);')
         await self.s_click_button('new highlight', tag='a')
+        self.assertEqual(
+            self.get_highlight_add_tags(),
+            {1: False, 2: False, 3: False},
+        )
         await self.s_click(
             self.driver.find_element_by_id('highlight-add-tags-2'),
         )

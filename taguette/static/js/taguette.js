@@ -841,6 +841,16 @@ function updateTagsList() {
 
   // The list in the highlight modal
 
+  // Save previous checked statuses
+  var checked_tags = [];
+  for(var i = 0; i < entries.length; ++i) {
+    var id = entries[i][1].id;
+    var checkbox = document.getElementById('highlight-add-tags-' + id);
+    if(checkbox && checkbox.checked) {
+      checked_tags.push(id);
+    }
+  }
+
   // Empty the list
   while(tags_modal_list.firstChild) {
     var first = tags_modal_list.firstChild;
@@ -867,6 +877,11 @@ function updateTagsList() {
     var elem = document.createElement('li');
     elem.textContent = gettext("no tags");
     tags_modal_list.insertBefore(elem, before);
+  }
+
+  // Re-check checkboxes
+  for(var i = 0; i < checked_tags.length; ++i) {
+    document.getElementById('highlight-add-tags-' + checked_tags[i]).checked = true;
   }
 
   console.log("Tags list updated");
