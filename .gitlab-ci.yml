@@ -140,3 +140,14 @@ sqlite3_py3.9:
     - $HOME/.poetry/bin/poetry install --no-interaction
     - scripts/update_translations.sh
     - python -Wd tests.py
+
+sqlite3_py3.10:
+  stage: test
+  image: python:3.10-rc
+  script:
+    - pip install poetry==1.1.8
+    - poetry config virtualenvs.create false
+    - poetry config experimental.new-installer false
+    - poetry install --no-interaction
+    - scripts/update_translations.sh
+    - python -Wd tests.py
