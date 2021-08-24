@@ -147,6 +147,7 @@ sqlite3_py3.10:
   script:
     - pip install poetry==1.1.8
     - poetry config virtualenvs.create false
+    - poetry config experimental.new-installer false
     - poetry install --no-interaction
     - scripts/update_translations.sh
     - python -Wd tests.py
