@@ -31,9 +31,6 @@ sqlite3_redis:
     - $HOME/.poetry/bin/poetry install --no-interaction
     - scripts/update_translations.sh
     - TAGUETTE_TEST_REDIS=redis://redis:6379 python -Wd tests.py
-  artifacts:
-    paths:
-      - htmlcov
 
 frontend_firefox:
   stage: test
