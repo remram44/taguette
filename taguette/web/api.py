@@ -125,6 +125,9 @@ class DocumentAdd(BaseHandler):
                 return await self.send_error_json(400,
                                                   "Invalid text direction")
 
+            # Close DB connection to not overflow the connection pool
+            self.close_db_connection()
+
             try:
                 body = await convert.to_html_chunks(
                     file.body, content_type, filename,

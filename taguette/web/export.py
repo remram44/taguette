@@ -138,6 +138,9 @@ class ExportHighlightsDoc(BaseHandler):
 
         project, _ = self.get_project(project_id)
 
+        # Close DB connection to not overflow the connection pool
+        self.close_db_connection()
+
         name = export.get_filename_for_highlights_export(path)
         mimetype, contents = export.highlights_doc(
             self.db,
@@ -170,6 +173,9 @@ class ExportDocument(BaseHandler):
     async def get(self, project_id, document_id, ext):
         PROM_EXPORT.labels('document', ext.lower()).inc()
         doc, _ = self.get_document(project_id, document_id, True)
+
+        # Close DB connection to not overflow the connection pool
+        self.close_db_connection()
 
         name = safe_filename(doc.name)
 
@@ -256,6 +262,9 @@ class ExportCodebookDoc(BaseHandler):
         project, _ = self.get_project(project_id)
         tags = list(project.tags)
 
+        # Close DB connection to not overflow the connection pool
+        self.close_db_connection()
+
         mimetype, contents = await export.codebook_document(
             tags,
             ext,
@@ -298,6 +307,9 @@ class ExportSqlite(BaseHandler):
                 project.id, 'admin',
             )
             dest_db.commit()
+
+            # Close DB connection to not overflow the connection pool
+            self.close_db_connection()
 
             # Send the file
             self.set_header('Content-Type', 'application/vnd.sqlite3')
