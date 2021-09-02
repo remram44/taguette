@@ -11,6 +11,7 @@ from markupsafe import Markup
 import os
 import pkg_resources
 from prometheus_async.aio import time as prom_async_time
+import prometheus_client
 import redis
 import smtplib
 from sqlalchemy.orm import joinedload, undefer
@@ -26,6 +27,12 @@ from .. import database
 
 
 logger = logging.getLogger(__name__)
+
+
+PROM_DB_CONNECTIONS = prometheus_client.Gauge(
+    'database_connections',
+    "Number of currently open database connections",
+)
 
 
 class PseudoLocale(tornado.locale.Locale):
@@ -327,6 +334,7 @@ class BaseHandler(RequestHandler):
     def db(self):
         if self._db is None:
             self._db = self.application.DBSession()
+            PROM_DB_CONNECTIONS.inc()
         return self._db
 
     def on_finish(self):
@@ -337,6 +345,7 @@ class BaseHandler(RequestHandler):
         if self._db is not None:
             self._db.close()
             self._db = None
+            PROM_DB_CONNECTIONS.dec()
 
     def gettext(self, message, **kwargs):
         trans = self.locale.translate(message)
