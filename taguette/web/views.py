@@ -45,6 +45,7 @@ class Index(BaseHandler):
                 logger.warning("User is logged in as non-existent user %r",
                                self.current_user)
                 self.logout()
+                # Fall through to welcome page
             else:
                 return self.render('index.html',
                                    user=user, projects=user.projects,
@@ -221,6 +222,11 @@ class Account(BaseHandler):
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         user = self.db.query(database.User).get(self.current_user)
+        if user is None:
+            logger.warning("User is logged in as non-existent user %r",
+                           self.current_user)
+            self.logout()
+            raise HTTPError(403)
         return self.render('account.html', user=user,
                            languages=self.get_languages(),
                            current_language=user.language)
@@ -231,6 +237,11 @@ class Account(BaseHandler):
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         user = self.db.query(database.User).get(self.current_user)
+        if user is None:
+            logger.warning("User is logged in as non-existent user %r",
+                           self.current_user)
+            self.logout()
+            raise HTTPError(403)
         try:
             email = self.get_body_argument('email', None)
             language = self.get_body_argument('language', None)
