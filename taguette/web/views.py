@@ -1,3 +1,4 @@
+import asyncio
 from datetime import timedelta, datetime
 from email.message import EmailMessage
 import json
@@ -280,8 +281,8 @@ class AskResetPassword(BaseHandler):
             raise HTTPError(404)
         return self.render('reset_password.html')
 
-    @PROM_REQUESTS.sync('reset_password')
-    def post(self):
+    @PROM_REQUESTS.async_('reset_password')
+    async def post(self):
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         email = self.get_body_argument('email')
@@ -289,7 +290,7 @@ class AskResetPassword(BaseHandler):
             self.db.query(database.User).filter(database.User.email == email)
         ).one_or_none()
         if user is None:
-            return self.render(
+            return await self.render(
                 'reset_password.html',
                 error=self.gettext("This email address is not associated with "
                                    "any user"),
@@ -339,7 +340,10 @@ class AskResetPassword(BaseHandler):
 
             logger.warning("Sending reset password email to %s %s",
                            user.login, user.email)
-            self.application.send_mail(msg)
+            await asyncio.get_event_loop().run_in_executor(
+                None,
+                lambda: self.application.send_mail(msg),
+            )
             user.email_sent = datetime.utcnow()
             self.db.commit()
         else:
@@ -347,7 +351,7 @@ class AskResetPassword(BaseHandler):
                 "NOT Sending reset password email to %s %s (rate limited)",
                 user.login, user.email,
             )
-        return self.render('reset_password.html', message="Email sent!")
+        return await self.render('reset_password.html', message="Email sent!")
 
 
 class SetNewPassword(BaseHandler):
