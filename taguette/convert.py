@@ -6,6 +6,7 @@ import os
 import prometheus_client
 from prometheus_async.aio import time as prom_async_time
 import shutil
+import subprocess
 from subprocess import CalledProcessError
 import sys
 import tempfile
@@ -100,42 +101,46 @@ subprocess_sem = MeasuredSemaphore(
 )
 
 
-if sys.platform == 'win32':
-    # Windows only supports subprocesses with the asyncio ProactorEventLoop
-    # However tornado only supports the SelectorEventLoop
-    # https://github.com/tornadoweb/tornado/issues/2608
-    # For now we can't use asyncio subprocesses on Windows
-    import subprocess
+# Windows only supports subprocesses with the asyncio ProactorEventLoop
+# However tornado only supports the SelectorEventLoop
+# https://github.com/tornadoweb/tornado/issues/2608
+# For now we can't use asyncio subprocesses on Windows
+async def _check_call_threadpool(cmd, timeout, env=None):
+    async with subprocess_sem:
+        return await asyncio.get_event_loop().run_in_executor(
+            None,
+            lambda: subprocess.check_call(cmd, timeout=timeout, env=env),
+        )
 
-    async def check_call(cmd, timeout, env=None):
-        async with subprocess_sem:
-            return await asyncio.get_event_loop().run_in_executor(
-                None,
-                lambda: subprocess.check_call(cmd, timeout=timeout, env=env),
+
+async def _check_call_asyncio(cmd, timeout, env=None):
+    async with subprocess_sem:
+        proc = await asyncio.create_subprocess_exec(*cmd, env=env)
+        try:
+            retcode = await asyncio.wait_for(proc.wait(), timeout=timeout)
+        except asyncio.TimeoutError:
+            logger.warning(
+                "Process didn't finish before %ds timeout: %r",
+                timeout, cmd,
             )
-else:
-    async def check_call(cmd, timeout, env=None):
-        async with subprocess_sem:
-            proc = await asyncio.create_subprocess_exec(*cmd, env=env)
             try:
-                retcode = await asyncio.wait_for(proc.wait(), timeout=timeout)
-            except asyncio.TimeoutError:
-                logger.warning(
-                    "Process didn't finish before %ds timeout: %r",
-                    timeout, cmd,
-                )
+                proc.terminate()
                 try:
-                    proc.terminate()
-                    try:
-                        await asyncio.wait_for(proc.wait(), PROC_TERM_GRACE)
-                    except asyncio.TimeoutError:
-                        proc.kill()
-                except ProcessLookupError:
-                    pass
-                raise asyncio.TimeoutError
-            else:
-                if retcode != 0:
-                    raise CalledProcessError(retcode, cmd)
+                    await asyncio.wait_for(proc.wait(), PROC_TERM_GRACE)
+                except asyncio.TimeoutError:
+                    proc.kill()
+            except ProcessLookupError:
+                pass
+            raise asyncio.TimeoutError
+        else:
+            if retcode != 0:
+                raise CalledProcessError(retcode, cmd)
+
+
+if sys.platform == 'win32':
+    check_call = _check_call_threadpool
+else:
+    check_call = _check_call_asyncio
 
 
 # Something to HTML
