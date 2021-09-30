@@ -1,5 +1,9 @@
 from bs4 import BeautifulSoup, NavigableString
+import opentelemetry.trace
 import prometheus_client
+
+
+tracer = opentelemetry.trace.get_tracer(__name__)
 
 
 BUCKETS = [0.001, 0.002, 0.003, 0.004,
@@ -69,6 +73,7 @@ def delete_right(node, indices):
         node = node.contents[idx]
 
 
+@tracer.start_as_current_span('taguette/extract')
 @PROM_EXTRACT_TIME.time()
 def extract(html, start, end):
     """Extract a snippet out of an HTML document.
@@ -121,6 +126,7 @@ def byte_to_str_index(string, byte_index):
     return len(string)
 
 
+@tracer.start_as_current_span('taguette/highlight')
 @PROM_HIGHLIGHT_TIME.time()
 def highlight(html, highlights, show_tags=False):
     """Highlight part of an HTML documents.

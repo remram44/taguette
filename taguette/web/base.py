@@ -8,6 +8,7 @@ import json
 import logging
 import jinja2
 from markupsafe import Markup
+import opentelemetry.trace
 import os
 import pkg_resources
 from prometheus_async.aio import time as prom_async_time
@@ -27,6 +28,7 @@ from .. import database
 
 
 logger = logging.getLogger(__name__)
+tracer = opentelemetry.trace.get_tracer(__name__)
 
 
 PROM_DB_CONNECTIONS = prometheus_client.Gauge(
@@ -262,6 +264,7 @@ class Application(tornado.web.Application):
                 json.dumps(cmd_json, sort_keys=True, separators=(',', ':')),
             )
 
+    @tracer.start_as_current_span('send_mail')
     def send_mail(self, msg):
         config = self.config['MAIL_SERVER']
         if config.get('ssl', False):
@@ -414,18 +417,24 @@ class BaseHandler(RequestHandler):
         self.clear_cookie('language')
 
     def render_string(self, template_name, **kwargs):
-        template = self.template_env.get_template(template_name)
-        return template.render(
-            handler=self,
-            current_user=self.current_user,
-            multiuser=self.application.config['MULTIUSER'],
-            register_enabled=self.application.config['REGISTRATION_ENABLED'],
-            tos=self.application.terms_of_service is not None,
-            show_messages=self.current_user == 'admin',
-            version=version,
-            gettext=self.gettext,
-            ngettext=self.ngettext,
-            **kwargs)
+        with tracer.start_as_current_span(
+            'render_template',
+            attributes={'template_name': template_name},
+        ):
+            template = self.template_env.get_template(template_name)
+            return template.render(
+                handler=self,
+                current_user=self.current_user,
+                multiuser=self.application.config['MULTIUSER'],
+                register_enabled=self.application.config[
+                    'REGISTRATION_ENABLED'
+                ],
+                tos=self.application.terms_of_service is not None,
+                show_messages=self.current_user == 'admin',
+                version=version,
+                gettext=self.gettext,
+                ngettext=self.ngettext,
+                **kwargs)
 
     def get_project(self, project_id):
         try:

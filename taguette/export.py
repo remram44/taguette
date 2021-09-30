@@ -5,6 +5,7 @@ import jinja2
 import pkg_resources
 import sqlalchemy
 from markupsafe import Markup
+import opentelemetry.trace
 from sqlalchemy.orm import joinedload
 import uuid
 import xlsxwriter
@@ -15,6 +16,9 @@ from . import __version__ as version
 from . import convert
 from . import database
 from . import extract
+
+
+tracer = opentelemetry.trace.get_tracer(__name__)
 
 
 template_env = jinja2.Environment(
@@ -166,6 +170,7 @@ def get_filename_for_highlights_export(path):
         return 'all_tags'
 
 
+@tracer.start_as_current_span('taguette/export/highlights_csv')
 def highlights_csv(db, project_id, path, file):
     """Export highlights to a CSV file.
     """
@@ -182,6 +187,7 @@ def highlights_csv(db, project_id, path, file):
             ])
 
 
+@tracer.start_as_current_span('taguette/export/highlights_xlsx')
 def highlights_xslx(db, project_id, path, filename):
     """Export highlights to an Excel file.
     """
@@ -213,6 +219,7 @@ def highlights_xslx(db, project_id, path, filename):
     workbook.close()
 
 
+@tracer.start_as_current_span('taguette/export/highlights_doc')
 def highlights_doc(db, project_id, path, ext, *, config, locale):
     """Export highlights to a text document.
     """
@@ -229,6 +236,7 @@ def highlights_doc(db, project_id, path, ext, *, config, locale):
     return mimetype, contents
 
 
+@tracer.start_as_current_span('taguette/export/highlighted_document')
 async def highlighted_document(db, document, ext, *, config, locale):
     """Export a document annotated with highlights.
 
@@ -272,6 +280,7 @@ async def highlighted_document(db, document, ext, *, config, locale):
 TAGUETTE_NAMESPACE = uuid.UUID('51B2B2B7-27EB-4ECB-9D56-E75B0A0496C2')
 
 
+@tracer.start_as_current_span('taguette/export/codebook_xml')
 def codebook_xml(tags, file):
     """Export a codebook in REFI-QDA format for the given tags.
     """
@@ -320,6 +329,7 @@ def codebook_xml(tags, file):
         output.endDocument()
 
 
+@tracer.start_as_current_span('taguette/export/codebook_csv')
 def codebook_csv(tags, file):
     """Export a codebook in CSV format for the given tags.
     """
@@ -333,6 +343,7 @@ def codebook_csv(tags, file):
             writer.writerow([tag.path, tag.description, tag.highlights_count])
 
 
+@tracer.start_as_current_span('taguette/export/codebook_xlsx')
 def codebook_xlsx(tags, filename):
     """Export a codebook in Excel format for the given tags.
     """
@@ -353,6 +364,7 @@ def codebook_xlsx(tags, filename):
     workbook.close()
 
 
+@tracer.start_as_current_span('taguette/export/codebook_document')
 async def codebook_document(tags, ext, *, config, locale):
     """Export a codebook as a text document for the given tags.
     """

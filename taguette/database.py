@@ -10,6 +10,7 @@ import hashlib
 import hmac
 import json
 import logging
+import opentelemetry.trace
 import os
 import prometheus_client
 import shutil
@@ -30,6 +31,7 @@ from taguette import validate
 
 
 logger = logging.getLogger(__name__)
+tracer = opentelemetry.trace.get_tracer(__name__)
 
 
 PROM_DATABASE_VERSION = prometheus_client.Gauge('database_version',
@@ -721,6 +723,7 @@ class DefaultMap(object):
         return self.get(key)
 
 
+@tracer.start_as_current_span('taguette/copy_project')
 def copy_project(
     src_db, dest_db,
     project_id, user_login,

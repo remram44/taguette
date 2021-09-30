@@ -2,6 +2,7 @@ import asyncio
 import bleach
 import bs4
 import logging
+import opentelemetry.trace
 import os
 import prometheus_client
 from prometheus_async.aio import time as prom_async_time
@@ -14,6 +15,7 @@ from xml.etree import ElementTree
 
 
 logger = logging.getLogger(__name__)
+tracer = opentelemetry.trace.get_tracer(__name__)
 
 
 BUCKETS = [1.0, 2.0, 3.0, 4.0, 5.0,
@@ -107,34 +109,42 @@ subprocess_sem = MeasuredSemaphore(
 # For now we can't use asyncio subprocesses on Windows
 async def _check_call_threadpool(cmd, timeout, env=None):
     async with subprocess_sem:
-        return await asyncio.get_event_loop().run_in_executor(
-            None,
-            lambda: subprocess.check_call(cmd, timeout=timeout, env=env),
-        )
+        with tracer.start_as_current_span(
+            'taguette/subprocess',
+            attributes={'command': ' '.join(cmd)},
+        ):
+            return await asyncio.get_event_loop().run_in_executor(
+                None,
+                lambda: subprocess.check_call(cmd, timeout=timeout, env=env),
+            )
 
 
 async def _check_call_asyncio(cmd, timeout, env=None):
     async with subprocess_sem:
-        proc = await asyncio.create_subprocess_exec(*cmd, env=env)
-        try:
-            retcode = await asyncio.wait_for(proc.wait(), timeout=timeout)
-        except asyncio.TimeoutError:
-            logger.warning(
-                "Process didn't finish before %ds timeout: %r",
-                timeout, cmd,
-            )
+        with tracer.start_as_current_span(
+            'taguette/subprocess',
+            attributes={'command': ' '.join(cmd)},
+        ):
+            proc = await asyncio.create_subprocess_exec(*cmd, env=env)
             try:
-                proc.terminate()
+                retcode = await asyncio.wait_for(proc.wait(), timeout=timeout)
+            except asyncio.TimeoutError:
+                logger.warning(
+                    "Process didn't finish before %ds timeout: %r",
+                    timeout, cmd,
+                )
                 try:
-                    await asyncio.wait_for(proc.wait(), PROC_TERM_GRACE)
-                except asyncio.TimeoutError:
-                    proc.kill()
-            except ProcessLookupError:
-                pass
-            raise asyncio.TimeoutError
-        else:
-            if retcode != 0:
-                raise CalledProcessError(retcode, cmd)
+                    proc.terminate()
+                    try:
+                        await asyncio.wait_for(proc.wait(), PROC_TERM_GRACE)
+                    except asyncio.TimeoutError:
+                        proc.kill()
+                except ProcessLookupError:
+                    pass
+                raise asyncio.TimeoutError
+            else:
+                if retcode != 0:
+                    raise CalledProcessError(retcode, cmd)
 
 
 if sys.platform == 'win32':
@@ -222,6 +232,7 @@ def is_html_safe(text):
     )
 
 
+@tracer.start_as_current_span('taguette/convert/calibre_to_html')
 @prom_async_time(PROM_CALIBRE_TOHTML_TIME)
 async def calibre_to_html(input_filename, temp_dir, config):
     PROM_CALIBRE_TOHTML.inc()
@@ -365,6 +376,7 @@ async def calibre_to_html(input_filename, temp_dir, config):
     return '\n'.join(output)
 
 
+@tracer.start_as_current_span('taguette/convert/wvware_to_html')
 @prom_async_time(PROM_WVWARE_TOHTML_TIME)
 async def wvware_to_html(input_filename, tmp, config):
     PROM_WVWARE_TOHTML.inc()
@@ -443,6 +455,7 @@ async def to_html_chunks(body, content_type, filename, config):
 # HTML to something
 
 
+@tracer.start_as_current_span('taguette/convert/calibre_from_html')
 @prom_async_time(PROM_CALIBRE_FROMHTML_TIME)
 async def calibre_from_html(html, extension, config):
     PROM_CALIBRE_FROMHTML.labels(extension).inc()
