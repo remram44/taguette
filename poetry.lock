@@ -32,6 +32,20 @@ python-editor = ">=0.3"
 SQLAlchemy = ">=1.3.0"
 
 [[package]]
+name = "asgiref"
+version = "3.4.1"
+description = "ASGI specs, helper code, and adapters"
+category = "main"
+optional = true
+python-versions = ">=3.6"
+
+[package.dependencies]
+typing-extensions = {version = "*", markers = "python_version < \"3.8\""}
+
+[package.extras]
+tests = ["pytest", "pytest-asyncio", "mypy (>=0.800)"]
+
+[[package]]
 name = "async-timeout"
 version = "3.0.1"
 description = "Timeout context manager for asyncio programs"
@@ -299,6 +313,78 @@ python-versions = ">=3.6"
 
 [package.dependencies]
 Deprecated = ">=1.2.6"
+
+[[package]]
+name = "opentelemetry-instrumentation"
+version = "0.24b0"
+description = "Instrumentation Tools & Auto Instrumentation for OpenTelemetry Python"
+category = "main"
+optional = true
+python-versions = ">=3.6"
+
+[package.dependencies]
+opentelemetry-api = ">=1.4,<2.0"
+wrapt = ">=1.0.0,<2.0.0"
+
+[[package]]
+name = "opentelemetry-instrumentation-sqlalchemy"
+version = "0.24b0"
+description = "OpenTelemetry SQLAlchemy instrumentation"
+category = "main"
+optional = true
+python-versions = ">=3.6"
+
+[package.dependencies]
+opentelemetry-api = ">=1.3,<2.0"
+opentelemetry-instrumentation = "0.24b0"
+opentelemetry-semantic-conventions = "0.24b0"
+wrapt = ">=1.11.2"
+
+[package.extras]
+instruments = ["sqlalchemy"]
+test = ["opentelemetry-sdk (>=1.3,<2.0)", "pytest", "sqlalchemy"]
+
+[[package]]
+name = "opentelemetry-instrumentation-tornado"
+version = "0.24b0"
+description = "Tornado instrumentation for OpenTelemetry"
+category = "main"
+optional = true
+python-versions = ">=3.6"
+
+[package.dependencies]
+opentelemetry-api = ">=1.3,<2.0"
+opentelemetry-instrumentation = "0.24b0"
+opentelemetry-semantic-conventions = "0.24b0"
+opentelemetry-util-http = "0.24b0"
+
+[package.extras]
+instruments = ["tornado (>=6.0)"]
+test = ["opentelemetry-test (==0.24b0)", "tornado (>=6.0)"]
+
+[[package]]
+name = "opentelemetry-semantic-conventions"
+version = "0.24b0"
+description = "OpenTelemetry Semantic Conventions"
+category = "main"
+optional = true
+python-versions = ">=3.6"
+
+[[package]]
+name = "opentelemetry-util-http"
+version = "0.24b0"
+description = "Web util for OpenTelemetry"
+category = "main"
+optional = true
+python-versions = ">=3.6"
+
+[package.dependencies]
+asgiref = ">=3.0,<4.0"
+opentelemetry-api = ">=1.3,<2.0"
+opentelemetry-instrumentation = "0.24b0"
+
+[package.extras]
+test = ["opentelemetry-test (==0.24b0)"]
 
 [[package]]
 name = "packaging"
@@ -603,10 +689,13 @@ python-versions = ">=3.6"
 docs = ["sphinx", "jaraco.packaging (>=8.2)", "rst.linker (>=1.9)"]
 testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-cov", "pytest-enabler (>=1.0.1)", "jaraco.itertools", "func-timeout", "pytest-black (>=0.3.7)", "pytest-mypy"]
 
+[extras]
+otel = ["opentelemetry-instrumentation-sqlalchemy", "opentelemetry-instrumentation-tornado"]
+
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<4"
-content-hash = "df83c4a2f61f1f13defd322dd6c774b4c5fb3f9b823a86e48fbff68641c416f6"
+content-hash = "7dc958c822da028ebadfa3f6cf31bd8aba81e4154d46507d5735b64cfbe12e9e"
 
 [metadata.files]
 aiohttp = [
@@ -651,6 +740,10 @@ aiohttp = [
 alembic = [
     {file = "alembic-1.6.5-py2.py3-none-any.whl", hash = "sha256:e78be5b919f5bb184e3e0e2dd1ca986f2362e29a2bc933c446fe89f39dbe4e9c"},
     {file = "alembic-1.6.5.tar.gz", hash = "sha256:a21fedebb3fb8f6bbbba51a11114f08c78709377051384c9c5ead5705ee93a51"},
+]
+asgiref = [
+    {file = "asgiref-3.4.1-py3-none-any.whl", hash = "sha256:ffc141aa908e6f175673e7b1b3b7af4fdb0ecb738fc5c8b88f69f055c2415214"},
+    {file = "asgiref-3.4.1.tar.gz", hash = "sha256:4ef1ab46b484e3c706329cedeff284a5d40824200638503f5768edb6de7d58e9"},
 ]
 async-timeout = [
     {file = "async-timeout-3.0.1.tar.gz", hash = "sha256:0c3c816a028d47f659d6ff5c745cb2acf1f966da1fe5c19c77a70282b25f4c5f"},
@@ -955,6 +1048,26 @@ multidict = [
 opentelemetry-api = [
     {file = "opentelemetry-api-1.5.0.tar.gz", hash = "sha256:ce439a940c37f9e8aa7c65b35c56a94e728a9e46b3df60caa0fb656a05bd4285"},
     {file = "opentelemetry_api-1.5.0-py3-none-any.whl", hash = "sha256:19055f258459c0d2a4fe14ff00ba7e17044bec2ea80af4347cc724301ebb3cda"},
+]
+opentelemetry-instrumentation = [
+    {file = "opentelemetry-instrumentation-0.24b0.tar.gz", hash = "sha256:91c50b3e81c6f5e64a06f55ae95b1b901cd58556d50cf378e401b4a647737a57"},
+    {file = "opentelemetry_instrumentation-0.24b0-py3-none-any.whl", hash = "sha256:adbda25d66e9a8dfa506324a4089c34524dc54d3ee279c3d20cb0e315418f7f9"},
+]
+opentelemetry-instrumentation-sqlalchemy = [
+    {file = "opentelemetry-instrumentation-sqlalchemy-0.24b0.tar.gz", hash = "sha256:b017476fc6c21dab2b07b8b2ddea1e7a851a39d310d2bce4a714622431dd927c"},
+    {file = "opentelemetry_instrumentation_sqlalchemy-0.24b0-py3-none-any.whl", hash = "sha256:2fea0415579f3b04ee89ab199759ad7f02bfdce6245c387e8100a054fd558a55"},
+]
+opentelemetry-instrumentation-tornado = [
+    {file = "opentelemetry-instrumentation-tornado-0.24b0.tar.gz", hash = "sha256:75c90dbf2807f9c229074e271262b434c47614fa35b5a994647d93bbd83479ec"},
+    {file = "opentelemetry_instrumentation_tornado-0.24b0-py3-none-any.whl", hash = "sha256:e5a3aaa7978b0ed9c49e7d076522a612b1a5877f7b1493104306884b52cab5f4"},
+]
+opentelemetry-semantic-conventions = [
+    {file = "opentelemetry-semantic-conventions-0.24b0.tar.gz", hash = "sha256:636e3f241ec0623c37147b4cfd2e34e2fdb57b791ff268f76400de4bfd10e667"},
+    {file = "opentelemetry_semantic_conventions-0.24b0-py3-none-any.whl", hash = "sha256:c35d24342e61fa014126a471fd2efdadc28f917ce828cf12ee85e950e16071d9"},
+]
+opentelemetry-util-http = [
+    {file = "opentelemetry-util-http-0.24b0.tar.gz", hash = "sha256:e660d54fe495c0ac31f39d5b928d43eb956e36e38f455d6309a710a421c28418"},
+    {file = "opentelemetry_util_http-0.24b0-py3-none-any.whl", hash = "sha256:78b9ff1dfa7d5c379911b1b7edad45562ab31cf6441ae741dc3e18499d46b072"},
 ]
 packaging = [
     {file = "packaging-21.0-py3-none-any.whl", hash = "sha256:c86254f9220d55e31cc94d69bade760f0847da8000def4dfe1c6b872fd14ff14"},

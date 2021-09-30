@@ -59,6 +59,9 @@ sqlalchemy = ">=1.3,<1.5"
 tornado = ">=6.1"
 XlsxWriter = ">=1.4,<1.5"
 
+opentelemetry-instrumentation-sqlalchemy = {version = ">=0.24b0,<0.25", optional = true}
+opentelemetry-instrumentation-tornado = {version = ">=0.24b0,<0.25", optional = true}
+
 [tool.poetry.dev-dependencies]
 coverage = "*"
 flake8 = "*"
@@ -67,6 +70,12 @@ babel = "^2.6" # Keep babel and pytz in sync with Dockerfile
 bcrypt = "*"
 aiohttp = "^3.4"
 selenium = ">=3,<4"
+
+[tool.poetry.extras]
+otel = [
+    "opentelemetry-instrumentation-sqlalchemy",
+    "opentelemetry-instrumentation-tornado",
+]
 
 [tool.poetry.scripts]
 taguette = "taguette.main:main"
