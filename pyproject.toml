@@ -40,6 +40,12 @@ include = [
     "taguette/migrations/versions/*.py", "taguette/l10n/*/*/*.mo",
 ]
 
+[tool.poetry.urls]
+"Bug Tracker" = "https://gitlab.com/remram44/taguette/-/issues"
+"Documentation" = "https://www.taguette.org/getting-started.html"
+"Chat" = "https://app.element.io/#/room/#taguette:matrix.org"
+"User Mailing List" = "https://groups.io/g/taguette"
+
 # When updating dependencies: update 'translation' stage in Dockerfile
 
 [tool.poetry.dependencies]
