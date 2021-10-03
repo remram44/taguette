@@ -206,6 +206,17 @@ def is_html_safe(text):
     For situation where we cannot run `get_html_body()`, this will throw out
     unsafe HTML.
     """
+    if isinstance(text, bytes):
+        try:
+            text = text.decode('utf-8')
+        except UnicodeDecodeError as e:
+            logging.warning("is_html_safe(): %s", e)
+            return False
+    elif not isinstance(text, str):
+        raise TypeError("is_html_safe() expects str or bytes, not %r" % (
+            type(text).__name__,
+        ))
+
     soup = bs4.BeautifulSoup(text, 'html5lib')
     # Check 'src' URLs
     for e in soup.find_all('img'):
