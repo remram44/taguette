@@ -140,7 +140,7 @@ sqlite3_py3.9:
 
 sqlite3_py3.10:
   stage: test
-  image: python:3.10-rc
+  image: python:3.10
   script:
     - pip install poetry==1.1.11
     - poetry config virtualenvs.create false
