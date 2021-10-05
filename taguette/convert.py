@@ -119,15 +119,39 @@ async def _check_call_threadpool(cmd, timeout, env=None):
             )
 
 
+async def log_and_wait_proc(proc):
+    while proc.returncode is None:
+        line = await proc.stdout.readline()
+        if not line:
+            break
+        line = line.decode('utf-8', 'replace')
+        logger.info("%d: %s", proc.pid, line)
+
+    ret = await proc.wait()
+    line = await proc.stdout.read()
+    if line:
+        line = line.decode('utf-8', 'replace')
+        logger.info("%d: %s", proc.pid, line)
+    return ret
+
+
 async def _check_call_asyncio(cmd, timeout, env=None):
     async with subprocess_sem:
         with tracer.start_as_current_span(
             'taguette/subprocess',
             attributes={'command': ' '.join(cmd)},
         ):
-            proc = await asyncio.create_subprocess_exec(*cmd, env=env)
+            proc = await asyncio.create_subprocess_exec(
+                *cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                env=env,
+            )
             try:
-                retcode = await asyncio.wait_for(proc.wait(), timeout=timeout)
+                retcode = await asyncio.wait_for(
+                    log_and_wait_proc(proc),
+                    timeout=timeout,
+                )
             except asyncio.TimeoutError:
                 logger.warning(
                     "Process didn't finish before %ds timeout: %r",
