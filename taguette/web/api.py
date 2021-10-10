@@ -162,7 +162,31 @@ class DocumentAdd(BaseHandler):
             return await self.send_error_json(400, self.gettext(e.message))
 
 
-class DocumentUpdate(BaseHandler):
+class Document(BaseHandler):
+    @api_auth
+    @PROM_REQUESTS.sync('document_info')
+    def get(self, project_id, document_id):
+        document, _ = self.get_document(project_id, document_id)
+
+        highlights = (
+            self.db.query(database.Highlight)
+            .options(defer('snippet'))
+            .filter(database.Highlight.document_id == document.id)
+            .order_by(database.Highlight.start_offset)
+            .options(joinedload(database.Highlight.tags))
+            .options(defer('tags.highlights_count'))
+        ).all()
+        return self.send_json({
+            'text_direction': document.text_direction.name,
+            'highlights': [
+                {'id': hl.id,
+                 'start_offset': hl.start_offset,
+                 'end_offset': hl.end_offset,
+                 'tags': [t.id for t in hl.tags]}
+                for hl in highlights
+            ],
+        })
+
     @api_auth
     @PROM_REQUESTS.sync('document_update')
     def post(self, project_id, document_id):
@@ -224,28 +248,33 @@ class DocumentContents(BaseHandler):
     @api_auth
     @PROM_REQUESTS.sync('document_contents')
     def get(self, project_id, document_id):
+        # Document contents are immutable. If we ever make a change to the
+        # format of this response, change this constant
+        version = 1
+
+        # Cache for a long time
+        self.set_header('Cache-Control', 'private,max-age=31536000,immutable')
+
+        # Use a fixed etag
+        try:
+            document_id = int(document_id)
+        except ValueError:
+            raise HTTPError(404)
+        self.set_header('Etag', '"doc-%d-%d"' % (document_id, version))
+
+        # Always return 304 if the client has a copy cached
+        # This means that access control is not enforced, however:
+        #   * no content is sent
+        #   * 304 is sent whether or not the document actually exists
+        if self.check_etag_header():
+            self.set_status(304)
+            self.set_header('Content-Type', 'application/json; charset=utf-8')
+            return self.finish()
+
         document, _ = self.get_document(project_id, document_id, True)
-
-        highlights = (
-            self.db.query(database.Highlight)
-            .options(defer('snippet'))
-            .filter(database.Highlight.document_id == document.id)
-            .order_by(database.Highlight.start_offset)
-            .options(joinedload(database.Highlight.tags))
-            .options(defer('tags.highlights_count'))
-        ).all()
-
         return self.send_json({
             'contents': [
                 {'offset': 0, 'contents': document.contents},
-            ],
-            'text_direction': document.text_direction.name,
-            'highlights': [
-                {'id': hl.id,
-                 'start_offset': hl.start_offset,
-                 'end_offset': hl.end_offset,
-                 'tags': [t.id for t in hl.tags]}
-                for hl in highlights
             ],
         })
 

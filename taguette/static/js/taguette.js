@@ -1441,22 +1441,28 @@ function loadDocument(document_id) {
     return;
   }
   showSpinner();
-  getJSON(
-    '/api/project/' + project_id + '/document/' + document_id + '/content'
-  )
-  .then(function(result) {
+  var info = getJSON(
+    '/api/project/' + project_id + '/document/' + document_id
+  );
+  var contents = getJSON(
+    '/api/project/' + project_id + '/document/' + document_id + '/contents'
+  );
+  Promise.all([info, contents])
+  .then(function(results) {
+    var info = results[0];
+    var contents = results[1];
     document_contents.innerHTML = '';
     highlights = {};
     chunk_offsets = [];
-    for(var i = 0; i < result.contents.length; ++i) {
-      var chunk = result.contents[i];
+    for(var i = 0; i < contents.contents.length; ++i) {
+      var chunk = contents.contents[i];
       var elem = document.createElement('div');
       elem.setAttribute('id', 'doc-offset-' + chunk.offset);
       elem.innerHTML = chunk.contents;
       document_contents.appendChild(elem);
       chunk_offsets.push(chunk.offset);
     }
-    if(result.text_direction === 'RIGHT_TO_LEFT') {
+    if(info.text_direction === 'RIGHT_TO_LEFT') {
       document_contents.style.direction = 'rtl';
     } else {
       document_contents.style.direction = 'ltr';
@@ -1473,10 +1479,10 @@ function loadDocument(document_id) {
       tag_links[i].classList.remove('tag-current');
     }
     console.log("Loaded document", document_id);
-    for(var i = 0; i < result.highlights.length; ++i) {
-      setHighlight(result.highlights[i]);
+    for(var i = 0; i < info.highlights.length; ++i) {
+      setHighlight(info.highlights[i]);
     }
-    console.log("Loaded " + result.highlights.length + " highlights");
+    console.log("Loaded " + info.highlights.length + " highlights");
 
     // Update export button
     export_button.style.display = '';
