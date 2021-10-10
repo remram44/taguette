@@ -295,8 +295,8 @@ class MyHTTPTestCase(AsyncHTTPTestCase):
             url = self.get_url(url)
         return getattr(self.http_client, method.lower())(url, **kwargs)
 
-    def aget(self, url):
-        return self._fetch(url, allow_redirects=False)
+    def aget(self, url, headers=None):
+        return self._fetch(url, headers=headers, allow_redirects=False)
 
     def apost(self, url, **kwargs):
         cookies = self.http_client.cookie_jar.filter_cookies(self.get_url('/'))
@@ -802,6 +802,12 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(await response.json(), {
                 'contents': [{'contents': 'different content', 'offset': 0}],
             })
+            self.assertEqual(response.headers['Etag'], '"doc-2-1"')
+        async with self.aget(
+            '/api/project/2/document/2/contents',
+            headers={'If-None-Match': '"doc-2-1"'},
+        ) as response:
+            self.assertEqual(response.status, 304)
 
         # Export document 2 to HTML
         async with self.aget('/project/2/export/document/2.html') as response:
