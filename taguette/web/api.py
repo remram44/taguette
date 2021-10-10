@@ -162,7 +162,31 @@ class DocumentAdd(BaseHandler):
             return await self.send_error_json(400, self.gettext(e.message))
 
 
-class DocumentUpdate(BaseHandler):
+class Document(BaseHandler):
+    @api_auth
+    @PROM_REQUESTS.sync('document_info')
+    def get(self, project_id, document_id):
+        document, _ = self.get_document(project_id, document_id)
+
+        highlights = (
+            self.db.query(database.Highlight)
+            .options(defer('snippet'))
+            .filter(database.Highlight.document_id == document.id)
+            .order_by(database.Highlight.start_offset)
+            .options(joinedload(database.Highlight.tags))
+            .options(defer('tags.highlights_count'))
+        ).all()
+        return self.send_json({
+            'text_direction': document.text_direction.name,
+            'highlights': [
+                {'id': hl.id,
+                 'start_offset': hl.start_offset,
+                 'end_offset': hl.end_offset,
+                 'tags': [t.id for t in hl.tags]}
+                for hl in highlights
+            ],
+        })
+
     @api_auth
     @PROM_REQUESTS.sync('document_update')
     def post(self, project_id, document_id):
@@ -226,26 +250,9 @@ class DocumentContents(BaseHandler):
     def get(self, project_id, document_id):
         document, _ = self.get_document(project_id, document_id, True)
 
-        highlights = (
-            self.db.query(database.Highlight)
-            .options(defer('snippet'))
-            .filter(database.Highlight.document_id == document.id)
-            .order_by(database.Highlight.start_offset)
-            .options(joinedload(database.Highlight.tags))
-            .options(defer('tags.highlights_count'))
-        ).all()
-
         return self.send_json({
             'contents': [
                 {'offset': 0, 'contents': document.contents},
-            ],
-            'text_direction': document.text_direction.name,
-            'highlights': [
-                {'id': hl.id,
-                 'start_offset': hl.start_offset,
-                 'end_offset': hl.end_offset,
-                 'tags': [t.id for t in hl.tags]}
-                for hl in highlights
             ],
         })
 

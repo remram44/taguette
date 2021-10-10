@@ -786,10 +786,9 @@ class TestMultiuser(MyHTTPTestCase):
             })
 
         # Get contents of document 2
-        async with self.aget('/api/project/2/document/2/content') as response:
+        async with self.aget('/api/project/2/document/2') as response:
             self.assertEqual(response.status, 200)
             self.assertEqual(await response.json(), {
-                'contents': [{'contents': 'different content', 'offset': 0}],
                 'highlights': [
                     {'id': 2, 'start_offset': 0, 'end_offset': 4,
                      'tags': [4]},
@@ -797,6 +796,11 @@ class TestMultiuser(MyHTTPTestCase):
                      'tags': [2, 3]},
                 ],
                 'text_direction': 'LEFT_TO_RIGHT',
+            })
+        async with self.aget('/api/project/2/document/2/contents') as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(await response.json(), {
+                'contents': [{'contents': 'different content', 'offset': 0}],
             })
 
         # Export document 2 to HTML
