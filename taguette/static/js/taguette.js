@@ -1442,7 +1442,7 @@ function loadDocument(document_id) {
   }
   showSpinner();
   getJSON(
-    '/api/project/' + project_id + '/document/' + document_id + '/content'
+    '/api/project/' + project_id + '/document/' + document_id + '/contents'
   )
   .then(function(result) {
     document_contents.innerHTML = '';
