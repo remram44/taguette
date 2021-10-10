@@ -136,6 +136,7 @@ class DocumentAdd(BaseHandler):
             except convert.ConversionError as err:
                 return await self.send_error_json(400, str(err))
             else:
+                # Add to database
                 doc = database.Document(
                     name=name,
                     description=description,
@@ -151,11 +152,22 @@ class DocumentAdd(BaseHandler):
                     doc,
                 )
                 self.db.add(cmd)
+                project_id = project.id
+                doc_id = doc.id
                 logger.info("Document added to project %r: %r %r (%d bytes)",
-                            project.id, doc.id, doc.name, len(doc.contents))
+                            project_id, doc_id, doc.name, len(doc.contents))
                 self.db.commit()
+
+                # Notify
                 self.db.refresh(cmd)
                 self.application.notify_project(project.id, cmd)
+
+                # Index
+                await self.application.indexer.add_document(
+                    project_id, doc_id,
+                    name, description, body,
+                )
+
                 return await self.send_json({'created': doc.id})
         except validate.InvalidFormat as e:
             logger.info("Error validating DocumentAdd: %r", e)
@@ -189,13 +201,14 @@ class Document(BaseHandler):
 
     @api_auth
     @PROM_REQUESTS.sync('document_update')
-    def post(self, project_id, document_id):
+    async def post(self, project_id, document_id):
         document, privileges = self.get_document(project_id, document_id)
         if not privileges.can_edit_document():
             return self.send_error_json(403, "Unauthorized")
         try:
             obj = self.get_json()
             if obj:
+                # Update database
                 if 'name' in obj:
                     validate.document_name(obj['name'])
                     document.name = obj['name']
@@ -214,34 +227,51 @@ class Document(BaseHandler):
                     self.current_user,
                     document,
                 )
+                document_id = document.id
                 self.db.add(cmd)
                 self.db.commit()
+
+                # Notify
                 self.db.refresh(cmd)
                 self.application.notify_project(document.project_id, cmd)
 
-            return self.send_json({'id': document.id})
+                # Index
+                await self.application.indexer.update_document(
+                    project_id, document_id,
+                    document.name, document.description,
+                )
+
+            return await self.send_json({'id': document.id})
         except validate.InvalidFormat as e:
             logger.info("Error validating DocumentUpdate: %r", e)
-            return self.send_error_json(400, self.gettext(e.message))
+            return await self.send_error_json(400, self.gettext(e.message))
 
     @api_auth
     @PROM_REQUESTS.sync('document_delete')
-    def delete(self, project_id, document_id):
+    async def delete(self, project_id, document_id):
         document, privileges = self.get_document(project_id, document_id)
         if not privileges.can_delete_document():
             return self.send_error_json(403, "Unauthorized")
+
+        # Update database
         self.db.delete(document)
         cmd = database.Command.document_delete(
             self.current_user,
             document,
         )
         self.db.add(cmd)
+        document_id = document.id
         self.db.commit()
+
+        # Notify
         self.db.refresh(cmd)
         self.application.notify_project(document.project_id, cmd)
 
+        # Update index
+        await self.application.indexer.remove_document(project_id, document_id)
+
         self.set_status(204)
-        return self.finish()
+        return await self.finish()
 
 
 class DocumentContents(BaseHandler):

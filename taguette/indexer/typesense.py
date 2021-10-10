@@ -156,6 +156,16 @@ class TypeSenseIndexer(object):
             },
         )
 
+    async def update_document(self, project_id, id, name, description):
+        await self._api_call(
+            '/collections/all_documents/documents/{id}'.format(id=id),
+            {
+                'name': name,
+                'description': description,
+            },
+            method='PATCH',
+        )
+
     async def remove_document(self, project_id, document_id):
         await self._api_call(
             '/collections/all_documents/documents/{0}'.format(document_id),
