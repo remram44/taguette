@@ -127,7 +127,20 @@ class TypeSenseIndexer(object):
             kwargs['body'] = json.dumps(json_body)
         if method is not None:
             kwargs['method'] = method
-        response = await self._http_client.fetch(url, **kwargs)
+        response = None
+        for _ in range(20):
+            try:
+                response = await self._http_client.fetch(url, **kwargs)
+                break
+            except HTTPClientError as e:
+                if e.code == 503:
+                    # Not ready
+                    logger.info("TypeSense is not ready, retrying...")
+                    await asyncio.sleep(2)
+                else:
+                    raise
+        if response is None:
+            response = await self._http_client.fetch(url, **kwargs)
         return json.loads(response.body.decode('utf-8'))
 
     async def add_project(self, project_id):
