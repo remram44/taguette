@@ -11,7 +11,7 @@ sqlite3:
     - $HOME/.poetry/bin/poetry install --no-interaction
     - scripts/update_translations.sh
     - python -m readme_renderer README.rst >/dev/null
-    - python -Wd -m coverage run --branch --source=taguette tests.py
+    - python -Wd -m coverage run --branch --source=taguette tests.py -v
     - coverage html
     - coverage report | tail -n 1 | grep -o '\([0-9]\+\(\.[0-9]\+\)\?%\)$'
     - flake8 --ignore=W503,W504 tests.py taguette
@@ -30,7 +30,7 @@ sqlite3_redis:
     - $HOME/.poetry/bin/poetry config virtualenvs.create false
     - $HOME/.poetry/bin/poetry install --no-interaction
     - scripts/update_translations.sh
-    - TAGUETTE_TEST_REDIS=redis://redis:6379 python -Wd tests.py
+    - TAGUETTE_TEST_REDIS=redis://redis:6379 python -Wd tests.py -v
 
 frontend_firefox:
   stage: test
@@ -44,7 +44,7 @@ frontend_firefox:
     - $HOME/.poetry/bin/poetry config virtualenvs.create false
     - $HOME/.poetry/bin/poetry install --no-interaction
     - scripts/update_translations.sh
-    - TAGUETTE_TEST_WEBDRIVER=firefox xvfb-run python tests.py TestSeleniumMultiuser
+    - TAGUETTE_TEST_WEBDRIVER=firefox xvfb-run python tests.py -v TestSeleniumMultiuser
 
 frontend_chromium:
   stage: test
@@ -55,7 +55,7 @@ frontend_chromium:
     - $HOME/.poetry/bin/poetry config virtualenvs.create false
     - $HOME/.poetry/bin/poetry install --no-interaction
     - scripts/update_translations.sh
-    - TAGUETTE_TEST_WEBDRIVER=chromium xvfb-run python tests.py TestSeleniumMultiuser
+    - TAGUETTE_TEST_WEBDRIVER=chromium xvfb-run python tests.py -v TestSeleniumMultiuser
 
 sqlite3_latest:
   stage: test
@@ -67,7 +67,7 @@ sqlite3_latest:
     - sed -i 's/^python = ".*$/python = "^3.9"/' pyproject.toml
     - $HOME/.poetry/bin/poetry install --no-interaction
     - scripts/update_translations.sh
-    - python -Wd tests.py
+    - python -Wd tests.py -v
 
 postgres:
   stage: test
@@ -84,7 +84,7 @@ postgres:
     - $HOME/.poetry/bin/poetry install --no-interaction
     - scripts/update_translations.sh
     - pip install psycopg2-binary
-    - python -Wd tests.py
+    - python -Wd tests.py -v
 
 mariadb:
   stage: test
@@ -103,7 +103,7 @@ mariadb:
     - $HOME/.poetry/bin/poetry install --no-interaction
     - scripts/update_translations.sh
     - pip install pymysql cryptography
-    - python -Wd tests.py
+    - python -Wd tests.py -v
 
 sqlite3_pypy:
   stage: test
@@ -116,7 +116,7 @@ sqlite3_pypy:
     - pypy3 -m pip install -U pip
     - $HOME/.poetry/bin/poetry install --no-interaction
     - scripts/update_translations.sh
-    - python -Wd tests.py
+    - python -Wd tests.py -v
 
 sqlite3_py3.7:
   stage: test
@@ -126,7 +126,7 @@ sqlite3_py3.7:
     - $HOME/.poetry/bin/poetry config virtualenvs.create false
     - $HOME/.poetry/bin/poetry install --no-interaction
     - scripts/update_translations.sh
-    - python -Wd tests.py
+    - python -Wd tests.py -v
 
 sqlite3_py3.9:
   stage: test
@@ -136,7 +136,7 @@ sqlite3_py3.9:
     - $HOME/.poetry/bin/poetry config virtualenvs.create false
     - $HOME/.poetry/bin/poetry install --no-interaction
     - scripts/update_translations.sh
-    - python -Wd tests.py
+    - python -Wd tests.py -v
 
 sqlite3_py3.10:
   stage: test
@@ -147,4 +147,4 @@ sqlite3_py3.10:
     - poetry config experimental.new-installer false
     - poetry install --no-interaction
     - scripts/update_translations.sh
-    - python -Wd tests.py
+    - python -Wd tests.py -v
