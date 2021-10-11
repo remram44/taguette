@@ -6,6 +6,7 @@ import os
 import pkg_resources
 import random
 import subprocess
+import tornado.autoreload
 from tornado.httpclient import AsyncHTTPClient, HTTPClientError
 import urllib.parse
 import uuid
@@ -28,6 +29,7 @@ class TypeSenseIndexer(object):
         self.api_key = str(uuid.uuid4())
 
         atexit.register(self.close)
+        tornado.autoreload.add_reload_hook(self.close)
 
     async def start(self):
         if self.process is not None:
