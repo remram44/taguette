@@ -7,9 +7,11 @@ Changelog
 Bugfixes:
 * Avoid error "document name too long" if no name was provided and the filename is used
 * Don't deselect all tags from the highlight modal if it is open while creating a new tag
+* Avoid `TimeoutError` due to the SQLAlchemy connection pool overflowing (mostly affects busy self-hosted non-SQLite deployments)
 
 Enhancements:
 * Add support for right-to-left documents
+* Add importing tags from a codebook CSV file
 
 1.0.1 (2021-07-22)
 ------------------
