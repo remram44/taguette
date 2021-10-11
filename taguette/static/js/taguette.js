@@ -6,6 +6,7 @@
  * - Project metadata
  * - Documents list
  * - Add document
+ * - Search documents
  * - Tags list
  * - Highlights
  * - Add highlight
@@ -662,6 +663,27 @@ document.getElementById('document-add-form').addEventListener('submit', function
     hideSpinner();
   }
   xhr.send(form_data);
+});
+
+
+/*
+ * Search documents
+ */
+
+var fts_form = document.getElementById('fts-form');
+
+fts_form.addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  getJSON('/api/project/' + project_id + '/document/search?q=' + encodeURIComponent(document.getElementById('fts-input').value))
+  .then(function(result) {
+    var hits = result.hits;
+    console.log(hits);
+  })
+  .catch(function(error) {
+    console.error("Failed to search for documents:", error);
+    alert(gettext("Failed to search for documents!") + "\n\n" + error);
+  });
 });
 
 
