@@ -1,10 +1,13 @@
 import asyncio
 from datetime import timedelta, datetime
 from email.message import EmailMessage
+import io
+import itertools
 import json
 import logging
 from markupsafe import Markup
 import prometheus_client
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import aliased
 import time
 import tornado.locale
@@ -12,6 +15,7 @@ from tornado.web import authenticated, HTTPError
 from urllib.parse import urlunparse
 
 from .. import database
+from .. import import_codebook
 from .. import validate
 from .base import BaseHandler, PromMeasureRequest, _f
 
@@ -510,6 +514,169 @@ class ProjectDelete(BaseHandler):
         return self.redirect(self.reverse_url('index'))
 
 
+class ImportCodebook(BaseHandler):
+    @authenticated
+    @PROM_REQUESTS.sync('import_codebook')
+    def get(self, project_id):
+        project, privileges = self.get_project(project_id)
+        if not privileges.can_import_codebook():
+            self.set_status(403)
+            return self.finish(self.gettext(
+                "You don't have permission to import a codebook",
+            ))
+        return self.render('project_import_codebook.html', project=project)
+
+    def _show_confirmation_form(self, project, tags, errors=[]):
+        # Load tags from project, to set whether they exist
+        project_tags = set(tag.path for tag in project.tags)
+        for tag in tags:
+            tag['exists'] = tag['path'] in project_tags
+
+        return self.render(
+            'project_import_codebook_confirm.html',
+            project=project,
+            tags=tags,
+            errors=errors,
+        )
+
+    @authenticated
+    @PROM_REQUESTS.sync('import_codebook')
+    def post(self, project_id):
+        project, privileges = self.get_project(project_id)
+        if not privileges.can_import_codebook():
+            self.set_status(403)
+            return self.render(
+                'project_import_codebook.html',
+                project=project,
+                error=self.gettext(
+                    "You don't have permission to import a codebook",
+                ),
+            )
+
+        if 'file' in self.request.files and len(self.request.files) >= 1:
+            uploaded_file = self.request.files['file'][0]
+
+            reader = io.BytesIO(uploaded_file.body)
+            try:
+                tags = import_codebook.list_tags(reader)
+            except import_codebook.InvalidCodebook as e:
+                self.set_status(400)
+                return self.render(
+                    'project_import_codebook.html',
+                    project=project,
+                    error=self.gettext(e.message),
+                )
+
+            return self._show_confirmation_form(project, tags)
+        elif self.get_body_argument('tag0-path', None):
+            # Accumulate validation errors
+            errors = []
+            # What to insert/update into database
+            replace_tags = {}
+            insert_tags = []
+            # List of tags to show the confirmation form again on conflict
+            tags = []
+
+            for i in itertools.count():
+                path = self.get_body_argument('tag%d-path' % i, None)
+                description = self.get_body_argument(
+                    'tag%d-description' % i,
+                    '',
+                )
+                if path is None:
+                    break
+                if self.get_body_argument('tag%d-replace' % i, ''):
+                    replace = True
+                elif self.get_body_argument('tag%d-import' % i, ''):
+                    replace = False
+                else:
+                    continue
+
+                try:
+                    validate.tag_path(path)
+                    validate.description(description)
+                except validate.InvalidFormat as e:
+                    errors.append(self.gettext(e.message))
+                    continue
+
+                tags.append({'path': path, 'description': description})
+                if replace:
+                    replace_tags[path] = {'description': description}
+                else:  # Insert
+                    insert_tags.append({
+                        'path': path,
+                        'description': description,
+                    })
+
+            if errors:
+                self.set_status(400)
+                return self.render(
+                    'project_import_codebook_confirm.html',
+                    project=project,
+                    errors=errors,
+                )
+
+            try:
+                changed_tags = []
+
+                # Do updates
+                for tag in project.tags:
+                    try:
+                        tag_update = replace_tags.pop(tag.path)
+                    except KeyError:
+                        pass
+                    else:
+                        tag.description = tag_update['description']
+                        changed_tags.append(tag)
+                if replace_tags:
+                    raise KeyError
+
+                # Do inserts
+                for tag_insert in insert_tags:
+                    tag = database.Tag(
+                        project_id=project.id,
+                        path=tag_insert['path'],
+                        description=tag_insert['description'],
+                    )
+                    self.db.add(tag)
+                    changed_tags.append(tag)
+
+                self.db.flush()
+                commands = []
+                for tag in changed_tags:
+                    cmd = database.Command.tag_add(
+                        self.current_user,
+                        tag,
+                    )
+                    self.db.add(cmd)
+                    commands.append(cmd)
+                self.db.flush()
+
+                self.db.commit()
+                for cmd in commands:
+                    self.application.notify_project(project.id, cmd)
+                return self.redirect(self.reverse_url('project', project.id))
+            except (IntegrityError, KeyError):
+                self.db.rollback()
+                error = self.gettext(
+                    "Error importing tags, concurrent changes caused a "
+                    + "conflict",
+                )
+                self.set_status(409)
+                return self._show_confirmation_form(
+                    project,
+                    tags,
+                    errors=[error],
+                )
+        else:
+            self.set_status(400)
+            return self.render(
+                'project_import_codebook.html',
+                project=project,
+                error=self.gettext("No file provided"),
+            )
+
+
 class Project(BaseHandler):
     @authenticated
     @PROM_REQUESTS.sync('project')
@@ -538,6 +705,7 @@ class Project(BaseHandler):
             self.db.query(database.ProjectMember)
             .filter(database.ProjectMember.project_id == project_id)
         ).all()
+        can_import_codebook = privileges.can_import_codebook()
         can_delete_project = privileges.can_delete_project()
         members_json = Markup(json.dumps(
             {member.user_login: {'privileges': member.privileges.name}
@@ -556,5 +724,6 @@ class Project(BaseHandler):
             ),
             tags=tags_json,
             members=members_json,
+            can_import_codebook=can_import_codebook,
             can_delete_project=can_delete_project,
         )

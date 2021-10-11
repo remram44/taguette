@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Import codebook | Taguette{% endblock %}
+
+{% block contents %}
+<h1>Import a codebook</h1>
+<p>Use this form to import an existing codebook into your project. Existing tags will not be deleted, new tags will be added alongside them.</p>
+{% for error in errors %}
+<div class="alert alert-danger">{{ error }}</div>
+{% endfor %}
+<p>You are about to create the following tags:</p>
+<form action="{{ reverse_url('import_codebook', project.id) }}" method="post">
+  {{ xsrf_form_html() }}
+  {% for tag in tags %}
+  <div class="form-group row">
+    <div class="col-sm-2 form-check">
+      {% if tag.exists %}
+      <input type="checkbox" class="form-check-input" name="tag{{ loop.index0 }}-replace" id="tag{{ loop.index0 }}-replace" aria-label="Replace this tag" checked />
+      <label for="tag{{ loop.index0 }}-replace">Replace</label>
+      {% else %}
+      <input type="checkbox" class="form-check-input" name="tag{{ loop.index0 }}-import" id="tag{{ loop.index0 }}-import" aria-label="Replace this tag" checked />
+      <label for="tag{{ loop.index0 }}-import">Import</label>
+      {% endif %}
+    </div>
+    <div class="col-sm-3">
+      <input type="text" class="form-control" value="{{ tag.path }}" disabled />
+      <input type="hidden" name="tag{{ loop.index0 }}-path" value="{{ tag.path }}" />
+    </div>
+    <div class="col-sm-7">
+      <input type="text" class="form-control" name="tag{{ loop.index0 }}-description" value="{{ tag.description }}" />
+    </div>
+  </div>
+  {% endfor %}
+  <div class="form-group row">
+    <div class="col-sm-10 offset-sm-2">
+      <input type="submit" class="btn btn-primary" value="{% trans %}Create tags{% endtrans %}" />
+      <a href="{{ reverse_url('project', project.id) }}" class="btn btn-secondary">{% trans %}Go back{% endtrans %}</a>
+    </div>
+  </div>
+</form>
+{% endblock %}
