@@ -617,6 +617,8 @@ class ImportCodebook(BaseHandler):
                 )
 
             try:
+                changed_tags = []
+
                 # Do updates
                 for tag in project.tags:
                     try:
@@ -625,18 +627,34 @@ class ImportCodebook(BaseHandler):
                         pass
                     else:
                         tag.description = tag_update['description']
+                        changed_tags.append(tag)
                 if replace_tags:
                     raise KeyError
 
                 # Do inserts
                 for tag_insert in insert_tags:
-                    self.db.add(database.Tag(
+                    tag = database.Tag(
                         project_id=project.id,
                         path=tag_insert['path'],
                         description=tag_insert['description'],
-                    ))
+                    )
+                    self.db.add(tag)
+                    changed_tags.append(tag)
+
+                self.db.flush()
+                commands = []
+                for tag in changed_tags:
+                    cmd = database.Command.tag_add(
+                        self.current_user,
+                        tag,
+                    )
+                    self.db.add(cmd)
+                    commands.append(cmd)
+                self.db.flush()
 
                 self.db.commit()
+                for cmd in commands:
+                    self.application.notify_project(project.id, cmd)
                 return self.redirect(self.reverse_url('project', project.id))
             except (IntegrityError, KeyError):
                 self.db.rollback()

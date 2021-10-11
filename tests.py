@@ -1841,6 +1841,21 @@ class TestMultiuser(MyHTTPTestCase):
                     ''').replace('\n', '\r\n'),
             )
 
+        # Check commands
+        db = self.application.DBSession()
+        self.assertEqual(
+            [
+                (cmd.user_login, cmd.project_id, cmd.document_id, cmd.payload)
+                for cmd in db.query(database.Command).all()
+            ],
+            [
+                ('admin', 1, None, {
+                    'type': 'tag_add', 'tag_id': 2,
+                    'tag_path': 'people', 'description': 'new',
+                }),
+            ],
+        )
+
     @gen_test
     async def test_import_codebook_replace(self):
         await self._setup_import_codebook_project()
@@ -1879,6 +1894,25 @@ class TestMultiuser(MyHTTPTestCase):
                     people,new,0
                     ''').replace('\n', '\r\n'),
             )
+
+        # Check commands
+        db = self.application.DBSession()
+        self.assertEqual(
+            [
+                (cmd.user_login, cmd.project_id, cmd.document_id, cmd.payload)
+                for cmd in db.query(database.Command).all()
+            ],
+            [
+                ('admin', 1, None, {
+                    'type': 'tag_add', 'tag_id': 1,
+                    'tag_path': 'interesting', 'description': 'yes replace',
+                }),
+                ('admin', 1, None, {
+                    'type': 'tag_add', 'tag_id': 2,
+                    'tag_path': 'people', 'description': 'new',
+                }),
+            ],
+        )
 
     async def _poll_event(self, proj, from_id):
         async with self.aget(
