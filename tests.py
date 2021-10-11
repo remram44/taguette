@@ -411,7 +411,7 @@ class TestMultiuser(MyHTTPTestCase):
         engine = sqlalchemy.create_engine(DATABASE_URI)
         database.Base.metadata.drop_all(bind=engine)
 
-    @gen_test
+    @gen_test(timeout=30)
     async def test_login(self):
         # Fetch index, should have welcome message and register link
         async with self.aget('/') as response:
@@ -1076,7 +1076,7 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertNotDone(poll_proj1)
         self.assertNotDone(poll_proj2)
 
-    @gen_test(timeout=30)
+    @gen_test(timeout=60)
     async def test_reset_password(self):
         # Accept cookies
         async with self.apost('/cookies', data=dict()) as response:
