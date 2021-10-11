@@ -195,11 +195,29 @@ class TypeSenseIndexer(object):
         )
 
     async def search(self, project_id, text):
-        return await self._api_call(
+        response = await self._api_call(
             '/collections/all_documents/documents/search?'
             + urllib.parse.urlencode({
                 'filter_by': 'project_id:={0}'.format(project_id),
                 'q': text,
                 'query_by': 'name,description,body',
+                'exclude_fields': 'body',
+                'highlight_fields': 'body',
+                'highlight_start_tag': '<span class="search-snippet">',
+                'highlight_end_tag': '</span>',
             }),
         )
+        results = []
+        for hit in response['hits']:
+            doc = hit['document']
+            results.append({
+                'id': doc['id'],
+                'description': doc['description'],
+                'name': doc['name'],
+                'snippets': [
+                    highlight['snippet']
+                    for highlight in hit['highlights']
+                    if highlight['field'] == 'body'
+                ],
+            })
+        return results

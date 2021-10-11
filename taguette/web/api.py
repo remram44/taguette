@@ -309,6 +309,18 @@ class DocumentContents(BaseHandler):
         })
 
 
+class DocumentSearch(BaseHandler):
+    @api_auth
+    @PROM_REQUESTS.async_('document_search')
+    async def get(self, project_id):
+        project, privileges = self.get_project(project_id)
+        query = self.get_query_argument('q')
+        hits = await self.application.indexer.search(project.id, query)
+        return await self.send_json({
+            'hits': hits
+        })
+
+
 class TagAdd(BaseHandler):
     @api_auth
     @PROM_REQUESTS.sync('tag_add')
