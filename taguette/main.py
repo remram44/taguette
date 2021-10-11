@@ -8,6 +8,7 @@ import os
 import pkg_resources
 import prometheus_client
 import re
+from sqlalchemy.orm import undefer
 import subprocess
 import sys
 import tornado.ioloop
@@ -16,7 +17,8 @@ import webbrowser
 
 import taguette
 from . import __version__
-from .database import migrate
+from . import database
+from . import indexer
 from .web import make_app
 
 
@@ -46,6 +48,45 @@ def prepare_db(database):
         db_url = 'sqlite:///' + database
         logger.info("Turning database path into URL: %s", db_url)
     return db_url
+
+
+def index(args):
+    if args.full_text_search_index is None:
+        logger.critical("--full-text-search-index unspecified")
+        sys.exit(1)
+    db_url = prepare_db(args.database)
+    DBSession = database.connect(db_url)
+    index = indexer.get_indexer(args.full_text_search_index)
+    db = DBSession()
+
+    total = db.query(database.Document).count()
+
+    async def reindex():
+        projects = (
+            db.query(database.Project.id)
+            .all()
+        )
+        for project_id in projects:
+            await index.add_project(project_id)
+
+        documents = (
+            db.query(database.Document)
+            .options(undefer(database.Document.contents))
+            .all()
+        )
+        for i, doc in enumerate(documents):
+            if i % 100 == 0:
+                logger.info("Indexing documents, %d/%d", i, total)
+            await index.add_document(
+                doc.project_id,
+                doc.id,
+                doc.name,
+                doc.description,
+                doc.contents,
+            )
+        logger.info("Indexed all %d documents", total)
+
+    asyncio.get_event_loop().run_until_complete(reindex())
 
 
 def default_config(output):
@@ -241,7 +282,17 @@ def main():
     parser_migrate.add_argument('revision', action='store', default='head',
                                 nargs=argparse.OPTIONAL)
     parser_migrate.set_defaults(
-        func=lambda args: migrate(prepare_db(args.database), args.revision))
+        func=lambda args: database.migrate(
+            prepare_db(args.database),
+            args.revision,
+        ),
+    )
+
+    parser_index = subparsers.add_parser(
+        'index',
+        help=_('Re-create the full text search index'),
+    )
+    parser_index.set_defaults(func=index)
 
     parser_config = subparsers.add_parser(
         'default-config',
