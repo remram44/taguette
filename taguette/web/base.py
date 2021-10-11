@@ -163,10 +163,7 @@ class Application(tornado.web.Application):
         else:
             self.terms_of_service = None
 
-        if config['FULL_TEXT_SEARCH_INDEX'] is not None:
-            self.indexer = get_indexer(config['FULL_TEXT_SEARCH_INDEX'])
-        else:
-            self.indexer = None
+        self.indexer = get_indexer(config['FULL_TEXT_SEARCH_INDEX'])
 
         if config['MULTIUSER']:
             self.single_user_token = None
