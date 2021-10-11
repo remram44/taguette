@@ -301,6 +301,8 @@ class Application(tornado.web.Application):
 class BaseHandler(RequestHandler):
     """Base class for all request handlers.
     """
+    application: Application
+
     template_env = jinja2.Environment(
         loader=jinja2.FileSystemLoader(
             [pkg_resources.resource_filename('taguette', 'templates')]
