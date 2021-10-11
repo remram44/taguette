@@ -526,6 +526,19 @@ class ImportCodebook(BaseHandler):
             ))
         return self.render('project_import_codebook.html', project=project)
 
+    def _show_confirmation_form(self, project, tags, errors=[]):
+        # Load tags from project, to set whether they exist
+        project_tags = set(tag.path for tag in project.tags)
+        for tag in tags:
+            tag['exists'] = tag['path'] in project_tags
+
+        return self.render(
+            'project_import_codebook_confirm.html',
+            project=project,
+            tags=tags,
+            errors=errors,
+        )
+
     @authenticated
     @PROM_REQUESTS.sync('import_codebook')
     def post(self, project_id):
@@ -554,15 +567,17 @@ class ImportCodebook(BaseHandler):
                     error=self.gettext(e.message),
                 )
 
-            return self.render(
-                'project_import_codebook_confirm.html',
-                project=project,
-                tags=tags,
-            )
+            return self._show_confirmation_form(project, tags)
         elif self.get_body_argument('tag0-path', None):
+            # Accumulate validation errors
             errors = []
+            # What to insert/update into database
+            replace_tags = {}
+            insert_tags = []
+            # List of tags to show the confirmation form again on conflict
+            tags = []
+
             for i in itertools.count():
-                enabled = self.get_body_argument('tag%d-enabled' % i, '')
                 path = self.get_body_argument('tag%d-path' % i, None)
                 description = self.get_body_argument(
                     'tag%d-description' % i,
@@ -570,7 +585,11 @@ class ImportCodebook(BaseHandler):
                 )
                 if path is None:
                     break
-                if not enabled:
+                if self.get_body_argument('tag%d-replace' % i, ''):
+                    replace = True
+                elif self.get_body_argument('tag%d-import' % i, ''):
+                    replace = False
+                else:
                     continue
 
                 try:
@@ -580,27 +599,57 @@ class ImportCodebook(BaseHandler):
                     errors.append(self.gettext(e.message))
                     continue
 
-                try:
-                    self.db.add(database.Tag(
-                        project_id=project.id,
-                        path=path,
-                        description=description,
-                    ))
-                except IntegrityError:
-                    # Ignore existing tag
-                    continue
+                tags.append({'path': path, 'description': description})
+                if replace:
+                    replace_tags[path] = {'description': description}
+                else:  # Insert
+                    insert_tags.append({
+                        'path': path,
+                        'description': description,
+                    })
 
             if errors:
-                self.db.rollback()
                 self.set_status(400)
                 return self.render(
-                    'project_import_codebook.html',
+                    'project_import_codebook_confirm.html',
                     project=project,
-                    error=jinja2.Markup('<br>'.join(jinja2.escape(errors))),
+                    errors=errors,
                 )
-            else:
+
+            try:
+                # Do updates
+                for tag in project.tags:
+                    try:
+                        tag_update = replace_tags.pop(tag.path)
+                    except KeyError:
+                        pass
+                    else:
+                        tag.description = tag_update['description']
+                if replace_tags:
+                    raise KeyError
+
+                # Do inserts
+                for tag_insert in insert_tags:
+                    self.db.add(database.Tag(
+                        project_id=project.id,
+                        path=tag_insert['path'],
+                        description=tag_insert['description'],
+                    ))
+
                 self.db.commit()
                 return self.redirect(self.reverse_url('project', project.id))
+            except (IntegrityError, KeyError):
+                self.db.rollback()
+                error = self.gettext(
+                    "Error importing tags, concurrent changes caused a "
+                    + "conflict",
+                )
+                self.set_status(409)
+                return self._show_confirmation_form(
+                    project,
+                    tags,
+                    errors=[error],
+                )
         else:
             self.set_status(400)
             return self.render(
