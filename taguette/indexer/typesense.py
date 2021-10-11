@@ -157,7 +157,7 @@ class TypeSenseIndexer(object):
         )
 
     async def add_document(self, project_id, id, name, description, body):
-        await self._api_call(
+        args = (
             '/collections/all_documents/documents',
             {
                 'id': str(id),
@@ -168,6 +168,15 @@ class TypeSenseIndexer(object):
                 'body': body,
             },
         )
+
+        try:
+            await self._api_call(*args)
+        except HTTPClientError as e:
+            if e.code == 409:  # Conflict
+                await self.remove_document(project_id, id)
+                await self._api_call(*args)
+            else:
+                raise
 
     async def update_document(self, project_id, id, name, description):
         await self._api_call(
