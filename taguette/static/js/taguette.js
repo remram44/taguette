@@ -518,6 +518,7 @@ project_description_input.addEventListener('blur', projectMetadataChanged);
 
 var current_document = null;
 var current_tag = null;
+var current_page = null;
 var documents_list = document.getElementById('documents-list');
 
 function linkDocument(elem, doc_id) {
@@ -1077,10 +1078,15 @@ document.getElementById('tag-merge-form').addEventListener('submit', function(e)
 // Add or replace a highlight
 function setHighlight(highlight) {
   var id = '' + highlight.id;
+  var content = undefined;
   if(highlights[id]) {
+    content = highlights[id].content;
     removeHighlight(id);
   }
   highlights[id] = highlight;
+  if(highlight.content === undefined) {
+    highlight.content = content;
+  }
   if(current_tag !== null) {
     showTagView();
     return;
@@ -1483,6 +1489,7 @@ function loadDocument(document_id) {
     }
     document.getElementById('document-link-' + current_document).classList.add('document-link-current');
     current_tag = null;
+    current_page = null;
     var tag_links = document.getElementsByClassName('tag-current');
     for(var i = tag_links.length - 1; i >= 0; --i) {
       tag_links[i].classList.remove('tag-current');
@@ -1531,6 +1538,7 @@ function loadTag(tag_path, page) {
     console.log("Loaded highlights for tag", tag_path || "''");
     document_contents.style.direction = 'ltr';
     current_tag = tag_path;
+    current_page = page;
     current_document = null;
     var document_links = document.getElementsByClassName('document-link-current');
     for(var i = document_links.length - 1; i >= 0; --i) {
@@ -1638,6 +1646,11 @@ function showTagView() {
   var hl_entries = Object.entries(highlights);
   for(var i = 0; i < hl_entries.length; ++i) {
     var hl = hl_entries[i][1];
+
+    // If any highlight is missing 'content', reload the list
+    if(hl.content === undefined) {
+      loadTag(current_tag, current_page);
+    }
 
     var content = document.createElement('div');
     if(hl.text_direction === 'RIGHT_TO_LEFT') {
