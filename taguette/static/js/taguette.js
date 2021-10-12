@@ -1547,10 +1547,18 @@ function loadTag(tag_path, page) {
         content.style.direction = 'ltr';
       }
       content.innerHTML = result.highlights[i].content;
+
       var elem = document.createElement('div');
       elem.className = 'highlight-entry';
       elem.setAttribute('id', 'highlight-entry-' + hl.id);
       elem.appendChild(content);
+      elem.appendChild(document.createTextNode(' '));
+
+      var editButton = document.createElement('a');
+      editButton.className = 'badge badge-secondary';
+      editButton.textContent = 'edit';
+      editButton.setAttribute('href', 'javascript:editHighlight(' + hl.id + ');');
+      elem.appendChild(editButton);
       elem.appendChild(document.createTextNode(' '));
 
       var doclink = document.createElement('a');
