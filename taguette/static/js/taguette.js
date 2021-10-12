@@ -1083,7 +1083,7 @@ function setHighlight(highlight) {
   sortByKey(tag_names, function(path) { return path; });
   tag_names = tag_names.join(", ");
   try {
-    highlightSelection([highlight.start_offset, highlight.end_offset], id, editHighlight, tag_names);
+    highlightSelection([highlight.start_offset, highlight.end_offset], id, function() { editHighlight(id); }, tag_names);
     console.log("Highlight set:", highlight);
   } catch(error) {
     console.error(
@@ -1168,9 +1168,8 @@ function createHighlight(selection) {
   $(highlight_add_modal).modal().drags({handle: '.modal-header'});
 }
 
-function editHighlight() {
+function editHighlight(id) {
   document.getElementById('highlight-add-form').reset();
-  var id = this.getAttribute('data-highlight-id');
   document.getElementById('highlight-add-id').value = id;
   document.getElementById('highlight-add-start').value = highlights[id].start_offset;
   document.getElementById('highlight-add-end').value = highlights[id].end_offset;
