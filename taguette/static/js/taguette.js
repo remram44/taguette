@@ -1164,6 +1164,7 @@ function createHighlight(selection) {
   document.getElementById('highlight-add-id').value = '';
   document.getElementById('highlight-add-start').value = selection[0];
   document.getElementById('highlight-add-end').value = selection[1];
+  document.getElementById('highlight-add-document').value = current_document;
   document.getElementById('highlight-add-form').reset();
   $(highlight_add_modal).modal().drags({handle: '.modal-header'});
 }
@@ -1173,6 +1174,7 @@ function editHighlight(id) {
   document.getElementById('highlight-add-id').value = id;
   document.getElementById('highlight-add-start').value = highlights[id].start_offset;
   document.getElementById('highlight-add-end').value = highlights[id].end_offset;
+  document.getElementById('highlight-add-document').value = highlights[id].document_id;
   var hl_tags = highlights['' + id].tags;
   for(var i = 0; i < hl_tags.length; ++i) {
     document.getElementById('highlight-add-tags-' + hl_tags[i]).checked = true;
@@ -1188,6 +1190,7 @@ document.getElementById('highlight-add-form').addEventListener('submit', functio
     parseInt(document.getElementById('highlight-add-start').value),
     parseInt(document.getElementById('highlight-add-end').value)
   ];
+  var document_id = parseInt(document.getElementById('highlight-add-document').value);
   var hl_tags = [];
   var entries = Object.entries(tags);
   for(var i = 0; i < entries.length; ++i) {
@@ -1200,7 +1203,7 @@ document.getElementById('highlight-add-form').addEventListener('submit', functio
   if(highlight_id) {
     console.log("Posting update for highlight " + highlight_id);
     req = postJSON(
-      '/api/project/' + project_id + '/document/' + current_document + '/highlight/' + highlight_id,
+      '/api/project/' + project_id + '/document/' + document_id + '/highlight/' + highlight_id,
       {start_offset: selection[0],
        end_offset: selection[1],
        tags: hl_tags}
@@ -1208,7 +1211,7 @@ document.getElementById('highlight-add-form').addEventListener('submit', functio
   } else {
     console.log("Posting new highlight");
     req = postJSON(
-      '/api/project/' + project_id + '/document/' + current_document + '/highlight/new',
+      '/api/project/' + project_id + '/document/' + document_id + '/highlight/new',
       {start_offset: selection[0],
        end_offset: selection[1],
        tags: hl_tags}
@@ -1230,11 +1233,12 @@ document.getElementById('highlight-add-form').addEventListener('submit', functio
 // Delete highlight button
 document.getElementById('highlight-delete').addEventListener('click', function() {
   var highlight_id = document.getElementById('highlight-add-id').value;
+  var document_id = document.getElementById('highlight-add-document').value;
   if(highlight_id) {
     highlight_id = parseInt(highlight_id);
     console.log("Posting highlight " + highlight_id + " deletion");
     deleteURL(
-      '/api/project/' + project_id + '/document/' + current_document + '/highlight/' + highlight_id
+      '/api/project/' + project_id + '/document/' + document_id + '/highlight/' + highlight_id
     )
     .then(function() {
       $(highlight_add_modal).modal('hide');

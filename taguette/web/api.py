@@ -180,6 +180,7 @@ class Document(BaseHandler):
             'text_direction': document.text_direction.name,
             'highlights': [
                 {'id': hl.id,
+                 'document_id': hl.document_id,
                  'start_offset': hl.start_offset,
                  'end_offset': hl.end_offset,
                  'tags': [t.id for t in hl.tags]}
