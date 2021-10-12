@@ -887,12 +887,14 @@ function updateTagsList() {
   console.log("Tags list updated");
 
   // Re-set all highlights, to update titles
-  var hl_entries = Object.entries(highlights);
-  for(var i = 0; i < hl_entries.length; ++i) {
-    setHighlight(hl_entries[i][1]);
-  }
+  if(current_document !== null) {
+    var hl_entries = Object.entries(highlights);
+    for(var i = 0; i < hl_entries.length; ++i) {
+      setHighlight(hl_entries[i][1]);
+    }
 
-  console.log("Highlights updated");
+    console.log("Highlights updated");
+  }
 }
 
 updateTagsList();
@@ -1079,6 +1081,9 @@ function setHighlight(highlight) {
     removeHighlight(id);
   }
   highlights[id] = highlight;
+  if(current_document === null) {
+    return;
+  }
   var tag_names = highlight.tags.map(function(id) { return tags[id].path; });
   sortByKey(tag_names, function(path) { return path; });
   tag_names = tag_names.join(", ");
@@ -1532,7 +1537,7 @@ function loadTag(tag_path, page) {
     }
     // No need to clear the 'tag-current', we are calling updateTagsList() below
     document_contents.innerHTML = '';
-    highlights = {};
+    highlights = result.highlights;
     for(var i = 0; i < result.highlights.length; ++i) {
       var hl = result.highlights[i];
       var content = document.createElement('div');

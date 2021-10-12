@@ -793,8 +793,10 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(await response.json(), {
                 'highlights': [
                     {'id': 3, 'document_id': 2, 'tags': [2, 3],
+                     'start_offset': 13, 'end_offset': 17,
                      'text_direction': 'LEFT_TO_RIGHT', 'content': "tent"},
                     {'id': 4, 'document_id': 3, 'tags': [3],
+                     'start_offset': 0, 'end_offset': 7,
                      'text_direction': 'RIGHT_TO_LEFT',
                      'content': "<strong>Opinion</strong>"},
                 ],
@@ -809,6 +811,7 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(await response.json(), {
                 'highlights': [
                     {'id': 2, 'document_id': 2, 'tags': [4],
+                     'start_offset': 0, 'end_offset': 4,
                      'text_direction': 'LEFT_TO_RIGHT', 'content': "diff"},
                 ],
                 'pages': 1,
@@ -822,8 +825,10 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(await response.json(), {
                 'highlights': [
                     {'id': 2, 'document_id': 2, 'tags': [4],
+                     'start_offset': 0, 'end_offset': 4,
                      'text_direction': 'LEFT_TO_RIGHT', 'content': "diff"},
                     {'id': 3, 'document_id': 2, 'tags': [2, 3],
+                     'start_offset': 13, 'end_offset': 17,
                      'text_direction': 'LEFT_TO_RIGHT', 'content': "tent"},
                 ],
                 'pages': 1,
@@ -835,10 +840,13 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(await response.json(), {
                 'highlights': [
                     {'id': 2, 'document_id': 2, 'tags': [4],
+                     'start_offset': 0, 'end_offset': 4,
                      'text_direction': 'LEFT_TO_RIGHT', 'content': "diff"},
                     {'id': 3, 'document_id': 2, 'tags': [2, 3],
+                     'start_offset': 13, 'end_offset': 17,
                      'text_direction': 'LEFT_TO_RIGHT', 'content': "tent"},
                     {'id': 4, 'document_id': 3, 'tags': [3],
+                     'start_offset': 0, 'end_offset': 7,
                      'text_direction': 'RIGHT_TO_LEFT',
                      'content': "<strong>Opinion</strong>"},
                 ],
@@ -1062,10 +1070,13 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(await response.json(), {
                 'highlights': [
                     {'id': 2, 'document_id': 2, 'tags': [4],
+                     'start_offset': 0, 'end_offset': 4,
                      'text_direction': 'LEFT_TO_RIGHT', 'content': "diff"},
                     {'id': 3, 'document_id': 2, 'tags': [2],
+                     'start_offset': 13, 'end_offset': 17,
                      'text_direction': 'LEFT_TO_RIGHT', 'content': "tent"},
                     {'id': 4, 'document_id': 3, 'tags': [2],
+                     'start_offset': 0, 'end_offset': 7,
                      'text_direction': 'RIGHT_TO_LEFT',
                      'content': "<strong>Opinion</strong>"},
                 ],
