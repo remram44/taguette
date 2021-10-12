@@ -40,6 +40,8 @@ msgid "Delete forever"
 msgstr ""
 
 #: taguette/templates/project_delete.html:14
+#: taguette/templates/project_import_codebook.html:29
+#: taguette/templates/project_import_codebook_confirm.html:37
 msgid "Go back"
 msgstr ""
 
@@ -301,6 +303,14 @@ msgstr ""
 msgid "Edit document"
 msgstr ""
 
+#: taguette/templates/project.html:236
+msgid "Left to right"
+msgstr ""
+
+#: taguette/templates/project.html:240
+msgid "Right to left"
+msgstr ""
+
 #: taguette/templates/project.html:221
 msgid "Delete document"
 msgstr ""
@@ -375,6 +385,10 @@ msgstr ""
 
 #: taguette/templates/cookies_prompt.html:12
 msgid "Accept cookies"
+msgstr ""
+
+#: taguette/templates/project_import_codebook_confirm.html:36
+msgid "Create tags"
 msgstr ""
 
 #: taguette/templates/welcome.html:8
@@ -480,12 +494,32 @@ msgstr ""
 msgid "Create"
 msgstr ""
 
-#: taguette/templates/export_highlights.html:14
+#: taguette/templates/project_import.html:16
+#: taguette/templates/project_import_codebook.html:14
+msgid "Project:"
+msgstr ""
+
+#: taguette/templates/project_import.html:10
+#: taguette/templates/project_import_codebook.html:20
+msgid "File:"
+msgstr ""
+
+#: taguette/templates/project_import_codebook.html:23
+msgid "Accepted format: CSV"
+msgstr ""
+
+#: taguette/templates/project_import_codebook.html:28
+msgid "Review"
+msgstr ""
+
+#: taguette/templates/export_highlights.html:6
+#: taguette/templates/export_highlights.html:18
 #, python-format
 msgid "Taguette highlights: %(path)s"
 msgstr ""
 
-#: taguette/templates/export_highlights.html:16
+#: taguette/templates/export_highlights.html:8
+#: taguette/templates/export_highlights.html:20
 msgid "Taguette highlights"
 msgstr ""
 
@@ -517,14 +551,6 @@ msgstr ""
 
 #: taguette/templates/project_import.html:6
 msgid "Import a project"
-msgstr ""
-
-#: taguette/templates/project_import.html:10
-msgid "File:"
-msgstr ""
-
-#: taguette/templates/project_import.html:16
-msgid "Project:"
 msgstr ""
 
 #: taguette/templates/project_import.html:19
@@ -588,6 +614,18 @@ msgstr ""
 
 #: taguette/web/views.py:465
 msgid "You don't have permission to delete this project"
+msgstr ""
+
+#: taguette/web/views.py:524 taguette/web/views.py:551
+msgid "You don't have permission to import a codebook"
+msgstr ""
+
+#: taguette/web/views.py:661
+msgid "Error importing tags, concurrent changes caused a conflict"
+msgstr ""
+
+#: taguette/web/views.py:676
+msgid "No file provided"
 msgstr ""
 
 #: taguette/database.py:687
@@ -675,6 +713,22 @@ msgstr ""
 
 #: taguette/validate.py:96
 msgid "Tag path is too long"
+msgstr ""
+
+#: taguette/import_codebook.py:23
+msgid "Invalid file: CSV expected"
+msgstr ""
+
+#: taguette/import_codebook.py:29
+msgid "Not sure which column to use for tag name"
+msgstr ""
+
+#: taguette/import_codebook.py:32
+msgid "No 'tag', 'name', or 'path' column"
+msgstr ""
+
+#: taguette/import_codebook.py:58
+msgid "Invalid CSV file"
 msgstr ""
 
 #: taguette/main.py:187
