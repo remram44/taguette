@@ -1,8 +1,8 @@
 Changelog
 =========
 
-1.1.0 (???)
------------
+1.1.0 (2021-10-12)
+------------------
 
 Bugfixes:
 * Avoid error "document name too long" if no name was provided and the filename is used
