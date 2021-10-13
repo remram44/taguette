@@ -252,24 +252,33 @@ class DocumentContents(BaseHandler):
         # format of this response, change this constant
         version = 1
 
-        # Cache for a long time
-        self.set_header('Cache-Control', 'private,max-age=31536000,immutable')
+        # Still, don't do it in desktop mode, because people might re-create
+        # their Taguette database sooner than their browser profile
+        if self.application.config['MULTIUSER']:
+            # Cache for a long time
+            self.set_header(
+                'Cache-Control',
+                'private,max-age=31536000,immutable',
+            )
 
-        # Use a fixed etag
-        try:
-            document_id = int(document_id)
-        except ValueError:
-            raise HTTPError(404)
-        self.set_header('Etag', '"doc-%d-%d"' % (document_id, version))
+            # Use a fixed etag
+            try:
+                document_id = int(document_id)
+            except ValueError:
+                raise HTTPError(404)
+            self.set_header('Etag', '"doc-%d-%d"' % (document_id, version))
 
-        # Always return 304 if the client has a copy cached
-        # This means that access control is not enforced, however:
-        #   * no content is sent
-        #   * 304 is sent whether or not the document actually exists
-        if self.check_etag_header():
-            self.set_status(304)
-            self.set_header('Content-Type', 'application/json; charset=utf-8')
-            return self.finish()
+            # Always return 304 if the client has a copy cached
+            # This means that access control is not enforced, however:
+            #   * no content is sent
+            #   * 304 is sent whether or not the document actually exists
+            if self.check_etag_header():
+                self.set_status(304)
+                self.set_header(
+                    'Content-Type',
+                    'application/json; charset=utf-8',
+                )
+                return self.finish()
 
         document, _ = self.get_document(project_id, document_id, True)
         return self.send_json({
