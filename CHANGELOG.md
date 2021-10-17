@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.1.1 (2021-10-17)
+------------------
+
+Bugfixes:
+* Don't cache documents forever in desktop mode (only server mode)
+
 1.1.0 (2021-10-12)
 ------------------
 
