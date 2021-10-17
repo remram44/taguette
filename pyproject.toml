@@ -45,6 +45,7 @@ include = [
 "Documentation" = "https://www.taguette.org/getting-started.html"
 "Chat" = "https://app.element.io/#/room/#taguette:matrix.org"
 "User Mailing List" = "https://groups.io/g/taguette"
+"Open Collective" = "https://opencollective.com/taguette"
 
 # When updating dependencies: update 'translation' stage in Dockerfile
 
