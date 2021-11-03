@@ -96,6 +96,7 @@ def tag_path(path):
 _windows_device_files = ('CON', 'AUX', 'COM1', 'COM2', 'COM3', 'COM4', 'LPT1',
                          'LPT2', 'LPT3', 'PRN', 'NUL')
 _not_ascii_re = re.compile(r'[^A-Za-z0-9_.-]')
+_percent_escapes_re = re.compile(r'%[0-9A-Fa-f]{2}')
 
 
 def filename(name):
@@ -111,6 +112,7 @@ def filename(name):
         raise ValueError("File name is not a string")
     if not name:
         raise ValueError("File name cannot be empty")
+    name = _percent_escapes_re.sub('_', name)
     if '/' in name:
         name = name[name.rindex('/') + 1:]
     if filename.windows and '\\' in name:
