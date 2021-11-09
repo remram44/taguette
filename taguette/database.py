@@ -264,13 +264,13 @@ class Command(Base):
                   default=lambda: datetime.utcnow(), index=True)
     user_login = Column(String(30),
                         ForeignKey('users.login', onupdate='CASCADE'),
-                        nullable=False)
+                        nullable=False, index=True)
     user = relationship('User')
     project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
                         nullable=False, index=True)
     project = relationship('Project')
-    document_id = Column(Integer,
-                         nullable=True)  # Not ForeignKey, document can go away
+    document_id = Column(Integer,  # Not ForeignKey, document can go away
+                         nullable=True, index=True)
     payload = Column(JSON, nullable=False)
 
     tag_count_changes = None
@@ -559,11 +559,11 @@ class HighlightTag(Base):
 
     highlight_id = Column(Integer, ForeignKey('highlights.id',
                                               ondelete='CASCADE'),
-                          primary_key=True)
+                          primary_key=True, index=True)
     highlight = relationship('Highlight')
     tag_id = Column(Integer, ForeignKey('tags.id',
                                         ondelete='CASCADE'),
-                    primary_key=True)
+                    primary_key=True, index=True)
     tag = relationship('Tag')
 
     def __repr__(self):
