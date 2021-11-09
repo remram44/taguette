@@ -15,6 +15,7 @@ from tornado.web import authenticated, HTTPError
 from urllib.parse import urlunparse
 
 from .. import database
+from .. import hibp
 from .. import import_codebook
 from ..utils import _f
 from .. import validate
@@ -155,7 +156,7 @@ class Register(BaseHandler):
             return self.render('login.html', register=True)
 
     @PROM_REQUESTS.sync('register')
-    def post(self):
+    async def post(self):
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         if not self.application.config['REGISTRATION_ENABLED']:
@@ -181,6 +182,11 @@ class Register(BaseHandler):
             ):
                 raise validate.InvalidFormat(_f("Email address is already "
                                                 "used"))
+            if self.application.config['HIBP_API'] is not None:
+                await hibp.check_password(
+                    self.application.config['HIBP_API'],
+                    password1,
+                )
             user = database.User(login=login)
             user.set_password(password1)
             if email:
@@ -196,11 +202,11 @@ class Register(BaseHandler):
             self.db.commit()
             logger.info("User registered: %r", login)
             self.set_secure_cookie('user', login)
-            return self.redirect(self.reverse_url('index'))
+            return await self.redirect(self.reverse_url('index'))
         except validate.InvalidFormat as e:
             logger.info("Error validating Register: %r", e)
-            return self.render('login.html', register=True,
-                               register_error=self.gettext(e.message))
+            return await self.render('login.html', register=True,
+                                     register_error=self.gettext(e.message))
 
 
 class TermsOfService(BaseHandler):
@@ -239,7 +245,7 @@ class Account(BaseHandler):
 
     @authenticated
     @PROM_REQUESTS.sync('account')
-    def post(self):
+    async def post(self):
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         user = self.db.query(database.User).get(self.current_user)
@@ -261,6 +267,11 @@ class Account(BaseHandler):
                 validate.user_password(password1)
                 if password1 != password2:
                     raise validate.InvalidFormat(_f("Passwords do not match"))
+                if self.application.config['HIBP_API'] is not None:
+                    await hibp.check_password(
+                        self.application.config['HIBP_API'],
+                        password1,
+                    )
                 user.set_password(password1)
             if language not in tornado.locale.get_supported_locales():
                 language = None
@@ -270,13 +281,13 @@ class Account(BaseHandler):
             else:
                 self.set_secure_cookie('language', language)
             self.db.commit()
-            return self.redirect(self.reverse_url('account'))
+            return await self.redirect(self.reverse_url('account'))
         except validate.InvalidFormat as e:
             logger.info("Error validating Account: %r", e)
-            return self.render('account.html', user=user,
-                               languages=self.get_languages(),
-                               current_language=user.language,
-                               error=self.gettext(e.message))
+            return await self.render('account.html', user=user,
+                                     languages=self.get_languages(),
+                                     current_language=user.language,
+                                     error=self.gettext(e.message))
 
 
 class AskResetPassword(BaseHandler):
@@ -394,7 +405,7 @@ class SetNewPassword(BaseHandler):
         return self.render('new_password.html', reset_token=reset_token)
 
     @PROM_REQUESTS.sync('new_password')
-    def post(self):
+    async def post(self):
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         reset_token = self.get_body_argument('reset_token')
@@ -402,7 +413,7 @@ class SetNewPassword(BaseHandler):
             user = self.decode_reset_token(reset_token)
         except HTTPError as e:
             self.set_status(403)
-            return self.render(
+            return await self.render(
                 'login.html', register=False,
                 login_error=self.gettext(e.log_message),
             )
@@ -412,14 +423,22 @@ class SetNewPassword(BaseHandler):
             validate.user_password(password1)
             if password1 != password2:
                 raise validate.InvalidFormat(_f("Passwords do not match"))
+            if self.application.config['HIBP_API'] is not None:
+                await hibp.check_password(
+                    self.application.config['HIBP_API'],
+                    password1,
+                )
             logger.info("Password reset: changing password for %r", user.login)
             user.set_password(password1)
             self.db.commit()
-            return self.redirect(self.reverse_url('index'))
+            return await self.redirect(self.reverse_url('index'))
         except validate.InvalidFormat as e:
             logger.info("Error validating SetNewPassword: %r", e)
-            return self.render('new_password.html', reset_token=reset_token,
-                               error=self.gettext(e.message))
+            return await self.render(
+                'new_password.html',
+                reset_token=reset_token,
+                error=self.gettext(e.message),
+            )
 
 
 class ProjectAdd(BaseHandler):

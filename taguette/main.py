@@ -106,6 +106,10 @@ REGISTRATION_ENABLED = True
 # Whether users can import projects from SQLite3 files
 SQLITE3_IMPORT_ENABLED = True
 
+# If you want to check passwords against the haveibeenpwned.com database,
+# set this variable. This is secure, the passwords are not sent to the service
+#HIBP_API = 'https://api.pwnedpasswords.com/'
+
 # Set this to true if you are behind a reverse proxy that sets the
 # X-Forwarded-For header.
 # Leave this at False if users are connecting to Taguette directly
@@ -132,6 +136,7 @@ DEFAULT_CONFIG = {
     'REDIS_SERVER': None,
     'SQLITE3_IMPORT_ENABLED': True,
     'DEFAULT_LANGUAGE': 'en_US',
+    'HIBP_API': None,
     'CONVERT_FROM_HTML_TIMEOUT': 3 * 60,
     'CONVERT_TO_HTML_TIMEOUT': 3 * 60,
     'OPF_OUT_SIZE_LIMIT': 5000000,  # 5 MB
