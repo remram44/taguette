@@ -1,7 +1,7 @@
 import codecs
 import csv
 
-from .web.base import _f
+from .utils import _f
 
 
 class InvalidCodebook(ValueError):

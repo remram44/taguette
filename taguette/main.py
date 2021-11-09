@@ -22,6 +22,7 @@ from .web import make_app
 
 logger = logging.getLogger(__name__)
 
+
 PROM_VERSION = prometheus_client.Gauge('version', "Application version",
                                        ['version'])
 
@@ -138,8 +139,7 @@ DEFAULT_CONFIG = {
 }
 
 REQUIRED_CONFIG = ['NAME', 'PORT', 'SECRET_KEY', 'DATABASE', 'TOS_FILE',
-                   'X_HEADERS', 'EMAIL', 'MAIL_SERVER', 'COOKIES_PROMPT',
-                   'OPF_OUT_SIZE_LIMIT', 'HTML_OUT_SIZE_LIMIT']
+                   'X_HEADERS', 'EMAIL', 'MAIL_SERVER', 'COOKIES_PROMPT']
 
 
 def main():

@@ -26,8 +26,9 @@ from sqlalchemy.types import DateTime, Enum, Integer, String, Text
 import sys
 
 import taguette
-from taguette import convert
-from taguette import validate
+from . import convert
+from .utils import DefaultMap
+from . import validate
 
 
 logger = logging.getLogger(__name__)
@@ -712,21 +713,6 @@ def migrate(db_url, revision):
 
     logger.warning("Performing database upgrade")
     alembic.command.upgrade(alembic_cfg, revision)
-
-
-class DefaultMap(object):
-    def __init__(self, default, mapping):
-        self.__default = default
-        self.mapping = mapping
-
-    def get(self, key):
-        try:
-            return self.mapping[key]
-        except KeyError:
-            return self.__default(key)
-
-    def __getitem__(self, key):
-        return self.get(key)
 
 
 @tracer.start_as_current_span('taguette/copy_project')

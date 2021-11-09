@@ -522,14 +522,6 @@ class BaseHandler(RequestHandler):
             )
 
 
-def _f(message):
-    """Pass-through translation function.
-
-    Marks a string for translation without translating it at run time.
-    """
-    return message
-
-
 class PromMeasureRequest(object):
     def __init__(self, count, time):
         self.count = count

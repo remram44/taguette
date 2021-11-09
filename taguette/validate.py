@@ -2,7 +2,7 @@ import os
 import re
 import string
 
-from .web.base import _f
+from .utils import _f
 
 
 class InvalidFormat(ValueError):

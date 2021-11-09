@@ -16,8 +16,9 @@ from urllib.parse import urlunparse
 
 from .. import database
 from .. import import_codebook
+from ..utils import _f
 from .. import validate
-from .base import BaseHandler, PromMeasureRequest, _f
+from .base import BaseHandler, PromMeasureRequest
 
 
 logger = logging.getLogger(__name__)
