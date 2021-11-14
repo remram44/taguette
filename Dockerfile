@@ -1,6 +1,6 @@
 FROM python:3.9 AS translations
 
-RUN pip install babel==2.9.1 pytz==2021.1  # Keep in sync with poetry.lock
+RUN pip install babel==2.9.1 pytz==2021.3  # Keep in sync with poetry.lock
 
 WORKDIR /usr/src/app
 COPY po po
