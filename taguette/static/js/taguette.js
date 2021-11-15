@@ -906,6 +906,10 @@ function updateTagCount(id, delta) {
 
 var tag_add_modal = document.getElementById('tag-add-modal');
 
+$(tag_add_modal).on('shown.bs.modal', function() {
+  document.getElementById('tag-add-path').focus();
+});
+
 function createTag() {
   document.getElementById('tag-add-form').reset();
   document.getElementById('tag-add-id').value = '';
