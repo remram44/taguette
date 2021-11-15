@@ -353,7 +353,7 @@
   </div>
 </div>
 
-<!-- Avoid doing requests, this is 2018 and we are good at engineering -->
+<!-- Initial state -->
 <script type="text/javascript">
   var user_login = {{ user_login }};
   var project_id = {{ project.id }};
@@ -362,6 +362,7 @@
   var highlights = {};
   var tags = {{ tags }};
   var members = {{ members }};
+  var version = '{{ version }}';
 </script>
 
 <script type="text/javascript" src="{{ reverse_url('trans.js') }}"></script>

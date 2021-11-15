@@ -565,9 +565,9 @@ class TestMultiuser(MyHTTPTestCase):
         async with self.aget('/project/1') as response:
             self.assertEqual(response.status, 200)
             body = await response.text()
-        self.assertIn('we are good at engineering', body)
-        idx = body.index('we are good at engineering')
-        init_js = '\n'.join(body[idx:].splitlines()[1:10])
+        self.assertIn('<!-- Initial state -->', body)
+        idx = body.index('<!-- Initial state -->')
+        init_js = '\n'.join(body[idx:].splitlines()[1:11])
         self.assertEqual(
             init_js,
             '<script type="text/javascript">\n'
@@ -578,6 +578,7 @@ class TestMultiuser(MyHTTPTestCase):
             '  var highlights = {};\n'
             '  var tags = %s;\n'
             '  var members = {"admin": {"privileges": "ADMIN"}};\n'
+            '  var version = \'%s\';\n'
             '</script>' % (
                 json.dumps(
                     {
@@ -587,6 +588,7 @@ class TestMultiuser(MyHTTPTestCase):
                         },
                     },
                     sort_keys=True),
+                exact_version(),
             ),
         )
 
@@ -1916,7 +1918,9 @@ class TestMultiuser(MyHTTPTestCase):
 
     async def _poll_event(self, proj, from_id):
         async with self.aget(
-            '/api/project/%d/events?from=%d' % (proj, from_id),
+            '/api/project/%d/events?version=%s&from=%d' % (
+                proj, exact_version(), from_id,
+            ),
         ) as response:
             self.assertEqual(response.status, 200)
             result = await response.json()
@@ -2356,14 +2360,18 @@ class TestSeleniumMultiuser(SeleniumTest):
             '  var highlights = {};\n'
             '  var tags = %s;\n'
             '  var members = {"admin": {"privileges": "ADMIN"}};\n'
-            '' % json.dumps(
-                {
-                    "1": {
-                        "count": 0, "id": 1, "path": "interesting",
-                        "description": "Further review required",
+            '  var version = \'%s\';\n'
+            '' % (
+                json.dumps(
+                    {
+                        "1": {
+                            "count": 0, "id": 1, "path": "interesting",
+                            "description": "Further review required",
+                        },
                     },
-                },
-                sort_keys=True,
+                    sort_keys=True,
+                ),
+                exact_version(),
             )
         )
         self.assertTrue(any(

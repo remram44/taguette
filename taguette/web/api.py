@@ -11,6 +11,7 @@ from tornado.concurrent import Future
 import tornado.log
 from tornado.web import MissingArgumentError, HTTPError
 
+from .. import exact_version
 from .. import convert
 from .. import database
 from .. import extract
@@ -841,6 +842,10 @@ class ProjectEvents(BaseHandler):
             self.request.remote_ip,
             self.current_user,
         )
+
+        client_version = self.get_query_argument('version', None)
+        if client_version != exact_version():
+            return await self.send_json({'reload': True})
 
         from_id = int(self.get_query_argument('from'))
         project, _ = self.get_project(project_id)
