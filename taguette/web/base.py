@@ -23,7 +23,7 @@ import tornado.iostream
 from tornado.web import HTTPError, RequestHandler
 from urllib.parse import urlencode
 
-from .. import __version__ as version
+from .. import __version__, exact_version
 from .. import database
 
 
@@ -182,7 +182,7 @@ class Application(tornado.web.Application):
     async def _check_messages(self):
         http_client = AsyncHTTPClient()
         response = await http_client.fetch(
-            'https://msg.taguette.org/%s' % version,
+            'https://msg.taguette.org/%s' % __version__,
             headers={'Accept': 'application/json', 'User-Agent': 'Taguette'})
         obj = json.loads(response.body.decode('utf-8'))
         self.messages = [
@@ -333,7 +333,7 @@ class BaseHandler(RequestHandler):
         self._gettext = None
 
     def set_default_headers(self):
-        self.set_header('Server', 'Taguette/%s' % version)
+        self.set_header('Server', 'Taguette/%s' % exact_version())
 
     @property
     def db(self):
@@ -433,7 +433,7 @@ class BaseHandler(RequestHandler):
                 ],
                 tos=self.application.terms_of_service is not None,
                 show_messages=self.current_user == 'admin',
-                version=version,
+                version=exact_version(),
                 gettext=self.gettext,
                 ngettext=self.ngettext,
                 **kwargs)

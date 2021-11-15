@@ -1746,7 +1746,7 @@ function longPollForEvents() {
   lastPoll = Date.now();
   getJSON(
     '/api/project/' + project_id + '/events',
-    {from: last_event}
+    {version: version, from: last_event}
   )
   .then(function(result) {
     if(result.reload) {
