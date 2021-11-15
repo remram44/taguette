@@ -12,7 +12,7 @@ import xlsxwriter
 from xml.sax.saxutils import XMLGenerator
 from xml.sax.xmlreader import AttributesNSImpl
 
-from . import __version__ as version
+from . import exact_version
 from . import convert
 from . import database
 from . import extract
@@ -35,7 +35,7 @@ def _render_string(template_name, locale, **kwargs):
 
     template = template_env.get_template(template_name)
     return template.render(
-        version=version,
+        version=exact_version(),
         gettext=translator.gettext,
         ngettext=translator.ngettext,
         **kwargs,
@@ -298,8 +298,10 @@ def codebook_xml(tags, file):
         output.startPrefixMapping(None, 'urn:QDA-XML:codebook:1.0')
         output.startElementNS(
             (None, 'CodeBook'), 'CodeBook',
-            AttributesNSImpl({(None, 'origin'): 'Taguette %s' % version},
-                             {(None, 'origin'): 'origin'}),
+            AttributesNSImpl(
+                {(None, 'origin'): 'Taguette %s' % exact_version()},
+                {(None, 'origin'): 'origin'},
+            ),
         )
         output.startElementNS(
             (None, 'Codes'), 'Codes',

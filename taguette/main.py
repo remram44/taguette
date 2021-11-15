@@ -15,7 +15,7 @@ from urllib.parse import urlparse
 import webbrowser
 
 import taguette
-from . import __version__
+from . import exact_version
 from .database import migrate
 from .web import make_app
 
@@ -165,6 +165,26 @@ def main():
             if not isinstance(policy, WindowsSelectorEventLoopPolicy):
                 asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())
 
+    toplevel = os.path.dirname(os.path.dirname(__file__))
+    if os.path.exists(os.path.join(toplevel, '.git')):
+        try:
+            version = subprocess.check_output(
+                ['git', '--git-dir=.git', 'describe'],
+                cwd=toplevel,
+                stderr=subprocess.PIPE,
+            ).decode('utf-8').strip()
+        except (OSError, subprocess.CalledProcessError):
+            logger.info("Can't get version from Git, using version=%s",
+                        exact_version())
+        else:
+            logger.info("Running from Git repository, using version=%s",
+                        version)
+            if version.startswith('v'):
+                taguette._exact_version = version[1:]
+    else:
+        logger.info("Not a Git repository, using version=%s", exact_version())
+    PROM_VERSION.labels(exact_version()).set(1)
+
     if sys.platform == 'win32':
         import ctypes.wintypes
 
@@ -191,7 +211,7 @@ def main():
         description="Document tagger for qualitative analysis",
     )
     parser.add_argument('--version', action='version',
-                        version='taguette version %s' % __version__)
+                        version='taguette version %s' % exact_version())
     parser.add_argument('-p', '--port', default='7465',
                         help=_("Port number on which to listen"))
     parser.add_argument('-b', '--bind', default='127.0.0.1',
@@ -320,26 +340,6 @@ def main():
         logger.info("Starting Prometheus exporter on port %d", p_port)
         prometheus_client.start_http_server(p_port, p_addr)
 
-    toplevel = os.path.dirname(os.path.dirname(__file__))
-    if os.path.exists(os.path.join(toplevel, '.git')):
-        try:
-            version = subprocess.check_output(
-                ['git', '--git-dir=.git', 'describe'],
-                cwd=toplevel,
-                stderr=subprocess.PIPE,
-            ).decode('utf-8').strip()
-        except (OSError, subprocess.CalledProcessError):
-            version = 'v%s' % __version__
-            logger.info("Can't get version from Git, using version=%s",
-                        version)
-        else:
-            logger.info("Running from Git repository, using version=%s",
-                        version)
-    else:
-        version = 'v%s' % __version__
-        logger.info("Not a Git repository, using version=%s", version)
-    PROM_VERSION.labels(version).set(1)
-
     if 'SENTRY_DSN' in config:
         import sentry_sdk
         from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
@@ -349,7 +349,7 @@ def main():
             dsn=config['SENTRY_DSN'],
             integrations=[TornadoIntegration(), SqlalchemyIntegration()],
             ignore_errors=[KeyboardInterrupt],
-            release='taguette@%s' % version,
+            release='taguette@%s' % exact_version(),
         )
 
     app = make_app(config, debug=args.debug)
@@ -368,7 +368,7 @@ def main():
         url = 'http://localhost:%d/' % config['PORT']
     print(_("\n    Taguette %(version)s is now running. You can connect to it "
             "using this link:\n\n    %(url)s\n") %
-          dict(url=url, version=__version__), flush=True)
+          dict(url=url, version=exact_version()), flush=True)
 
     if args.browser and not args.debug:
         loop.call_later(0.01, webbrowser.open, url)

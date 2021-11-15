@@ -21,7 +21,7 @@ from unittest import mock
 from urllib.parse import urlencode, urlparse
 from xml.etree import ElementTree
 
-from taguette import __version__
+from taguette import exact_version
 from taguette import convert, database, extract, import_codebook, main, \
     validate, web
 
@@ -1040,7 +1040,7 @@ class TestMultiuser(MyHTTPTestCase):
                  'isCodable="true"/><Code guid="725F0645-9CD3-598A-8D2B-'
                  'EC3D39AB3C3F" name="interesting.places" isCodable="true"/>'
                  '</Codes><Sets/></CodeBook>'
-                 ).format(ver=__version__),
+                 ).format(ver=exact_version()),
             )
 
         # Merge tag 3 into 2
