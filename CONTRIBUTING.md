@@ -96,6 +96,17 @@ TAGUETTE_TEST_WEBDRIVER=firefox python tests.py
 TAGUETTE_TEST_WEBDRIVER=chromium python tests.py
 ```
 
+## Debugging Taguette with PyCharm
+
+1. Install the poetry plugin for pycharm: https://plugins.jetbrains.com/plugin/14307-poetry
+2. In PyCharm's menu: Run/Edit Configurations
+3. Add a new configuration by clicking the top-left plus icon or by pressing alt+insert on your keyboard.
+4. Select `Python` in the pop-up list (other options that show are `Shell Script`, `Python tests`, etc.)
+5. In _Module Name_ type `taguette.main`
+6. In _Environment_, _Python interpreter_, choose "Poetry (taguette)"
+
+You can now just click on _Run/Debug_ (if you only have one run configuration) or click on _Run/Debug..._ and choose _taguette.main_ to start the debugging.
+
 # Attribution
 
 This CONTRIBUTING.md was adapted from [ProjectPorcupine](https://github.com/TeamPorcupine/ProjectPorcupine)'s [CONTRIBUTING.md](https://github.com/TeamPorcupine/ProjectPorcupine/blob/master/CONTRIBUTING.md)
