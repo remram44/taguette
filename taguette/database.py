@@ -278,6 +278,7 @@ class Command(Base):
 
     __table_args__ = (
         Index('idx_project_document', 'project_id', 'document_id'),
+        Index('idx_project_id', 'project_id', 'id'),
     ) + __table_args__
 
     def __init__(self, **kwargs):
