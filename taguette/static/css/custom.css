@@ -281,6 +281,11 @@ a.dropdown-item:hover {
   padding: 0.2em;
 }
 
+#hlinfo em {
+  text-decoration: underline;
+  font-style: normal;
+}
+
 .list-group-item-primary a {
   color: #404041;
 }
