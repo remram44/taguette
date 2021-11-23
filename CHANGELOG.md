@@ -1,6 +1,17 @@
 Changelog
 =========
 
+1.2.0 (???)
+-----------
+
+Bugfixes:
+* Add some database indexes, improving performance on larger installations
+* Reload page when the server updates, avoiding clients on older versions if they never close the tab
+
+Enhancements:
+* Focus the name (path) field when creating a tag
+* Add a keyboard shortcut to create a highlight: 'n' key (localizable)
+
 1.1.1 (2021-10-17)
 ------------------
 
