@@ -2478,7 +2478,7 @@ class TestSeleniumMultiuser(SeleniumTest):
             .find_element_by_class_name('document-link-a')
         )
         self.driver.execute_script('restoreSelection([0, 4]);')
-        await self.s_click_button('new highlight', tag='a')
+        await self.s_click_button('new highlight\n(shortcut: n)', tag='a')
         self.assertEqual(
             self.get_highlight_add_tags(),
             {1: False, 2: False},
@@ -2490,7 +2490,7 @@ class TestSeleniumMultiuser(SeleniumTest):
 
         # Create highlight 2 in document 1
         self.driver.execute_script('restoreSelection([13, 17]);')
-        await self.s_click_button('new highlight', tag='a')
+        await self.s_click_button('new highlight\n(shortcut: n)', tag='a')
         self.assertEqual(
             self.get_highlight_add_tags(),
             {1: False, 2: False},
@@ -2556,7 +2556,7 @@ class TestSeleniumMultiuser(SeleniumTest):
             .find_element_by_class_name('document-link-a')
         )
         self.driver.execute_script('restoreSelection([0, 7]);')
-        await self.s_click_button('new highlight', tag='a')
+        await self.s_click_button('new highlight\n(shortcut: n)', tag='a')
         self.assertEqual(
             self.get_highlight_add_tags(),
             {1: False, 2: False, 3: False},
