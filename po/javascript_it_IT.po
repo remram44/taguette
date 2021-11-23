@@ -84,6 +84,11 @@ msgstr "Non è stato possibile eliminare l'etichetta"
 msgid "Couldn't merge tags!"
 msgstr "Non è stato possibile unire le etichette!"
 
+#. Key used to create a new highlight
+#: taguette/static/js/taguette.js:1176
+msgid "n"
+msgstr "n"
+
 #: taguette/static/js/taguette.js:1183
 msgid "Couldn't create highlight!"
 msgstr "Impossibile creare l'evidenziazione!"

@@ -79,6 +79,11 @@ msgstr ""
 msgid "Couldn't merge tags!"
 msgstr ""
 
+#. Key used to create a new highlight
+#: taguette/static/js/taguette.js:1176
+msgid "n"
+msgstr ""
+
 #: taguette/static/js/taguette.js:1226
 msgid "Couldn't create highlight!"
 msgstr ""

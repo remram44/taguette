@@ -368,7 +368,7 @@
 <script type="text/javascript" src="{{ reverse_url('trans.js') }}"></script>
 
 <!-- "New highlight" button shown after selecting text -->
-<div id="hlinfo"><a class="btn btn-outline-primary" href="javascript:createHighlight(current_selection);">{% trans %}new highlight{% endtrans %}</a></div>
+<div id="hlinfo"><a class="btn btn-outline-primary" href="javascript:createHighlight(current_selection);">{% trans %}<em>n</em>ew highlight <span class="sr-only">(shortcut: n)</span>{% endtrans %}</a></div>
 
 {% endblock %}
 

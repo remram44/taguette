@@ -356,9 +356,10 @@ msgstr "Fusionner..."
 msgid "Delete tag"
 msgstr "Supprimer le tag"
 
-#: taguette/templates/project.html:373
-msgid "new highlight"
-msgstr "nouvelle marque"
+#: taguette/templates/project.html:371
+msgid "<em>n</em>ew highlight <span class=\"sr-only\">(shortcut: n)</span>"
+msgstr ""
+"<em>n</em>ouvelle marque <span class=\"sr-only\">(raccourci : n)</span>"
 
 #: taguette/templates/index.html:10
 #, python-format
