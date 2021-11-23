@@ -339,9 +339,10 @@ msgstr "Fusionar..."
 msgid "Delete tag"
 msgstr "Eliminar etiqueta"
 
-#: taguette/templates/project.html:345
-msgid "new highlight"
-msgstr "nueva etiqueta"
+#: taguette/templates/project.html:371
+msgid "<em>n</em>ew highlight <span class=\"sr-only\">(shortcut: n)</span>"
+msgstr ""
+"<em>n</em>ueva etiqueta <span class=\"sr-only\">(shortcut: n)</span>"
 
 #: taguette/templates/index.html:10
 #, python-format

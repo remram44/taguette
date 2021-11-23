@@ -83,6 +83,11 @@ msgstr "Não foi possível deletar a etiqueta!"
 msgid "Couldn't merge tags!"
 msgstr "Não foi possível combinar as etiquetas!"
 
+#. Key used to create a new highlight
+#: taguette/static/js/taguette.js:1176
+msgid "n"
+msgstr "n"
+
 #: taguette/static/js/taguette.js:1183
 msgid "Couldn't create highlight!"
 msgstr "Não foi possível criar o destaque!"

@@ -340,9 +340,10 @@ msgstr "Samenvoegen..."
 msgid "Delete tag"
 msgstr "Label verwijderen"
 
-#: taguette/templates/project.html:345
-msgid "new highlight"
-msgstr "nieuwe markering"
+#: taguette/templates/project.html:371
+msgid "<em>n</em>ew highlight <span class=\"sr-only\">(shortcut: n)</span>"
+msgstr ""
+"<em>n</em>ieuwe markering <span class=\"sr-only\">(shortcut: n)</span>"
 
 #: taguette/templates/index.html:10
 #, python-format

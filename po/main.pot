@@ -340,8 +340,8 @@ msgstr ""
 msgid "Delete tag"
 msgstr ""
 
-#: taguette/templates/project.html:373
-msgid "new highlight"
+#: taguette/templates/project.html:371
+msgid "<em>n</em>ew highlight <span class=\"sr-only\">(shortcut: n)</span>"
 msgstr ""
 
 #: taguette/templates/index.html:10
