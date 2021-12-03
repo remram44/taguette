@@ -784,36 +784,33 @@ class ProjectImport(BaseHandler):
 
     async def _list_projects(self, filename):
         # Connect to the database
-        src_db = database.connect('sqlite:///%s' % filename, external=True)()
-
-        # List projects
-        projects = src_db.execute(database.Project.__table__.select())
-        for i, row in enumerate(projects):
-            if i == 0:
-                self.set_header(
-                    'Content-Type', 'application/json; charset=utf-8',
-                )
-                self.write('{"projects": [')
-            else:
-                self.write(',')
-            self.write(json.dumps({
-                'id': row['id'],
-                'name': row['name'],
-            }))
-            if i == 100:
-                await self.flush()
-        return await self.finish(']}')
+        with database.connect('sqlite:///%s' % filename, external=True)() as src_db:
+            # List projects
+            projects = src_db.execute(database.Project.__table__.select())
+            for i, row in enumerate(projects):
+                if i == 0:
+                    self.set_header(
+                        'Content-Type', 'application/json; charset=utf-8',
+                    )
+                    self.write('{"projects": [')
+                else:
+                    self.write(',')
+                self.write(json.dumps({
+                    'id': row['id'],
+                    'name': row['name'],
+                }))
+                if i == 100:
+                    await self.flush()
+            return await self.finish(']}')
 
     async def _import_project(self, filename, project_id):
         # Connect to the database
-        src_db = database.connect('sqlite:///%s' % filename, external=True)()
-
-        # Copy data
-        new_project_id = database.copy_project(
-            src_db, self.db,
-            project_id, self.current_user,
-        )
-        src_db.close()
+        with database.connect('sqlite:///%s' % filename, external=True)() as src_db:
+            # Copy data
+            new_project_id = database.copy_project(
+                src_db, self.db,
+                project_id, self.current_user,
+            )
 
         # Insert a command for the import
         self.db.add(
