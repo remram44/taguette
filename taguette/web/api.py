@@ -3,6 +3,7 @@ import functools
 import json
 import logging
 import math
+import os
 import prometheus_client
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import aliased, defer, joinedload
@@ -759,18 +760,19 @@ class ImportProject(BaseHandler):
         except (KeyError, IndexError):
             raise MissingArgumentError('file')
 
-        with tempfile.NamedTemporaryFile(
-            'wb',
-            prefix='taguette_import_',
-            suffix='.sqlite3',
-        ) as tmp:
+        with tempfile.TemporaryDirectory(
+            prefix='taguette_export_',
+        ) as tmp_dir:
+            filename = os.path.join(tmp_dir, 'db.sqlite3')
+
             # Write the database to temporary file
-            tmp.write(file.body)
-            tmp.flush()
+            with open(filename, 'wb') as fp:
+                fp.write(file.body)
+                fp.flush()
 
             project_id = self.get_body_argument('project_id', None)
             if project_id is None:
-                return await self._list_projects(tmp.name)
+                return await self._list_projects(filename)
             else:
                 try:
                     project_id = int(project_id)
@@ -779,7 +781,7 @@ class ImportProject(BaseHandler):
                     return await self.send_json({
                         'error': "Invalid project ID",
                     })
-                return await self._import_project(tmp.name, project_id)
+                return await self._import_project(filename, project_id)
 
     async def _list_projects(self, filename):
         # Connect to the database
