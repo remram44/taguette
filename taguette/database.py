@@ -661,59 +661,22 @@ def connect(db_url, *, external=False):
     alembic_cfg.set_main_option('script_location', 'taguette:migrations')
     alembic_cfg.set_main_option('sqlalchemy.url', db_url)
 
-    conn = engine.connect()
-    if not engine.dialect.has_table(conn, Project.__tablename__):
-        logger.warning("The tables don't seem to exist; creating")
-        Base.metadata.create_all(bind=engine)
+    with engine.connect() as conn:
+        if not engine.dialect.has_table(conn, Project.__tablename__):
+            logger.warning("The tables don't seem to exist; creating")
+            Base.metadata.create_all(bind=engine)
 
-        # Mark this as the most recent Alembic version
-        alembic.command.stamp(alembic_cfg, "head")
+            # Mark this as the most recent Alembic version
+            alembic.command.stamp(alembic_cfg, "head")
 
-        # Set SQLite's "application ID"
-        if db_url.startswith('sqlite:'):
-            conn.execute("PRAGMA application_id=0x54677474;")  # 'Tgtt'
-    else:
-        # Perform Alembic migrations if needed
-        context = MigrationContext.configure(conn)
-        current_rev = context.get_current_revision()
-        scripts = ScriptDirectory.from_config(alembic_cfg)
-        if [current_rev] != scripts.get_heads():
-            logger.warning("Database schema is out of date: %s", current_rev)
-            _ = taguette.trans.gettext
+            # Set SQLite's "application ID"
             if db_url.startswith('sqlite:'):
-                if not external:
-                    print(_(
-                        "\n    The database schema used by Taguette has "
-                        "changed! We will try to\n    update your workspace "
-                        "automatically.\n"), file=sys.stderr, flush=True)
-                    assert db_url.startswith('sqlite:///')
-                    assert os.path.exists(db_url[10:])
-                    backup = db_url[10:] + '.bak'
-                    shutil.copy2(db_url[10:], backup)
-                    logger.warning(
-                        "Performing automated update, backup file: %s", backup,
-                    )
-                    print(
-                        _("\n    A backup copy of your database file has been "
-                          "created. If the update\n    goes horribly wrong, "
-                          "make sure to keep that file, and let us know:\n    "
-                          "%(backup)s\n") % dict(backup=backup),
-                        file=sys.stderr, flush=True,
-                    )
-                alembic.command.upgrade(alembic_cfg, 'head')
-            else:
-                print(_("\n    The database schema used by Taguette has "
-                        "changed! Because you are not using\n    SQLite, we "
-                        "will not attempt a migration automatically; back up "
-                        "your data and\n    use `taguette --database=%(url)s "
-                        "migrate` if you want to proceed.") % dict(url=db_url),
-                      file=sys.stderr, flush=True)
-                sys.exit(3)
+                conn.execute("PRAGMA application_id=0x54677474;")  # 'Tgtt'
         else:
-            logger.info("Database is up to date: %s", current_rev)
+            # Perform Alembic migrations if needed
+            _auto_upgrade_db(db_url, conn, alembic_cfg, external)
 
     # Record to Prometheus
-    conn.close()
     conn = engine.connect()
     revision = MigrationContext.configure(conn).get_current_revision()
     PROM_DATABASE_VERSION.labels(revision).set(1)
@@ -721,6 +684,46 @@ def connect(db_url, *, external=False):
     DBSession = sessionmaker(bind=engine)
 
     return DBSession
+
+
+def _auto_upgrade_db(db_url, conn, alembic_cfg, external):
+    context = MigrationContext.configure(conn)
+    current_rev = context.get_current_revision()
+    scripts = ScriptDirectory.from_config(alembic_cfg)
+    if [current_rev] != scripts.get_heads():
+        logger.warning("Database schema is out of date: %s", current_rev)
+        _ = taguette.trans.gettext
+        if db_url.startswith('sqlite:'):
+            if not external:
+                print(_(
+                    "\n    The database schema used by Taguette has "
+                    "changed! We will try to\n    update your workspace "
+                    "automatically.\n"), file=sys.stderr, flush=True)
+                assert db_url.startswith('sqlite:///')
+                assert os.path.exists(db_url[10:])
+                backup = db_url[10:] + '.bak'
+                shutil.copy2(db_url[10:], backup)
+                logger.warning(
+                    "Performing automated update, backup file: %s", backup,
+                )
+                print(
+                    _("\n    A backup copy of your database file has been "
+                      "created. If the update\n    goes horribly wrong, "
+                      "make sure to keep that file, and let us know:\n    "
+                      "%(backup)s\n") % dict(backup=backup),
+                    file=sys.stderr, flush=True,
+                )
+            alembic.command.upgrade(alembic_cfg, 'head')
+        else:
+            print(_("\n    The database schema used by Taguette has "
+                    "changed! Because you are not using\n    SQLite, we "
+                    "will not attempt a migration automatically; back up "
+                    "your data and\n    use `taguette --database=%(url)s "
+                    "migrate` if you want to proceed.") % dict(url=db_url),
+                  file=sys.stderr, flush=True)
+            sys.exit(3)
+    else:
+        logger.info("Database is up to date: %s", current_rev)
 
 
 def migrate(db_url, revision):
