@@ -15,17 +15,22 @@ AppId={{FB884879-1AE9-43D5-B4A3-8499A0B65E0E}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppVerName={#MyAppName} {#MyAppVersion}
+;AppVerName={#MyAppName} {#MyAppVersion}
 AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={pf}\taguette
+DefaultDirName={autopf}\taguette
 DisableProgramGroupPage=yes
+; Uncomment the following line to run in non administrative install mode (install for current user only.)
+;PrivilegesRequired=lowest
+PrivilegesRequiredOverridesAllowed=dialog
 LicenseFile=C:\Users\user\Desktop\taguette\scripts\dist\LICENSE.txt
 OutputBaseFilename=taguette-setup
 SetupIconFile=C:\Users\user\Desktop\taguette\taguette\static\favicon.ico
 Compression=lzma
 SolidCompression=yes
+WizardStyle=modern
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -38,8 +43,8 @@ Source: "C:\Users\user\Desktop\taguette\dist\taguette\*"; DestDir: "{app}"; Flag
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{commonprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
-Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
+Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
+Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
