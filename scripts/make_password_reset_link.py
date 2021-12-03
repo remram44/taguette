@@ -4,7 +4,6 @@ import argparse
 import os
 import sys
 import time
-
 from tornado.web import create_signed_value
 
 from taguette import database
@@ -31,6 +30,7 @@ def main():
     user = db.query(database.User).get(args.user_login)
     if user is None:
         print("No such user: %r" % args.user_login, file=sys.stderr)
+        sys.exit(1)
 
     # Generate a signed token
     reset_token = '%s|%s|%s' % (
