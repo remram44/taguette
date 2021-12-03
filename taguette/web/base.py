@@ -220,13 +220,17 @@ class Application(tornado.web.Application):
 
     def observe_project(self, project_id, future):
         assert isinstance(project_id, int)
-        # Add to dict either way
-        self.event_waiters.setdefault(project_id, set()).add(future)
-        if self.redis is not None:
-            # Listen for Redis messages
-            self.redis_pubsub.subscribe(**{
-                'project:%d' % project_id: self._on_redis_message_thread,
-            })
+        if project_id in self.event_waiters:
+            # We're already watching, add a future to notify
+            self.event_waiters[project_id].add(future)
+        else:
+            # Start watching
+            self.event_waiters[project_id] = set((future,))
+            if self.redis is not None:
+                # Listen for Redis messages
+                self.redis_pubsub.subscribe(**{
+                    'project:%d' % project_id: self._on_redis_message_thread,
+                })
 
     def _on_redis_message_thread(self, msg):
         # Call _on_redis_message on loop thread from Redis thread
@@ -243,12 +247,13 @@ class Application(tornado.web.Application):
 
     def unobserve_project(self, project_id, future):
         assert isinstance(project_id, int)
-        # Remove from dict either way
         if project_id in self.event_waiters:
             self.event_waiters[project_id].discard(future)
-        # Maybe unsubscribe
-        if self.redis is not None and not self.event_waiters[project_id]:
-            self.redis_pubsub.unsubscribe('project:%d' % project_id)
+            # If there are no more watchers, remove dict entry and unsubscribe
+            if not self.event_waiters[project_id]:
+                del self.event_waiters[project_id]
+                if self.redis is not None:
+                    self.redis_pubsub.unsubscribe('project:%d' % project_id)
 
     def notify_project(self, project_id, cmd):
         assert isinstance(project_id, int)
