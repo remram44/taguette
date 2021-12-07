@@ -7,10 +7,13 @@ Changelog
 Bugfixes:
 * Add some database indexes, improving performance on larger installations
 * Reload page when the server updates, avoiding clients on older versions if they never close the tab
+* Fix error importing SQLite3 file on Windows (and other permission errors on temporary files)
+* Show a helpful message if the imported codebook has rows that are too short, instead of 500 error
 
 Enhancements:
 * Focus the name (path) field when creating a tag
 * Add a keyboard shortcut to create a highlight: 'n' key (localizable)
+* Enable portable install in Windows installer (no admin access)
 
 1.1.1 (2021-10-17)
 ------------------
