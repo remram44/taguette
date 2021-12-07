@@ -47,7 +47,9 @@ def list_tags_csv(reader):
     # Read file
     try:
         tags = []
-        for row in reader:
+        for nb, row in enumerate(reader, 2):
+            if len(row) <= col_path or len(row) <= col_description:
+                raise InvalidCodebook(_f("Not enough columns on row %d") % nb)
             path = row[col_path]
             if col_description is not None:
                 description = row[col_description]
