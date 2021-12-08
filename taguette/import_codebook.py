@@ -44,11 +44,17 @@ def list_tags_csv(reader):
     except ValueError:
         col_description = None
 
+    needed_rows = max(
+        num + 1
+        for num in (col_path, col_description)
+        if num is not None
+    )
+
     # Read file
     try:
         tags = []
         for nb, row in enumerate(reader, 2):
-            if len(row) <= col_path or len(row) <= col_description:
+            if len(row) < needed_rows:
                 raise InvalidCodebook(_f("Not enough columns on row %d") % nb)
             path = row[col_path]
             if col_description is not None:

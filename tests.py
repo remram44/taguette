@@ -1684,6 +1684,10 @@ class TestMultiuser(MyHTTPTestCase):
                 'tag,description\ninteresting\n',
                 "Not enough columns on row 2",
             ),
+            (
+                'unk,tag\n1,interesting\n2\n',
+                "Not enough columns on row 3",
+            ),
         ]
         for codebook, error in codebooks:
             async with self.apost(
