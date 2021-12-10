@@ -32,7 +32,7 @@ bibliography: paper.bib
 
 # Summary
 
-Taguette is a free and open-source computer-assisted qualitative data analysis software (CAQDAS) [@caqdas]. CAQDAS software help researchers using qualitative methods to organize, annotate, collaborate on, analyze, and visualize their work. Qualitative methods are used in a wide range of fields, such as anthropology, education, nursing, psychology, sociology, and marketing. Qualitative data has a similarly wide range: interviews, focus groups, ethnographies, and more.
+Taguette is a free and open-source computer-assisted qualitative data analysis software (CAQDAS) [@caqdas]. CAQDAS software helps researchers using qualitative methods to organize, annotate, collaborate on, analyze, and visualize their work. Qualitative methods are used in a wide range of fields, such as anthropology, education, nursing, psychology, sociology, and marketing. Qualitative data has a similarly wide range: interviews, focus groups, ethnographies, and more.
 
 # Statement of Need
 
@@ -50,7 +50,7 @@ Work in Taguette begins with importing a document. We support a variety of text 
 
 ## Analysis
 
-After a user has imported a document into Taguette, they can then qualitatively highlight sections of text (see \autoref{fig:document}). Those highlights are organized in hierarchical tags that can be created, merged together, and recalled at will (see \autoref{fig:view-tag}). Data for all projects including documents, tags, and highlights is stored in a SQL database, which allows for easy exploration and scripting should the user need to go beyond the capabilities offered by our interface. In single-user mode, Taguette automatically creates a SQLite database in the user's home directory, and perform schema migrations automatically when a new version of Taguette is installed. Taguette can also use the other SQL backends supported by SQLAlchemy [@sqlalchemy].
+After a user has imported a document into Taguette, they can then qualitatively highlight sections of text (see \autoref{fig:document}). Those highlights are organized in hierarchical tags that can be created, merged together, and recalled at will (see \autoref{fig:view-tag}). Data for all projects including documents, tags, and highlights is stored in a SQL database, which allows for easy exploration and scripting should the user need to go beyond the capabilities offered by our interface. In single-user mode, Taguette automatically creates a SQLite database in the user's home directory, and performs schema migrations automatically when a new version of Taguette is installed. Taguette can also use the other SQL backends supported by SQLAlchemy [@sqlalchemy].
 
 ![Document view, where highlights are created and associated with tags.\label{fig:document}](01-document.png)
 
