@@ -32,11 +32,11 @@ bibliography: paper.bib
 
 # Summary
 
-Taguette is a free and open-source computer-assisted qualitative data analysis software (CAQDAS) [@caqdas]. CAQDAS software helps researchers using qualitative methods to organize, annotate, collaborate on, analyze, and visualize their work. Qualitative methods are used in a wide range of fields, such as anthropology, education, nursing, psychology, sociology, and marketing. Qualitative data has a similarly wide range: interviews, focus groups, ethnographies, and more.
+Taguette is a free and open-source computer-assisted qualitative data analysis software (CAQDAS) [@caqdas] package. CAQDAS helps researchers using qualitative methods to organize, annotate, collaborate on, analyze, and visualize their work. Qualitative methods are used in a wide range of fields, such as anthropology, education, nursing, psychology, sociology, and marketing. Qualitative data has a similarly wide range: interviews, focus groups, ethnographies, and more.
 
 # Statement of Need
 
-Taguette fills a specific research need for qualitative researchers who cannot afford access to the software to do their work. For commercial CAQDAS, the lowest subscription price is 20 USD/month, and the lowest desktop application price is 520 USD [@caqdas]. There have been fewer than twenty open-source CAQDAS available **ever**, and fewer than five are being currently maintained, including Taguette.
+Taguette fills a specific research need for qualitative researchers who cannot afford access to the software to do their work. For commercial CAQDAS packages, the lowest subscription price is 20 USD/month, and the lowest desktop application price is 520 USD [@caqdas]. There have been fewer than twenty open-source CAQDAS packages available **ever**, and fewer than five are being currently maintained, including Taguette.
 
 Taguette directly supports qualitative inquiry of text materials (see \autoref{fig:document}). It is unique in that it provides a free and open-source tool for qualitative researchers who want real-time collaboration (see \autoref{fig:collabs}). Taguette has already been used in multiple research publications, which we have compiled in a Zotero library [@taguette-zotero], and also is being self-hosted by research institutions on behalf of their communities (example: [Digitalization Research Cluster, Leiden University](https://taguette.leiden.digital/)).
 
@@ -62,7 +62,7 @@ The multi-user version of Taguette allows for live collaboration of multiple use
 
 ![Adding collaborators through the interface.\label{fig:collabs}](03-collabs.png)
 
-From then on, any change made by a different user is reflected immediately for the other users. This allows for faster annotation of large projects, without having to exchange partially processed documents via email for example. Taguette is currently the only free and open-source CAQDAS that supports this.
+From then on, any change made by a different user is reflected immediately to the other users. This allows for faster annotation of large projects, without having to exchange partially processed documents via email for example. Taguette is currently the only free and open-source CAQDAS package that supports this.
 
 ## Exporting
 
@@ -70,7 +70,7 @@ Taguette offers a variety of exporting options. A user can export a codebook as 
 
 ![A highlighted document exported from Taguette and opened in LibreOffice.\label{fig:export}](04-export.png)
 
-It is also possible to export a project as a SQLite3 database [@sqlite], in Taguette's native schema, which contains all the information necessary to continue work on another instance of Taguette. It is even possible to import them on our hosted version, [app.taguette.org](https://app.taguette.org/), or to export from there to a local copy. Older versions of the schema are automatically recognized and converted to the latest version if needed.
+It is also possible to export a project as a SQLite3 database [@sqlite], in Taguette's native schema, that contains all the information necessary to continue work on another instance of Taguette. It is even possible to import them on our hosted version, [app.taguette.org](https://app.taguette.org/), or to export from there to a local copy. Older versions of the schema are automatically recognized and converted to the latest version if needed.
 
 # Related Work
 
