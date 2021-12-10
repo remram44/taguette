@@ -1,17 +1,18 @@
 If you use Taguette for your qualitative analysis, please cite it with the following:
 
-    Rémi Rampin, Vicky Steeves, & Sarah DeMott. (2021, October 17). Taguette (Version 1.1.1). Zenodo. https://doi.org/10.5281/zenodo.5574555
+    Rampin et al., (2021). Taguette: open-source qualitative data analysis. Journal of Open Source Software, 6(68), 3522, https://doi.org/10.21105/joss.03522
 
 BibTex:
 
-@software{Taguette,
-  author = {{Rampin, Rémi and Steeves, Vicky and DeMott, Sarah}},
-  title = {Taguette},
-  doi = {10.5281/zenodo.5574555},
-  url = {https://www.taguette.org}
-  version = {1.1.1},
-  date = {2021-10-17},
-  publisher = {Zenodo},
-  keywords = {qual,  qualitative,  qualitative research,  research,  tags,  tagging,  document,  text-analysis,  highlights,  notes},
-  language = {en}
+@article{Rampin2021,
+  doi = {10.21105/joss.03522},
+  url = {https://doi.org/10.21105/joss.03522},
+  year = {2021},
+  publisher = {The Open Journal},
+  volume = {6},
+  number = {68},
+  pages = {3522},
+  author = {Rémi Rampin and Vicky Rampin},
+  title = {Taguette: open-source qualitative data analysis},
+  journal = {Journal of Open Source Software}
 }
