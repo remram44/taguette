@@ -6,7 +6,7 @@ description = "Document tagger for qualitative analysis"
 license = "BSD-3-Clause"
 
 authors = [
-    "Remi Rampin <remirampin@gmail.com>",
+    "Remi Rampin <remi@rampin.org>",
 ]
 
 readme = "README.rst"
