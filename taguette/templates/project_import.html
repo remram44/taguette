@@ -6,6 +6,7 @@
 <h1>{% trans %}Import a project{% endtrans %}</h1>
 
 <form class="mt-3" onsubmit="javascript:importProject();return false;">
+  {{ xsrf_form_html() }}
   <div class="form-group row">
     <label for="project-file" class="col-sm-2 col-form-label">{% trans %}File:{% endtrans %}</label>
     <div class="col-sm-10">
@@ -85,7 +86,7 @@ function importProject() {
   var form_data = new FormData();
   form_data.append('project_id', parseInt(document.getElementById('project').value, 10));
   form_data.append('file', file);
-  var xsrf = document.cookie.match('\\b' + '_xsrf' + '=([^;]*)\\b')
+  var xsrf = document.cookie.match('\\b' + '_xsrf' + '=([^;]*)\\b');
   if(xsrf) {
     form_data.append('_xsrf', xsrf[1]);
   }
