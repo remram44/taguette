@@ -243,7 +243,7 @@ class Document(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(200), nullable=False)
     description = Column(Text, nullable=False)
-    filename = Column(String(200), nullable=True)
+    filename = Column(String(200), nullable=False)
     created = Column(DateTime, nullable=False,
                      default=lambda: datetime.utcnow())
     project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
