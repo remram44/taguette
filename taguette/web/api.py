@@ -747,7 +747,7 @@ class MembersUpdate(BaseHandler):
         return self.finish()
 
 
-class ImportProject(BaseHandler):
+class ProjectImport(BaseHandler):
     def prepare(self):
         if not self.application.config['SQLITE3_IMPORT_ENABLED']:
             raise HTTPError(403)
