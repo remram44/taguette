@@ -768,7 +768,6 @@ class ProjectImport(BaseHandler):
             # Write the database to temporary file
             with open(filename, 'wb') as fp:
                 fp.write(file.body)
-                fp.flush()
 
             project_id = self.get_body_argument('project_id', None)
             if project_id is None:
