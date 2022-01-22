@@ -9,6 +9,7 @@ Bugfixes:
 * Reload page when the server updates, avoiding clients on older versions if they never close the tab
 * Fix error importing SQLite3 file on Windows (and other permission errors on temporary files)
 * Show a helpful message if the imported codebook has rows that are too short, instead of 500 error
+* Fix a 403 error when importing a project if no other form has been shown before (single-user mode, no project created)
 
 Enhancements:
 * Focus the name (path) field when creating a tag
