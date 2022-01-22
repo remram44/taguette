@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Taguette 1.1\n"
+"Project-Id-Version: Taguette\n"
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
-"POT-Creation-Date: 2021-10-12 19:00-0400\n"
+"POT-Creation-Date: 2022-01-22 13:29-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -494,12 +494,12 @@ msgstr ""
 msgid "Create"
 msgstr ""
 
-#: taguette/templates/project_import.html:16
+#: taguette/templates/project_import.html:17
 #: taguette/templates/project_import_codebook.html:14
 msgid "Project:"
 msgstr ""
 
-#: taguette/templates/project_import.html:10
+#: taguette/templates/project_import.html:11
 #: taguette/templates/project_import_codebook.html:20
 msgid "File:"
 msgstr ""
@@ -553,89 +553,89 @@ msgstr ""
 msgid "Import a project"
 msgstr ""
 
-#: taguette/templates/project_import.html:19
+#: taguette/templates/project_import.html:20
 msgid "No file selected..."
 msgstr ""
 
-#: taguette/templates/project_import.html:24
+#: taguette/templates/project_import.html:25
 msgid "Import project"
 msgstr ""
 
-#: taguette/web/views.py:125
+#: taguette/web/views.py:126
 msgid "Invalid login or password"
 msgstr ""
 
-#: taguette/web/views.py:172 taguette/web/views.py:262
-#: taguette/web/views.py:413
+#: taguette/web/views.py:173 taguette/web/views.py:263
+#: taguette/web/views.py:414
 msgid "Passwords do not match"
 msgstr ""
 
-#: taguette/web/views.py:174
+#: taguette/web/views.py:175
 msgid "User name is taken"
 msgstr ""
 
-#: taguette/web/views.py:181
+#: taguette/web/views.py:182
 msgid "Email address is already used"
 msgstr ""
 
-#: taguette/web/views.py:191
+#: taguette/web/views.py:192
 msgid "Terms of Service must be accepted"
 msgstr ""
 
-#: taguette/web/views.py:299
+#: taguette/web/views.py:300
 msgid "This email address is not associated with any user"
 msgstr ""
 
-#: taguette/web/views.py:328
+#: taguette/web/views.py:329
 msgid "Password reset for Taguette"
 msgstr ""
 
-#: taguette/web/views.py:370
+#: taguette/web/views.py:371
 msgid "Invalid token"
 msgstr ""
 
-#: taguette/web/views.py:374
+#: taguette/web/views.py:375
 msgid "No user associated with that token"
 msgstr ""
 
-#: taguette/web/views.py:377
+#: taguette/web/views.py:378
 msgid "Password has already been changed"
 msgstr ""
 
 #. Default tag name
-#: taguette/web/views.py:453
+#: taguette/web/views.py:454
 msgid "interesting"
 msgstr ""
 
 #. Default tag description
-#: taguette/web/views.py:455
+#: taguette/web/views.py:456
 msgid "Further review required"
 msgstr ""
 
-#: taguette/web/views.py:490
+#: taguette/web/views.py:491
 msgid "You don't have permission to delete this project"
 msgstr ""
 
-#: taguette/web/views.py:524 taguette/web/views.py:551
+#: taguette/web/views.py:525 taguette/web/views.py:552
 msgid "You don't have permission to import a codebook"
 msgstr ""
 
-#: taguette/web/views.py:661
+#: taguette/web/views.py:662
 msgid "Error importing tags, concurrent changes caused a conflict"
 msgstr ""
 
-#: taguette/web/views.py:676
+#: taguette/web/views.py:677
 msgid "No file provided"
 msgstr ""
 
-#: taguette/database.py:667
+#: taguette/database.py:698
 msgid ""
 "\n"
 "    The database schema used by Taguette has changed! We will try to\n"
 "    update your workspace automatically.\n"
 msgstr ""
 
-#: taguette/database.py:679
+#: taguette/database.py:710
 #, python-format
 msgid ""
 "\n"
@@ -644,7 +644,7 @@ msgid ""
 "    %(backup)s\n"
 msgstr ""
 
-#: taguette/database.py:687
+#: taguette/database.py:718
 #, python-format
 msgid ""
 "\n"
@@ -728,72 +728,77 @@ msgid "No 'tag', 'name', or 'path' column"
 msgstr ""
 
 #: taguette/import_codebook.py:58
+#, python-format
+msgid "Not enough columns on row %d"
+msgstr ""
+
+#: taguette/import_codebook.py:66
 msgid "Invalid CSV file"
 msgstr ""
 
-#: taguette/main.py:196
+#: taguette/main.py:216
 msgid "Port number on which to listen"
 msgstr ""
 
-#: taguette/main.py:198
+#: taguette/main.py:218
 msgid "Address to bind on"
 msgstr ""
 
-#: taguette/main.py:200
+#: taguette/main.py:220
 msgid "Open web browser to the application"
 msgstr ""
 
-#: taguette/main.py:202
+#: taguette/main.py:222
 msgid "Don't open the web browser"
 msgstr ""
 
-#: taguette/main.py:207
+#: taguette/main.py:227
 #, python-format
 msgid ""
 "Database location or connection string, for example 'project.db' or "
 "'postgresql://me:pw@localhost/mydb' (default: %(default)r)"
 msgstr ""
 
-#: taguette/main.py:214
+#: taguette/main.py:234
 msgid "Set the file creation mask (umask) on systems that support it."
 msgstr ""
 
-#: taguette/main.py:218
+#: taguette/main.py:238
 msgid "Don't change umask on startup"
 msgstr ""
 
-#: taguette/main.py:224
+#: taguette/main.py:244
 msgid "additional commands"
 msgstr ""
 
-#: taguette/main.py:228
+#: taguette/main.py:248
 msgid "Manually trigger a database migration"
 msgstr ""
 
-#: taguette/main.py:237
+#: taguette/main.py:257
 msgid "Print the default server configuration"
 msgstr ""
 
-#: taguette/main.py:239
+#: taguette/main.py:259
 msgid "Output to this file rather than stdout"
 msgstr ""
 
-#: taguette/main.py:245
+#: taguette/main.py:265
 msgid "Run in server mode, suitable for a multi-user deployment"
 msgstr ""
 
-#: taguette/main.py:247
+#: taguette/main.py:267
 msgid ""
 "Configuration file for the server. The default configuration can be "
 "generated using the `default-config` command"
 msgstr ""
 
-#: taguette/main.py:259
+#: taguette/main.py:279
 #, python-format
 msgid "Invalid umask: %(arg)s"
 msgstr ""
 
-#: taguette/main.py:283
+#: taguette/main.py:303
 #, python-format
 msgid "Missing required configuration variable %(var)s"
 msgstr ""
