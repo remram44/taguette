@@ -1,8 +1,8 @@
 Changelog
 =========
 
-1.2.0 (???)
------------
+1.2.0 (2022-01-22)
+------------------
 
 Bugfixes:
 * Add some database indexes, improving performance on larger installations
