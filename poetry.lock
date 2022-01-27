@@ -728,7 +728,7 @@ otel = ["opentelemetry-instrumentation-sqlalchemy", "opentelemetry-instrumentati
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<4"
-content-hash = "d586f92b4ae855713e7b04e4f9630b1f34e927fd0bca59985cc8d8257119fe8d"
+content-hash = "17068c73683a9f1e3e3a085c230a90029da22979089a4b872985c134e9a14595"
 
 [metadata.files]
 aiohttp = [

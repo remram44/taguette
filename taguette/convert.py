@@ -1,14 +1,20 @@
 import asyncio
 import bleach
 import bs4
+import chardet
+import codecs
+import io
+import jinja2
 import logging
 import opentelemetry.trace
 import os
+import pkg_resources
 import prometheus_client
 from prometheus_async.aio import time as prom_async_time
 import shutil
 import subprocess
 from subprocess import CalledProcessError
+import subtitle_parser
 import sys
 import tempfile
 from xml.etree import ElementTree
@@ -61,6 +67,19 @@ PROM_CONVERT_QUEUE = prometheus_client.Gauge(
 
 
 HTML_EXTENSIONS = ('.htm', '.html', '.xhtml')
+
+
+template_env = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(
+        [pkg_resources.resource_filename('taguette', 'templates')],
+    ),
+    autoescape=jinja2.select_autoescape(['html']),
+)
+
+
+def _render_string(template_name, **kwargs):
+    template = template_env.get_template(template_name)
+    return template.render(**kwargs)
 
 
 class ConversionError(ValueError):
@@ -448,6 +467,28 @@ async def to_html(body, content_type, filename, config):
             return await wvware_to_html(input_filename, tmp, config)
         finally:
             shutil.rmtree(tmp)
+    elif ext in ('.srt', '.vtt'):
+        # Convert file to HTML using subtitle-parser
+
+        # Pick the parser class
+        if ext == '.vtt':
+            parser_cls = subtitle_parser.WebVttParser
+        else:
+            parser_cls = subtitle_parser.SrtParser
+
+        # Detect encoding
+        charset = chardet.detect(body)['encoding'] or 'utf-8'
+        file = io.BytesIO(body)
+        file = codecs.getreader(charset)(file)
+
+        # Parse subtitle file
+        parser = parser_cls(file)
+        parser.parse()
+
+        # Turn the result into HTML
+        output = io.StringIO()
+        subtitle_parser.render_html(parser.subtitles, output)
+        return output.getvalue()
     else:
         # Convert file to HTML using Calibre
         tmp = tempfile.mkdtemp(prefix='taguette_calibre_')
