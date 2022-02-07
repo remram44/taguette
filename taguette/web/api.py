@@ -788,12 +788,14 @@ class ProjectImport(BaseHandler):
 
         # List projects
         projects = src_db.execute(database.Project.__table__.select())
+        output = False
         for i, row in enumerate(projects):
-            if i == 0:
+            if not output:
                 self.set_header(
                     'Content-Type', 'application/json; charset=utf-8',
                 )
                 self.write('{"projects": [')
+                output = True
             else:
                 self.write(',')
             self.write(json.dumps({
@@ -802,6 +804,8 @@ class ProjectImport(BaseHandler):
             }))
             if i == 100:
                 await self.flush()
+        if not output:
+            self.write('{"projects": [')
         return await self.finish(']}')
 
     async def _import_project(self, filename, project_id):
