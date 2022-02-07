@@ -649,12 +649,12 @@ def connect(db_url, *, external=False):
             def secure(dbapi_connection, connection_record):
                 cursor = dbapi_connection.cursor()
                 cursor.execute("PRAGMA trusted_schema=OFF")
+                cursor.execute('PRAGMA cell_size_check=ON')
+                cursor.execute('PRAGMA mmap_size=0')
                 cursor.close()
 
             conn = engine.connect()
             conn.execute('PRAGMA quick_check')
-            conn.execute('PRAGMA cell_size_check=ON')
-            conn.execute('PRAGMA mmap_size=0')
             conn.close()
 
     alembic_cfg = alembic.config.Config()
