@@ -18,6 +18,7 @@ from sqlalchemy import Column, ForeignKey, Index, TypeDecorator, MetaData, \
     UniqueConstraint, create_engine, select
 import sqlalchemy.engine
 import sqlalchemy.event
+from sqlalchemy.exc import NoSuchTableError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import column_property, deferred, relationship, \
     sessionmaker
@@ -624,9 +625,12 @@ def no_sqlite_pragma_check():
         taguette.database.set_sqlite_pragma.enabled = True
 
 
-def connect(db_url, *, external=False):
+def connect(db_url, *, external=False, create_tables=None):
     """Connect to the database using an environment variable.
     """
+    if create_tables is None:
+        create_tables = not external
+
     logger.info("Connecting to SQL database %r", db_url)
     kwargs = {}
     if db_url.startswith('sqlite:'):
@@ -662,7 +666,10 @@ def connect(db_url, *, external=False):
     alembic_cfg.set_main_option('sqlalchemy.url', db_url)
 
     with engine.connect() as conn:
-        if not engine.dialect.has_table(conn, Project.__tablename__):
+        if engine.dialect.has_table(conn, Project.__tablename__):
+            # Perform Alembic migrations if needed
+            _auto_upgrade_db(db_url, conn, alembic_cfg, external)
+        elif create_tables:
             logger.warning("The tables don't seem to exist; creating")
             Base.metadata.create_all(bind=engine)
 
@@ -673,8 +680,7 @@ def connect(db_url, *, external=False):
             if db_url.startswith('sqlite:'):
                 conn.execute("PRAGMA application_id=0x54677474;")  # 'Tgtt'
         else:
-            # Perform Alembic migrations if needed
-            _auto_upgrade_db(db_url, conn, alembic_cfg, external)
+            raise NoSuchTableError('projects')
 
     # Record to Prometheus
     conn = engine.connect()
