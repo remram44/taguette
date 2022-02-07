@@ -5,7 +5,7 @@ import logging
 import math
 import os
 import prometheus_client
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, DatabaseError, NoSuchTableError
 from sqlalchemy.orm import aliased, defer, joinedload
 import tempfile
 from tornado.concurrent import Future
@@ -784,7 +784,16 @@ class ProjectImport(BaseHandler):
 
     async def _list_projects(self, filename):
         # Connect to the database
-        src_db = database.connect('sqlite:///%s' % filename, external=True)()
+        try:
+            src_db = database.connect(
+                'sqlite:///%s' % filename,
+                external=True,
+            )()
+        except (DatabaseError, NoSuchTableError):
+            return self.send_error_json(
+                400,
+                "This is not a Taguette project file",
+            )
 
         # List projects
         projects = src_db.execute(database.Project.__table__.select())
@@ -810,7 +819,16 @@ class ProjectImport(BaseHandler):
 
     async def _import_project(self, filename, project_id):
         # Connect to the database
-        src_db = database.connect('sqlite:///%s' % filename, external=True)()
+        try:
+            src_db = database.connect(
+                'sqlite:///%s' % filename,
+                external=True,
+            )()
+        except (DatabaseError, NoSuchTableError):
+            return self.send_error_json(
+                400,
+                "This is not a Taguette project file",
+            )
 
         # Copy data
         new_project_id = database.copy_project(
