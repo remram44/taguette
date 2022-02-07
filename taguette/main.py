@@ -38,7 +38,7 @@ def prepare_db(database):
         # Full URL: use it, create path if sqlite
         db_url = database
         if url.scheme == 'sqlite' and url.path.startswith('/'):
-            os.makedirs(url.path[1:])
+            os.makedirs(os.path.dirname(url.path[1:]), exist_ok=True)
     else:
         # Path: create it, turn into URL
         database = os.path.expanduser(database)
