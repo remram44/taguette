@@ -667,8 +667,17 @@ def connect(db_url, *, external=False, create_tables=None):
 
     with engine.connect() as conn:
         if engine.dialect.has_table(conn, Project.__tablename__):
+            # Check that alembic version is there
+            if not engine.dialect.has_table(conn, 'alembic_version'):
+                raise NoSuchTableError('alembic_version')
+
             # Perform Alembic migrations if needed
             _auto_upgrade_db(db_url, conn, alembic_cfg, external)
+
+            # Check that all tables are here
+            for table in Base.metadata.sorted_tables:
+                if not engine.dialect.has_table(conn, table.name):
+                    raise NoSuchTableError(table.name)
         elif create_tables:
             logger.warning("The tables don't seem to exist; creating")
             Base.metadata.create_all(bind=engine)
