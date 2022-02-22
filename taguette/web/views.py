@@ -568,6 +568,9 @@ class ImportCodebook(BaseHandler):
                     error=self.gettext(e.message),
                 )
 
+            # Sort by path
+            tags = sorted(tags, key=lambda t: t['path'])
+
             return self._show_confirmation_form(project, tags)
         elif self.get_body_argument('tag0-path', None):
             # Accumulate validation errors
