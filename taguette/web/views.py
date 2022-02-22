@@ -658,6 +658,7 @@ class ImportCodebook(BaseHandler):
                     self.application.notify_project(project.id, cmd)
                 return self.redirect(self.reverse_url('project', project.id))
             except (IntegrityError, KeyError):
+                logger.warning("Error importing codebook", exc_info=True)
                 self.db.rollback()
                 error = self.gettext(
                     "Error importing tags, concurrent changes caused a "
