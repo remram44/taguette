@@ -56,9 +56,9 @@ def list_tags_csv(reader):
         for nb, row in enumerate(reader, 2):
             if len(row) < needed_rows:
                 raise InvalidCodebook(_f("Not enough columns on row %d") % nb)
-            path = row[col_path]
+            path = row[col_path].strip()
             if col_description is not None:
-                description = row[col_description]
+                description = row[col_description].strip()
             else:
                 description = ''
             tags.append({'path': path, 'description': description})
