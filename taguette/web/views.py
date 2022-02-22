@@ -568,8 +568,14 @@ class ImportCodebook(BaseHandler):
                     error=self.gettext(e.message),
                 )
 
-            # Sort by path
-            tags = sorted(tags, key=lambda t: t['path'])
+            # Disable duplicates
+            seen_paths = set()
+            for tag in tags:
+                tag['enabled'] = tag['path'] not in seen_paths
+                seen_paths.add(tag['path'])
+
+            # Sort by path, keeping the enabled one first
+            tags = sorted(tags, key=lambda t: (t['path'], not t['enabled']))
 
             return self._show_confirmation_form(project, tags)
         elif self.get_body_argument('tag0-path', None):
@@ -589,12 +595,14 @@ class ImportCodebook(BaseHandler):
                 )
                 if path is None:
                     break
+
+                replace = enabled = True
                 if self.get_body_argument('tag%d-replace' % i, ''):
                     replace = True
                 elif self.get_body_argument('tag%d-import' % i, ''):
                     replace = False
                 else:
-                    continue
+                    enabled = False
 
                 try:
                     validate.tag_path(path)
@@ -603,7 +611,14 @@ class ImportCodebook(BaseHandler):
                     errors.append(self.gettext(e.message))
                     continue
 
-                tags.append({'path': path, 'description': description})
+                tags.append({
+                    'path': path,
+                    'description': description,
+                    'enabled': enabled,
+                })
+                if not enabled:
+                    continue
+
                 if replace:
                     replace_tags[path] = {'description': description}
                 else:  # Insert
