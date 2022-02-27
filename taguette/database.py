@@ -658,7 +658,7 @@ def connect(db_url, *, external=False, create_tables=None):
                 cursor.close()
 
             conn = engine.connect()
-            conn.execute('PRAGMA quick_check')
+            conn.exec_driver_sql('PRAGMA quick_check')
             conn.close()
 
     alembic_cfg = alembic.config.Config()
@@ -687,7 +687,9 @@ def connect(db_url, *, external=False, create_tables=None):
 
             # Set SQLite's "application ID"
             if db_url.startswith('sqlite:'):
-                conn.execute("PRAGMA application_id=0x54677474;")  # 'Tgtt'
+                conn.exec_driver_sql(
+                    "PRAGMA application_id=0x54677474;"  # 'Tgtt'
+                )
         else:
             raise NoSuchTableError('projects')
 
