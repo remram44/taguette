@@ -1670,8 +1670,10 @@ class TestMultiuser(MyHTTPTestCase):
             [(1, 2), (2, 1)],
         )
 
-    @gen_test
-    async def test_import_codebook_invalid(self):
+    # The codebook import tests are split into the "read" tests (post CSV file,
+    # get HTML form) and the "import" tests (submit form, database updates)
+
+    async def _setup_import_codebook_project(self):
         # Log in
         async with self.apost('/cookies', data=dict()) as response:
             self.assertEqual(response.status, 302)
@@ -1694,6 +1696,16 @@ class TestMultiuser(MyHTTPTestCase):
         ) as response:
             self.assertEqual(response.status, 302)
             self.assertEqual(response.headers['Location'], '/project/1')
+
+        db = self.application.DBSession()
+        self.assertEqual(
+            {tag.path for tag in db.query(database.Tag).all()},
+            {'interesting'},
+        )
+
+    @gen_test
+    async def test_read_codebook_invalid(self):
+        await self._setup_import_codebook_project()
 
         # Import invalid codebooks
         codebooks = [
@@ -1725,29 +1737,21 @@ class TestMultiuser(MyHTTPTestCase):
                 text = await response.text()
                 self.assertNotEqual(text.find(error), -1)
 
-    async def _setup_import_codebook_project(self):
-        # Log in
-        async with self.apost('/cookies', data=dict()) as response:
-            self.assertEqual(response.status, 302)
-            self.assertEqual(response.headers['Location'], '/')
-        async with self.aget('/login') as response:
-            self.assertEqual(response.status, 200)
-        async with self.apost(
-            '/login',
-            data=dict(next='/', login='admin', password='hackme'),
-        ) as response:
-            self.assertEqual(response.status, 302)
-            self.assertEqual(response.headers['Location'], '/')
+    @gen_test
+    async def test_read_codebook_empty(self):
+        await self._setup_import_codebook_project()
 
-        # Create project 1
-        async with self.aget('/project/new') as response:
-            self.assertEqual(response.status, 200)
         async with self.apost(
-            '/project/new',
-            data=dict(name='my project', description=''),
+            '/project/1/import_codebook',
+            data={},
         ) as response:
-            self.assertEqual(response.status, 302)
-            self.assertEqual(response.headers['Location'], '/project/1')
+            self.assertEqual(response.status, 400)
+            text = await response.text()
+            self.assertNotEqual(text.find("No file provided"), -1)
+
+    @gen_test
+    async def test_read_codebook(self):
+        await self._setup_import_codebook_project()
 
         # Import codebook
         codebook = textwrap.dedent(
@@ -1782,18 +1786,6 @@ class TestMultiuser(MyHTTPTestCase):
             find('name="tag2-description" value="disabled"')
             find('name="tag2-import"')
             find('name="tag2-replace"', False)
-
-    @gen_test
-    async def test_import_codebook_empty(self):
-        await self._setup_import_codebook_project()
-
-        async with self.apost(
-            '/project/1/import_codebook',
-            data={},
-        ) as response:
-            self.assertEqual(response.status, 400)
-            text = await response.text()
-            self.assertNotEqual(text.find("No file provided"), -1)
 
     @gen_test
     async def test_import_codebook_conflict(self):
