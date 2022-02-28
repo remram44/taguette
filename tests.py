@@ -1760,6 +1760,8 @@ class TestMultiuser(MyHTTPTestCase):
             interesting,maybe replace
             people,new
             other,disabled
+            interesting,repeated
+            people,repeated
             '''
         )
         async with self.apost(
@@ -1774,18 +1776,43 @@ class TestMultiuser(MyHTTPTestCase):
             def find(s, expected=True):
                 self.assertNotEqual(text.find(s) == -1, expected)
 
+            def find_checkbox(name, expected):
+                if expected is None:
+                    regex = (
+                        r'<input type="checkbox" [^>]*name="%s"'
+                        % re.escape(name)
+                    )
+                    self.assertTrue(re.search(regex, text) is None)
+                else:
+                    regex = (
+                        r'<input type="checkbox" [^>]*name="%s"[^>]*/>'
+                        % re.escape(name)
+                    )
+                    tag = re.search(regex, text)
+                    self.assertTrue(tag is not None)
+                    self.assertEqual('checked' in tag.group(0), expected)
+
             find('name="tag0-path" value="interesting"')
             find('name="tag0-description" value="maybe replace"')
-            find('name="tag0-import"', False)
-            find('name="tag0-replace"')
-            find('name="tag1-path" value="other"')
-            find('name="tag1-description" value="disabled"')
-            find('name="tag1-import"')
-            find('name="tag1-replace"', False)
-            find('name="tag2-path" value="people"')
-            find('name="tag2-description" value="new"')
-            find('name="tag2-import"')
-            find('name="tag2-replace"', False)
+            find_checkbox('name="tag0-import"', None)
+            find_checkbox('tag0-replace', True)
+            find('name="tag1-path" value="interesting"')
+            find('name="tag1-description" value="repeated"')
+            find_checkbox('name="tag1-import"', None)
+            find_checkbox('tag1-replace', False)
+            find('name="tag2-path" value="other"')
+            find('name="tag2-description" value="disabled"')
+            find_checkbox('tag2-import', True)
+            find_checkbox('tag2-replace', None)
+            find('name="tag3-path" value="people"')
+            find('name="tag3-description" value="new"')
+            find_checkbox('tag3-import', True)
+            find_checkbox('tag3-replace', None)
+            find('name="tag4-path" value="people"')
+            find('name="tag4-description" value="repeated"')
+            find_checkbox('tag4-import', False)
+            find_checkbox('tag4-replace', None)
+            find('name="tag5-path"', False)
 
     @gen_test
     async def test_import_codebook_conflict(self):
