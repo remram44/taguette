@@ -1670,8 +1670,10 @@ class TestMultiuser(MyHTTPTestCase):
             [(1, 2), (2, 1)],
         )
 
-    @gen_test
-    async def test_import_codebook_invalid(self):
+    # The codebook import tests are split into the "read" tests (post CSV file,
+    # get HTML form) and the "import" tests (submit form, database updates)
+
+    async def _setup_import_codebook_project(self):
         # Log in
         async with self.apost('/cookies', data=dict()) as response:
             self.assertEqual(response.status, 302)
@@ -1694,6 +1696,16 @@ class TestMultiuser(MyHTTPTestCase):
         ) as response:
             self.assertEqual(response.status, 302)
             self.assertEqual(response.headers['Location'], '/project/1')
+
+        db = self.application.DBSession()
+        self.assertEqual(
+            {tag.path for tag in db.query(database.Tag).all()},
+            {'interesting'},
+        )
+
+    @gen_test
+    async def test_read_codebook_invalid(self):
+        await self._setup_import_codebook_project()
 
         # Import invalid codebooks
         codebooks = [
@@ -1725,29 +1737,21 @@ class TestMultiuser(MyHTTPTestCase):
                 text = await response.text()
                 self.assertNotEqual(text.find(error), -1)
 
-    async def _setup_import_codebook_project(self):
-        # Log in
-        async with self.apost('/cookies', data=dict()) as response:
-            self.assertEqual(response.status, 302)
-            self.assertEqual(response.headers['Location'], '/')
-        async with self.aget('/login') as response:
-            self.assertEqual(response.status, 200)
-        async with self.apost(
-            '/login',
-            data=dict(next='/', login='admin', password='hackme'),
-        ) as response:
-            self.assertEqual(response.status, 302)
-            self.assertEqual(response.headers['Location'], '/')
+    @gen_test
+    async def test_read_codebook_empty(self):
+        await self._setup_import_codebook_project()
 
-        # Create project 1
-        async with self.aget('/project/new') as response:
-            self.assertEqual(response.status, 200)
         async with self.apost(
-            '/project/new',
-            data=dict(name='my project', description=''),
+            '/project/1/import_codebook',
+            data={},
         ) as response:
-            self.assertEqual(response.status, 302)
-            self.assertEqual(response.headers['Location'], '/project/1')
+            self.assertEqual(response.status, 400)
+            text = await response.text()
+            self.assertNotEqual(text.find("No file provided"), -1)
+
+    @gen_test
+    async def test_read_codebook(self):
+        await self._setup_import_codebook_project()
 
         # Import codebook
         codebook = textwrap.dedent(
@@ -1756,6 +1760,8 @@ class TestMultiuser(MyHTTPTestCase):
             interesting,maybe replace
             people,new
             other,disabled
+            interesting,repeated
+            people,repeated
             '''
         )
         async with self.apost(
@@ -1770,30 +1776,43 @@ class TestMultiuser(MyHTTPTestCase):
             def find(s, expected=True):
                 self.assertNotEqual(text.find(s) == -1, expected)
 
+            def find_checkbox(name, expected):
+                if expected is None:
+                    regex = (
+                        r'<input type="checkbox" [^>]*name="%s"'
+                        % re.escape(name)
+                    )
+                    self.assertTrue(re.search(regex, text) is None)
+                else:
+                    regex = (
+                        r'<input type="checkbox" [^>]*name="%s"[^>]*/>'
+                        % re.escape(name)
+                    )
+                    tag = re.search(regex, text)
+                    self.assertTrue(tag is not None)
+                    self.assertEqual('checked' in tag.group(0), expected)
+
             find('name="tag0-path" value="interesting"')
             find('name="tag0-description" value="maybe replace"')
-            find('name="tag0-import"', False)
-            find('name="tag0-replace"')
-            find('name="tag1-path" value="people"')
-            find('name="tag1-description" value="new"')
-            find('name="tag1-import"')
-            find('name="tag1-replace"', False)
+            find_checkbox('name="tag0-import"', None)
+            find_checkbox('tag0-replace', True)
+            find('name="tag1-path" value="interesting"')
+            find('name="tag1-description" value="repeated"')
+            find_checkbox('name="tag1-import"', None)
+            find_checkbox('tag1-replace', False)
             find('name="tag2-path" value="other"')
             find('name="tag2-description" value="disabled"')
-            find('name="tag2-import"')
-            find('name="tag2-replace"', False)
-
-    @gen_test
-    async def test_import_codebook_empty(self):
-        await self._setup_import_codebook_project()
-
-        async with self.apost(
-            '/project/1/import_codebook',
-            data={},
-        ) as response:
-            self.assertEqual(response.status, 400)
-            text = await response.text()
-            self.assertNotEqual(text.find("No file provided"), -1)
+            find_checkbox('tag2-import', True)
+            find_checkbox('tag2-replace', None)
+            find('name="tag3-path" value="people"')
+            find('name="tag3-description" value="new"')
+            find_checkbox('tag3-import', True)
+            find_checkbox('tag3-replace', None)
+            find('name="tag4-path" value="people"')
+            find('name="tag4-description" value="repeated"')
+            find_checkbox('tag4-import', False)
+            find_checkbox('tag4-replace', None)
+            find('name="tag5-path"', False)
 
     @gen_test
     async def test_import_codebook_conflict(self):
