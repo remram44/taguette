@@ -26,6 +26,10 @@ logger = logging.getLogger(__name__)
 tracer = opentelemetry.trace.get_tracer(__name__)
 
 
+class UnknownVersion(ValueError):
+    """Unknown database version"""
+
+
 def set_sqlite_pragma(dbapi_connection, connection_record):
     if set_sqlite_pragma.enabled:
         cursor = dbapi_connection.cursor()
@@ -155,6 +159,10 @@ def _auto_upgrade_db(db_url, conn, alembic_cfg, external):
                       "%(backup)s\n") % dict(backup=backup),
                     file=sys.stderr, flush=True,
                 )
+            try:
+                scripts.get_revision(current_rev)
+            except alembic.util.exc.CommandError as e:
+                raise UnknownVersion from e
             alembic.command.upgrade(alembic_cfg, 'head')
         else:
             print(_("\n    The database schema used by Taguette has "

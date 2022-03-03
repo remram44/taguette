@@ -1,3 +1,4 @@
+import alembic.util.exc
 import asyncio
 import functools
 import json
@@ -789,6 +790,18 @@ class ProjectImport(BaseHandler):
                 'sqlite:///%s' % filename,
                 external=True,
             )()
+        except database.UnknownVersion:
+            return self.send_error_json(
+                400,
+                "This database is an unknown version. It might have been "
+                + "written by a more recent version of Taguette, please check "
+                + "for updates",
+            )
+        except alembic.util.exc.CommandError:
+            return self.send_error_json(
+                500,
+                "This database could not be updated to the current version",
+            )
         except (DatabaseError, NoSuchTableError):
             return self.send_error_json(
                 400,
