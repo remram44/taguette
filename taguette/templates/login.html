@@ -107,10 +107,10 @@
 window.addEventListener('load', function() {
   // Change URI for tabs
   $('#log-in-tab').on('shown.bs.tab', function(e) {
-    window.history.pushState({'tab': 'log-in'}, "Log in", '/login');
+    window.history.pushState({'tab': 'log-in'}, "Log in", base_path + '/login');
   });
   $('#register-tab').on('shown.bs.tab', function(e) {
-    window.history.pushState({'tab': 'register'}, "Register", '/register');
+    window.history.pushState({'tab': 'register'}, "Register", base_path + '/register');
   });
 
   window.onpopstate = function(e) {

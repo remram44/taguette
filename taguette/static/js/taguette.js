@@ -110,7 +110,7 @@ function getJSON(url='', args) {
     args = '';
   }
   return fetch(
-    url + args,
+    base_path + url + args,
     {
       credentials: 'same-origin',
       mode: 'same-origin',
@@ -144,7 +144,7 @@ function deleteURL(url='', args) {
   }
   var xsrf = getCookie('_xsrf');
   return fetch(
-    url + '?' + (xsrf !== undefined ? '_xsrf=' + encodeURIComponent(xsrf) + '&' : '') + args,
+    base_path + url + '?' + (xsrf !== undefined ? '_xsrf=' + encodeURIComponent(xsrf) + '&' : '') + args,
     {
       credentials: 'same-origin',
       mode: 'same-origin',
@@ -167,7 +167,7 @@ function postJSON(url='', data={}, args) {
   }
   var xsrf = getCookie('_xsrf');
   return fetch(
-    url + '?' + (xsrf !== undefined ? '_xsrf=' + encodeURIComponent(xsrf) + '&' : '') + args,
+    base_path + url + '?' + (xsrf !== undefined ? '_xsrf=' + encodeURIComponent(xsrf) + '&' : '') + args,
     {
       credentials: 'same-origin',
       mode: 'same-origin',
@@ -207,7 +207,7 @@ function patchJSON(url='', data={}, args) {
   }
   var xsrf = getCookie('_xsrf');
   return fetch(
-    url + '?' + (xsrf !== undefined ? '_xsrf=' + encodeURIComponent(xsrf) + '&' : '') + args,
+    base_path + url + '?' + (xsrf !== undefined ? '_xsrf=' + encodeURIComponent(xsrf) + '&' : '') + args,
     {
       credentials: 'same-origin',
       mode: 'same-origin',
@@ -257,6 +257,12 @@ if(window.TextEncoder) {
     }
     return l;
   }
+}
+
+// Escape a string for use in a regexp
+// https://stackoverflow.com/a/6969486/711380
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 }
 
 window.addEventListener('load', function() {
@@ -521,7 +527,7 @@ var current_tag = null;
 var documents_list = document.getElementById('documents-list');
 
 function linkDocument(elem, doc_id) {
-  var url = '/project/' + project_id + '/document/' + doc_id;
+  var url = base_path + '/project/' + project_id + '/document/' + doc_id;
   elem.setAttribute('href', url);
   elem.addEventListener('click', function(e) {
     e.preventDefault();
@@ -587,7 +593,7 @@ function removeDocument(document_id) {
   delete documents['' + document_id];
   updateDocumentsList();
   if(current_document == document_id) {
-    window.history.pushState({}, "Project", '/project/' + project_id);
+    window.history.pushState({}, "Project", base_path + '/project/' + project_id);
     loadDocument(null);
   }
 }
@@ -635,7 +641,7 @@ document.getElementById('document-add-form').addEventListener('submit', function
 
   var xhr = new XMLHttpRequest();
   xhr.responseType = 'json';
-  xhr.open('POST', '/api/project/' + project_id + '/document/new');
+  xhr.open('POST', base_path + '/api/project/' + project_id + '/document/new');
   showSpinner();
   xhr.onload = function() {
     if(xhr.status == 200) {
@@ -741,7 +747,7 @@ var tags_list = document.getElementById('tags-list');
 var tags_modal_list = document.getElementById('highlight-add-tags');
 
 function linkTag(elem, tag_path) {
-  var url = '/project/' + project_id + '/highlights/' + encodeURIComponent(tag_path);
+  var url = base_path + '/project/' + project_id + '/highlights/' + encodeURIComponent(tag_path);
   elem.setAttribute('href', url);
   elem.addEventListener('click', function(e) {
     e.preventDefault();
@@ -1505,7 +1511,7 @@ function loadDocument(document_id) {
       if(items[i].getAttribute('data-document') !== 'false') {
         items[i].setAttribute(
           'href',
-          '/project/' + project_id + '/export/document/' + document_id + '.' + ext,
+          base_path + '/project/' + project_id + '/export/document/' + document_id + '.' + ext,
         );
         items[i].style.display = '';
       } else {
@@ -1656,7 +1662,7 @@ function loadTag(tag_path, page) {
       if(items[i].getAttribute('data-highlights') !== 'false') {
         items[i].setAttribute(
           'href',
-          '/project/' + project_id + '/export/highlights/' + encodeURIComponent(tag_path) + '.' + ext,
+          base_path + '/project/' + project_id + '/export/highlights/' + encodeURIComponent(tag_path) + '.' + ext,
         );
         items[i].style.display = '';
       } else {
@@ -1677,14 +1683,14 @@ function loadTag(tag_path, page) {
 // Load the document if the URL includes one
 setTimeout(
   function() {
-    var _document_url = new RegExp('^/project/([0-9]+)/document/([0-9]+)');
+    var _document_url = new RegExp('^' + escapeRegExp(base_path) + '/project/([0-9]+)/document/([0-9]+)');
     // Don't use RegExp literals https://github.com/python-babel/babel/issues/640
     var m = window.location.pathname.match(_document_url);
     if(m) {
       loadDocument(parseInt(m[2]));
     }
     // Or a tag
-    var _tag_url = new RegExp('^/project/([0-9]+)/highlights/([^/]*)');
+    var _tag_url = new RegExp('^' + escapeRegExp(base_path) + '/project/([0-9]+)/highlights/([^/]*)');
     m = window.location.pathname.match(_tag_url);
     if(m) {
       loadTag(decodeURIComponent(m[2]));
