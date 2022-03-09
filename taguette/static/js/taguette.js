@@ -1677,14 +1677,14 @@ function loadTag(tag_path, page) {
 // Load the document if the URL includes one
 setTimeout(
   function() {
-    var _document_url = new RegExp('/project/([0-9]+)/document/([0-9]+)');
+    var _document_url = new RegExp('^/project/([0-9]+)/document/([0-9]+)');
     // Don't use RegExp literals https://github.com/python-babel/babel/issues/640
     var m = window.location.pathname.match(_document_url);
     if(m) {
       loadDocument(parseInt(m[2]));
     }
     // Or a tag
-    var _tag_url = new RegExp('/project/([0-9]+)/highlights/([^/]*)');
+    var _tag_url = new RegExp('^/project/([0-9]+)/highlights/([^/]*)');
     m = window.location.pathname.match(_tag_url);
     if(m) {
       loadTag(decodeURIComponent(m[2]));
