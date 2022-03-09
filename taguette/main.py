@@ -49,6 +49,19 @@ def prepare_db(database):
     return db_url
 
 
+def get_join_url(app):
+    url = 'http://localhost'
+    if app.config['PORT'] != 80:
+        url += ':%d' % app.config['PORT']
+    if app.config['BASE_PATH'] not in ('', '/'):
+        url += '/' + app.config['BASE_PATH'].strip('/')
+    url += '/'
+    token = app.single_user_token
+    if token:
+        url += '?token=%s' % token
+    return url
+
+
 def default_config(output):
     if output is None:
         out = sys.stdout
@@ -64,6 +77,9 @@ NAME = "Misconfigured Taguette Server"
 # Address and port to listen on
 BIND_ADDRESS = "0.0.0.0"
 PORT = 7465
+
+# Base path of the application
+BASE_PATH = "/"
 
 # A unique secret key that will be used to sign cookies
 SECRET_KEY = "{secret}"
@@ -128,6 +144,7 @@ CONVERT_FROM_HTML_TIMEOUT = 3 * 60  # 3min for exporting from Taguette
 DEFAULT_CONFIG = {
     'MULTIUSER': True,
     'BIND_ADDRESS': '0.0.0.0',
+    'BASE_PATH': '',
     'REGISTRATION_ENABLED': True,
     'REDIS_SERVER': None,
     'SQLITE3_IMPORT_ENABLED': True,
@@ -361,11 +378,7 @@ def main():
         logger.warning("Debug mode is ON")
         asyncio.get_event_loop().set_debug(True)
 
-    token = app.single_user_token
-    if token:
-        url = 'http://localhost:%d/?token=%s' % (config['PORT'], token)
-    else:
-        url = 'http://localhost:%d/' % config['PORT']
+    url = get_join_url(app)
     print(_("\n    Taguette %(version)s is now running. You can connect to it "
             "using this link:\n\n    %(url)s\n") %
           dict(url=url, version=exact_version()), flush=True)
