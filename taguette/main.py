@@ -323,6 +323,11 @@ def main():
                 missing = True
         if missing:
             sys.exit(2)
+        if not config['BASE_PATH'] or config['BASE_PATH'][0] != '/':
+            print(_("Invalud BASE_PATH"))
+        config['BASE_PATH'] = config['BASE_PATH'].strip('/')
+        if config['BASE_PATH']:
+            config['BASE_PATH'] = '/' + config['BASE_PATH']
     else:
         if args.debug:
             # Use a deterministic secret key, to avoid it changing during
