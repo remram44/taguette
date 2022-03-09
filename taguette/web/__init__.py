@@ -170,6 +170,9 @@ def make_app(config, debug=False, xsrf_cookies=True):
         for spec in routes
     ]
 
+    if base_path:
+        routes.append(URLSpec('/', views.BrokenBasePath))
+
     return Application(
         routes,
         static_path=pkg_resources.resource_filename('taguette', 'static'),

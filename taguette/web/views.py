@@ -89,6 +89,18 @@ class CookiesPrompt(BaseHandler):
         pass
 
 
+class BrokenBasePath(BaseHandler):
+    def get(self):
+        self.set_header('Content-Type', 'text/plain')
+        return self.finish((
+            "Error: BASE_PATH is set to {0} so you shouldn't be reaching this "
+            + "page.\n"
+            + "\n"
+            + "You might need to fix your reverse proxy's configuration or "
+            + "Taguette's BASE_PATH setting.\n"
+        ).format(self.application.config['BASE_PATH']))
+
+
 class Login(BaseHandler):
     @PROM_REQUESTS.sync('login')
     def get(self):
