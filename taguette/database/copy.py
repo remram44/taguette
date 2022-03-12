@@ -1,7 +1,8 @@
 import logging
 import opentelemetry.trace
 
-from .models import *
+from .models import Project, Privileges, ProjectMember, TextDirection, \
+    Document, Command, Highlight, Tag, HighlightTag
 from .. import convert
 from ..utils import DefaultMap
 from .. import validate

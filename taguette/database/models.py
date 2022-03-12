@@ -17,12 +17,6 @@ from sqlalchemy.types import DateTime, Enum, Integer, String, Text
 from .base import PROM_COMMAND
 
 
-__all__ = [
-    'Base', 'JSON', 'User', 'Project', 'Privileges', 'ProjectMember',
-    'TextDirection', 'Document', 'Command', 'Highlight', 'Tag', 'HighlightTag',
-]
-
-
 logger = logging.getLogger(__name__)
 tracer = opentelemetry.trace.get_tracer(__name__)
 
