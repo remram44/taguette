@@ -8,9 +8,12 @@ Bugfixes:
 * Fix JavaScript error when trying to import a SQLite3 file with no projects in it
 * Fix `--database` option when not in server mode
 * Show a more meaningful error if importing an empty SQLite3 file, or a file that is not a SQLite3 database
+* Fix importing a codebook with duplicated tags
 
 Enhancements:
 * Add support for importing subtitle files (.srt or .vtt)
+* Strip leading and trailing whitespace from tag names in imported codebook
+* "Taguette Guide" opens in a new window
 
 1.2.0 (2022-01-22)
 ------------------
