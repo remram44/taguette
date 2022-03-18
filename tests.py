@@ -59,6 +59,43 @@ def with_tempdir(func):
     return wrapper
 
 
+class TestMain(unittest.TestCase):
+    def test_join_url(self):
+        class FakeApp(object):
+            def __init__(self, token, config):
+                self.single_user_token = token
+                self.config = config
+
+        self.assertEqual(
+            main.get_join_url(FakeApp(
+                'secret',
+                {'PORT': 80, 'BASE_PATH': '/'},
+            )),
+            'http://localhost/?token=secret',
+        )
+        self.assertEqual(
+            main.get_join_url(FakeApp(
+                None,
+                {'PORT': 80, 'BASE_PATH': '/'},
+            )),
+            'http://localhost/',
+        )
+        self.assertEqual(
+            main.get_join_url(FakeApp(
+                None,
+                {'PORT': 8080, 'BASE_PATH': '/'},
+            )),
+            'http://localhost:8080/',
+        )
+        self.assertEqual(
+            main.get_join_url(FakeApp(
+                'secret',
+                {'PORT': 8080, 'BASE_PATH': '/some/dir/'},
+            )),
+            'http://localhost:8080/some/dir/?token=secret',
+        )
+
+
 class TestConvert(AsyncTestCase):
     config = dict(
         CONVERT_TO_HTML_TIMEOUT=60,
@@ -2153,10 +2190,17 @@ class SeleniumTest(MyHTTPTestCase):
 
     @property
     def s_path(self):
-        return self.extract_path(self.driver.current_url)
+        path = self.extract_path(self.driver.current_url)
+        self.assertTrue(
+            path.startswith(self.application.config['BASE_PATH']),
+            "Not under base path: %r" % path,
+        )
+        return path[len(self.application.config['BASE_PATH']):]
 
-    async def s_get(self, url):
+    async def s_get(self, url, *, ignore_base_path=False):
         self.store_logs()
+        if not ignore_base_path:
+            url = self.application.config['BASE_PATH'] + url
         url = self.get_url(url)
         await asyncio.get_event_loop().run_in_executor(
             self.driver_pool,
@@ -2231,10 +2275,12 @@ class TestSeleniumMultiuser(SeleniumTest):
     def get_app(self):
         with mock.patch.object(web.Application, '_set_password',
                                new=set_dumb_password):
+            self.base_path = os.environ.get('TAGUETTE_TEST_BASE_PATH', '')
             self.application = web.make_app(dict(
                 main.DEFAULT_CONFIG,
                 NAME="Test Taguette instance", PORT=7465,
                 DATABASE=DATABASE_URI,
+                BASE_PATH=self.base_path,
                 REDIS_SERVER=REDIS,
                 TOS_FILE=None,
                 EMAIL='test@example.com',
@@ -2267,7 +2313,10 @@ class TestSeleniumMultiuser(SeleniumTest):
 
         # Fetch registration page, should hit cookies prompt
         await self.s_get('/register')
-        self.assertEqual(self.s_path, '/cookies?next=%2Fregister')
+        self.assertEqual(
+            self.s_path,
+            '/cookies?' + urlencode({'next': self.base_path + '/register'}),
+        )
 
         # Accept cookies
         await self.s_click_button('Accept cookies')
@@ -2330,7 +2379,9 @@ class TestSeleniumMultiuser(SeleniumTest):
             ))
 
         # Login
-        await self.s_get('/login?' + urlencode(dict(next='/project/1')))
+        await self.s_get(
+            '/login?' + urlencode(dict(next=self.base_path + '/project/1')),
+        )
         elem = self.driver.find_element_by_id('log-in-login')
         elem.send_keys('Tester')
         elem = self.driver.find_element_by_id('log-in-password')
@@ -2339,7 +2390,7 @@ class TestSeleniumMultiuser(SeleniumTest):
         self.assertEqual(self.s_path, '/project/1')
 
         # Check redirect to account
-        await self.s_get('/.well-known/change-password')
+        await self.s_get('/.well-known/change-password', ignore_base_path=True)
         self.assertEqual(self.s_path, '/account')
 
     def get_highlight_add_tags(self):
@@ -2669,9 +2720,9 @@ class TestSeleniumMultiuser(SeleniumTest):
             if link.text
         ]
         self.assertEqual(links, [
-            ('HTML', '/project/1/export/document/1.html'),
-            ('DOCX', '/project/1/export/document/1.docx'),
-            ('PDF', '/project/1/export/document/1.pdf'),
+            ('HTML', self.base_path + '/project/1/export/document/1.html'),
+            ('DOCX', self.base_path + '/project/1/export/document/1.docx'),
+            ('PDF', self.base_path + '/project/1/export/document/1.pdf'),
         ])
 
         # Check export options for highlights in project 1 under 'interesting'
@@ -2686,12 +2737,13 @@ class TestSeleniumMultiuser(SeleniumTest):
             )
             if link.text
         ]
+        export_url = self.base_path + '/project/1/export'
         self.assertEqual(links, [
-            ('HTML', '/project/1/export/highlights/interesting.html'),
-            ('DOCX', '/project/1/export/highlights/interesting.docx'),
-            ('PDF', '/project/1/export/highlights/interesting.pdf'),
-            ('Excel', '/project/1/export/highlights/interesting.xlsx'),
-            ('CSV', '/project/1/export/highlights/interesting.csv'),
+            ('HTML', export_url + '/highlights/interesting.html'),
+            ('DOCX', export_url + '/highlights/interesting.docx'),
+            ('PDF', export_url + '/highlights/interesting.pdf'),
+            ('Excel', export_url + '/highlights/interesting.xlsx'),
+            ('CSV', export_url + '/highlights/interesting.csv'),
         ])
 
         # Check codebook export options of project 1
@@ -2707,12 +2759,12 @@ class TestSeleniumMultiuser(SeleniumTest):
             if link.text
         ]
         self.assertEqual(links, [
-            ('QDC (XML)', '/project/1/export/codebook.qdc'),
-            ('Excel', '/project/1/export/codebook.xlsx'),
-            ('CSV', '/project/1/export/codebook.csv'),
-            ('HTML', '/project/1/export/codebook.html'),
-            ('DOCX', '/project/1/export/codebook.docx'),
-            ('PDF', '/project/1/export/codebook.pdf'),
+            ('QDC (XML)', self.base_path + '/project/1/export/codebook.qdc'),
+            ('Excel', self.base_path + '/project/1/export/codebook.xlsx'),
+            ('CSV', self.base_path + '/project/1/export/codebook.csv'),
+            ('HTML', self.base_path + '/project/1/export/codebook.html'),
+            ('DOCX', self.base_path + '/project/1/export/codebook.docx'),
+            ('PDF', self.base_path + '/project/1/export/codebook.pdf'),
         ])
 
         # Merge tag 2 into 1

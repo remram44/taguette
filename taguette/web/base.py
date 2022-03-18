@@ -441,6 +441,7 @@ class BaseHandler(RequestHandler):
                 version=exact_version(),
                 gettext=self.gettext,
                 ngettext=self.ngettext,
+                base_path=self.application.config['BASE_PATH'],
                 **kwargs)
 
     def get_project(self, project_id):

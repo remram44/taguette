@@ -57,6 +57,17 @@ frontend_chromium:
     - scripts/update_translations.sh
     - TAGUETTE_TEST_WEBDRIVER=chromium xvfb-run python tests.py -v TestSeleniumMultiuser
 
+frontend_chromium_subdir:
+  stage: test
+  image: python:3.8
+  script:
+    - apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -yy xvfb chromium-driver
+    - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.12
+    - $HOME/.poetry/bin/poetry config virtualenvs.create false
+    - $HOME/.poetry/bin/poetry install --no-interaction
+    - scripts/update_translations.sh
+    - TAGUETTE_TEST_WEBDRIVER=chromium TAGUETTE_TEST_BASE_PATH=/base/path xvfb-run python tests.py -v TestSeleniumMultiuser
+
 sqlite3_latest:
   stage: test
   image: python:3.9
