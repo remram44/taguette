@@ -6,6 +6,7 @@ import pkg_resources
 from tornado.routing import URLSpec
 from tornado.web import HTTPError
 
+from .. import database
 from .base import Application, BaseHandler
 from . import api, export, views
 
@@ -60,6 +61,24 @@ class Error404(BaseHandler):
             error_message="This page does not exist.",
         )
         raise HTTPError(404)
+
+
+class Health(BaseHandler):
+    @views.PROM_REQUESTS.sync('health')
+    def get(self):
+        self.set_header('Content-Type', 'text/plain')
+
+        if self.application.is_exiting:
+            self.set_status(503, "Shutting down")
+            return self.finish("Shutting down")
+
+        try:
+            self.db.query(database.Project).first()
+        except Exception:
+            self.set_status(503)
+            return self.finish("Database unavailable")
+
+        return self.finish("Ok")
 
 
 class UnbakedURLSpec(object):
@@ -161,6 +180,7 @@ def make_app(config, debug=False, xsrf_cookies=True):
 
         # Well-known URLs
         URLSpec('/\\.well-known/change-password', RedirectAccount),
+        UnbakedURLSpec('/health', Health),
     ]
 
     base_path = config['BASE_PATH']

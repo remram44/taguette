@@ -14,6 +14,7 @@ import pkg_resources
 from prometheus_async.aio import time as prom_async_time
 import prometheus_client
 import redis
+import signal
 import smtplib
 from sqlalchemy.orm import joinedload, undefer
 import tornado.ioloop
@@ -108,7 +109,35 @@ class PseudoLocale(tornado.locale.Locale):
         return self.translate(message, plural_message, count)
 
 
-class Application(tornado.web.Application):
+class GracefulExitApplication(tornado.web.Application):
+    def __init__(self, *args, **kwargs):
+        super(GracefulExitApplication, self).__init__(*args, **kwargs)
+
+        self.is_exiting = False
+
+        exit_time = os.environ.get('TORNADO_SHUTDOWN_TIME')
+        if exit_time:
+            exit_time = int(exit_time, 10)
+        else:
+            exit_time = 3  # Default to 3 seconds
+
+        def exit():
+            logger.info("Shutting down")
+            tornado.ioloop.IOLoop.current().stop()
+
+        def exit_soon():
+            tornado.ioloop.IOLoop.current().call_later(exit_time, exit)
+
+        def signal_handler(signum, frame):
+            logger.info("Got SIGTERM, exiting")
+            self.is_exiting = True
+            tornado.ioloop.IOLoop.current().add_callback_from_signal(exit_soon)
+
+        signal.signal(signal.SIGTERM, signal_handler)
+        signal.signal(signal.SIGINT, signal_handler)
+
+
+class Application(GracefulExitApplication):
     def __init__(self, handlers,
                  config, **kwargs):
         self.config = config
@@ -282,6 +311,8 @@ class Application(tornado.web.Application):
             smtp.send_message(msg)
 
     def log_request(self, handler):
+        if handler.request.path == '/health' and handler.get_status() == 200:
+            return
         if "log_function" in self.settings:
             self.settings["log_function"](handler)
             return
