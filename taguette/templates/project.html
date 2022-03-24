@@ -13,13 +13,13 @@
       <!-- Tab selector -->
       <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
-          <a class="nav-link" id="project-tab" data-toggle="tab" href="#project" role="tab" aria-controls="project" aria-selected="true">{# TRANSLATORS: Left pane tab, keep short #}{% trans %}Project info{% endtrans %}</a>
+          <a class="nav-link" id="project-tab" data-toggle="tab" href="#project" role="tab" aria-controls="project" aria-selected="true">{# TRANSLATORS: Left pane tab, keep short #}{% trans "tab" %}Project info{% endtrans %}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" id="documents-tab" data-toggle="tab" href="#documents" role="tab" aria-controls="documents" aria-selected="false">{# TRANSLATORS: Left pane tab, keep short #}{% trans %}Documents{% endtrans %}</a>
+          <a class="nav-link active" id="documents-tab" data-toggle="tab" href="#documents" role="tab" aria-controls="documents" aria-selected="false">{# TRANSLATORS: Left pane tab, keep short #}{% trans "tab" %}Documents{% endtrans %}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="tags-tab" data-toggle="tab" href="#tags" role="tab" aria-controls="tags" aria-selected="false">{# TRANSLATORS: Left pane tab, keep short #}{% trans %}Highlights{% endtrans %}</a>
+          <a class="nav-link" id="tags-tab" data-toggle="tab" href="#tags" role="tab" aria-controls="tags" aria-selected="false">{# TRANSLATORS: Left pane tab, keep short #}{% trans "tab" %}Highlights{% endtrans %}</a>
         </li>
       </ul>
 
@@ -29,11 +29,11 @@
         <div class="tab-pane fade" id="project" role="tabpanel" aria-labelledby="project-tab">
           <form id="project-metadata-form">
             <div class="form-group">
-              <label for="project-name" class="col-sm-2 col-form-label">{# TRANSLATORS: Project metadata #}{% trans %}Name{% endtrans %}</label>
+              <label for="project-name" class="col-sm-2 col-form-label">{% trans "project metadata form label" %}Name{% endtrans %}</label>
               <input type="text" class="form-control" id="project-name" name="project-name" value="{{ project.name }}" required />
             </div>
             <div class="form-group">
-              <label for="project-description" class="col-sm-2 col-form-label">{# TRANSLATORS: Project metadata #}{% trans %}Description{% endtrans %}</label>
+              <label for="project-description" class="col-sm-2 col-form-label">{% trans "project metadata form label" %}Description{% endtrans %}</label>
               <textarea class="form-control" id="project-description" name="project-description">{{ project.description }}</textarea>
             </div>
           </form>
@@ -136,22 +136,22 @@
       </div>
       <div class="modal-body">
         <div class="container">
-          <h5>{% trans %}Add Collaborators{% endtrans %}</h5>
+          <h5>{% trans "modal window title" %}Add Collaborators{% endtrans %}</h5>
           <form id="members-add">
             <fieldset id="members-add-fields">
               <div class="row">
                 <div class="col-md-4 form-group">
-                  <input type="text" class="form-control" id="member-add-name" placeholder="{# TRANSLATORS: Project member form placeholder #}{% trans %}Username{% endtrans %}" required />
+                  <input type="text" class="form-control" id="member-add-name" placeholder="{% trans "project members form placeholder" %}Username{% endtrans %}" required />
                 </div>
                 <div class="col-md-4 form-group">
                   <select id="member-add-privileges" class="form-control">
-                    <option value="ADMIN">{# TRANSLATORS: Permissions level #}{% trans %}Full permissions{% endtrans %}</option>
-                    <option value="MANAGE_DOCS">{# TRANSLATORS: Permissions level #}{% trans %}Can't change collaborators / delete project{% endtrans %}</option>
-                    <option value="TAG" selected>{# TRANSLATORS: Permissions level #}{% trans %}View & make changes{% endtrans %}</option>
-                    <option value="READ">{# TRANSLATORS: Permissions level #}{% trans %}View only{% endtrans %}</option>
+                    <option value="ADMIN">{% trans "permission level" %}Full permissions{% endtrans %}</option>
+                    <option value="MANAGE_DOCS">{% trans "permission level" %}Can't change collaborators / delete project{% endtrans %}</option>
+                    <option value="TAG" selected>{% trans "permission level" %}View & make changes{% endtrans %}</option>
+                    <option value="READ">{% trans "permission level" %}View only{% endtrans %}</option>
                   </select>
                 </div>
-                <button type="submit" class="btn btn-info col-md-4 form-group">{% trans %}Add to project{% endtrans %}</button>
+                <button type="submit" class="btn btn-info col-md-4 form-group">{% trans "form submit button" %}Add to project{% endtrans %}</button>
               </div>
             </fieldset>
           </form>
@@ -173,7 +173,7 @@
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <form id="document-add-form" class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">{% trans %}Add a document{% endtrans %}</h5>
+        <h5 class="modal-title">{% trans "modal window title" %}Add a document{% endtrans %}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -182,7 +182,7 @@
         <div class="container">
           <div class="row">
             <div class="col-md-6 form-group">
-              <input type="text" class="form-control" id="document-add-name" name="document-add-name" placeholder="{% trans %}Enter a document name{% endtrans %}" />
+              <input type="text" class="form-control" id="document-add-name" name="document-add-name" placeholder="{% trans "form placeholder" %}Enter a document name{% endtrans %}" />
             </div>
             <div class="col-md-6 form-group">
               <input type="file" class="form-control-file" id="document-add-file" name="document-add-file" required />
@@ -200,11 +200,11 @@
               </div>
             </div>
           </div>
-          <textarea class="form-control" id="document-add-description" name="document-add-description" placeholder="{# TRANSLATORS: Document add form placeholder #}{% trans %}Description{% endtrans %}"></textarea>
+          <textarea class="form-control" id="document-add-description" name="document-add-description" placeholder="{% trans "document add form placeholder" %}Description{% endtrans %}"></textarea>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">{% trans %}Import{% endtrans %}</button>
+        <button type="submit" class="btn btn-primary">{% trans "submit button" %}Import{% endtrans %}</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans %}Cancel{% endtrans %}</button>
       </div>
     </form>
@@ -216,7 +216,7 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <form id="document-change-form" class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">{% trans %}Edit document{% endtrans %}</h5>
+        <h5 class="modal-title">{% trans "modal window title" %}Edit document{% endtrans %}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -226,7 +226,7 @@
         <div class="container">
           <div class="row">
             <div class="col-md-6 form-group">
-              <input type="text" class="form-control mb-3" id="document-change-name" name="document-change-name" placeholder="{# TRANSLATORS: Document change form placeholder #}{% trans %}Name{% endtrans %}" required />
+              <input type="text" class="form-control mb-3" id="document-change-name" name="document-change-name" placeholder="{% trans "document change form placeholder" %}Name{% endtrans %}" required />
             </div>
           </div>
           <div class="row">
@@ -241,7 +241,7 @@
               </div>
             </div>
           </div>
-          <textarea class="form-control" id="document-change-description" name="document-change-description" placeholder="{# TRANSLATORS: Document change form placeholder #}{% trans %}Description{% endtrans %}"></textarea>
+          <textarea class="form-control" id="document-change-description" name="document-change-description" placeholder="{% trans "document change form placeholder" %}Description{% endtrans %}"></textarea>
         </div>
       </div>
       <div class="modal-footer">
@@ -257,7 +257,7 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <form id="highlight-add-form" class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">{% trans %}Highlight{% endtrans %}</h5>
+        <h5 class="modal-title">{% trans "modal window title" %}Highlight{% endtrans %}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -286,8 +286,8 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <form id="tag-add-form" class="modal-content">
       <div class="modal-header">
-        <h5 id="tag-add-label-new" class="modal-title">{% trans %}New tag{% endtrans %}</h5>
-        <h5 id="tag-add-label-change" class="modal-title" style="display: none;">{% trans %}Change tag{% endtrans %}</h5>
+        <h5 id="tag-add-label-new" class="modal-title">{% trans "modal window title" %}New tag{% endtrans %}</h5>
+        <h5 id="tag-add-label-change" class="modal-title" style="display: none;">{% trans "modal window title" %}Change tag{% endtrans %}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -295,12 +295,12 @@
       <div class="modal-body">
         <input type="hidden" id="tag-add-id" />
         <div class="container">
-          <input type="text" class="form-group" id="tag-add-path" name="tag-add-path" placeholder="{# TRANSLATORS: Tag change form #}{% trans %}Name{% endtrans %}" required />
-          <textarea class="form-control" id="tag-add-description" name="tag-add-description" placeholder="{% trans %}Description{% endtrans %}"></textarea>
+          <input type="text" class="form-group" id="tag-add-path" name="tag-add-path" placeholder="{% trans "tag change form placeholder" %}Name{% endtrans %}" required />
+          <textarea class="form-control" id="tag-add-description" name="tag-add-description" placeholder="{% trans "tag change form placeholder" %}Description{% endtrans %}"></textarea>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-info" data-dismiss="modal" id="tag-add-merge">{# TRANSLATORS: Button in tag edit window #}{% trans %}Merge...{% endtrans %}</button>
+        <button type="button" class="btn btn-info" data-dismiss="modal" id="tag-add-merge">{% trans "button in tag change modal window" %}Merge...{% endtrans %}</button>
         <button type="submit" class="btn btn-primary">{% trans %}Save & Close{% endtrans %}</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal" id="tag-add-cancel">{% trans %}Cancel{% endtrans %}</button>
         <button type="button" class="btn btn-danger" data-dismiss="modal" id="tag-add-delete">{% trans %}Delete tag{% endtrans %}</button>

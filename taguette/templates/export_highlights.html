@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8">
     {%- if path %}
-    <title>{% trans %}Taguette highlights: {{ path }}{% endtrans %}</title>
+    <title>{% trans "exported highlights document title" %}Taguette highlights: {{ path }}{% endtrans %}</title>
     {%- else %}
-    <title>{% trans %}Taguette highlights{% endtrans %}</title>
+    <title>{% trans "exported highlights document title" %}Taguette highlights{% endtrans %}</title>
     {% endif %}
     <style>
       h1 {
@@ -15,15 +15,15 @@
   </head>
   <body>
     {%- if path %}
-    <h1>{% trans %}Taguette highlights: {{ path }}{% endtrans %}</h1>
+    <h1>{% trans "exported highlights document title" %}Taguette highlights: {{ path }}{% endtrans %}</h1>
     {%- else %}
-    <h1>{% trans %}Taguette highlights{% endtrans %}</h1>
+    <h1>{% trans "exported highlights document title" %}Taguette highlights{% endtrans %}</h1>
     {% endif %}
 {% for id, snippet, document, tags in highlights %}
     {{ snippet |safe }}
     <p>
-      {% trans doc=document %}<strong>Document:</strong> {{ doc }}{% endtrans %}
-      <strong>{% trans %}Tags:{% endtrans %}</strong>
+      {% trans "exported highlight details" doc=document %}<strong>Document:</strong> {{ doc }}{% endtrans %}
+      <strong>{% trans "exported highlight details" %}Tags:{% endtrans %}</strong>
       {%- for tag in tags %}
         {{ tag }}
         {%- if not loop.last %},{% endif %}

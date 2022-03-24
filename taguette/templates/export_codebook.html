@@ -7,10 +7,10 @@
         background-color: #ff0;
       }
     </style>
-    <title>{% trans %}Taguette Codebook{% endtrans %}</title>
+    <title>{% trans "exported codebook document title" %}Taguette Codebook{% endtrans %}</title>
   </head>
   <body>
-    <h1>{% trans %}Taguette Codebook{% endtrans %}</h1>
+    <h1>{% trans "exported codebook document title" %}Taguette Codebook{% endtrans %}</h1>
 {% for tag in tags %}
       <h2>{{ tag.path }}</h2>
       <p class="number">{{ ngettext("%(number)d highlight", "%(number)d highlights", tag.highlights_count, number=tag.highlights_count) }}</p>
