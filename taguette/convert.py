@@ -482,8 +482,11 @@ async def to_html(body, content_type, filename, config):
         file = codecs.getreader(charset)(file)
 
         # Parse subtitle file
-        parser = parser_cls(file)
-        parser.parse()
+        try:
+            parser = parser_cls(file)
+            parser.parse()
+        except subtitle_parser.SubtitleError as e:
+            raise ConversionError("Invalid subtitle file: %s" % (e,))
 
         # Turn the result into HTML
         output = io.StringIO()
