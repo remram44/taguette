@@ -12,11 +12,18 @@ class InvalidFormat(ValueError):
         self.message = message
 
 
+def safe_unicode_characters(s):
+    if '\x00' in s:
+        raise ValueError("Null character in string")
+    return True
+
+
 def description(descr):
     if not isinstance(descr, str):
         raise ValueError("Description is not a string")
     if len(descr) > 102400:
         raise InvalidFormat(_f("Description is too long"))
+    safe_unicode_characters(descr)
     return True
 
 
@@ -25,6 +32,7 @@ def project_name(name):
         raise InvalidFormat(_f("Project name cannot be empty"))
     if len(name) > 50:
         raise InvalidFormat(_f("Project name is too long"))
+    safe_unicode_characters(name)
     return True
 
 
@@ -44,6 +52,7 @@ def user_login(login, new=False):
         raise InvalidFormat(_f("User login cannot be empty"))
     if len(login) > (20 if new else 25):
         raise InvalidFormat(_f("User login is too long"))
+    safe_unicode_characters(login)
     login = login.lower()
     chars = ALLOWED_LOGIN_CHARACTERS_NEW if new else ALLOWED_LOGIN_CHARACTERS
     if any(c not in chars for c in login):
@@ -60,6 +69,7 @@ def user_email(email):
         raise InvalidFormat(_f("Invalid email address"))
     if len(email) > 256:
         raise InvalidFormat(_f("Email address is too long"))
+    safe_unicode_characters(email)
     return True
 
 
@@ -70,6 +80,7 @@ def user_password(password):
         raise InvalidFormat(_f("Please use a longer password"))
     if len(password) > 5120:
         raise InvalidFormat(_f("Please use a shorter password"))
+    safe_unicode_characters(password)
     return True
 
 
@@ -80,6 +91,7 @@ def document_name(name):
         raise InvalidFormat(_f("Document name cannot be empty"))
     if len(name) > 50:
         raise InvalidFormat(_f("Document name is too long"))
+    safe_unicode_characters(name)
     return True
 
 
@@ -90,6 +102,7 @@ def tag_path(path):
         raise InvalidFormat(_f("Tag path cannot be empty"))
     if len(path) > 200:
         raise InvalidFormat(_f("Tag path is too long"))
+    safe_unicode_characters(path)
     return True
 
 
