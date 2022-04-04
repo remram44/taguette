@@ -16,11 +16,14 @@ tracer = opentelemetry.trace.get_tracer(__name__)
 def copy_project(
     src_db, dest_db,
     project_id, user_login,
+    do_validation=True,
 ):
     def copy(
         model, pkey, fkeys, size,
         *, condition=None, transform=None, validators=None
     ):
+        if not do_validation:
+            validators = None
         return copy_table(
             src_db, dest_db,
             model.__table__, pkey, fkeys,
@@ -41,8 +44,9 @@ def copy_project(
     ).fetchone()
     if project is None:
         raise KeyError("project ID not found")
-    validate.project_name(project['name'])
-    validate.description(project['description'])
+    if do_validation:
+        validate.project_name(project['name'])
+        validate.description(project['description'])
     project = dict(project)
     project.pop('id')
     new_project_id, = insert(Project, project).inserted_primary_key
@@ -113,26 +117,30 @@ def copy_project(
         return True
 
     # Copy commands
-    def transform_command(cmd):
+    def transform_command(cmd):  # CHECK
         payload = cmd['payload']
 
-        if payload['type'] not in Command.TYPES:
-            raise ValueError("Unknown command %r" % payload['type'])
+        if do_validation:
+            if payload['type'] not in Command.TYPES:
+                raise ValueError("Unknown command %r" % payload['type'])
 
-        method = getattr(Command, payload['type'])
-        expected_columns = (
-            set(method.columns)
-            | {'date', 'user_login', 'payload'}
-        )
-        expected_payload_fields = set(method.payload_fields) | {'type'}
+            method = getattr(Command, payload['type'])
+            expected_columns = (
+                set(method.columns)
+                | {'date', 'user_login', 'payload'}
+            )
+            expected_payload_fields = set(method.payload_fields) | {'type'}
 
-        # Check that the right columns are set
-        if {k for k, v in cmd.items() if v is not None} != expected_columns:
-            raise ValueError("Command doesn't have expected columns")
+            # Check that the right columns are set
+            if (
+                {k for k, v in cmd.items() if v is not None}
+                != expected_columns
+            ):
+                raise ValueError("Command doesn't have expected columns")
 
-        # Check that the right JSON fields are set
-        if payload.keys() != expected_payload_fields:
-            raise ValueError("Command doesn't have expected fields")
+            # Check that the right JSON fields are set
+            if payload.keys() != expected_payload_fields:
+                raise ValueError("Command doesn't have expected fields")
 
         # Map an ID, using negative ID if it's unknown
         def mv(mapping, value):
@@ -168,11 +176,12 @@ def copy_project(
 
         # Map JSON fields
         for field, value in list(payload.items()):
-            try:
-                if not field_validators[field](value):
+            if do_validation:
+                try:
+                    if not field_validators[field](value):
+                        raise ValueError("Invalid field %r in command" % field)
+                except validate.InvalidFormat:
                     raise ValueError("Invalid field %r in command" % field)
-            except validate.InvalidFormat:
-                raise ValueError("Invalid field %r in command" % field)
             if field in field_transformers:
                 payload[field] = field_transformers[field](value)
 

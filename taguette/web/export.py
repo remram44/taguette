@@ -306,6 +306,7 @@ class ExportSqlite(BaseHandler):
             database.copy_project(
                 self.db, dest_db,
                 project.id, 'admin',
+                do_validation=False,  # Don't validate export, trust our own DB
             )
             dest_db.commit()
 
