@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Taguette\n"
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
-"POT-Creation-Date: 2022-04-04 21:20-0400\n"
+"POT-Creation-Date: 2022-04-04 21:26-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,12 +18,13 @@ msgstr ""
 "Generated-By: Babel 2.9.1\n"
 
 #: taguette/templates/project_delete.html:6
+msgctxt "title"
 msgid "Delete project: confirm?"
 msgstr ""
 
-#. Name of the project to be deleted
 #: taguette/templates/project_delete.html:8
 #, python-format
+msgctxt "project delete page"
 msgid "Name: %(project_name)s"
 msgstr ""
 
@@ -36,29 +37,31 @@ msgid ""
 msgstr ""
 
 #: taguette/templates/project_delete.html:13
+msgctxt "submit button"
 msgid "Delete forever"
 msgstr ""
 
 #: taguette/templates/project_delete.html:14
 #: taguette/templates/project_import_codebook.html:29
 #: taguette/templates/project_import_codebook_confirm.html:37
+msgctxt "cancel button"
 msgid "Go back"
 msgstr ""
 
-#. Heading
 #: taguette/templates/account.html:7
+msgctxt "title"
 msgid "Account settings"
 msgstr ""
 
-#. User name
 #: taguette/templates/account.html:14 taguette/templates/login.html:28
 #: taguette/templates/login.html:59
+msgctxt "form label for user name"
 msgid "Login"
 msgstr ""
 
-#. Email address
 #: taguette/templates/account.html:20 taguette/templates/login.html:77
 #: taguette/templates/reset_password.html:17
+msgctxt "form label for email address"
 msgid "Email"
 msgstr ""
 
@@ -69,10 +72,12 @@ msgid ""
 msgstr ""
 
 #: taguette/templates/account.html:27
+msgctxt "form label for language selection"
 msgid "Language"
 msgstr ""
 
 #: taguette/templates/account.html:30
+msgctxt "language selection option"
 msgid "Auto-detect"
 msgstr ""
 
@@ -84,17 +89,19 @@ msgstr ""
 msgid "Repeat new password"
 msgstr ""
 
-#. Submit button
 #: taguette/templates/account.html:51
+msgctxt "form submit button"
 msgid "Update"
 msgstr ""
 
 #: taguette/templates/base.html:26
+msgctxt "navigation item"
 msgid "Home"
 msgstr ""
 
 #: taguette/templates/base.html:37
 #, python-format
+msgctxt "navigation item"
 msgid "Taguette Guide %(external_icon)s"
 msgstr ""
 
@@ -103,25 +110,27 @@ msgid "Single-user mode"
 msgstr ""
 
 #: taguette/templates/base.html:45
+msgctxt "navigation dropdown menu"
 msgid "Account"
 msgstr ""
 
 #: taguette/templates/base.html:47
+msgctxt "navigation item"
 msgid "Settings"
 msgstr ""
 
 #: taguette/templates/base.html:49
+msgctxt "navigation item"
 msgid "Terms of Service"
 msgstr ""
 
 #: taguette/templates/base.html:51
+msgctxt "navigation item"
 msgid "Log out"
 msgstr ""
 
-#. Link to form
-#. Submit button
-#: taguette/templates/base.html:56 taguette/templates/login.html:9
-#: taguette/templates/login.html:41
+#: taguette/templates/base.html:56
+msgctxt "navigation item"
 msgid "Log in"
 msgstr ""
 
@@ -139,35 +148,29 @@ msgstr ""
 
 #. Left pane tab, keep short
 #: taguette/templates/project.html:16
+msgctxt "tab"
 msgid "Project info"
 msgstr ""
 
 #. Left pane tab, keep short
 #: taguette/templates/project.html:19
+msgctxt "tab"
 msgid "Documents"
 msgstr ""
 
 #. Left pane tab, keep short
 #: taguette/templates/project.html:22
+msgctxt "tab"
 msgid "Highlights"
 msgstr ""
 
-#. Project metadata
-#. Document change form placeholder
-#. Tag change form
-#. Document creation form
-#: taguette/templates/project.html:32 taguette/templates/project.html:229
-#: taguette/templates/project.html:298 taguette/templates/project_new.html:13
+#: taguette/templates/project.html:32
+msgctxt "project metadata form label"
 msgid "Name"
 msgstr ""
 
-#. Project metadata
-#. Document add form placeholder
-#. Document change form placeholder
-#. Document creation form
-#: taguette/templates/project.html:36 taguette/templates/project.html:203
-#: taguette/templates/project.html:244 taguette/templates/project.html:299
-#: taguette/templates/project_new.html:19
+#: taguette/templates/project.html:36
+msgctxt "project metadata form label"
 msgid "Description"
 msgstr ""
 
@@ -211,7 +214,7 @@ msgstr ""
 msgid "Delete project"
 msgstr ""
 
-#: taguette/templates/project.html:76 taguette/templates/project.html:176
+#: taguette/templates/project.html:76
 msgid "Add a document"
 msgstr ""
 
@@ -245,35 +248,37 @@ msgid "Manage Collaborators"
 msgstr ""
 
 #: taguette/templates/project.html:139
+msgctxt "modal window title"
 msgid "Add Collaborators"
 msgstr ""
 
-#. Project member form placeholder
 #: taguette/templates/project.html:144
+msgctxt "project members form placeholder"
 msgid "Username"
 msgstr ""
 
-#. Permissions level
 #: taguette/templates/project.html:148
+msgctxt "permission level"
 msgid "Full permissions"
 msgstr ""
 
-#. Permissions level
 #: taguette/templates/project.html:149
+msgctxt "permission level"
 msgid "Can't change collaborators / delete project"
 msgstr ""
 
-#. Permissions level
 #: taguette/templates/project.html:150
+msgctxt "permission level"
 msgid "View & make changes"
 msgstr ""
 
-#. Permissions level
 #: taguette/templates/project.html:151
+msgctxt "permission level"
 msgid "View only"
 msgstr ""
 
 #: taguette/templates/project.html:154
+msgctxt "form submit button"
 msgid "Add to project"
 msgstr ""
 
@@ -291,16 +296,34 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+#: taguette/templates/project.html:176
+msgctxt "modal window title"
+msgid "Add a document"
+msgstr ""
+
 #: taguette/templates/project.html:185
+msgctxt "form placeholder"
 msgid "Enter a document name"
 msgstr ""
 
+#: taguette/templates/project.html:203
+msgctxt "document add form placeholder"
+msgid "Description"
+msgstr ""
+
 #: taguette/templates/project.html:207
+msgctxt "submit button"
 msgid "Import"
 msgstr ""
 
 #: taguette/templates/project.html:219
+msgctxt "modal window title"
 msgid "Edit document"
+msgstr ""
+
+#: taguette/templates/project.html:229
+msgctxt "document change form placeholder"
+msgid "Name"
 msgstr ""
 
 #: taguette/templates/project.html:236
@@ -311,11 +334,17 @@ msgstr ""
 msgid "Right to left"
 msgstr ""
 
+#: taguette/templates/project.html:244
+msgctxt "document change form placeholder"
+msgid "Description"
+msgstr ""
+
 #: taguette/templates/project.html:249
 msgid "Delete document"
 msgstr ""
 
 #: taguette/templates/project.html:260
+msgctxt "modal window title"
 msgid "Highlight"
 msgstr ""
 
@@ -324,15 +353,27 @@ msgid "Delete highlight"
 msgstr ""
 
 #: taguette/templates/project.html:289
+msgctxt "modal window title"
 msgid "New tag"
 msgstr ""
 
 #: taguette/templates/project.html:290
+msgctxt "modal window title"
 msgid "Change tag"
 msgstr ""
 
-#. Button in tag edit window
+#: taguette/templates/project.html:298
+msgctxt "tag change form placeholder"
+msgid "Name"
+msgstr ""
+
+#: taguette/templates/project.html:299
+msgctxt "tag change form placeholder"
+msgid "Description"
+msgstr ""
+
 #: taguette/templates/project.html:303
+msgctxt "button in tag change modal window"
 msgid "Merge..."
 msgstr ""
 
@@ -362,14 +403,17 @@ msgid "You have no projects yet."
 msgstr ""
 
 #: taguette/templates/index.html:21
+msgctxt "button in project list"
 msgid "Create a new project"
 msgstr ""
 
 #: taguette/templates/index.html:23
+msgctxt "button in project list"
 msgid "Import a project file"
 msgstr ""
 
 #: taguette/templates/cookies_prompt.html:6
+msgctxt "title"
 msgid "Cookie warning"
 msgstr ""
 
@@ -384,14 +428,17 @@ msgid ""
 msgstr ""
 
 #: taguette/templates/cookies_prompt.html:12
+msgctxt "button on cookie warning page"
 msgid "Accept cookies"
 msgstr ""
 
 #: taguette/templates/project_import_codebook_confirm.html:36
+msgctxt "form submit button"
 msgid "Create tags"
 msgstr ""
 
 #: taguette/templates/welcome.html:8
+msgctxt "title"
 msgid "Welcome"
 msgstr ""
 
@@ -414,25 +461,39 @@ msgstr ""
 msgid "<a href=\"%(url)s\">Register now</a> for free and get started!"
 msgstr ""
 
-#. Submit button
-#: taguette/templates/login.html:12 taguette/templates/login.html:96
+#: taguette/templates/login.html:9
+msgctxt "tab"
+msgid "Log in"
+msgstr ""
+
+#: taguette/templates/login.html:12
+msgctxt "tab"
 msgid "Register"
 msgstr ""
 
 #: taguette/templates/login.html:34 taguette/templates/login.html:65
 #: taguette/templates/new_password.html:15
+msgctxt "form label"
 msgid "Password"
 msgstr ""
 
+#: taguette/templates/login.html:41
+msgctxt "form submit button"
+msgid "Log in"
+msgstr ""
+
 #: taguette/templates/login.html:42
+msgctxt "form link"
 msgid "Forgot password"
 msgstr ""
 
 #: taguette/templates/login.html:71 taguette/templates/new_password.html:21
+msgctxt "form label"
 msgid "Confirm password"
 msgstr ""
 
 #: taguette/templates/login.html:85
+msgctxt "link from registration form"
 msgid "Terms of service"
 msgstr ""
 
@@ -441,17 +502,23 @@ msgstr ""
 msgid "I accept the <a href=\"%(url)s\">terms of service</a>"
 msgstr ""
 
+#: taguette/templates/login.html:96
+msgctxt "form submit button"
+msgid "Register"
+msgstr ""
+
 #: taguette/templates/new_password.html:10
 msgid "Please enter a new password below:"
 msgstr ""
 
-#. Submit button
 #: taguette/templates/new_password.html:28
+msgctxt "form submit button"
 msgid "Set new password"
 msgstr ""
 
 #: taguette/templates/export_codebook.html:10
 #: taguette/templates/export_codebook.html:13
+msgctxt "exported codebook document title"
 msgid "Taguette Codebook"
 msgstr ""
 
@@ -475,8 +542,8 @@ msgid ""
 "and a link to reset your password will be sent to you."
 msgstr ""
 
-#. Submit button
 #: taguette/templates/reset_password.html:22
+msgctxt "password reset form submit button"
 msgid "Send"
 msgstr ""
 
@@ -487,20 +554,32 @@ msgid ""
 msgstr ""
 
 #: taguette/templates/project_new.html:6
+msgctxt "title"
 msgid "New project"
 msgstr ""
 
+#: taguette/templates/project_new.html:13
+msgctxt "form label for new project name"
+msgid "Name"
+msgstr ""
+
+#: taguette/templates/project_new.html:19
+msgctxt "form label for new project description"
+msgid "Description"
+msgstr ""
+
 #: taguette/templates/project_new.html:26
+msgctxt "form submit button"
 msgid "Create"
 msgstr ""
 
-#: taguette/templates/project_import.html:17
 #: taguette/templates/project_import_codebook.html:14
+msgctxt "form label for project name (readonly)"
 msgid "Project:"
 msgstr ""
 
-#: taguette/templates/project_import.html:11
 #: taguette/templates/project_import_codebook.html:20
+msgctxt "form label for codebook file"
 msgid "File:"
 msgstr ""
 
@@ -509,26 +588,31 @@ msgid "Accepted format: CSV"
 msgstr ""
 
 #: taguette/templates/project_import_codebook.html:28
+msgctxt "form submit button"
 msgid "Review"
 msgstr ""
 
 #: taguette/templates/export_highlights.html:6
 #: taguette/templates/export_highlights.html:18
 #, python-format
+msgctxt "exported highlights document title"
 msgid "Taguette highlights: %(path)s"
 msgstr ""
 
 #: taguette/templates/export_highlights.html:8
 #: taguette/templates/export_highlights.html:20
+msgctxt "exported highlights document title"
 msgid "Taguette highlights"
 msgstr ""
 
 #: taguette/templates/export_highlights.html:25
 #, python-format
+msgctxt "exported highlight details"
 msgid "<strong>Document:</strong> %(doc)s"
 msgstr ""
 
 #: taguette/templates/export_highlights.html:26
+msgctxt "exported highlight details"
 msgid "Tags:"
 msgstr ""
 
@@ -550,7 +634,18 @@ msgid "This link will expire in 1 day."
 msgstr ""
 
 #: taguette/templates/project_import.html:6
+msgctxt "title"
 msgid "Import a project"
+msgstr ""
+
+#: taguette/templates/project_import.html:11
+msgctxt "form label for project file"
+msgid "File:"
+msgstr ""
+
+#: taguette/templates/project_import.html:17
+msgctxt "form label for project dropdown"
+msgid "Project:"
 msgstr ""
 
 #: taguette/templates/project_import.html:20
@@ -558,6 +653,7 @@ msgid "No file selected..."
 msgstr ""
 
 #: taguette/templates/project_import.html:25
+msgctxt "form submit button"
 msgid "Import project"
 msgstr ""
 
