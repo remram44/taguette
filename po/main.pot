@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Taguette\n"
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
-"POT-Creation-Date: 2022-01-22 13:29-0500\n"
+"POT-Creation-Date: 2022-04-04 21:20-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -620,6 +620,11 @@ msgstr ""
 msgid "You don't have permission to import a codebook"
 msgstr ""
 
+#: taguette/web/views.py:578
+#, python-format
+msgid "Row %d: %s"
+msgstr ""
+
 #: taguette/web/views.py:662
 msgid "Error importing tags, concurrent changes caused a conflict"
 msgstr ""
@@ -727,9 +732,12 @@ msgstr ""
 msgid "No 'tag', 'name', or 'path' column"
 msgstr ""
 
-#: taguette/import_codebook.py:58
-#, python-format
-msgid "Not enough columns on row %d"
+#: taguette/import_codebook.py:59
+msgid "Not enough columns"
+msgstr ""
+
+#: taguette/import_codebook.py:64
+msgid "Empty tag name"
 msgstr ""
 
 #: taguette/import_codebook.py:66
@@ -801,6 +809,10 @@ msgstr ""
 #: taguette/main.py:303
 #, python-format
 msgid "Missing required configuration variable %(var)s"
+msgstr ""
+
+#: taguette/main.py:327
+msgid "Invalid BASE_PATH"
 msgstr ""
 
 #: taguette/main.py:369
