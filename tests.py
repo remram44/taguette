@@ -360,6 +360,23 @@ class TestReadCodebook(unittest.TestCase):
             ]
         )
 
+        self.assertEqual(
+            import_codebook.list_tags(io.BytesIO(
+                (
+                    'other,path\n'
+                    + '1,interesting\n'
+                    + ',\n'
+                    + '2,people\n'
+                    + ',\n'
+                    + ',\n'
+                ).encode('utf-8'),
+            )),
+            [
+                {'path': 'interesting', 'description': ''},
+                {'path': 'people', 'description': ''},
+            ]
+        )
+
     def test_invalid_csv(self):
         with self.assertRaises(import_codebook.InvalidCodebook) as err:
             import_codebook.list_tags(io.BytesIO(
@@ -385,6 +402,19 @@ class TestReadCodebook(unittest.TestCase):
         self.assertEqual(
             err.exception.message,
             "No 'tag', 'name', or 'path' column",
+        )
+
+        with self.assertRaises(import_codebook.InvalidCodebook) as err:
+            import_codebook.list_tags(io.BytesIO(
+                (
+                    'name,other,description\n'
+                    + 'interesting,1,\n'
+                    + ',2,Named persons\n'
+                ).encode('utf-8'),
+            ))
+        self.assertEqual(
+            err.exception.message,
+            "Empty tag name on row 3",
         )
 
 

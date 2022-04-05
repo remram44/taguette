@@ -56,7 +56,11 @@ def list_tags_csv(reader):
         for nb, row in enumerate(reader, 2):
             if len(row) < needed_rows:
                 raise InvalidCodebook(_f("Not enough columns on row %d") % nb)
+            if not any(row):
+                continue  # Skip empty row
             path = row[col_path].strip()
+            if not path:
+                raise InvalidCodebook(_f("Empty tag name on row %d") % nb)
             if col_description is not None:
                 description = row[col_description].strip()
             else:
