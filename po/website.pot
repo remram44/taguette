@@ -8,82 +8,84 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-08-07 10:31-0400\n"
+"POT-Creation-Date: 2022-04-05 16:41-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
+"Generated-By: Babel 2.9.1\n"
 
-#. HTML description
 #: _layout.html:6
+msgctxt "html description"
 msgid ""
 "Taguette is a free an open-source text tagging tool for qualitative data "
 "analysis and qualitative research"
 msgstr ""
 
-#. Page title
-#: _layout.html:20 faq.html:4 index.html:4
+#: _layout.html:18 faq.html:4 index.html:4
+msgctxt "page title"
 msgid "Taguette, the free and open-source qualitative data analysis tool"
 msgstr ""
 
-#: _layout.html:37
+#: _layout.html:83
 msgid "Taguette"
 msgstr ""
 
 #. Screen-reader only indication of the current tab in navbar
-#: _layout.html:46
+#: _layout.html:92
+msgctxt "screen-reader only"
 msgid "(current)"
 msgstr ""
 
-#: _layout.html:60
+#: _layout.html:106
 msgid "Home"
 msgstr ""
 
-#: _layout.html:61
+#: _layout.html:107
 msgid "About"
 msgstr ""
 
-#: _layout.html:62
+#: _layout.html:108
 msgid "Install"
 msgstr ""
 
-#: _layout.html:64
+#: _layout.html:110
 msgid "Guides"
 msgstr ""
 
-#: _layout.html:66
+#: _layout.html:112
 msgid "Getting Started"
 msgstr ""
 
-#: _layout.html:67
+#: _layout.html:113
 msgid "Self-Host"
 msgstr ""
 
-#. Page title
-#: _layout.html:68 faq.html:4
+#: _layout.html:114
 msgid "FAQ"
 msgstr ""
 
-#: _layout.html:71
+#: _layout.html:117
 #, python-format
 msgid "Try it %(external_icon)s"
 msgstr ""
 
-#: _layout.html:88
+#: _layout.html:134
 msgid ""
 "Email: <a href=\"mailto:hi@taguette.org\">hi@taguette.org</a> | Mailing-"
 "lists: <a href=\"https://groups.io/g/taguette\">users</a>, <a "
 "href=\"https://groups.io/g/taguette-announce\">announce</a> | Twitter: <a"
 " href=\"https://twitter.com/TaguetteProject\">@TaguetteProject</a> | "
 "Found a bug in Taguette? Tell us on <a "
-"href=\"https://gitlab.com/remram44/taguette\">GitLab</a>!"
+"href=\"https://gitlab.com/remram44/taguette\">GitLab</a>! | Want to "
+"donate to Taguette? Check out <a "
+"href=\"https://opencollective.com/taguette\">our Open Collective</a>"
 msgstr ""
 
-#. Page title
 #: about.html:4
+msgctxt "page title"
 msgid "About Taguette, the free and open-source qualitative data analysis tool"
 msgstr ""
 
@@ -174,6 +176,11 @@ msgstr ""
 
 #: about.html:50
 msgid "Trainer &amp; User Liaison"
+msgstr ""
+
+#: faq.html:4
+msgctxt "page title"
+msgid "FAQ"
 msgstr ""
 
 #: faq.html:9
@@ -312,15 +319,15 @@ msgstr ""
 msgid "If you need Bibtex, please use the following:"
 msgstr ""
 
-#: faq.html:140
+#: faq.html:142
 msgid "Desktop/Single-user Info"
 msgstr ""
 
-#: faq.html:145
+#: faq.html:147
 msgid "Why do you call the desktop version of Taguette 'single user mode'?"
 msgstr ""
 
-#: faq.html:150
+#: faq.html:152
 msgid ""
 "Simply because you cannot collaborate with others using our desktop "
 "version of Taguette! If you want to be able to collaborate, see our <a "
@@ -328,19 +335,19 @@ msgid ""
 " to install Taguette on a server for multi-user collaboration."
 msgstr ""
 
-#: faq.html:158
+#: faq.html:160
 msgid "Does Taguette work on all operating systems?"
 msgstr ""
 
-#: faq.html:163
+#: faq.html:165
 msgid "Yes! You can install Taguette on macOS, Windows, and Linux."
 msgstr ""
 
-#: faq.html:171
+#: faq.html:173
 msgid "When I use Taguette on my personal computer, where is the data?"
 msgstr ""
 
-#: faq.html:176
+#: faq.html:178
 msgid ""
 "All your projects and documents are kept in a single database file. On "
 "macOS and Linux, you can find it at "
@@ -348,13 +355,13 @@ msgid ""
 "can find it at: <code>My Documents/Taguette/taguette.sqlite3</code>."
 msgstr ""
 
-#: faq.html:184
+#: faq.html:186
 msgid ""
 "SQLite is ok, but I prefer another database system. Can I change what "
 "Taguette uses?"
 msgstr ""
 
-#: faq.html:189
+#: faq.html:191
 msgid ""
 "\n"
 "          <p>Yes! On the terminal, use the <code>--database</code> option"
@@ -379,15 +386,15 @@ msgid ""
 "          "
 msgstr ""
 
-#: faq.html:204
+#: faq.html:206
 msgid "Self-hosting/multiuser mode Info"
 msgstr ""
 
-#: faq.html:209
+#: faq.html:211
 msgid "Can I install Taguette on my own server?"
 msgstr ""
 
-#: faq.html:214
+#: faq.html:216
 msgid ""
 "Absolutely! We know that putting choice in the hands of our users is what"
 " open source is all about 😊 You can install Taguette on your server via "
@@ -396,13 +403,13 @@ msgid ""
 "guide</a>."
 msgstr ""
 
-#: faq.html:222
+#: faq.html:224
 msgid ""
 "I thought I followed the instructions but something went wrong -- what "
 "should I look at first?"
 msgstr ""
 
-#: faq.html:227
+#: faq.html:229
 msgid ""
 "\n"
 "          <p>Make sure you have <strong>correctly installed all the "
@@ -421,17 +428,17 @@ msgid ""
 "          "
 msgstr ""
 
-#: faq.html:238
+#: faq.html:240
 #, python-format
 msgid "%(hosted_app_link)s Info"
 msgstr ""
 
-#: faq.html:243
+#: faq.html:245
 msgid "What is app.taguette.org?"
 msgstr ""
 
 #. About app.taguette.org
-#: faq.html:248
+#: faq.html:250
 msgid ""
 "It is a version of Taguette hosted on our servers for free use by anyone!"
 " We host this from a rented dedicated server from <a "
@@ -439,13 +446,13 @@ msgid ""
 "server's location is in France."
 msgstr ""
 
-#: faq.html:256
+#: faq.html:258
 msgid ""
 "What do we need to register for an account, and what do you do with our "
 "account information?"
 msgstr ""
 
-#: faq.html:261
+#: faq.html:263
 msgid ""
 "To use <a href=\"https://app.taguette.org\">app.taguette.org</a>, you "
 "need to register with a username and a password. You can provide an email"
@@ -454,11 +461,11 @@ msgid ""
 "it to log you into your account."
 msgstr ""
 
-#: faq.html:269
+#: faq.html:271
 msgid "What type of data should I upload to app.taguette.org?"
 msgstr ""
 
-#: faq.html:274
+#: faq.html:276
 msgid ""
 "\n"
 "          <p>TL;DR: do not upload sensitive data (e.g. patient "
@@ -486,26 +493,26 @@ msgid ""
 "          "
 msgstr ""
 
-#: faq.html:288
+#: faq.html:290
 msgid "Do you back up the data on app.taguette.org?"
 msgstr ""
 
-#: faq.html:293
+#: faq.html:295
 msgid ""
 "Yes, we back up <a href=\"https://app.taguette.org\">app.taguette.org</a>"
 " daily and keep those backups for a year. We send backups to a bucket in "
 "Amazon Web Services, in encrypted form only."
 msgstr ""
 
-#. Page title
 #: getting-started.html:4
+msgctxt "page title"
 msgid ""
 "Start With Taguette, the free and open-source qualitative data analysis "
 "tool"
 msgstr ""
 
-#. Navigation menu
 #: getting-started.html:11
+msgctxt "nav menu title"
 msgid "Explore the guide:"
 msgstr ""
 
@@ -560,488 +567,478 @@ msgid ""
 msgstr ""
 
 #: getting-started.html:31
-msgid "<i class=\"far fa-play-circle\"></i> Open Taguette"
+msgid ""
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-play-"
+"circle\"></use></svg> Open Taguette"
 msgstr ""
 
 #: getting-started.html:33
 msgid ""
-"\n"
-"      <p>If you've downloaded and installed Taguette on your computer, "
-"you should be able to double-click on the Taguette icon and start it up! "
-"You'll see the command line will pop up and be running. This is ok! Don't"
-" worry about the terminal but do leave it running. If you exit the "
-"terminal, Taguette will stop. Taguette should automatically pop up in "
-"your web browser, but if for some reason it doesn't, navigate to <a "
+"If you've downloaded and installed Taguette on your computer, you should "
+"be able to double-click on the Taguette icon and start it up! You'll see "
+"the command line will pop up and be running. This is ok! Don't worry "
+"about the terminal but do leave it running. If you exit the terminal, "
+"Taguette will stop. Taguette should automatically pop up in your web "
+"browser, but if for some reason it doesn't, navigate to <a "
 "href=\"http://localhost:7465\"><code>localhost:7465</code></a> to begin "
 "working on your projects! It should look something like this (if you're "
 "using Taguette on a server, you should see 'account' where 'single-user "
-"mode' is):</p>\n"
-"\n"
-"      <img src=\"imgs/01-welcome.png\" width=\"1125\" height=\"341\" "
-"class=\"img-fluid border border-dark\">\n"
-"      "
+"mode' is):"
+msgstr ""
+
+#: getting-started.html:37
+msgid ""
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-folder-"
+"plus\"></use></svg> Start a project"
 msgstr ""
 
 #: getting-started.html:39
-msgid "<i class=\"fas fa-folder-plus\"></i> Start a project"
+msgid ""
+"You will see a page that greets you as the admin and has a button to "
+"<strong>Create a project</strong>. Click that button and you'll be "
+"prompted to enter a Title and Description for your new project. This can "
+"be changed later on if you want."
 msgstr ""
 
-#: getting-started.html:41
+#: getting-started.html:43
 msgid ""
-"\n"
-"      <p>You will see a page that greets you as the admin and has a "
-"button to <strong>Create a project</strong>. Click that button and you'll"
-" be prompted to enter a Title and Description for your new project. This "
-"can be changed later on if you want.</p>\n"
-"\n"
-"      <img src=\"imgs/02-createProj.png\" width=\"1164\" height=\"365\" "
-"class=\"img-fluid border border-dark mb-2\">\n"
-"\n"
-"      <p>Upon clicking <strong>Create</strong>, you'll be taken to the "
+"Upon clicking <strong>Create</strong>, you'll be taken to the "
 "<strong>Project View</strong>, which has a left and a right pane. The "
 "left pane contains the information about your project information "
 "('Project Info'), uploaded materials ('Documents'), and tags "
 "('Highlights') as tabs. You can go between these tabs as you like. The "
 "right pane will render documents and will be the area where you'll do the"
-" highlighting and tagging.</p>\n"
-"\n"
-"      <img src=\"imgs/03-projectInfo.png\" width=\"1160\" height=\"278\" "
-"class=\"img-fluid border border-dark mb-2\">\n"
-"      "
+" highlighting and tagging."
 msgstr ""
 
-#: getting-started.html:51
-msgid "<i class=\"fas fa-upload\"></i> Upload materials"
+#: getting-started.html:47
+msgid ""
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-upload\"></use></svg> "
+"Upload materials"
+msgstr ""
+
+#: getting-started.html:49
+msgid ""
+"To get an idea of how to work in Taguette, let's upload a document and "
+"get you tagging! In the left pane, click on the <strong>Documents "
+"tab</strong>. You should see a button that says <strong>Add a "
+"document</strong>. Click that and pick just one document from your "
+"computer, either a: <code>.pdf</code>, <code>.docx</code>, "
+"<code>.txt</code>, <code>.odt</code>, <code>.md</code>, or "
+"<code>.html</code>."
 msgstr ""
 
 #: getting-started.html:53
 msgid ""
-"\n"
-"      <p>To get an idea of how to work in Taguette, let's upload a "
-"document and get you tagging! In the left pane, click on the "
-"<strong>Documents tab</strong>. You should see a button that says "
-"<strong>Add a document</strong>. Click that and pick just one document "
-"from your computer, either a: <code>.pdf</code>, <code>.docx</code>, "
-"<code>.txt</code>, <code>.odt</code>, <code>.md</code>, or "
-"<code>.html</code>.</p>\n"
-"\n"
-"      <img src=\"imgs/04-viewDocs.png\" width=\"1160\" height=\"206\" "
-"class=\"img-fluid border border-dark mb-2\">\n"
-"\n"
-"      <p>Just one file to be uploaded. You'll be prompted to give the new"
-" document a Name (should be something human-readable, required) and "
-"Description (like a note about the file, optional). When you have picked "
-"a document and at least given it a name, click the "
-"<strong>Import</strong> button.</p>\n"
-"\n"
-"      <img src=\"imgs/05-uploadDoc.png\" width=\"797\" height=\"327\" "
-"class=\"img-fluid border border-dark mb-2\">\n"
-"\n"
-"      <p>You should then see that file immediately in the Documents tab. "
-"If not, just refresh the page and it should be shown then. If you cannot "
-"see your document, you might be uploading a file type that Taguette "
-"cannot yet handle. Please let us know at <a "
-"href=\"mailto:hi@taguette.org\">hi@taguette.org</a>.</p>\n"
-"      "
+"Just one file to be uploaded. You'll be prompted to give the new document"
+" a Name (should be something human-readable, required) and Description "
+"(like a note about the file, optional). When you have picked a document "
+"and at least given it a name, click the <strong>Import</strong> button."
 msgstr ""
 
-#: getting-started.html:65
-msgid "<i class=\"fas fa-language\"></i> Change interface language (server only)"
-msgstr ""
-
-#: getting-started.html:67
+#: getting-started.html:57
 msgid ""
-"\n"
-"      <p>If you are working on <a "
+"You should then see that file immediately in the Documents tab. If not, "
+"just refresh the page and it should be shown then. If you cannot see your"
+" document, you might be uploading a file type that Taguette cannot yet "
+"handle. Please let us know at <a "
+"href=\"mailto:hi@taguette.org\">hi@taguette.org</a>."
+msgstr ""
+
+#: getting-started.html:59
+msgid ""
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-language\"></use></svg> "
+"Change interface language (server only)"
+msgstr ""
+
+#: getting-started.html:61
+msgid ""
+"If you are working on <a "
 "href=\"https://app.taguette.org\">app.taguette.org</a> or hosting "
 "Taguette on your own server, you have the option to change the language "
 "of the interface. In the upper righthand corner, you should see a "
 "dropdown menu labeled \"Account\". Click that dropdown, and then click "
 "\"Settings.\" You will see a dropdown menu in your profile settings to "
 "change the language that Taguette will be in. By default, it will auto-"
-"detect a language from your Internet browser.</p>\n"
-"\n"
-"      <p>If you do not see your language represented in this list, we "
-"would encourage you to add a translation via our Transifex project: <a "
+"detect a language from your Internet browser."
+msgstr ""
+
+#: getting-started.html:63
+msgid ""
+"If you do not see your language represented in this list, we would "
+"encourage you to add a translation via our Transifex project: <a "
 "href=\"https://www.transifex.com/remram44/taguette/\">https://www.transifex.com/remram44/taguette/</a>"
 " or by sending us a .po file via GitLab, instructions: <a "
-"href=\"https://gitlab.com/remram44/taguette/-/tree/master/po\">https://gitlab.com/remram44/taguette/-/tree/master/po</a>.</p>"
-"\n"
-"\n"
-"      <img src=\"imgs/language.png\" width=\"1151\" height=\"519\" class"
-"=\"img-fluid border border-dark mb-2\">\n"
-"      "
+"href=\"https://gitlab.com/remram44/taguette/-/tree/master/po\">https://gitlab.com/remram44/taguette/-/tree/master/po</a>."
 msgstr ""
 
-#: getting-started.html:75
-msgid "<i class=\"fas fa-users\"></i> Adding collaborators (server only)"
-msgstr ""
-
-#: getting-started.html:77
+#: getting-started.html:67
 msgid ""
-"\n"
-"      <p>If you are working on <a "
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-users\"></use></svg> "
+"Adding collaborators (server only)"
+msgstr ""
+
+#: getting-started.html:69
+msgid ""
+"If you are working on <a "
 "href=\"https://app.taguette.org\">app.taguette.org</a> or hosting "
 "Taguette on your own server, you have the option to work with others! In "
 "the <strong>Project Info tab</strong> of your Taguette project, you "
-"should see a grey button labeled <strong>Manage "
-"Collaborators</strong>:</p>\n"
-"\n"
-"      <img src=\"imgs/projectMenu.png\" width=\"473\" height=\"478\" "
-"class=\"img-fluid border border-dark mb-2\">\n"
-"\n"
-"      <p>Click that and you should get a modal with the option to add and"
-" remove collaborators, as well as change their permissions on the "
-"project. You must add their Taguette username and pick from the list of "
-"permissions, click <strong>Add to project</strong>, and to make sure that"
-" you've fully added your collaborator, next click <strong>Save & "
-"Close</strong>.</p>\n"
-"\n"
-"      <img src=\"imgs/addCollabs.png\" width=\"8010\" height=\"338\" "
-"class=\"img-fluid border border-dark mb-2\">\n"
-"\n"
-"      <p>You can add collaborators with the following permissions:</p>\n"
-"      "
+"should see a grey button labeled <strong>Manage Collaborators</strong>:"
 msgstr ""
 
-#: getting-started.html:92
+#: getting-started.html:73
+msgid ""
+"Click that and you should get a modal with the option to add and remove "
+"collaborators, as well as change their permissions on the project. You "
+"must add their Taguette username and pick from the list of permissions, "
+"click <strong>Add to project</strong>, and to make sure that you've fully"
+" added your collaborator, next click <strong>Save & Close</strong>."
+msgstr ""
+
+#: getting-started.html:77
+msgid "You can add collaborators with the following permissions:"
+msgstr ""
+
+#: getting-started.html:82
 msgid "Permission level"
 msgstr ""
 
-#: getting-started.html:93
+#: getting-started.html:83
 msgid "View project"
 msgstr ""
 
-#: getting-started.html:94
+#: getting-started.html:84
 msgid "Change highlights"
 msgstr ""
 
-#: getting-started.html:95
+#: getting-started.html:85
 msgid "Change tags"
 msgstr ""
 
-#: getting-started.html:96
+#: getting-started.html:86
 msgid "Add/delete documents"
 msgstr ""
 
-#: getting-started.html:97
+#: getting-started.html:87
 msgid "Change collaborators"
 msgstr ""
 
-#: getting-started.html:98
+#: getting-started.html:88
 msgid "Delete project"
 msgstr ""
 
 #. Has to match the permission level name in the app
-#: getting-started.html:103
+#: getting-started.html:93
+msgctxt "permission level"
 msgid "Full permission"
 msgstr ""
 
 #. Has to match the permission level name in the app
-#: getting-started.html:112
+#: getting-started.html:102
+msgctxt "permission level"
 msgid "Can't change collaborators/delete project"
 msgstr ""
 
 #. Has to match the permission level name in the app
-#: getting-started.html:121
+#: getting-started.html:111
+msgctxt "permission level"
 msgid "View and make changes"
 msgstr ""
 
 #. Has to match the permission level name in the app
-#: getting-started.html:130
+#: getting-started.html:120
+msgctxt "permission level"
 msgid "View Only"
 msgstr ""
 
+#: getting-started.html:131
+msgid ""
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-tags\"></use></svg> "
+"Create Tags"
+msgstr ""
+
+#: getting-started.html:133
+msgid ""
+"Taguette ships with one existing tag (or <em>codes</em>, if you're "
+"familiar with qualitative research): <code>interesting</code>. This is "
+"just there to get you started -- you can add and remove tags as often as "
+"you'd like! To view all your existing tags, click the "
+"<strong>Highlights</strong> tab in the left pane. You will see a list of "
+"tags you have and a count of the number of times you have highlighted "
+"your materials with a given tag."
+msgstr ""
+
+#: getting-started.html:137
+msgid ""
+"You should see a list of existing tags for the project - again, if you "
+"haven't added any yet, you will still see <code>interesting</code>. To "
+"add your own tags to this project, click <strong>Create a tag</strong>. "
+"You will get a popup asking you for the Name and Description of the tag "
+"you want to create:"
+msgstr ""
+
 #: getting-started.html:141
-msgid "<i class=\"fas fa-tags\"></i> Create Tags"
+msgid ""
+"After you give the tag a good name and a bit of description about what it"
+" means, you should see it added to the list in alphabetical order."
 msgstr ""
 
 #: getting-started.html:143
 msgid ""
-"\n"
-"      <p>Taguette ships with one existing tag (or <em>codes</em>, if "
-"you're familiar with qualitative research): <code>interesting</code>. "
-"This is just there to get you started -- you can add and remove tags as "
-"often as you'd like! To view all your existing tags, click the "
-"<strong>Highlights</strong> tab in the left pane. You will see a list of "
-"tags you have and a count of the number of times you have highlighted "
-"your materials with a given tag.</p>\n"
-"\n"
-"      <img src=\"imgs/06-viewTags.png\" width=\"1514\" height=\"558\" "
-"class=\"img-fluid border border-dark mb-2\">\n"
-"\n"
-"      <p>You should see a list of existing tags for the project - again, "
-"if you haven't added any yet, you will still see "
-"<code>interesting</code>. To add your own tags to this project, click "
-"<strong>Create a tag</strong>. You will get a popup asking you for the "
-"Name and Description of the tag you want to create:</p>\n"
-"\n"
-"      <img src=\"imgs/07-addTag.png\" width=\"499\" height=\"292\" class"
-"=\"img-fluid border border-dark mb-2\">\n"
-"\n"
-"      <p>After you give the tag a good name and a bit of description "
-"about what it means, you should see it added to the list in alphabetical "
-"order.</p>\n"
-"\n"
-"      <p><strong>A note on hierarchical tagging</strong>: you can use "
-"<em>any punctuation</em> to make hierarchies. So <code>tech.floss</code> "
-"lives underneath <code>tech</code>. If I click on "
-"<code>tech.floss</code>, then I'll see only materials relating to that "
-"tag. If I click on <code>tech</code>, I'll see everything in that tag as "
-"well as <code>tech.floss</code> and any other sub-tag.</p>\n"
-"\n"
-"      "
+"<strong>A note on hierarchical tagging</strong>: you can use <em>any "
+"punctuation</em> to make hierarchies. So <code>tech.floss</code> lives "
+"underneath <code>tech</code>. If I click on <code>tech.floss</code>, then"
+" I'll see only materials relating to that tag. If I click on "
+"<code>tech</code>, I'll see everything in that tag as well as "
+"<code>tech.floss</code> and any other sub-tag."
 msgstr ""
 
-#: getting-started.html:158
-msgid "<i class=\"fas fa-eraser\"></i> Delete/change Tags"
-msgstr ""
-
-#: getting-started.html:160
+#: getting-started.html:145
 msgid ""
-"\n"
-"      <p>You can also change or delete a tag by clicking the "
-"<code>edit</code> badge to the right of the name of the tag in the list. "
-"This will bring you back to the same popup - you can edit the name of the"
-" tag, its description, or you can click the grey <strong>Delete</strong> "
-"button next to the blue <strong>Save &amp; Close</strong> button.</p>\n"
-"\n"
-"      <img src=\"imgs/08-changeTag.png\" width=\"493\" height=\"288\" "
-"class=\"img-fluid border border-dark mb-2\">\n"
-"      "
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-eraser\"></use></svg> "
+"Delete/change Tags"
 msgstr ""
 
-#: getting-started.html:166
-msgid "<i class=\"far fa-object-group\"></i> Merge Tags"
-msgstr ""
-
-#: getting-started.html:168
+#: getting-started.html:147
 msgid ""
-"\n"
-"      <p>If you want to merge one tag into another, you can also do this "
-"from the edit window. Click the <code>edit</code> badge to the right of "
-"the name of the tag in the list. This will bring you back to the same "
-"popup for editing and deleting a tag. Instead, if you click "
-"<strong>Merge</strong>, then you will be prompted to select the tag that "
-"you want to merge into. Once you select a tag and click <strong>Merge "
-"tags</strong>, then all the highlights for the first tag will be moved to"
-" the second tag.</p>\n"
-"\n"
-"      <img src=\"imgs/merge-tag.png\" width=\"498\" height=\"310\" class"
-"=\"img-fluid border border-dark mb-2\">\n"
-"      "
+"You can also change or delete a tag by clicking the <code>edit</code> "
+"badge to the right of the name of the tag in the list. This will bring "
+"you back to the same popup - you can edit the name of the tag, its "
+"description, or you can click the grey <strong>Delete</strong> button "
+"next to the blue <strong>Save &amp; Close</strong> button."
 msgstr ""
 
-#: getting-started.html:174
-msgid "<i class=\"fas fa-highlighter\"></i> Highlighting"
-msgstr ""
-
-#: getting-started.html:176
+#: getting-started.html:151
 msgid ""
-"\n"
-"      <p>Once uploaded, you should see the document in the 'Documents' "
-"tab. Click on it and you should see the contents of your document in the "
-"right pane. Once you see the text in the right pane, we can start "
-"highlighting it!</p>\n"
-"\n"
-"      <img src=\"imgs/09-viewDocContents.png\" width=\"1160\" "
-"height=\"281\" class=\"img-fluid border border-dark mb-2\">\n"
-"\n"
-"      <p>Select some text by left-clicking and dragging it over the text "
-"you'd like to highlight. Once you let go of your left-click, a pop-up "
-"that says <strong>new highlight</strong> will appear next to the "
-"highlighted text. </p>\n"
-"\n"
-"      <img src=\"imgs/10-highlightText.png\" width=\"1025\" "
-"height=\"100\" class=\"img-fluid border border-dark mb-2\">\n"
-"\n"
-"      <p>Click that pop-up, and you will get a list of existing tags from"
-" which to choose. You can select one or more tags to apply to the "
-"highlighted text.</p>\n"
-"\n"
-"      <img src=\"imgs/11-addHighlight.png\" width=\"499\" height=\"418\" "
-"class=\"img-fluid border border-dark mb-2\">\n"
-"\n"
-"      <p>If you want to add a tag instead of using one that already "
-"exists, then simply click <strong>Create a tag</strong>, and you'll be "
-"sent to the same popup where made tags earlier.</p>\n"
-"\n"
-"      <img src=\"imgs/12-createNewFromHL.png\" width=\"511\" "
-"height=\"419\" class=\"img-fluid border border-dark mb-2\">\n"
-"\n"
-"      <p>Once you make your tag, you'll be dropped back into the popup "
-"above where you should select a tag for the highlighted text. After "
-"you've checked off which tags you'd like to associate with the "
-"highlighted text, click <strong>Save &amp; Close</strong>, and the text "
-"you've just tagged should now be highlighted with the color associated "
-"with the tag (e.g. bright yellow).</p>\n"
-"\n"
-"      <p>If you've accidentally tagged a section of text you didn't want "
-"to, you can delete it by clicking on the highlighted text. This will give"
-" you the same pop-up window that you used to tag it. Next to the save "
-"button, there is a red button called <strong>Delete highlight</strong>. "
-"Click that, and the tags will be removed from the text. It should no "
-"longer be highlighted.</p>\n"
-"      "
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-object-"
+"group\"></use></svg> Merge Tags"
 msgstr ""
 
-#: getting-started.html:198
-msgid "<i class=\"fas fa-file-invoice\"></i> View highlighted &amp; tagged text"
-msgstr ""
-
-#: getting-started.html:200
+#: getting-started.html:153
 msgid ""
-"\n"
-"      <p>If you want to see all the highlighted text associated with a "
-"given tag, first go to the <strong>Highlights</strong> tab in the left "
-"pane. Click a tag, and in the right pane, you will see a list of quotes "
-"with a blue link to the document where they originated from and all their"
-" associated tags with a black badge. The tag on the left pane will also "
-"be highlighted:</p>\n"
-"\n"
-"      <img src=\"imgs/13-viewQuotes.png\" width=\"1879\" height=\"646\" "
-"class=\"img-fluid border border-dark mb-2\">\n"
-"\n"
-"      <p>If you want to see all the highlighted text for <em>all "
-"documents</em> and <em>all tags</em>, click <strong>See all "
-"highlights</strong> and you will see a list of quotes with a blue link to"
-" the document where they originated from and all their associated tags "
-"with a black badge:</p>\n"
-"\n"
-"      <img src=\"imgs/14-seeAllHighlights.png\" width=\"1160\" "
-"height=\"370\" class=\"img-fluid border border-dark mb-2\">\n"
-"\n"
-"      <p>You can also view the document with all its highlights by "
-"navigating to the <strong>Documents</strong> tab in the left pane. Then "
-"just click on the document you wish to view, and if you've highlighted "
-"it, you should see:</p>\n"
-"\n"
-"      <img src=\"imgs/15-viewHighlightedDoc.png\" width=\"1160\" "
-"height=\"187\" class=\"img-fluid border border-dark mb-2\">\n"
-"\n"
-"      <p>If you hover your mouse over a highlighted section of text, you "
-"will see tags in a tooltip to the right of your mouse cursor. To explore "
-"your highlighted document in a different way, you can try clicking on the"
-" <strong>Backlight</strong> checkbox. You can see it at the bottom of the"
-" pane. It will grey out all the non-highlighted text to make the "
+"If you want to merge one tag into another, you can also do this from the "
+"edit window. Click the <code>edit</code> badge to the right of the name "
+"of the tag in the list. This will bring you back to the same popup for "
+"editing and deleting a tag. Instead, if you click <strong>Merge</strong>,"
+" then you will be prompted to select the tag that you want to merge into."
+" Once you select a tag and click <strong>Merge tags</strong>, then all "
+"the highlights for the first tag will be moved to the second tag."
+msgstr ""
+
+#: getting-started.html:157
+msgid ""
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-"
+"highlighter\"></use></svg> Highlighting"
+msgstr ""
+
+#: getting-started.html:159
+msgid ""
+"Once uploaded, you should see the document in the 'Documents' tab. Click "
+"on it and you should see the contents of your document in the right pane."
+" Once you see the text in the right pane, we can start highlighting it!"
+msgstr ""
+
+#: getting-started.html:163
+msgid ""
+"Select some text by left-clicking and dragging it over the text you'd "
+"like to highlight. Once you let go of your left-click, a pop-up that says"
+" <strong>new highlight</strong> will appear next to the highlighted text."
+" "
+msgstr ""
+
+#: getting-started.html:167
+msgid ""
+"Click that pop-up, and you will get a list of existing tags from which to"
+" choose. You can select one or more tags to apply to the highlighted "
+"text."
+msgstr ""
+
+#: getting-started.html:171
+msgid ""
+"If you want to add a tag instead of using one that already exists, then "
+"simply click <strong>Create a tag</strong>, and you'll be sent to the "
+"same popup where made tags earlier."
+msgstr ""
+
+#: getting-started.html:175
+msgid ""
+"Once you make your tag, you'll be dropped back into the popup above where"
+" you should select a tag for the highlighted text. After you've checked "
+"off which tags you'd like to associate with the highlighted text, click "
+"<strong>Save &amp; Close</strong>, and the text you've just tagged should"
+" now be highlighted with the color associated with the tag (e.g. bright "
+"yellow)."
+msgstr ""
+
+#: getting-started.html:177
+msgid ""
+"If you've accidentally tagged a section of text you didn't want to, you "
+"can delete it by clicking on the highlighted text. This will give you the"
+" same pop-up window that you used to tag it. Next to the save button, "
+"there is a red button called <strong>Delete highlight</strong>. Click "
+"that, and the tags will be removed from the text. It should no longer be "
+"highlighted."
+msgstr ""
+
+#: getting-started.html:179
+msgid ""
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-file-"
+"invoice\"></use></svg> View highlighted &amp; tagged text"
+msgstr ""
+
+#: getting-started.html:181
+msgid ""
+"If you want to see all the highlighted text associated with a given tag, "
+"first go to the <strong>Highlights</strong> tab in the left pane. Click a"
+" tag, and in the right pane, you will see a list of quotes with a blue "
+"link to the document where they originated from and all their associated "
+"tags with a black badge. The tag on the left pane will also be "
+"highlighted:"
+msgstr ""
+
+#: getting-started.html:185
+msgid ""
+"If you want to see all the highlighted text for <em>all documents</em> "
+"and <em>all tags</em>, click <strong>See all highlights</strong> and you "
+"will see a list of quotes with a blue link to the document where they "
+"originated from and all their associated tags with a black badge:"
+msgstr ""
+
+#: getting-started.html:189
+msgid ""
+"You can also view the document with all its highlights by navigating to "
+"the <strong>Documents</strong> tab in the left pane. Then just click on "
+"the document you wish to view, and if you've highlighted it, you should "
+"see:"
+msgstr ""
+
+#: getting-started.html:193
+msgid ""
+"If you hover your mouse over a highlighted section of text, you will see "
+"tags in a tooltip to the right of your mouse cursor. To explore your "
+"highlighted document in a different way, you can try clicking on the "
+"<strong>Backlight</strong> checkbox. You can see it at the bottom of the "
+"pane. It will grey out all the non-highlighted text to make the "
 "highlighted text really pop. We found this to be a nice view for "
-"exploring the texts differently:</p>\n"
-"\n"
-"      <img src=\"imgs/16-backlight.png\" width=\"1160\" height=\"236\" "
-"class=\"img-fluid border border-dark mb-2\">\n"
-"      "
+"exploring the texts differently:"
 msgstr ""
 
-#: getting-started.html:218
-msgid "<i class=\"fas fa-file-export\"></i> Export Options"
-msgstr ""
-
-#: getting-started.html:220
+#: getting-started.html:197
 msgid ""
-"\n"
-"      <p>You can export everything out of Taguette that you put in: tags,"
-" highlights, codebooks, documents, and even the entire project! </p>\n"
-"\n"
-"      <p>To export the codebook of your project - this is a list of all "
-"the tags that you've created alongside their description - use the "
-"dropdown menu in the <strong>Project</strong> tab in the left pane of "
-"Taguette, underneath the project description. There is a variety of "
-"export options, including <code>QDC</code> (REFI-QDA standard), "
-"<code>CSV</code> (spreadsheet), <code>XLSX</code> (Microsoft Excel), "
-"<code>DOCX</code> (Microsoft Word), <code>HTML</code>, and "
-"<code>PDF</code>.</p>\n"
-"\n"
-"      <img src=\"imgs/17-exportCodebook.png\" width=\"462\" "
-"height=\"610\" class=\"img-fluid border border-dark mb-2\">\n"
-"\n"
-"      <p>To export all the associated highlights for a given tag, "
-"navigate to the <strong>Highlights</strong> tab in the left pane, and "
-"click on the tag of the highlights you'd want to export. Then you can use"
-" the <strong>Export this view</strong> dropdown menu at the top right in "
-"the right pane. You will have a choice of <code>HTML</code> (a webpage), "
-"<code>CSV</code>, <code>XLSX</code>, <code>DOCX</code> (editable), or "
-"<code>PDF</code> (not easily editable). While you will see the document "
-"with all the highlights, right now you won't be able to tell from that "
-"doc which tags go with the highlights.</p>\n"
-"\n"
-"      <img src=\"imgs/18-exportTag.png\" width=\"1887\" height=\"627\" "
-"class=\"img-fluid border border-dark mb-2\">\n"
-"\n"
-"      <p>You will see all the highlighted text for the particular tag "
-"with information about each highlight right underneath it -- which "
-"document it came from, and which tags are associated with it. This is how"
-" it looks with the <code>DOCX</code> export:</p>\n"
-"\n"
-"      <img src=\"imgs/19-exportTagEX.png\" width=\"1160\" height=\"513\" "
-"class=\"img-fluid border border-dark mb-2\">\n"
-"\n"
-"      <p>To export all the tags with all associated highlights, navigate "
-"to the <strong>Highlights</strong> tab in the left pane, and click on "
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-file-"
+"export\"></use></svg> Export Options"
+msgstr ""
+
+#: getting-started.html:199
+msgid ""
+"You can export everything out of Taguette that you put in: tags, "
+"highlights, codebooks, documents, and even the entire project! "
+msgstr ""
+
+#: getting-started.html:201
+msgid ""
+"To export the codebook of your project - this is a list of all the tags "
+"that you've created alongside their description - use the dropdown menu "
+"in the <strong>Project</strong> tab in the left pane of Taguette, "
+"underneath the project description. There is a variety of export options,"
+" including <code>QDC</code> (REFI-QDA standard), <code>CSV</code> "
+"(spreadsheet), <code>XLSX</code> (Microsoft Excel), <code>DOCX</code> "
+"(Microsoft Word), <code>HTML</code>, and <code>PDF</code>."
+msgstr ""
+
+#: getting-started.html:205
+msgid ""
+"To export all the associated highlights for a given tag, navigate to the "
+"<strong>Highlights</strong> tab in the left pane, and click on the tag of"
+" the highlights you'd want to export. Then you can use the <strong>Export"
+" this view</strong> dropdown menu at the top right in the right pane. You"
+" will have a choice of <code>HTML</code> (a webpage), <code>CSV</code>, "
+"<code>XLSX</code>, <code>DOCX</code> (editable), or <code>PDF</code> (not"
+" easily editable). While you will see the document with all the "
+"highlights, right now you won't be able to tell from that doc which tags "
+"go with the highlights."
+msgstr ""
+
+#: getting-started.html:209
+msgid ""
+"You will see all the highlighted text for the particular tag with "
+"information about each highlight right underneath it -- which document it"
+" came from, and which tags are associated with it. This is how it looks "
+"with the <code>DOCX</code> export:"
+msgstr ""
+
+#: getting-started.html:213
+msgid ""
+"To export all the tags with all associated highlights, navigate to the "
+"<strong>Highlights</strong> tab in the left pane, and click on "
 "<strong>See all highlights</strong>. Then you can use the <strong>Export "
 "this view</strong> dropdown menu at the top right in the right pane. "
 "Again, you will have a choice of <code>HTML</code>, <code>DOCX</code>, or"
-" <code>PDF</code>.</p>\n"
-"\n"
-"      <img src=\"imgs/20-exportAllTags.png\" width=\"1160\" "
-"height=\"370\" class=\"img-fluid border border-dark mb-2\">\n"
-"\n"
-"      <p>You will see all the highlighted text for all tags with "
-"information about it -- which document it came from, and which tags are "
-"associated with it. This is how it looks with the <code>DOCX</code> "
-"export:</p>\n"
-"\n"
-"      <img src=\"imgs/21-exportAllTagEX.png\" width=\"1160\" "
-"height=\"528\" class=\"img-fluid border border-dark mb-2\">\n"
-"\n"
-"      <p>To export the document that you've highlighted, first navigate "
-"to the <strong>Documents</strong> tab in the left pane, and click on the "
+" <code>PDF</code>."
+msgstr ""
+
+#: getting-started.html:217
+msgid ""
+"You will see all the highlighted text for all tags with information about"
+" it -- which document it came from, and which tags are associated with "
+"it. This is how it looks with the <code>DOCX</code> export:"
+msgstr ""
+
+#: getting-started.html:221
+msgid ""
+"To export the document that you've highlighted, first navigate to the "
+"<strong>Documents</strong> tab in the left pane, and click on the "
 "document that you want to export. Then you can use the <strong>Export "
 "this view</strong> dropdown menu at the top right in the right pane. "
 "Again, you will have a choice of <code>HTML</code>, <code>DOCX</code>, or"
-" <code>PDF</code>.</p>\n"
-"\n"
-"      <img src=\"imgs/22-exportDoc.png\" width=\"1160\" height=\"499\" "
-"class=\"img-fluid border border-dark mb-2\">\n"
-"\n"
-"      <p>You will see the document with your highlight in yellow, and the"
-" associated tag(s) next to the highlighted text, itself highlighted in "
-"light red and in brackets. Yellow = quote, light red = tag(s). This is "
-"how it looks with the <code>DOCX</code> export:</p>\n"
-"\n"
-"      <img src=\"imgs/23-exportDocEXs.png\" width=\"1160\" height=\"542\""
-" class=\"img-fluid border border-dark mb-2\">\n"
-"\n"
-"      <p>You can also import and export projects in Taguette! To export "
-"your project, go to the <strong>Project Info</strong> tab in the left "
-"pane. You should see a button that says <strong>Export project</strong>. "
-"Click that, and you should get a download started of a SQLite3 file. This"
-" holds your Taguette project, all files, as well as all highlights and "
-"codes:</p>\n"
-"\n"
-"      <img src=\"imgs/24-exportProject.png\" width=\"1160\" "
-"height=\"542\" class=\"img-fluid border border-dark mb-2\">\n"
-"\n"
-"      <p>To import your project onto another instance of Taguette (for "
-"instance, a locally running copy on your computer or another server), go "
-"to the welcome screen in Taguette and click \"Import a project "
-"file\":</p>\n"
-"\n"
-"      <img src=\"imgs/01-welcome.png\" width=\"1125\" height=\"341\" "
-"class=\"img-fluid border border-dark\">\n"
-"\n"
-"      <p>From there, you select a project to upload. It must have the "
-"SQLite3 file extension to be uploaded. Click Browse and select the file. "
-"Taguette will confirm on this screen the name of the project, and once "
-"you hit \"Import\", all project materials will be imported!</p>\n"
-"\n"
-"      <img src=\"imgs/25-importProject.png\" width=\"1160\" "
-"height=\"542\" class=\"img-fluid border border-dark mb-2\">\n"
-"\n"
-"      "
+" <code>PDF</code>."
 msgstr ""
 
-#. Taguette subtitle
+#: getting-started.html:225
+msgid ""
+"You will see the document with your highlight in yellow, and the "
+"associated tag(s) next to the highlighted text, itself highlighted in "
+"light red and in brackets. Yellow = quote, light red = tag(s). This is "
+"how it looks with the <code>DOCX</code> export:"
+msgstr ""
+
+#: getting-started.html:229
+msgid ""
+"You can also import and export projects in Taguette! To export your "
+"project, go to the <strong>Project Info</strong> tab in the left pane. "
+"You should see a button that says <strong>Export project</strong>. Click "
+"that, and you should get a download started of a <code>SQLite3</code> "
+"file. This holds your Taguette project, all files, as well as all "
+"highlights and codes:"
+msgstr ""
+
+#: getting-started.html:233
+msgid ""
+"To import your project onto another instance of Taguette (for instance, a"
+" locally running copy on your computer or another server), go to the "
+"welcome screen in Taguette and click \"Import a project file\":"
+msgstr ""
+
+#: getting-started.html:237
+msgid ""
+"From there, you select a project to upload. It should have the "
+"<code>SQLite3</code> file extension to be uploaded. Click Browse and "
+"select the file. Taguette will confirm on this screen the name of the "
+"project, and once you hit \"Import\", all project materials will be "
+"imported!"
+msgstr ""
+
+#: getting-started.html:241
+msgid ""
+"If you want to browse the database directly, you can find documentation "
+"about the schema <a "
+"href=\"https://gitlab.com/remram44/taguette/-/blob/master/ARCHITECTURE.md"
+"#the-database\">in our internal documentation</a>."
+msgstr ""
+
 #: index.html:10
+msgctxt "subtitle"
 msgid "FEEDING YOUR QUALITATIVE NEEDS"
 msgstr ""
 
@@ -1075,8 +1072,8 @@ msgid ""
 "your computer, you can run Taguette with no worries."
 msgstr ""
 
-#. Button
 #: index.html:22
+msgctxt "button"
 msgid "Install now &raquo;"
 msgstr ""
 
@@ -1092,8 +1089,8 @@ msgid ""
 " whatever tag you find to be most relevant!"
 msgstr ""
 
-#. Button
 #: index.html:27
+msgctxt "button"
 msgid "Get started &raquo;"
 msgstr ""
 
@@ -1109,13 +1106,13 @@ msgid ""
 "documents. It's a good practice to keep an archival copy of your work!"
 msgstr ""
 
-#. Button
 #: index.html:32
+msgctxt "button"
 msgid "View details &raquo;"
 msgstr ""
 
-#. Page title
 #: install.html:4
+msgctxt "page title"
 msgid "Install Taguette, the free and open-source qualitative data analysis tool"
 msgstr ""
 
@@ -1153,8 +1150,8 @@ msgid ""
 "href=\"#pip\">below</a>."
 msgstr ""
 
-#. Popup for Windows installation instructions
 #: install.html:25
+msgctxt "popup for installation instructions"
 msgid "On Windows..."
 msgstr ""
 
@@ -1175,8 +1172,8 @@ msgid ""
 "          "
 msgstr ""
 
-#. Popup for MacOS installation instructions
 #: install.html:38
+msgctxt "popup for installation instructions"
 msgid "On macOS..."
 msgstr ""
 
@@ -1268,16 +1265,17 @@ msgid ""
 "    <li>Taguette uses <a href=\"https://python-poetry.org/\">Poetry</a> "
 "for its packaging and dependency management. You will need to <a "
 "href=\"https://python-poetry.org/docs/#installation\">install "
-"Poetry</a></li>\n"
+"Poetry</a>.</li>\n"
 "    <li>Install Taguette and its dependencies by running <code>poetry "
-"install</code>. We recommend you run this inside of a <a "
-"href=\"https://docs.python-guide.org/dev/virtualenvs/\">virtualenv</a> if"
-" possible.</li>\n"
+"install</code>. Poetry will create a virtual environment for you by "
+"default, activate it by running <code>poetry shell</code>.</li>\n"
 "    <li>Build translation files using "
 "<code>scripts/update_translations.sh</code>.</li>\n"
 "    <li>You can start taguette in development mode using <code>taguette "
-"--debug</code>. This will start Tornado in debug mode, which means in "
-"particular that it will auto-restart every time you make changes.</li>\n"
+"--debug</code> (or <code>taguette --debug server "
+"&lt;config_file&gt;</code>). This will start Tornado in debug mode, which"
+" means in particular that it will auto-restart every time you make "
+"changes.</li>\n"
 "    <li>Navigate to <a "
 "href=\"http://localhost:7465/\"><code>localhost:7465</code></a> to use "
 "Taguette!</li>\n"
@@ -1291,8 +1289,8 @@ msgid ""
 "started.html\">getting started</a> page!"
 msgstr ""
 
-#. Page title
 #: self-host.html:4
+msgctxt "page title"
 msgid ""
 "Self Hosting Taguette, the free and open-source qualitative data analysis"
 " tool"
