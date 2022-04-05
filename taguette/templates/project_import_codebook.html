@@ -3,8 +3,8 @@
 {% block title %}{% trans "page title" %}Import codebook{% endtrans %} | Taguette{% endblock %}
 
 {% block contents %}
-<h1>Import a codebook</h1>
-<p>Use this form to import an existing codebook into your project. Existing tags will not be deleted, new tags will be added alongside them.</p>
+<h1>{% trans "title" %}Import a codebook{% endtrans %}</h1>
+<p>{% trans %}Use this form to import an existing codebook into your project. Existing tags will not be deleted, new tags will be added alongside them.{% endtrans %}</p>
 {% if error %}
 <div class="alert alert-danger">{{ error }}</div>
 {% endif %}

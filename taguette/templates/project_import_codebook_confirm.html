@@ -3,12 +3,12 @@
 {% block title %}{% trans "page title" %}Import codebook{% endtrans %} | Taguette{% endblock %}
 
 {% block contents %}
-<h1>Import a codebook</h1>
-<p>Use this form to import an existing codebook into your project. Existing tags will not be deleted, new tags will be added alongside them.</p>
+<h1>{% trans "title" %}Import a codebook{% endtrans %}</h1>
+<p>{% trans %}Use this form to import an existing codebook into your project. Existing tags will not be deleted, new tags will be added alongside them.{% endtrans %}</p>
 {% for error in errors %}
 <div class="alert alert-danger">{{ error }}</div>
 {% endfor %}
-<p>You are about to create the following tags:</p>
+<p>{% trans %}You are about to create the following tags:{% endtrans %}</p>
 <form action="{{ reverse_url('import_codebook', project.id) }}" method="post">
   {{ xsrf_form_html() }}
   {% for tag in tags %}
@@ -16,10 +16,10 @@
     <div class="col-sm-2 form-check">
       {% if tag.exists %}
       <input type="checkbox" class="form-check-input" name="tag{{ loop.index0 }}-replace" id="tag{{ loop.index0 }}-replace" aria-label="Replace this tag"{% if tag.enabled %} checked{% endif %} />
-      <label for="tag{{ loop.index0 }}-replace">Replace</label>
+      <label for="tag{{ loop.index0 }}-replace">{% trans "codebook import tag option" %}Replace{% endtrans %}</label>
       {% else %}
       <input type="checkbox" class="form-check-input" name="tag{{ loop.index0 }}-import" id="tag{{ loop.index0 }}-import" aria-label="Replace this tag"{% if tag.enabled %} checked{% endif %} />
-      <label for="tag{{ loop.index0 }}-import">Import</label>
+      <label for="tag{{ loop.index0 }}-import">{% trans "codebook import tag option" %}Import{% endtrans %}</label>
       {% endif %}
     </div>
     <div class="col-sm-3">
