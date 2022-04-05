@@ -40,13 +40,13 @@ msgstr "Nom : %(project_name)s"
 #: taguette/templates/project_delete.html:9
 #, python-format
 msgid ""
-"Are you sure you want to delete this project? It currently has <strong>"
-"%(documents)s documents and %(highlights)s highlights in %(tags)s tags</"
-"strong>. There is no way to undo."
+"Are you sure you want to delete this project? It currently has "
+"<strong>%(documents)s documents and %(highlights)s highlights in %(tags)s "
+"tags</strong>. There is no way to undo."
 msgstr ""
-"Êtes-vous sûr de vouloir supprimer ce projet ? Il contient <strong>"
-"%(documents)s documents et %(highlights)s marques dans %(tags)s tags</"
-"strong>. Cette opération ne peut pas être annulée."
+"Êtes-vous sûr de vouloir supprimer ce projet ? Il contient "
+"<strong>%(documents)s documents et %(highlights)s marques dans %(tags)s "
+"tags</strong>. Cette opération ne peut pas être annulée."
 
 #: taguette/templates/project_delete.html:13
 msgctxt "submit button"
@@ -235,6 +235,10 @@ msgstr "DOCX"
 #: taguette/templates/project.html:59 taguette/templates/project.html:113
 msgid "PDF"
 msgstr "PDF"
+
+#: taguette/templates/project.html:64
+msgid "Import codebook"
+msgstr "Importer un codebook"
 
 #: taguette/templates/project.html:68
 msgid "Delete project"
@@ -469,6 +473,37 @@ msgctxt "button on cookie warning page"
 msgid "Accept cookies"
 msgstr "Accepter les cookies"
 
+#: taguette/templates/project_import_codebook.html:3
+#: taguette/templates/project_import_codebook_confirm.html:3
+msgctxt "page title"
+msgid "Import codebook"
+msgstr "Importer un codebook"
+
+#: taguette/templates/project_import_codebook.html:6
+#: taguette/templates/project_import_codebook_confirm.html:6
+msgctxt "title"
+msgid "Import a codebook"
+msgstr "Importer un codebook"
+
+#: taguette/templates/project_import_codebook.html:7
+#: taguette/templates/project_import_codebook_confirm.html:7
+msgid ""
+"Use this form to import an existing codebook into your project. Existing "
+"tags will not be deleted, new tags will be added alongside them."
+msgstr ""
+"Utilisez ce formulaire pour importer un dictionnaire de tags (codebook) "
+"existant dans votre projet. Les tags actuels ne seront pas supprimés, les "
+"nouveaux tags seront simplement rajoutés."
+
+#: taguette/templates/project_import_codebook_confirm.html:11
+msgid "You are about to create the following tags:"
+msgstr "Vous êtes sur le point de créer les tags suivant :"
+
+#: taguette/templates/project_import_codebook_confirm.html:19
+msgctxt "codebook import tag option"
+msgid "Replace"
+msgstr "Remplacer"
+
 #: taguette/templates/project_import_codebook_confirm.html:22
 msgctxt "codebook import tag option"
 msgid "Import"
@@ -565,6 +600,12 @@ msgctxt "form submit button"
 msgid "Register"
 msgstr "Créer un compte"
 
+#: taguette/templates/new_password.html:3
+#: taguette/templates/reset_password.html:3
+msgctxt "page title"
+msgid "Reset password"
+msgstr "Réinitialisation de mot de passe"
+
 #: taguette/templates/new_password.html:10
 msgid "Please enter a new password below:"
 msgstr "Merci d'entrer un nouveau mot de passe ci-dessous :"
@@ -587,6 +628,11 @@ msgid_plural "%(number)d highlights"
 msgstr[0] "%(number)d marque"
 msgstr[1] "%(number)d de marques"
 msgstr[2] "%(number)d marques"
+
+#: taguette/templates/token_needed.html:3
+msgctxt "page title"
+msgid "Error"
+msgstr "Erreur"
 
 #: taguette/templates/token_needed.html:6
 msgid ""
@@ -712,6 +758,11 @@ msgctxt "page title"
 msgid "Terms of Service"
 msgstr "Conditions d'Utilisation"
 
+#: taguette/templates/project_import.html:3
+msgctxt "page title"
+msgid "Import project"
+msgstr "Importer un projet"
+
 #: taguette/templates/project_import.html:6
 msgctxt "title"
 msgid "Import a project"
@@ -795,6 +846,11 @@ msgstr "Vous n'êtes pas autorisé à supprimer ce project"
 msgid "You don't have permission to import a codebook"
 msgstr "Vous n'avez pas la permission d'importer de tags"
 
+#: taguette/web/views.py:578
+#, python-format
+msgid "Row %d: %s"
+msgstr "Ligne %d : %s"
+
 #: taguette/web/views.py:696
 msgid "Error importing tags, concurrent changes caused a conflict"
 msgstr ""
@@ -804,6 +860,21 @@ msgstr ""
 #: taguette/web/views.py:711
 msgid "No file provided"
 msgstr "Aucun fichier sélectionné"
+
+#: taguette/web/__init__.py:60 taguette/web/base.py:563
+msgctxt "page title"
+msgid "Error 404"
+msgstr "Erreur 404"
+
+#: taguette/web/__init__.py:61 taguette/web/base.py:564
+msgid "This page does not exist."
+msgstr "Cette page n'existe pas."
+
+#: taguette/web/base.py:569
+#, python-format
+msgctxt "page title"
+msgid "Error %d"
+msgstr "Erreur %d"
 
 #: taguette/database/__init__.py:135
 msgid ""
@@ -914,6 +985,14 @@ msgstr "Pas sûr de la colonne à utiliser pour le nom du tag"
 msgid "No 'tag', 'name', or 'path' column"
 msgstr "Pas de colonne 'tag', 'name' ou 'path'"
 
+#: taguette/import_codebook.py:59
+msgid "Not enough columns"
+msgstr "Pas assez de colonnes"
+
+#: taguette/import_codebook.py:64
+msgid "Empty tag name"
+msgstr "Nom de tag vide"
+
 #: taguette/import_codebook.py:71
 msgid "Invalid CSV file"
 msgstr "Fichier CSV invalide"
@@ -991,6 +1070,10 @@ msgstr "Umask invalide : %(arg)s"
 #, python-format
 msgid "Missing required configuration variable %(var)s"
 msgstr "Variable de configuration requise %(var)s est manquante"
+
+#: taguette/main.py:327
+msgid "Invalid BASE_PATH"
+msgstr "BASE_PATH invalide"
 
 #: taguette/main.py:387
 #, python-format
