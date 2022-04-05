@@ -1,14 +1,14 @@
 {% extends "_layout.html" %}
 {% set active_page = 'getting-started' %}
 
-{% block title %}{# TRANSLATORS: Page title #}{% trans %}Start With Taguette, the free and open-source qualitative data analysis tool{% endtrans %}{% endblock %}
+{% block title %}{% trans "page title" %}Start With Taguette, the free and open-source qualitative data analysis tool{% endtrans %}{% endblock %}
 
 {% block contents %}
 <div id="container-body">
   <div class="row">
     <div class="col-lg-3 sidetoc">
       <div class="sticky-top">
-        <p>{# TRANSLATORS: Navigation menu #}{% trans %}Explore the guide:{% endtrans %}</p>
+        <p>{% trans "nav menu title" %}Explore the guide:{% endtrans %}</p>
         <ul class="list-group border border-dark">
           <li class="list-group-item border-0"><a href="#start">{% trans %}Open Taguette{% endtrans %}</a></li>
           <li class="list-group-item border-0"><a href="#create-proj">{% trans %}Start a project{% endtrans %}</a></li>
@@ -100,7 +100,7 @@
         </thead>
         <tbody>
           <tr>
-            <th>{# TRANSLATORS: Has to match the permission level name in the app #}{% trans %}Full permission{% endtrans %}</th>
+            <th>{# TRANSLATORS: Has to match the permission level name in the app #}{% trans "permission level" %}Full permission{% endtrans %}</th>
             <td>X</td>
             <td>X</td>
             <td>X</td>
@@ -109,7 +109,7 @@
             <td>X</td>
           </tr>
           <tr>
-            <th>{# TRANSLATORS: Has to match the permission level name in the app #}{% trans %}Can't change collaborators/delete project{% endtrans %}</th>
+            <th>{# TRANSLATORS: Has to match the permission level name in the app #}{% trans "permission level" %}Can't change collaborators/delete project{% endtrans %}</th>
             <td>X</td>
             <td>X</td>
             <td>X</td>
@@ -118,7 +118,7 @@
             <td></td>
           </tr>
           <tr>
-            <th>{# TRANSLATORS: Has to match the permission level name in the app #}{% trans %}View and make changes{% endtrans %}</th>
+            <th>{# TRANSLATORS: Has to match the permission level name in the app #}{% trans "permission level" %}View and make changes{% endtrans %}</th>
             <td>X</td>
             <td>X</td>
             <td>X</td>
@@ -127,7 +127,7 @@
             <td></td>
           </tr>
           <tr>
-            <th>{# TRANSLATORS: Has to match the permission level name in the app #}{% trans %}View Only{% endtrans %}</th>
+            <th>{# TRANSLATORS: Has to match the permission level name in the app #}{% trans "permission level" %}View Only{% endtrans %}</th>
             <td>X</td>
             <td></td>
             <td></td>

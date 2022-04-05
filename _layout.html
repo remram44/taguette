@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="{# TRANSLATORS: HTML description #}{% trans %}Taguette is a free an open-source text tagging tool for qualitative data analysis and qualitative research{% endtrans %}">
+    <meta name="description" content="{% trans "html description" %}Taguette is a free an open-source text tagging tool for qualitative data analysis and qualitative research{% endtrans %}">
     <meta name="author" content="Remi Rampin">
     <meta name="author" content="Vicky Rampin">
     <link rel="icon" href="favicon.ico">
@@ -15,7 +15,7 @@
     <link rel="alternate" href="{% if current_language.link %}../{% endif %}{% if lang.link %}{{ lang.link }}/{% endif %}{{ current_page_link }}" hreflang="{{ lang.link or "en" }}">
     {% endif %}{% endfor %}
 
-    <title>{% block title %}{# TRANSLATORS: Page title #}{% trans %}Taguette, the free and open-source qualitative data analysis tool{% endtrans %}{% endblock %}</title>
+    <title>{% block title %}{% trans "page title" %}Taguette, the free and open-source qualitative data analysis tool{% endtrans %}{% endblock %}</title>
 
     <!-- Bootswatch Theme -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -89,7 +89,7 @@
           <ul class="navbar-nav mr-auto">
             {%  set sr_current %}
             <span class="sr-only">
-              {# TRANSLATORS: Screen-reader only indication of the current tab in navbar #}{% trans %}(current){% endtrans %}
+              {# TRANSLATORS: Screen-reader only indication of the current tab in navbar #}{% trans "screen-reader only" %}(current){% endtrans %}
             </span>
             {% endset %}
             {% set external_icon %}

@@ -1,7 +1,7 @@
 {% extends "_layout.html" %}
 {% set active_page = 'install' %}
 
-{% block title %}{# TRANSLATORS: Page title #}{% trans %}Install Taguette, the free and open-source qualitative data analysis tool{% endtrans %}{% endblock %}
+{% block title %}{% trans "page title" %}Install Taguette, the free and open-source qualitative data analysis tool{% endtrans %}{% endblock %}
 
 {% block contents %}
 <div id="container-body">
@@ -22,7 +22,7 @@
   <ul>
     <li class="list-unstyled">
       <details>
-        <summary><strong>{# TRANSLATORS: Popup for Windows installation instructions #}{% trans %}On Windows...{% endtrans %}</strong></summary>
+        <summary><strong>{% trans "popup for installation instructions" %}On Windows...{% endtrans %}</strong></summary>
         <div class="alert alert-dark">
           {% trans %}
           <p>Download the EXE file from <a href="{{ download_page }}">our latest release page</a>.</p>
@@ -35,7 +35,7 @@
     </li>
     <li class="list-unstyled">
       <details>
-          <summary><strong>{# TRANSLATORS: Popup for MacOS installation instructions #}{% trans %}On macOS...{% endtrans %}</strong></summary>
+          <summary><strong>{% trans "popup for installation instructions" %}On macOS...{% endtrans %}</strong></summary>
         <div class="alert alert-dark">
           {% trans %}
           <p>Download the DMG file from <a href="{{ download_page }}">our latest release page</a>.</p>
