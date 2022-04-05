@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.1\n"
 "Language: fr\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=3; plural=(n==0 || n==1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #: taguette/templates/project_delete.html:3
 msgctxt "page title"
@@ -580,7 +580,8 @@ msgstr "Taguette Codebook"
 msgid "%(number)d highlight"
 msgid_plural "%(number)d highlights"
 msgstr[0] "%(number)d marque"
-msgstr[1] "%(number)d marques"
+msgstr[1] "%(number)d de marques"
+msgstr[2] "%(number)d marques"
 
 #: taguette/templates/token_needed.html:6
 msgid ""
