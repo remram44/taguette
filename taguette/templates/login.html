@@ -6,10 +6,10 @@
 <!-- Tab selector -->
 <ul class="nav nav-tabs" id="myTab" role="tablist">
   <li class="nav-item">
-    <a class="nav-link{% if not register %} show active{% endif %}" id="log-in-tab" data-toggle="tab" href="#log-in" role="tab" aria-controls="log-in" aria-selected="{% if not register %}true{% else %}false{% endif %}">{% trans %}Log in{% endtrans %}</a>
+    <a class="nav-link{% if not register %} show active{% endif %}" id="log-in-tab" data-toggle="tab" href="#log-in" role="tab" aria-controls="log-in" aria-selected="{% if not register %}true{% else %}false{% endif %}">{% trans "tab" %}Log in{% endtrans %}</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link{% if not register_enabled %} disabled{% endif %}{% if register %} show active{% endif %}" id="register-tab" data-toggle="tab" href="#register" role="tab" aria-controls="register-tab" aria-selected="{% if register %}true{% else %}false{% endif %}">{% trans %}Register{% endtrans %}</a>
+    <a class="nav-link{% if not register_enabled %} disabled{% endif %}{% if register %} show active{% endif %}" id="register-tab" data-toggle="tab" href="#register" role="tab" aria-controls="register-tab" aria-selected="{% if register %}true{% else %}false{% endif %}">{% trans "tab" %}Register{% endtrans %}</a>
   </li>
 </ul>
 
@@ -25,21 +25,21 @@
       {% endif %}
       <input type="hidden" name="next" value="{{ next }}" />
       <div class="form-group row">
-        <label for="log-in-login" class="col-sm-2 col-form-label">{# TRANSLATORS: User name #}{% trans %}Login{% endtrans %}</label>
+        <label for="log-in-login" class="col-sm-2 col-form-label">{% trans "form label for user name" %}Login{% endtrans %}</label>
         <div class="col-sm-10">
           <input type="text" class="form-control" id="log-in-login" name="login" required autocomplete="username" />
         </div>
       </div>
       <div class="form-group row">
-        <label for="log-in-password" class="col-sm-2 col-form-label">{% trans %}Password{% endtrans %}</label>
+        <label for="log-in-password" class="col-sm-2 col-form-label">{% trans "form label" %}Password{% endtrans %}</label>
         <div class="col-sm-10">
           <input type="password" class="form-control" id="log-in-password" name="password" required autocomplete="current-password" />
         </div>
       </div>
       <div class="form-group row">
         <div class="col-sm-10 offset-sm-2">
-          <button type="submit" name="log-in" class="btn btn-primary">{# TRANSLATORS: Submit button #}{% trans %}Log in{% endtrans %}</button>
-          <a href="{{ reverse_url('reset_password') }}" class="btn btn-outline-secondary">{% trans %}Forgot password{% endtrans %}</a>
+          <button type="submit" name="log-in" class="btn btn-primary">{% trans "form submit button" %}Log in{% endtrans %}</button>
+          <a href="{{ reverse_url('reset_password') }}" class="btn btn-outline-secondary">{% trans "form link" %}Forgot password{% endtrans %}</a>
         </div>
       </div>
     </form>
@@ -56,25 +56,25 @@
       {% endif %}
       <input type="hidden" name="next" value="{{ next }}" />
       <div class="form-group row">
-        <label for="register-login" class="col-sm-2 col-form-label">{# TRANSLATORS: User name #}{% trans %}Login{% endtrans %}</label>
+        <label for="register-login" class="col-sm-2 col-form-label">{% trans "form label for user name" %}Login{% endtrans %}</label>
         <div class="col-sm-10">
           <input type="text" class="form-control" id="register-login" name="login" required autocomplete="username" />
         </div>
       </div>
       <div class="form-group row">
-        <label for="register-password1" class="col-sm-2 col-form-label">{% trans %}Password{% endtrans %}</label>
+        <label for="register-password1" class="col-sm-2 col-form-label">{% trans "form label" %}Password{% endtrans %}</label>
         <div class="col-sm-10">
           <input type="password" class="form-control" id="register-password1" name="password1" required autocomplete="new-password" minlength="5" maxlength="5120" />
         </div>
       </div>
       <div class="form-group row">
-        <label for="register-password2" class="col-sm-2 col-form-label">{% trans %}Confirm password{% endtrans %}</label>
+        <label for="register-password2" class="col-sm-2 col-form-label">{% trans "form label" %}Confirm password{% endtrans %}</label>
         <div class="col-sm-10">
           <input type="password" class="form-control" id="register-password2" name="password2" required autocomplete="new-password" minlength="5" maxlength="5120" />
         </div>
       </div>
       <div class="form-group row">
-        <label for="register-email" class="col-sm-2 col-form-label">{# TRANSLATORS: Email address #}{% trans %}Email{% endtrans %}</label>
+        <label for="register-email" class="col-sm-2 col-form-label">{% trans "form label for email address" %}Email{% endtrans %}</label>
         <div class="col-sm-10">
           <input type="email" class="form-control" id="register-email" name="email" autocomplete="email" />
           <small>{% trans %}Optional. <em>We will not share your email with anyone. This is only used in case you forget your password.</em>{% endtrans %}</small>
@@ -82,7 +82,7 @@
       </div>
       {% if tos %}
       <div class="form-group row">
-        <label for="register-tos" class="col-sm-2 col-form-label">{% trans %}Terms of service{% endtrans %}</label>
+        <label for="register-tos" class="col-sm-2 col-form-label">{% trans "link from registration form" %}Terms of service{% endtrans %}</label>
         <div class="col-sm-10">
           <div class="form-check form-check-inline">
             <input class="form-check-input" type="checkbox" id="register-tos" name="tos" value="accepted" required>
@@ -93,7 +93,7 @@
       {% endif %}
       <div class="form-group row">
         <div class="col-sm-10 offset-sm-2">
-          <button type="submit" name="register" class="btn btn-primary">{# TRANSLATORS: Submit button #}{% trans %}Register{% endtrans %}</button>
+          <button type="submit" name="register" class="btn btn-primary">{% trans "form submit button" %}Register{% endtrans %}</button>
         </div>
       </div>
     </form>

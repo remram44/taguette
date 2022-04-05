@@ -23,7 +23,7 @@
         <div class="collapse navbar-collapse" id="navbar">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-              <a class="nav-link {{ 'active' if active_page == 'index' else '' }}" href="{{ reverse_url('index') }}">{% trans %}Home{% endtrans %}</a>
+              <a class="nav-link {{ 'active' if active_page == 'index' else '' }}" href="{{ reverse_url('index') }}">{% trans "navigation item" %}Home{% endtrans %}</a>
             </li>
             {% if project %}
             <li class="nav-item">
@@ -34,7 +34,7 @@
           <ul class="navbar-nav ml-auto">
             <li class="nav-item">
               {% set external_icon %}<i class="fas fa-external-link-alt"></i>{% endset %}
-              <a class="nav-link" href="https://www.taguette.org/getting-started.html" target="_blank" rel="noopener">{% trans %}Taguette Guide {{ external_icon }}{% endtrans %}</a>
+              <a class="nav-link" href="https://www.taguette.org/getting-started.html" target="_blank" rel="noopener">{% trans "navigation item" %}Taguette Guide {{ external_icon }}{% endtrans %}</a>
             </li>
             {% if not multiuser %}
             <li class="nav-item">
@@ -42,18 +42,18 @@
             </li>
             {% elif current_user %}
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle {{ 'active' if active_page == 'account' else '' }}" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{% trans %}Account{% endtrans %}</a>
+              <a class="nav-link dropdown-toggle {{ 'active' if active_page == 'account' else '' }}" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{% trans "navigation dropdown menu" %}Account{% endtrans %}</a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item {{ 'active' if active_page == 'account' else '' }}" href="{{ reverse_url('account') }}">{% trans %}Settings{% endtrans %}</a>
+                <a class="dropdown-item {{ 'active' if active_page == 'account' else '' }}" href="{{ reverse_url('account') }}">{% trans "navigation item" %}Settings{% endtrans %}</a>
                 {% if tos %}
-                <a class="dropdown-item" href="{{ reverse_url('tos') }}">{% trans %}Terms of Service{% endtrans %}</a>
+                <a class="dropdown-item {{ 'active' if active_page == 'tos' else '' }}" href="{{ reverse_url('tos') }}">{% trans "navigation item" %}Terms of Service{% endtrans %}</a>
                 {% endif %}
-                <a class="dropdown-item" href="{{ reverse_url('logout') }}">{% trans %}Log out{% endtrans %}</a>
+                <a class="dropdown-item" href="{{ reverse_url('logout') }}">{% trans "navigation item" %}Log out{% endtrans %}</a>
               </div>
             </li>
             {% else %}
             <li class="nav-item {{ 'active' if active_page == 'login' else '' }}">
-              <a class="nav-link" href="{{ reverse_url('login') }}">{# TRANSLATORS: Link to form #}{% trans %}Log in{% endtrans %}</a>
+              <a class="nav-link" href="{{ reverse_url('login') }}">{% trans "navigation item" %}Log in{% endtrans %}</a>
             </li>
             {% endif %}
           </ul>

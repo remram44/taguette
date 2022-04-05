@@ -400,6 +400,17 @@ class BaseHandler(RequestHandler):
             trans = trans % kwargs
         return trans
 
+    def pgettext(
+        self,
+        context, message, plural_message=None,
+        n=None,
+        **kwargs,
+    ):
+        trans = self.locale.pgettext(context, message, plural_message, n)
+        if kwargs:
+            trans = trans % kwargs
+        return trans
+
     def get_current_user(self):
         user = self.get_secure_cookie('user')
         if user is not None:
@@ -472,6 +483,7 @@ class BaseHandler(RequestHandler):
                 version=exact_version(),
                 gettext=self.gettext,
                 ngettext=self.ngettext,
+                pgettext=self.pgettext,
                 base_path=self.application.config['BASE_PATH'],
                 **kwargs)
 

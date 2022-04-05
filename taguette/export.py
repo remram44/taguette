@@ -38,6 +38,7 @@ def _render_string(template_name, locale, **kwargs):
         version=exact_version(),
         gettext=translator.gettext,
         ngettext=translator.ngettext,
+        pgettext=translator.pgettext,
         **kwargs,
     )
 
@@ -54,6 +55,17 @@ class _Translator(object):
 
     def ngettext(self, singular, plural, n, **kwargs):
         trans = self.locale.translate(singular, plural, n)
+        if kwargs:
+            trans = trans % kwargs
+        return trans
+
+    def pgettext(
+        self,
+        context, message, plural_message=None,
+        n=None,
+        **kwargs,
+    ):
+        trans = self.locale.pgettext(context, message, plural_message, n)
         if kwargs:
             trans = trans % kwargs
         return trans
