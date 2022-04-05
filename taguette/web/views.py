@@ -573,11 +573,14 @@ class ImportCodebook(BaseHandler):
             try:
                 tags = import_codebook.list_tags(reader)
             except import_codebook.InvalidCodebook as e:
+                msg = self.gettext(e.message)
+                if e.row is not None:
+                    msg = self.gettext("Row %d: %s") % (e.row, msg)
                 self.set_status(400)
                 return self.render(
                     'project_import_codebook.html',
                     project=project,
-                    error=self.gettext(e.message),
+                    error=msg,
                 )
 
             # Disable duplicates

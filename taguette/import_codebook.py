@@ -7,9 +7,10 @@ from .utils import _f
 class InvalidCodebook(ValueError):
     """File can't be read as a codebook.
     """
-    def __init__(self, message):
+    def __init__(self, message, row=None):
         super(InvalidCodebook, self).__init__(message)
         self.message = message
+        self.row = row
 
 
 def list_tags_csv(reader):
@@ -55,12 +56,12 @@ def list_tags_csv(reader):
         tags = []
         for nb, row in enumerate(reader, 2):
             if len(row) < needed_rows:
-                raise InvalidCodebook(_f("Not enough columns on row %d") % nb)
+                raise InvalidCodebook(_f("Not enough columns"), nb)
             if not any(row):
                 continue  # Skip empty row
             path = row[col_path].strip()
             if not path:
-                raise InvalidCodebook(_f("Empty tag name on row %d") % nb)
+                raise InvalidCodebook(_f("Empty tag name"), nb)
             if col_description is not None:
                 description = row[col_description].strip()
             else:

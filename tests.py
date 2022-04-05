@@ -390,6 +390,7 @@ class TestReadCodebook(unittest.TestCase):
             err.exception.message,
             "Not sure which column to use for tag name",
         )
+        self.assertIsNone(err.exception.row)
 
         with self.assertRaises(import_codebook.InvalidCodebook) as err:
             import_codebook.list_tags(io.BytesIO(
@@ -403,6 +404,7 @@ class TestReadCodebook(unittest.TestCase):
             err.exception.message,
             "No 'tag', 'name', or 'path' column",
         )
+        self.assertIsNone(err.exception.row)
 
         with self.assertRaises(import_codebook.InvalidCodebook) as err:
             import_codebook.list_tags(io.BytesIO(
@@ -414,8 +416,9 @@ class TestReadCodebook(unittest.TestCase):
             ))
         self.assertEqual(
             err.exception.message,
-            "Empty tag name on row 3",
+            "Empty tag name",
         )
+        self.assertEqual(err.exception.row, 3)
 
 
 class MyHTTPTestCase(AsyncHTTPTestCase):
@@ -1786,11 +1789,11 @@ class TestMultiuser(MyHTTPTestCase):
             ),
             (
                 'tag,description\ninteresting\n',
-                "Not enough columns on row 2",
+                "Row 2: Not enough columns",
             ),
             (
                 'unk,tag\n1,interesting\n2\n',
-                "Not enough columns on row 3",
+                "Row 3: Not enough columns",
             ),
         ]
         for codebook, error in codebooks:
