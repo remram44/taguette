@@ -30,61 +30,51 @@
 
       <h2 id="start" class="mt-4">{% trans %}<svg class="svg-icon"><use xlink:href="#icon-play-circle"></use></svg> Open Taguette{% endtrans %}</h2>
 
-      {% trans %}
-      <p>If you've downloaded and installed Taguette on your computer, you should be able to double-click on the Taguette icon and start it up! You'll see the command line will pop up and be running. This is ok! Don't worry about the terminal but do leave it running. If you exit the terminal, Taguette will stop. Taguette should automatically pop up in your web browser, but if for some reason it doesn't, navigate to <a href="http://localhost:7465"><code>localhost:7465</code></a> to begin working on your projects! It should look something like this (if you're using Taguette on a server, you should see 'account' where 'single-user mode' is):</p>
+      <p>{% trans %}If you've downloaded and installed Taguette on your computer, you should be able to double-click on the Taguette icon and start it up! You'll see the command line will pop up and be running. This is ok! Don't worry about the terminal but do leave it running. If you exit the terminal, Taguette will stop. Taguette should automatically pop up in your web browser, but if for some reason it doesn't, navigate to <a href="http://localhost:7465"><code>localhost:7465</code></a> to begin working on your projects! It should look something like this (if you're using Taguette on a server, you should see 'account' where 'single-user mode' is):{% endtrans %}</p>
 
       <img src="imgs/01-welcome.png" width="1125" height="341" class="img-fluid border border-dark">
-      {% endtrans %}
 
       <h2 id="create-proj" class="mt-4">{% trans %}<svg class="svg-icon"><use xlink:href="#icon-folder-plus"></use></svg> Start a project{% endtrans %}</h2>
 
-      {% trans %}
-      <p>You will see a page that greets you as the admin and has a button to <strong>Create a project</strong>. Click that button and you'll be prompted to enter a Title and Description for your new project. This can be changed later on if you want.</p>
+      <p>{% trans %}You will see a page that greets you as the admin and has a button to <strong>Create a project</strong>. Click that button and you'll be prompted to enter a Title and Description for your new project. This can be changed later on if you want.{% endtrans %}</p>
 
       <img src="imgs/02-createProj.png" width="1164" height="365" class="img-fluid border border-dark mb-2">
 
-      <p>Upon clicking <strong>Create</strong>, you'll be taken to the <strong>Project View</strong>, which has a left and a right pane. The left pane contains the information about your project information ('Project Info'), uploaded materials ('Documents'), and tags ('Highlights') as tabs. You can go between these tabs as you like. The right pane will render documents and will be the area where you'll do the highlighting and tagging.</p>
+      <p>{% trans %}Upon clicking <strong>Create</strong>, you'll be taken to the <strong>Project View</strong>, which has a left and a right pane. The left pane contains the information about your project information ('Project Info'), uploaded materials ('Documents'), and tags ('Highlights') as tabs. You can go between these tabs as you like. The right pane will render documents and will be the area where you'll do the highlighting and tagging.{% endtrans %}</p>
 
       <img src="imgs/03-projectInfo.png" width="1160" height="278" class="img-fluid border border-dark mb-2">
-      {% endtrans %}
 
       <h2 id="upload" class="mt-4">{% trans %}<svg class="svg-icon"><use xlink:href="#icon-upload"></use></svg> Upload materials{% endtrans %}</h2>
 
-      {% trans %}
-      <p>To get an idea of how to work in Taguette, let's upload a document and get you tagging! In the left pane, click on the <strong>Documents tab</strong>. You should see a button that says <strong>Add a document</strong>. Click that and pick just one document from your computer, either a: <code>.pdf</code>, <code>.docx</code>, <code>.txt</code>, <code>.odt</code>, <code>.md</code>, or <code>.html</code>.</p>
+      <p>{% trans %}To get an idea of how to work in Taguette, let's upload a document and get you tagging! In the left pane, click on the <strong>Documents tab</strong>. You should see a button that says <strong>Add a document</strong>. Click that and pick just one document from your computer, either a: <code>.pdf</code>, <code>.docx</code>, <code>.txt</code>, <code>.odt</code>, <code>.md</code>, or <code>.html</code>.{% endtrans %}</p>
 
       <img src="imgs/04-viewDocs.png" width="1160" height="206" class="img-fluid border border-dark mb-2">
 
-      <p>Just one file to be uploaded. You'll be prompted to give the new document a Name (should be something human-readable, required) and Description (like a note about the file, optional). When you have picked a document and at least given it a name, click the <strong>Import</strong> button.</p>
+      <p>{% trans %}Just one file to be uploaded. You'll be prompted to give the new document a Name (should be something human-readable, required) and Description (like a note about the file, optional). When you have picked a document and at least given it a name, click the <strong>Import</strong> button.{% endtrans %}</p>
 
       <img src="imgs/05-uploadDoc.png" width="797" height="327" class="img-fluid border border-dark mb-2">
 
-      <p>You should then see that file immediately in the Documents tab. If not, just refresh the page and it should be shown then. If you cannot see your document, you might be uploading a file type that Taguette cannot yet handle. Please let us know at <a href="mailto:hi@taguette.org">hi@taguette.org</a>.</p>
-      {% endtrans %}
+      <p>{% trans %}You should then see that file immediately in the Documents tab. If not, just refresh the page and it should be shown then. If you cannot see your document, you might be uploading a file type that Taguette cannot yet handle. Please let us know at <a href="mailto:hi@taguette.org">hi@taguette.org</a>.{% endtrans %}</p>
 
       <h2 id="lang" class="mt-4">{% trans %}<svg class="svg-icon"><use xlink:href="#icon-language"></use></svg> Change interface language (server only){% endtrans %}</h2>
 
-      {% trans %}
-      <p>If you are working on <a href="https://app.taguette.org">app.taguette.org</a> or hosting Taguette on your own server, you have the option to change the language of the interface. In the upper righthand corner, you should see a dropdown menu labeled "Account". Click that dropdown, and then click "Settings." You will see a dropdown menu in your profile settings to change the language that Taguette will be in. By default, it will auto-detect a language from your Internet browser.</p>
+      <p>{% trans %}If you are working on <a href="https://app.taguette.org">app.taguette.org</a> or hosting Taguette on your own server, you have the option to change the language of the interface. In the upper righthand corner, you should see a dropdown menu labeled "Account". Click that dropdown, and then click "Settings." You will see a dropdown menu in your profile settings to change the language that Taguette will be in. By default, it will auto-detect a language from your Internet browser.{% endtrans %}</p>
 
-      <p>If you do not see your language represented in this list, we would encourage you to add a translation via our Transifex project: <a href="https://www.transifex.com/remram44/taguette/">https://www.transifex.com/remram44/taguette/</a> or by sending us a .po file via GitLab, instructions: <a href="https://gitlab.com/remram44/taguette/-/tree/master/po">https://gitlab.com/remram44/taguette/-/tree/master/po</a>.</p>
+      <p>{% trans %}If you do not see your language represented in this list, we would encourage you to add a translation via our Transifex project: <a href="https://www.transifex.com/remram44/taguette/">https://www.transifex.com/remram44/taguette/</a> or by sending us a .po file via GitLab, instructions: <a href="https://gitlab.com/remram44/taguette/-/tree/master/po">https://gitlab.com/remram44/taguette/-/tree/master/po</a>.{% endtrans %}</p>
 
       <img src="imgs/language.png" width="1151" height="519" class="img-fluid border border-dark mb-2">
-      {% endtrans %}
 
       <h2 id="collabs" class="mt-4">{% trans %}<svg class="svg-icon"><use xlink:href="#icon-users"></use></svg> Adding collaborators (server only){% endtrans %}</h2>
 
-      {% trans %}
-      <p>If you are working on <a href="https://app.taguette.org">app.taguette.org</a> or hosting Taguette on your own server, you have the option to work with others! In the <strong>Project Info tab</strong> of your Taguette project, you should see a grey button labeled <strong>Manage Collaborators</strong>:</p>
+      <p>{% trans %}If you are working on <a href="https://app.taguette.org">app.taguette.org</a> or hosting Taguette on your own server, you have the option to work with others! In the <strong>Project Info tab</strong> of your Taguette project, you should see a grey button labeled <strong>Manage Collaborators</strong>:{% endtrans %}</p>
 
       <img src="imgs/projectMenu.png" width="473" height="478" class="img-fluid border border-dark mb-2">
 
-      <p>Click that and you should get a modal with the option to add and remove collaborators, as well as change their permissions on the project. You must add their Taguette username and pick from the list of permissions, click <strong>Add to project</strong>, and to make sure that you've fully added your collaborator, next click <strong>Save & Close</strong>.</p>
+      <p>{% trans %}Click that and you should get a modal with the option to add and remove collaborators, as well as change their permissions on the project. You must add their Taguette username and pick from the list of permissions, click <strong>Add to project</strong>, and to make sure that you've fully added your collaborator, next click <strong>Save & Close</strong>.{% endtrans %}</p>
 
       <img src="imgs/addCollabs.png" width="8010" height="338" class="img-fluid border border-dark mb-2">
 
-      <p>You can add collaborators with the following permissions:</p>
-      {% endtrans %}
+      <p>{% trans %}You can add collaborators with the following permissions:{% endtrans %}</p>
 
       <table id="levels" class="table table-bordered table-hover table-responsive">
         <thead>
@@ -140,129 +130,115 @@
 
       <h2 id="tag" class="mt-4">{% trans %}<svg class="svg-icon"><use xlink:href="#icon-tags"></use></svg> Create Tags{% endtrans %}</h2>
 
-      {% trans %}
-      <p>Taguette ships with one existing tag (or <em>codes</em>, if you're familiar with qualitative research): <code>interesting</code>. This is just there to get you started -- you can add and remove tags as often as you'd like! To view all your existing tags, click the <strong>Highlights</strong> tab in the left pane. You will see a list of tags you have and a count of the number of times you have highlighted your materials with a given tag.</p>
+      <p>{% trans %}Taguette ships with one existing tag (or <em>codes</em>, if you're familiar with qualitative research): <code>interesting</code>. This is just there to get you started -- you can add and remove tags as often as you'd like! To view all your existing tags, click the <strong>Highlights</strong> tab in the left pane. You will see a list of tags you have and a count of the number of times you have highlighted your materials with a given tag.{% endtrans %}</p>
 
       <img src="imgs/06-viewTags.png" width="1398" height="534" class="img-fluid border border-dark mb-2">
 
-      <p>You should see a list of existing tags for the project - again, if you haven't added any yet, you will still see <code>interesting</code>. To add your own tags to this project, click <strong>Create a tag</strong>. You will get a popup asking you for the Name and Description of the tag you want to create:</p>
+      <p>{% trans %}You should see a list of existing tags for the project - again, if you haven't added any yet, you will still see <code>interesting</code>. To add your own tags to this project, click <strong>Create a tag</strong>. You will get a popup asking you for the Name and Description of the tag you want to create:{% endtrans %}</p>
 
       <img src="imgs/07-addTag.png" width="495" height="286" class="img-fluid border border-dark mb-2">
 
-      <p>After you give the tag a good name and a bit of description about what it means, you should see it added to the list in alphabetical order.</p>
+      <p>{% trans %}After you give the tag a good name and a bit of description about what it means, you should see it added to the list in alphabetical order.{% endtrans %}</p>
 
-      <p><strong>A note on hierarchical tagging</strong>: you can use <em>any punctuation</em> to make hierarchies. So <code>tech.floss</code> lives underneath <code>tech</code>. If I click on <code>tech.floss</code>, then I'll see only materials relating to that tag. If I click on <code>tech</code>, I'll see everything in that tag as well as <code>tech.floss</code> and any other sub-tag.</p>
-
-      {% endtrans %}
+      <p>{% trans %}<strong>A note on hierarchical tagging</strong>: you can use <em>any punctuation</em> to make hierarchies. So <code>tech.floss</code> lives underneath <code>tech</code>. If I click on <code>tech.floss</code>, then I'll see only materials relating to that tag. If I click on <code>tech</code>, I'll see everything in that tag as well as <code>tech.floss</code> and any other sub-tag.{% endtrans %}</p>
 
       <h2 id="change-tag" class="mt-4">{% trans %}<svg class="svg-icon"><use xlink:href="#icon-eraser"></use></svg> Delete/change Tags{% endtrans %}</h2>
 
-      {% trans %}
-      <p>You can also change or delete a tag by clicking the <code>edit</code> badge to the right of the name of the tag in the list. This will bring you back to the same popup - you can edit the name of the tag, its description, or you can click the grey <strong>Delete</strong> button next to the blue <strong>Save &amp; Close</strong> button.</p>
+      <p>{% trans %}You can also change or delete a tag by clicking the <code>edit</code> badge to the right of the name of the tag in the list. This will bring you back to the same popup - you can edit the name of the tag, its description, or you can click the grey <strong>Delete</strong> button next to the blue <strong>Save &amp; Close</strong> button.{% endtrans %}</p>
 
       <img src="imgs/08-changeTag.png" width="500" height="289" class="img-fluid border border-dark mb-2">
-      {% endtrans %}
 
       <h2 id="merge-tag" class="mt-4">{% trans %}<svg class="svg-icon"><use xlink:href="#icon-object-group"></use></svg> Merge Tags{% endtrans %}</h2>
 
-      {% trans %}
-      <p>If you want to merge one tag into another, you can also do this from the edit window. Click the <code>edit</code> badge to the right of the name of the tag in the list. This will bring you back to the same popup for editing and deleting a tag. Instead, if you click <strong>Merge</strong>, then you will be prompted to select the tag that you want to merge into. Once you select a tag and click <strong>Merge tags</strong>, then all the highlights for the first tag will be moved to the second tag.</p>
+      <p>{% trans %}If you want to merge one tag into another, you can also do this from the edit window. Click the <code>edit</code> badge to the right of the name of the tag in the list. This will bring you back to the same popup for editing and deleting a tag. Instead, if you click <strong>Merge</strong>, then you will be prompted to select the tag that you want to merge into. Once you select a tag and click <strong>Merge tags</strong>, then all the highlights for the first tag will be moved to the second tag.{% endtrans %}</p>
 
       <img src="imgs/merge-tag.png" width="500" height="220" class="img-fluid border border-dark mb-2">
-      {% endtrans %}
 
       <h2 id="highlight" class="mt-4">{% trans %}<svg class="svg-icon"><use xlink:href="#icon-highlighter"></use></svg> Highlighting{% endtrans %}</h2>
 
-      {% trans %}
-      <p>Once uploaded, you should see the document in the 'Documents' tab. Click on it and you should see the contents of your document in the right pane. Once you see the text in the right pane, we can start highlighting it!</p>
+      <p>{% trans %}Once uploaded, you should see the document in the 'Documents' tab. Click on it and you should see the contents of your document in the right pane. Once you see the text in the right pane, we can start highlighting it!{% endtrans %}</p>
 
       <img src="imgs/09-viewDocContents.png" width="1671" height="362" class="img-fluid border border-dark mb-2">
 
-      <p>Select some text by left-clicking and dragging it over the text you'd like to highlight. Once you let go of your left-click, a pop-up that says <strong>new highlight</strong> will appear next to the highlighted text. </p>
+      <p>{% trans %}Select some text by left-clicking and dragging it over the text you'd like to highlight. Once you let go of your left-click, a pop-up that says <strong>new highlight</strong> will appear next to the highlighted text. {% endtrans %}</p>
 
       <img src="imgs/10-highlightText.png" width="1216" height="180" class="img-fluid border border-dark mb-2">
 
-      <p>Click that pop-up, and you will get a list of existing tags from which to choose. You can select one or more tags to apply to the highlighted text.</p>
+      <p>{% trans %}Click that pop-up, and you will get a list of existing tags from which to choose. You can select one or more tags to apply to the highlighted text.{% endtrans %}</p>
 
       <img src="imgs/11-addHighlight.png" width="499" height="262" class="img-fluid border border-dark mb-2">
 
-      <p>If you want to add a tag instead of using one that already exists, then simply click <strong>Create a tag</strong>, and you'll be sent to the same popup where made tags earlier.</p>
+      <p>{% trans %}If you want to add a tag instead of using one that already exists, then simply click <strong>Create a tag</strong>, and you'll be sent to the same popup where made tags earlier.{% endtrans %}</p>
 
       <img src="imgs/12-createNewFromHL.png" width="511" height="419" class="img-fluid border border-dark mb-2">
 
-      <p>Once you make your tag, you'll be dropped back into the popup above where you should select a tag for the highlighted text. After you've checked off which tags you'd like to associate with the highlighted text, click <strong>Save &amp; Close</strong>, and the text you've just tagged should now be highlighted with the color associated with the tag (e.g. bright yellow).</p>
+      <p>{% trans %}Once you make your tag, you'll be dropped back into the popup above where you should select a tag for the highlighted text. After you've checked off which tags you'd like to associate with the highlighted text, click <strong>Save &amp; Close</strong>, and the text you've just tagged should now be highlighted with the color associated with the tag (e.g. bright yellow).{% endtrans %}</p>
 
-      <p>If you've accidentally tagged a section of text you didn't want to, you can delete it by clicking on the highlighted text. This will give you the same pop-up window that you used to tag it. Next to the save button, there is a red button called <strong>Delete highlight</strong>. Click that, and the tags will be removed from the text. It should no longer be highlighted.</p>
-      {% endtrans %}
+      <p>{% trans %}If you've accidentally tagged a section of text you didn't want to, you can delete it by clicking on the highlighted text. This will give you the same pop-up window that you used to tag it. Next to the save button, there is a red button called <strong>Delete highlight</strong>. Click that, and the tags will be removed from the text. It should no longer be highlighted.{% endtrans %}</p>
 
       <h2 id="view" class="mt-4">{% trans %}<svg class="svg-icon"><use xlink:href="#icon-file-invoice"></use></svg> View highlighted &amp; tagged text{% endtrans %}</h2>
 
-      {% trans %}
-      <p>If you want to see all the highlighted text associated with a given tag, first go to the <strong>Highlights</strong> tab in the left pane. Click a tag, and in the right pane, you will see a list of quotes with a blue link to the document where they originated from and all their associated tags with a black badge. The tag on the left pane will also be highlighted:</p>
+      <p>{% trans %}If you want to see all the highlighted text associated with a given tag, first go to the <strong>Highlights</strong> tab in the left pane. Click a tag, and in the right pane, you will see a list of quotes with a blue link to the document where they originated from and all their associated tags with a black badge. The tag on the left pane will also be highlighted:{% endtrans %}</p>
 
       <img src="imgs/13-viewQuotes.png" width="1670" height="575" class="img-fluid border border-dark mb-2">
 
-      <p>If you want to see all the highlighted text for <em>all documents</em> and <em>all tags</em>, click <strong>See all highlights</strong> and you will see a list of quotes with a blue link to the document where they originated from and all their associated tags with a black badge:</p>
+      <p>{% trans %}If you want to see all the highlighted text for <em>all documents</em> and <em>all tags</em>, click <strong>See all highlights</strong> and you will see a list of quotes with a blue link to the document where they originated from and all their associated tags with a black badge:{% endtrans %}</p>
 
       <img src="imgs/14-seeAllHighlights.png" width="1670" height="830" class="img-fluid border border-dark mb-2">
 
-      <p>You can also view the document with all its highlights by navigating to the <strong>Documents</strong> tab in the left pane. Then just click on the document you wish to view, and if you've highlighted it, you should see:</p>
+      <p>{% trans %}You can also view the document with all its highlights by navigating to the <strong>Documents</strong> tab in the left pane. Then just click on the document you wish to view, and if you've highlighted it, you should see:{% endtrans %}</p>
 
       <img src="imgs/15-viewHighlightedDoc.png" width="1658" height="689" class="img-fluid border border-dark mb-2">
 
-      <p>If you hover your mouse over a highlighted section of text, you will see tags in a tooltip to the right of your mouse cursor. To explore your highlighted document in a different way, you can try clicking on the <strong>Backlight</strong> checkbox. You can see it at the bottom of the pane. It will grey out all the non-highlighted text to make the highlighted text really pop. We found this to be a nice view for exploring the texts differently:</p>
+      <p>{% trans %}If you hover your mouse over a highlighted section of text, you will see tags in a tooltip to the right of your mouse cursor. To explore your highlighted document in a different way, you can try clicking on the <strong>Backlight</strong> checkbox. You can see it at the bottom of the pane. It will grey out all the non-highlighted text to make the highlighted text really pop. We found this to be a nice view for exploring the texts differently:{% endtrans %}</p>
 
       <img src="imgs/16-backlight.png" width="1658" height="689" class="img-fluid border border-dark mb-2">
-      {% endtrans %}
 
       <h2 id="export" class="mt-4">{% trans %}<svg class="svg-icon"><use xlink:href="#icon-file-export"></use></svg> Export Options{% endtrans %}</h2>
 
-      {% trans %}
-      <p>You can export everything out of Taguette that you put in: tags, highlights, codebooks, documents, and even the entire project! </p>
+      <p>{% trans %}You can export everything out of Taguette that you put in: tags, highlights, codebooks, documents, and even the entire project! {% endtrans %}</p>
 
-      <p>To export the codebook of your project - this is a list of all the tags that you've created alongside their description - use the dropdown menu in the <strong>Project</strong> tab in the left pane of Taguette, underneath the project description. There is a variety of export options, including <code>QDC</code> (REFI-QDA standard), <code>CSV</code> (spreadsheet), <code>XLSX</code> (Microsoft Excel), <code>DOCX</code> (Microsoft Word), <code>HTML</code>, and <code>PDF</code>.</p>
+      <p>{% trans %}To export the codebook of your project - this is a list of all the tags that you've created alongside their description - use the dropdown menu in the <strong>Project</strong> tab in the left pane of Taguette, underneath the project description. There is a variety of export options, including <code>QDC</code> (REFI-QDA standard), <code>CSV</code> (spreadsheet), <code>XLSX</code> (Microsoft Excel), <code>DOCX</code> (Microsoft Word), <code>HTML</code>, and <code>PDF</code>.{% endtrans %}</p>
 
       <img src="imgs/17-exportCodebook.png" width="407" height="640" class="img-fluid border border-dark mb-2">
 
-      <p>To export all the associated highlights for a given tag, navigate to the <strong>Highlights</strong> tab in the left pane, and click on the tag of the highlights you'd want to export. Then you can use the <strong>Export this view</strong> dropdown menu at the top right in the right pane. You will have a choice of <code>HTML</code> (a webpage), <code>CSV</code>, <code>XLSX</code>, <code>DOCX</code> (editable), or <code>PDF</code> (not easily editable). While you will see the document with all the highlights, right now you won't be able to tell from that doc which tags go with the highlights.</p>
+      <p>{% trans %}To export all the associated highlights for a given tag, navigate to the <strong>Highlights</strong> tab in the left pane, and click on the tag of the highlights you'd want to export. Then you can use the <strong>Export this view</strong> dropdown menu at the top right in the right pane. You will have a choice of <code>HTML</code> (a webpage), <code>CSV</code>, <code>XLSX</code>, <code>DOCX</code> (editable), or <code>PDF</code> (not easily editable). While you will see the document with all the highlights, right now you won't be able to tell from that doc which tags go with the highlights.{% endtrans %}</p>
 
       <img src="imgs/18-exportTag.png" width="1670" height="506" class="img-fluid border border-dark mb-2">
 
-      <p>You will see all the highlighted text for the particular tag with information about each highlight right underneath it -- which document it came from, and which tags are associated with it. This is how it looks with the <code>DOCX</code> export:</p>
+      <p>{% trans %}You will see all the highlighted text for the particular tag with information about each highlight right underneath it -- which document it came from, and which tags are associated with it. This is how it looks with the <code>DOCX</code> export:{% endtrans %}</p>
 
       <img src="imgs/19-exportTagEX.png" width="673" height="424" class="img-fluid border border-dark mb-2">
 
-      <p>To export all the tags with all associated highlights, navigate to the <strong>Highlights</strong> tab in the left pane, and click on <strong>See all highlights</strong>. Then you can use the <strong>Export this view</strong> dropdown menu at the top right in the right pane. Again, you will have a choice of <code>HTML</code>, <code>DOCX</code>, or <code>PDF</code>.</p>
+      <p>{% trans %}To export all the tags with all associated highlights, navigate to the <strong>Highlights</strong> tab in the left pane, and click on <strong>See all highlights</strong>. Then you can use the <strong>Export this view</strong> dropdown menu at the top right in the right pane. Again, you will have a choice of <code>HTML</code>, <code>DOCX</code>, or <code>PDF</code>.{% endtrans %}</p>
 
       <img src="imgs/20-exportAllTags.png" width="1665" height="467" class="img-fluid border border-dark mb-2">
 
-      <p>You will see all the highlighted text for all tags with information about it -- which document it came from, and which tags are associated with it. This is how it looks with the <code>DOCX</code> export:</p>
+      <p>{% trans %}You will see all the highlighted text for all tags with information about it -- which document it came from, and which tags are associated with it. This is how it looks with the <code>DOCX</code> export:{% endtrans %}</p>
 
       <img src="imgs/21-exportAllTagEX.png" width="673" height="738" class="img-fluid border border-dark mb-2">
 
-      <p>To export the document that you've highlighted, first navigate to the <strong>Documents</strong> tab in the left pane, and click on the document that you want to export. Then you can use the <strong>Export this view</strong> dropdown menu at the top right in the right pane. Again, you will have a choice of <code>HTML</code>, <code>DOCX</code>, or <code>PDF</code>.</p>
+      <p>{% trans %}To export the document that you've highlighted, first navigate to the <strong>Documents</strong> tab in the left pane, and click on the document that you want to export. Then you can use the <strong>Export this view</strong> dropdown menu at the top right in the right pane. Again, you will have a choice of <code>HTML</code>, <code>DOCX</code>, or <code>PDF</code>.{% endtrans %}</p>
 
       <img src="imgs/22-exportDoc.png" width="1665" height="524" class="img-fluid border border-dark mb-2">
 
-      <p>You will see the document with your highlight in yellow, and the associated tag(s) next to the highlighted text, itself highlighted in light red and in brackets. Yellow = quote, light red = tag(s). This is how it looks with the <code>DOCX</code> export:</p>
+      <p>{% trans %}You will see the document with your highlight in yellow, and the associated tag(s) next to the highlighted text, itself highlighted in light red and in brackets. Yellow = quote, light red = tag(s). This is how it looks with the <code>DOCX</code> export:{% endtrans %}</p>
 
       <img src="imgs/23-exportDocEXs.png" width="669" height="860" class="img-fluid border border-dark mb-2">
 
-      <p>You can also import and export projects in Taguette! To export your project, go to the <strong>Project Info</strong> tab in the left pane. You should see a button that says <strong>Export project</strong>. Click that, and you should get a download started of a <code>SQLite3</code> file. This holds your Taguette project, all files, as well as all highlights and codes:</p>
+      <p>{% trans %}You can also import and export projects in Taguette! To export your project, go to the <strong>Project Info</strong> tab in the left pane. You should see a button that says <strong>Export project</strong>. Click that, and you should get a download started of a <code>SQLite3</code> file. This holds your Taguette project, all files, as well as all highlights and codes:{% endtrans %}</p>
 
       <img src="imgs/24-exportProject.png" width="971" height="615" class="img-fluid border border-dark mb-2">
 
-      <p>To import your project onto another instance of Taguette (for instance, a locally running copy on your computer or another server), go to the welcome screen in Taguette and click "Import a project file":</p>
+      <p>{% trans %}To import your project onto another instance of Taguette (for instance, a locally running copy on your computer or another server), go to the welcome screen in Taguette and click "Import a project file":{% endtrans %}</p>
 
       <img src="imgs/01-welcome.png" width="1480" height="459" class="img-fluid border border-dark">
 
-      <p>From there, you select a project to upload. It should have the <code>SQLite3</code> file extension to be uploaded. Click Browse and select the file. Taguette will confirm on this screen the name of the project, and once you hit "Import", all project materials will be imported!</p>
+      <p>{% trans %}From there, you select a project to upload. It should have the <code>SQLite3</code> file extension to be uploaded. Click Browse and select the file. Taguette will confirm on this screen the name of the project, and once you hit "Import", all project materials will be imported!{% endtrans %}</p>
 
       <img src="imgs/25-importProject.png" width="473" height="227" class="img-fluid border border-dark mb-2">
 
-      <p>If you want to browse the database directly, you can find documentation about the schema <a href="https://gitlab.com/remram44/taguette/-/blob/master/ARCHITECTURE.md#the-database">in our internal documentation</a>.</p>
-
-      {% endtrans %}
+      <p>{% trans %}If you want to browse the database directly, you can find documentation about the schema <a href="https://gitlab.com/remram44/taguette/-/blob/master/ARCHITECTURE.md#the-database">in our internal documentation</a>.{% endtrans %}</p>
     </div>
   </div>
 </div>
