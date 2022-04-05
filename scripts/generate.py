@@ -29,6 +29,23 @@ class TranslationWrapper(object):
             message = message % kwargs
         return message
 
+    def pgettext(
+        self,
+        context, message, plural_message=None,
+        n=None,
+        **kwargs,
+    ):
+        if plural_message is None and n is None:
+            message = self._trans.pgettext(context, message)
+        elif plural is None or n is None:
+            raise ValueError
+        else:
+            message = self._trans.npgettext(context, message, plural_message, n)
+
+        if kwargs:
+            message = message % kwargs
+        return message
+
 
 class PseudoTranslation(object):
     CHARS = {
@@ -94,6 +111,17 @@ class PseudoTranslation(object):
         if kwargs:
             message = message % kwargs
         return '[%s (n=%d)]' % (message, n)
+
+    def pgettext(self, context, message, **kwargs):
+        return self.gettext(message, **kwargs)
+
+    def npgettext(self, context, singular, plural=None, n=None, **kwargs):
+        if plural is None and n is None:
+            return self.gettext(singular, **kwargs)
+        elif plural is None or n is None:
+            raise ValueError
+        else:
+            return self.ngettext(singular, plural, n, **kwargs)
 
 
 LANGUAGE_NAMES = {
@@ -192,6 +220,7 @@ def main():
                     languages=all_language_links,
                     gettext=trans.gettext,
                     ngettext=trans.ngettext,
+                    pgettext=trans.pgettext,
                 ))
 
         # Copy static files
