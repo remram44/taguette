@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.2.1 (???)
+1.3.0 (???)
 -----------
 
 Bugfixes:
@@ -9,11 +9,14 @@ Bugfixes:
 * Fix `--database` option when not in server mode
 * Show a more meaningful error if importing an empty SQLite3 file, or a file that is not a SQLite3 database
 * Fix importing a codebook with duplicated tags
+* Fix importing a codebook with empty rows
 
 Enhancements:
 * Add support for importing subtitle files (.srt or .vtt)
 * Strip leading and trailing whitespace from tag names in imported codebook
 * "Taguette Guide" opens in a new window
+* Add support for serving Taguette in a subdirectory (`BASE_PATH` setting)
+* Add health check endpoint (`/health`)
 
 1.2.0 (2022-01-22)
 ------------------
