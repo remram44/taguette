@@ -1,5 +1,5 @@
 before_script:
-  - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.0.10 && /root/.poetry/bin/poetry config virtualenvs.create false
+  - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.12 && /root/.poetry/bin/poetry config virtualenvs.create false
   - $HOME/.poetry/bin/poetry install --no-interaction
 
 pages:
