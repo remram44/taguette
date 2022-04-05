@@ -560,13 +560,16 @@ class BaseHandler(RequestHandler):
         elif status_code == 404:
             self.render(
                 'error.html',
-                error_title="Error 404",
-                error_message="This page does not exist.",
+                error_title=self.pgettext("page title", "Error 404"),
+                error_message=self.gettext("This page does not exist."),
             )
         else:
             self.render(
                 'error.html',
-                error_title="Error %d" % status_code,
+                error_title=(
+                    self.pgettext("page title", "Error %d")
+                    % status_code
+                ),
                 error_message=self._reason + ".",
             )
 

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Error | Taguette{% endblock %}
+{% block title %}{% trans "page title" %}Error{% endtrans %} | Taguette{% endblock %}
 
 {% block contents %}
 <p>{% trans %}Your browser did not supply a secret token to authenticate with the application. Please check the console for the correct URL to log in, or simply restart Taguette.{% endtrans %}</p>

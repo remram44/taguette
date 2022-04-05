@@ -57,8 +57,8 @@ class Error404(BaseHandler):
     def prepare(self):
         self.render(
             'error.html',
-            error_title="Error 404",
-            error_message="This page does not exist.",
+            error_title=self.pgettext("page title", "Error 404"),
+            error_message=self.gettext("This page does not exist."),
         )
         raise HTTPError(404)
 
