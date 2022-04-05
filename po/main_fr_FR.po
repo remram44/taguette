@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Taguette\n"
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
-"POT-Creation-Date: 2022-04-04 21:26-0400\n"
+"POT-Creation-Date: 2022-04-04 23:12-0400\n"
 "PO-Revision-Date: 2019-05-08 16:49+0000\n"
 "Last-Translator: Rémi Rampin <remirampin@gmail.com>, 2022\n"
 "Language-Team: French (https://www.transifex.com/remram44/teams/98824/fr/)\n"
@@ -20,6 +20,11 @@ msgstr ""
 "Generated-By: Babel 2.9.1\n"
 "Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: taguette/templates/project_delete.html:3
+msgctxt "page title"
+msgid "Delete project"
+msgstr "Supprimer projet"
 
 #: taguette/templates/project_delete.html:6
 msgctxt "title"
@@ -322,6 +327,14 @@ msgctxt "form placeholder"
 msgid "Enter a document name"
 msgstr "Entrer un nom pour le document"
 
+#: taguette/templates/project.html:195 taguette/templates/project.html:236
+msgid "Left to right"
+msgstr "De gauche à droite"
+
+#: taguette/templates/project.html:199 taguette/templates/project.html:240
+msgid "Right to left"
+msgstr "De droite à gauche"
+
 #: taguette/templates/project.html:203
 msgctxt "document add form placeholder"
 msgid "Description"
@@ -341,14 +354,6 @@ msgstr "Modifier le document"
 msgctxt "document change form placeholder"
 msgid "Name"
 msgstr "Nom"
-
-#: taguette/templates/project.html:236
-msgid "Left to right"
-msgstr "De gauche à droite"
-
-#: taguette/templates/project.html:240
-msgid "Right to left"
-msgstr "De droite à gauche"
 
 #: taguette/templates/project.html:244
 msgctxt "document change form placeholder"
@@ -428,6 +433,11 @@ msgctxt "button in project list"
 msgid "Import a project file"
 msgstr "Importer un projet depuis un fichier"
 
+#: taguette/templates/cookies_prompt.html:3
+msgctxt "page title"
+msgid "Cookie warning"
+msgstr "Avertissement aux cookies"
+
 #: taguette/templates/cookies_prompt.html:6
 msgctxt "title"
 msgid "Cookie warning"
@@ -454,10 +464,20 @@ msgctxt "button on cookie warning page"
 msgid "Accept cookies"
 msgstr "Accepter les cookies"
 
+#: taguette/templates/project_import_codebook_confirm.html:22
+msgctxt "codebook import tag option"
+msgid "Import"
+msgstr "Importer"
+
 #: taguette/templates/project_import_codebook_confirm.html:36
 msgctxt "form submit button"
 msgid "Create tags"
 msgstr "Créer les tags"
+
+#: taguette/templates/welcome.html:4
+msgctxt "page title"
+msgid "Welcome"
+msgstr "Bienvenue"
 
 #: taguette/templates/welcome.html:8
 msgctxt "title"
@@ -488,6 +508,11 @@ msgstr ""
 #, python-format
 msgid "<a href=\"%(url)s\">Register now</a> for free and get started!"
 msgstr "<a href=\"%(url)s\">Inscrivez-vous</a> gratuitement et lancez-vous !"
+
+#: taguette/templates/login.html:3
+msgctxt "page title"
+msgid "Log in"
+msgstr "Connexion"
 
 #: taguette/templates/login.html:9
 msgctxt "tab"
@@ -588,6 +613,11 @@ msgstr ""
 "Si vous n'avez pas entré d'adresse e-mail, vous pouvez essayer de contacter "
 "l'administrateur de votre serveur."
 
+#: taguette/templates/project_new.html:3
+msgctxt "page title"
+msgid "New project"
+msgstr "Nouveau projet"
+
 #: taguette/templates/project_new.html:6
 msgctxt "title"
 msgid "New project"
@@ -670,6 +700,11 @@ msgstr "Votre nom d'utilisateur est : <strong>%(login)s</strong>"
 #: taguette/templates/email_reset_password.html:5
 msgid "This link will expire in 1 day."
 msgstr "Ce lien expirera dans 1 jour."
+
+#: taguette/templates/tos.html:4
+msgctxt "page title"
+msgid "Terms of Service"
+msgstr "Conditions d'Utilisation"
 
 #: taguette/templates/project_import.html:6
 msgctxt "title"

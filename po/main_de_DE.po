@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Taguette 1.1\n"
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
-"POT-Creation-Date: 2022-04-04 21:26-0400\n"
+"POT-Creation-Date: 2022-04-04 23:12-0400\n"
 "PO-Revision-Date: 2019-05-08 16:49+0000\n"
 "Last-Translator: CH_ <ch@infobib.de>, 2020\n"
 "Language-Team: German (https://www.transifex.com/remram44/teams/98824/de/)\n"
@@ -21,6 +21,11 @@ msgstr ""
 "Generated-By: Babel 2.9.0\n"
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: taguette/templates/project_delete.html:3
+msgctxt "page title"
+msgid "Delete project"
+msgstr "Projekt löschen"
 
 #: taguette/templates/project_delete.html:6
 msgctxt "title"
@@ -414,6 +419,11 @@ msgctxt "button in project list"
 msgid "Import a project file"
 msgstr ""
 
+#: taguette/templates/cookies_prompt.html:3
+msgctxt "page title"
+msgid "Cookie warning"
+msgstr "Cookie-Warnung"
+
 #: taguette/templates/cookies_prompt.html:6
 msgctxt "title"
 msgid "Cookie warning"
@@ -438,6 +448,16 @@ msgstr ""
 msgctxt "button on cookie warning page"
 msgid "Accept cookies"
 msgstr "Cookies akzeptieren"
+
+#: taguette/templates/project_import_codebook_confirm.html:22
+msgctxt "codebook import tag option"
+msgid "Import"
+msgstr "Importieren"
+
+#: taguette/templates/welcome.html:4
+msgctxt "page title"
+msgid "Welcome"
+msgstr "Willkommen"
 
 #: taguette/templates/welcome.html:8
 msgctxt "title"
@@ -470,6 +490,11 @@ msgstr ""
 msgid "<a href=\"%(url)s\">Register now</a> for free and get started!"
 msgstr ""
 "<a href=\"%(url)s\">Registrieren Sie sich jetzt</a> gratis und beginnen Sie!"
+
+#: taguette/templates/login.html:3
+msgctxt "page title"
+msgid "Log in"
+msgstr "Anmelden"
 
 #: taguette/templates/login.html:9
 msgctxt "tab"
@@ -570,6 +595,11 @@ msgid ""
 msgstr ""
 "Falls Sie keine Email-Adresse angegeben haben, können Sie versuchen, Ihren "
 "Server-Administrator zu kontaktieren."
+
+#: taguette/templates/project_new.html:3
+msgctxt "page title"
+msgid "New project"
+msgstr "Neues Projekt"
 
 #: taguette/templates/project_new.html:6
 msgctxt "title"

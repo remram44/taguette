@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Taguette 1.1\n"
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
-"POT-Creation-Date: 2022-04-04 21:26-0400\n"
+"POT-Creation-Date: 2022-04-04 23:12-0400\n"
 "PO-Revision-Date: 2019-05-08 16:49+0000\n"
 "Last-Translator: Jackson Raniel <raniel.jackson@gmail.com>, 2021\n"
 "Language-Team: Portuguese (Brazil) (https://www.transifex.com/remram44/teams/98824/pt_BR/)\n"
@@ -20,6 +20,11 @@ msgstr ""
 "Generated-By: Babel 2.9.0\n"
 "Language: pt_BR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: taguette/templates/project_delete.html:3
+msgctxt "page title"
+msgid "Delete project"
+msgstr "Deletar projeto"
 
 #: taguette/templates/project_delete.html:6
 msgctxt "title"
@@ -421,6 +426,11 @@ msgctxt "button in project list"
 msgid "Import a project file"
 msgstr "Importar um arquivo de projeto"
 
+#: taguette/templates/cookies_prompt.html:3
+msgctxt "page title"
+msgid "Cookie warning"
+msgstr "Aviso de Cookie"
+
 #: taguette/templates/cookies_prompt.html:6
 msgctxt "title"
 msgid "Cookie warning"
@@ -445,6 +455,16 @@ msgstr ""
 msgctxt "button on cookie warning page"
 msgid "Accept cookies"
 msgstr "Aceitar cookies"
+
+#: taguette/templates/project_import_codebook_confirm.html:22
+msgctxt "codebook import tag option"
+msgid "Import"
+msgstr "Importar"
+
+#: taguette/templates/welcome.html:4
+msgctxt "page title"
+msgid "Welcome"
+msgstr "Bem-vindo(a)"
 
 #: taguette/templates/welcome.html:8
 msgctxt "title"
@@ -476,6 +496,11 @@ msgstr ""
 #, python-format
 msgid "<a href=\"%(url)s\">Register now</a> for free and get started!"
 msgstr "<a href=\"%(url)s\">Registre-se agora</a> gratuitamente e comece a usar!"
+
+#: taguette/templates/login.html:3
+msgctxt "page title"
+msgid "Log in"
+msgstr "Entrar"
 
 #: taguette/templates/login.html:9
 msgctxt "tab"
@@ -576,6 +601,11 @@ msgstr ""
 "Se você não configurou um endereço de e-mail, pode tentar entrar em contato "
 "com o administrador do servidor."
 
+#: taguette/templates/project_new.html:3
+msgctxt "page title"
+msgid "New project"
+msgstr "Novo projeto"
+
 #: taguette/templates/project_new.html:6
 msgctxt "title"
 msgid "New project"
@@ -648,6 +678,16 @@ msgstr "Seu nome de usuário é: <strong>%(login)s</strong>"
 #: taguette/templates/email_reset_password.html:5
 msgid "This link will expire in 1 day."
 msgstr "Esse link irá expirar em 1 dia."
+
+#: taguette/templates/tos.html:4
+msgctxt "page title"
+msgid "Terms of Service"
+msgstr "Termos de Uso"
+
+#: taguette/templates/project_import.html:3
+msgctxt "page title"
+msgid "Import project"
+msgstr "Importar projeto"
 
 #: taguette/templates/project_import.html:6
 msgctxt "title"

@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Taguette 1.1\n"
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
-"POT-Creation-Date: 2022-04-04 21:26-0400\n"
+"POT-Creation-Date: 2022-04-04 23:12-0400\n"
 "PO-Revision-Date: 2019-05-08 16:49+0000\n"
 "Last-Translator: Frank Ubachs <fjubachs@gmail.com>, 2020\n"
 "Language-Team: Dutch (Netherlands) (https://www.transifex.com/remram44/teams/98824/nl_NL/)\n"
@@ -21,6 +21,11 @@ msgstr ""
 "Generated-By: Babel 2.9.0\n"
 "Language: nl_NL\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: taguette/templates/project_delete.html:3
+msgctxt "page title"
+msgid "Delete project"
+msgstr "Project verwijderen"
 
 #: taguette/templates/project_delete.html:6
 msgctxt "title"
@@ -415,6 +420,11 @@ msgctxt "button in project list"
 msgid "Import a project file"
 msgstr ""
 
+#: taguette/templates/cookies_prompt.html:3
+msgctxt "page title"
+msgid "Cookie warning"
+msgstr "Cookiewaarschuwing"
+
 #: taguette/templates/cookies_prompt.html:6
 msgctxt "title"
 msgid "Cookie warning"
@@ -439,6 +449,16 @@ msgstr ""
 msgctxt "button on cookie warning page"
 msgid "Accept cookies"
 msgstr "Cookies aanvaarden"
+
+#: taguette/templates/project_import_codebook_confirm.html:22
+msgctxt "codebook import tag option"
+msgid "Import"
+msgstr "Importeren"
+
+#: taguette/templates/welcome.html:4
+msgctxt "page title"
+msgid "Welcome"
+msgstr "Welkom"
 
 #: taguette/templates/welcome.html:8
 msgctxt "title"
@@ -470,6 +490,11 @@ msgstr ""
 #, python-format
 msgid "<a href=\"%(url)s\">Register now</a> for free and get started!"
 msgstr "<a href=\"%(url)s\">Registreer nu</a> gratis en begin!"
+
+#: taguette/templates/login.html:3
+msgctxt "page title"
+msgid "Log in"
+msgstr "Inloggen"
 
 #: taguette/templates/login.html:9
 msgctxt "tab"
@@ -569,6 +594,11 @@ msgid ""
 msgstr ""
 "Als je geen email-adres hebt aangemaakt, kun je proberen contact op te nemen"
 " met de server-administrator."
+
+#: taguette/templates/project_new.html:3
+msgctxt "page title"
+msgid "New project"
+msgstr "Nieuw project"
 
 #: taguette/templates/project_new.html:6
 msgctxt "title"

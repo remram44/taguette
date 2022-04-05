@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Taguette\n"
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
-"POT-Creation-Date: 2022-04-04 21:26-0400\n"
+"POT-Creation-Date: 2022-04-04 23:12-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,11 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.1\n"
+
+#: taguette/templates/project_delete.html:3
+msgctxt "page title"
+msgid "Delete project"
+msgstr ""
 
 #: taguette/templates/project_delete.html:6
 msgctxt "title"
@@ -46,6 +51,11 @@ msgstr ""
 #: taguette/templates/project_import_codebook_confirm.html:37
 msgctxt "cancel button"
 msgid "Go back"
+msgstr ""
+
+#: taguette/templates/account.html:4
+msgctxt "page title"
+msgid "Account details"
 msgstr ""
 
 #: taguette/templates/account.html:7
@@ -210,6 +220,10 @@ msgstr ""
 msgid "PDF"
 msgstr ""
 
+#: taguette/templates/project.html:64
+msgid "Import codebook"
+msgstr ""
+
 #: taguette/templates/project.html:68
 msgid "Delete project"
 msgstr ""
@@ -306,6 +320,14 @@ msgctxt "form placeholder"
 msgid "Enter a document name"
 msgstr ""
 
+#: taguette/templates/project.html:195 taguette/templates/project.html:236
+msgid "Left to right"
+msgstr ""
+
+#: taguette/templates/project.html:199 taguette/templates/project.html:240
+msgid "Right to left"
+msgstr ""
+
 #: taguette/templates/project.html:203
 msgctxt "document add form placeholder"
 msgid "Description"
@@ -324,14 +346,6 @@ msgstr ""
 #: taguette/templates/project.html:229
 msgctxt "document change form placeholder"
 msgid "Name"
-msgstr ""
-
-#: taguette/templates/project.html:236
-msgid "Left to right"
-msgstr ""
-
-#: taguette/templates/project.html:240
-msgid "Right to left"
 msgstr ""
 
 #: taguette/templates/project.html:244
@@ -412,6 +426,11 @@ msgctxt "button in project list"
 msgid "Import a project file"
 msgstr ""
 
+#: taguette/templates/cookies_prompt.html:3
+msgctxt "page title"
+msgid "Cookie warning"
+msgstr ""
+
 #: taguette/templates/cookies_prompt.html:6
 msgctxt "title"
 msgid "Cookie warning"
@@ -432,9 +451,47 @@ msgctxt "button on cookie warning page"
 msgid "Accept cookies"
 msgstr ""
 
+#: taguette/templates/project_import_codebook.html:3
+#: taguette/templates/project_import_codebook_confirm.html:3
+msgctxt "page title"
+msgid "Import codebook"
+msgstr ""
+
+#: taguette/templates/project_import_codebook.html:6
+#: taguette/templates/project_import_codebook_confirm.html:6
+msgctxt "title"
+msgid "Import a codebook"
+msgstr ""
+
+#: taguette/templates/project_import_codebook.html:7
+#: taguette/templates/project_import_codebook_confirm.html:7
+msgid ""
+"Use this form to import an existing codebook into your project. Existing "
+"tags will not be deleted, new tags will be added alongside them."
+msgstr ""
+
+#: taguette/templates/project_import_codebook_confirm.html:11
+msgid "You are about to create the following tags:"
+msgstr ""
+
+#: taguette/templates/project_import_codebook_confirm.html:19
+msgctxt "codebook import tag option"
+msgid "Replace"
+msgstr ""
+
+#: taguette/templates/project_import_codebook_confirm.html:22
+msgctxt "codebook import tag option"
+msgid "Import"
+msgstr ""
+
 #: taguette/templates/project_import_codebook_confirm.html:36
 msgctxt "form submit button"
 msgid "Create tags"
+msgstr ""
+
+#: taguette/templates/welcome.html:4
+msgctxt "page title"
+msgid "Welcome"
 msgstr ""
 
 #: taguette/templates/welcome.html:8
@@ -459,6 +516,11 @@ msgstr ""
 #: taguette/templates/welcome.html:12
 #, python-format
 msgid "<a href=\"%(url)s\">Register now</a> for free and get started!"
+msgstr ""
+
+#: taguette/templates/login.html:3
+msgctxt "page title"
+msgid "Log in"
 msgstr ""
 
 #: taguette/templates/login.html:9
@@ -507,6 +569,12 @@ msgctxt "form submit button"
 msgid "Register"
 msgstr ""
 
+#: taguette/templates/new_password.html:3
+#: taguette/templates/reset_password.html:3
+msgctxt "page title"
+msgid "Reset password"
+msgstr ""
+
 #: taguette/templates/new_password.html:10
 msgid "Please enter a new password below:"
 msgstr ""
@@ -528,6 +596,11 @@ msgid "%(number)d highlight"
 msgid_plural "%(number)d highlights"
 msgstr[0] ""
 msgstr[1] ""
+
+#: taguette/templates/token_needed.html:3
+msgctxt "page title"
+msgid "Error"
+msgstr ""
 
 #: taguette/templates/token_needed.html:6
 msgid ""
@@ -551,6 +624,11 @@ msgstr ""
 msgid ""
 "If you didn't set an email address, you can try contacting your server "
 "administrator."
+msgstr ""
+
+#: taguette/templates/project_new.html:3
+msgctxt "page title"
+msgid "New project"
 msgstr ""
 
 #: taguette/templates/project_new.html:6
@@ -631,6 +709,16 @@ msgstr ""
 
 #: taguette/templates/email_reset_password.html:5
 msgid "This link will expire in 1 day."
+msgstr ""
+
+#: taguette/templates/tos.html:4
+msgctxt "page title"
+msgid "Terms of Service"
+msgstr ""
+
+#: taguette/templates/project_import.html:3
+msgctxt "page title"
+msgid "Import project"
 msgstr ""
 
 #: taguette/templates/project_import.html:6
@@ -727,6 +815,21 @@ msgstr ""
 
 #: taguette/web/views.py:711
 msgid "No file provided"
+msgstr ""
+
+#: taguette/web/__init__.py:60 taguette/web/base.py:563
+msgctxt "page title"
+msgid "Error 404"
+msgstr ""
+
+#: taguette/web/__init__.py:61 taguette/web/base.py:564
+msgid "This page does not exist."
+msgstr ""
+
+#: taguette/web/base.py:569
+#, python-format
+msgctxt "page title"
+msgid "Error %d"
 msgstr ""
 
 #: taguette/database/__init__.py:135

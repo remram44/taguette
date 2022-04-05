@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Taguette 1.1\n"
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
-"POT-Creation-Date: 2022-04-04 21:26-0400\n"
+"POT-Creation-Date: 2022-04-04 23:12-0400\n"
 "PO-Revision-Date: 2019-05-08 16:49+0000\n"
 "Last-Translator: Sinisa Obradovic <obradovic.sinisa@protonmail.com>, 2019\n"
 "Language-Team: Italian (https://www.transifex.com/remram44/teams/98824/it/)\n"
@@ -21,6 +21,11 @@ msgstr ""
 "Generated-By: Babel 2.9.0\n"
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: taguette/templates/project_delete.html:3
+msgctxt "page title"
+msgid "Delete project"
+msgstr "Elimina progetto"
 
 #: taguette/templates/project_delete.html:6
 msgctxt "title"
@@ -434,6 +439,16 @@ msgctxt "button on cookie warning page"
 msgid "Accept cookies"
 msgstr ""
 
+#: taguette/templates/project_import_codebook_confirm.html:22
+msgctxt "codebook import tag option"
+msgid "Import"
+msgstr "Importa"
+
+#: taguette/templates/welcome.html:4
+msgctxt "page title"
+msgid "Welcome"
+msgstr "Benvenuto"
+
 #: taguette/templates/welcome.html:8
 msgctxt "title"
 msgid "Welcome"
@@ -464,6 +479,11 @@ msgstr ""
 #, python-format
 msgid "<a href=\"%(url)s\">Register now</a> for free and get started!"
 msgstr "<a href=\"%(url)s\">Registrati ora</a> gratis ed inizia!"
+
+#: taguette/templates/login.html:3
+msgctxt "page title"
+msgid "Log in"
+msgstr "Accedi"
 
 #: taguette/templates/login.html:9
 msgctxt "tab"
@@ -563,6 +583,11 @@ msgid ""
 msgstr ""
 "Se non hai impostato un indirizzo email, puoi provare a contattare il tuo "
 "amministratore del server."
+
+#: taguette/templates/project_new.html:3
+msgctxt "page title"
+msgid "New project"
+msgstr "Nuovo progetto"
 
 #: taguette/templates/project_new.html:6
 msgctxt "title"
