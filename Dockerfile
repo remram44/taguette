@@ -25,7 +25,7 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 COPY taguette taguette
 COPY pyproject.toml poetry.lock README.rst tests.py ./
-RUN /root/.poetry/bin/poetry install --no-interaction --no-dev && rm -rf /root/.cache
+RUN /root/.poetry/bin/poetry install --no-interaction --no-dev -E postgres && rm -rf /root/.cache
 
 # Copy translation from other stage
 COPY --from=translations /usr/src/app/taguette/l10n taguette/l10n
