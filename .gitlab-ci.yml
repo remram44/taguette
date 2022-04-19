@@ -110,9 +110,8 @@ mariadb:
   script:
     - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.12
     - $HOME/.poetry/bin/poetry config virtualenvs.create false
-    - $HOME/.poetry/bin/poetry install --no-interaction
+    - $HOME/.poetry/bin/poetry install --no-interaction -E mysql
     - scripts/update_translations.sh
-    - pip install pymysql cryptography
     - python -Wd tests.py -v
 
 sqlite3_pypy:
