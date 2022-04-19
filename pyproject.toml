@@ -72,6 +72,8 @@ opentelemetry-instrumentation-sqlalchemy = {version = ">=0.24b0,<0.26", optional
 opentelemetry-instrumentation-tornado = {version = ">=0.24b0,<0.26", optional = true}
 
 psycopg2 = {version = ">=2.8,<3", optional = true}
+pymysql = {version = ">=1.0,<2", optional = true}
+cryptography = {version = "*", optional = true}
 
 [tool.poetry.dev-dependencies]
 coverage = "*"
@@ -89,6 +91,10 @@ otel = [
 ]
 postgres = [
     "psycopg2",
+]
+mysql = [
+    "pymysql",
+    "cryptography",
 ]
 
 [tool.poetry.scripts]
