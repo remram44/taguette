@@ -27,11 +27,15 @@ async def log_and_wait_proc(logger, proc):
         if not line:
             break
         line = line.decode('utf-8', 'replace')
+        if line[-1] == '\n':
+            line = line[:-1]
         logger.info("%d: %s", proc.pid, line)
 
     ret = await proc.wait()
     line = await proc.stdout.read()
     if line:
         line = line.decode('utf-8', 'replace')
+        if line[-1] == '\n':
+            line = line[:-1]
         logger.info("%d: %s", proc.pid, line)
     return ret
