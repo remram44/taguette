@@ -7,7 +7,7 @@ import logging
 import opentelemetry.trace
 import os
 import shutil
-from sqlalchemy import create_engine
+from sqlalchemy import engine_from_config
 import sqlalchemy.engine
 import sqlalchemy.event
 from sqlalchemy.exc import NoSuchTableError
@@ -51,11 +51,16 @@ def connect(db_url, *, external=False, create_tables=None):
     if create_tables is None:
         create_tables = not external
 
+    if isinstance(db_url, dict):
+        db_dict = db_url
+        db_url = db_dict['url']
+    else:
+        db_dict = {'url': db_url}
+
     logger.info("Connecting to SQL database %r", db_url)
-    kwargs = {}
     if db_url.startswith('sqlite:'):
-        kwargs['connect_args'] = {'check_same_thread': False}
-    engine = create_engine(db_url, **kwargs)
+        db_dict['connect_args'] = {'check_same_thread': False}
+    engine = engine_from_config(db_dict, prefix='')
     # logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
     if db_url.startswith('sqlite:'):
