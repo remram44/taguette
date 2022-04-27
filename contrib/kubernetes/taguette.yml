@@ -1,0 +1,162 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: taguette
+  labels:
+    app: taguette
+spec:
+  ports:
+    - port: 7465
+      name: web
+  selector:
+    app: taguette
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: taguette
+data:
+  config.py: |
+    # This is the configuration file for Taguette
+    # It is a Python file, so you can use the full Python syntax
+    import os
+
+    # Name of this server
+    NAME = "Misconfigured Taguette Server"
+
+    # Address and port to listen on
+    BIND_ADDRESS = "0.0.0.0"
+    PORT = 7465
+
+    # Base path of the application
+    BASE_PATH = "/"
+
+    # A unique secret key that will be used to sign cookies
+    SECRET_KEY = os.environ['SECRET_KEY']
+
+    # Database to use
+    # This is a SQLAlchemy connection URL; refer to their documentation for info
+    # https://docs.sqlalchemy.org/en/latest/core/engines.html
+    # If using SQLite3 on Unix, note the 4 slashes for an absolute path
+    # (keep 3 before a relative path)
+    DATABASE = "postgresql://postgres:{pwd}@postgres/taguette".format(
+        pwd=os.environ['POSTGRES_PASSWORD'],
+    )
+
+    # Redis instance for live collaboration
+    # This is not required if using a single server, collaboration will still work
+    #REDIS_SERVER = 'redis://localhost:6379'
+
+    # Address to send system emails from
+    EMAIL = "Misconfigured Taguette Server <taguette@example.com>"
+
+    # Terms of service (HTML file)
+    TOS_FILE = None
+    # If set to None, no terms of service link will be displayed anywhere
+
+    # Default language
+    DEFAULT_LANGUAGE = 'en_US'
+
+    # SMTP server to use to send emails
+    MAIL_SERVER = {
+        "ssl": True,
+        "host": "smtp.sendgrid.net",
+        "port": 465,
+        "user": "apikey",
+        "password": os.environ['SMTP_PASSWORD'],
+    }
+
+    # Whether users must explicitly accept cookies before using the website
+    COOKIES_PROMPT = False
+
+    # Whether new users can create an account
+    REGISTRATION_ENABLED = True
+
+    # Whether users can import projects from SQLite3 files
+    SQLITE3_IMPORT_ENABLED = True
+
+    # Set this to true if you are behind a reverse proxy that sets the
+    # X-Forwarded-For header.
+    # Leave this at False if users are connecting to Taguette directly
+    X_HEADERS = False
+
+    # Time limits for converting documents
+    CONVERT_TO_HTML_TIMEOUT = 3 * 60  # 3min for importing document into Taguette
+    CONVERT_FROM_HTML_TIMEOUT = 3 * 60  # 3min for exporting from Taguette
+
+    # If you want to export metrics using Prometheus, set a port number here
+    PROMETHEUS_LISTEN = "0.0.0.0:9101"
+
+    # If you want to report errors to Sentry, set your DSN here
+    #SENTRY_DSN = "https://<key>@sentry.io/<project>"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: taguette
+spec:
+  selector:
+    matchLabels:
+      app: taguette
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: taguette
+    spec:
+      containers:
+        - name: taguette
+          image: quay.io/remram44/taguette:1.3.0
+          args:
+            - server
+            - /config.py
+          env:
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: taguette
+                  key: secret-key
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: taguette
+                  key: postgres-password
+            - name: SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: taguette
+                  key: smtp-password
+          ports:
+            - containerPort: 7465
+              name: web
+          volumeMounts:
+            - name: config
+              mountPath: /config.py
+              subPath: config.py
+      volumes:
+        - name: config
+          configMap:
+            name: taguette
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: taguette
+spec:
+  rules:
+    - host: taguette.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: taguette
+                port:
+                  number: 7465
+  tls:
+    - hosts:
+        - taguette.example.com
