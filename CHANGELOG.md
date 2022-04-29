@@ -10,6 +10,7 @@ Bugfixes:
 * Show a more meaningful error if importing an empty SQLite3 file, or a file that is not a SQLite3 database
 * Fix importing a codebook with duplicated tags
 * Fix importing a codebook with empty rows
+* Fix empty lines in log from conversion process
 
 Enhancements:
 * Add support for importing subtitle files (.srt or .vtt)
@@ -17,6 +18,9 @@ Enhancements:
 * "Taguette Guide" opens in a new window
 * Add support for serving Taguette in a subdirectory (`BASE_PATH` setting)
 * Add health check endpoint (`/health`)
+* Internationalization improvements: add contexts, translate page titles
+* Add extras to install a database driver: `pip install taguette[postgres]` (or `mysql`)
+* Allow setting SQLAlchemy parameters from the config file, by making `DATABASE` a dictionary
 
 1.2.0 (2022-01-22)
 ------------------
