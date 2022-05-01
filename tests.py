@@ -2576,7 +2576,7 @@ class TestSeleniumMultiuser(SeleniumTest):
         await asyncio.sleep(0.5)
         elem.send_keys('Meaningful')
         await self.s_click(self.driver.find_element_by_id('document-contents'))
-        await asyncio.sleep(1)  # Wait for XHR
+        await asyncio.sleep(3)  # Wait for XHR
         self.assertEqual(
             self.driver.find_element_by_class_name('project-name').text,
             'new project',
