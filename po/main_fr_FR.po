@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Taguette\n"
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
-"POT-Creation-Date: 2022-04-05 14:57-0400\n"
+"POT-Creation-Date: 2022-04-30 21:15-0400\n"
 "PO-Revision-Date: 2019-05-08 16:49+0000\n"
 "Last-Translator: Rémi Rampin <remirampin@gmail.com>, 2022\n"
 "Language-Team: French (https://www.transifex.com/remram44/teams/98824/fr/)\n"
@@ -787,6 +787,46 @@ msgctxt "form submit button"
 msgid "Import project"
 msgstr "Importer le projet"
 
+#: taguette/web/api.py:50
+msgid "Not logged in"
+msgstr "Utilisateur non identifié"
+
+#: taguette/web/api.py:80 taguette/web/api.py:111 taguette/web/api.py:202
+#: taguette/web/api.py:241 taguette/web/api.py:306 taguette/web/api.py:341
+#: taguette/web/api.py:377 taguette/web/api.py:402 taguette/web/api.py:455
+#: taguette/web/api.py:507 taguette/web/api.py:582 taguette/web/api.py:688
+msgid "Unauthorized"
+msgstr "Pas autorisé"
+
+#: taguette/web/api.py:346 taguette/web/api.py:380 taguette/web/api.py:412
+#: taguette/web/api.py:468 taguette/web/api.py:537
+msgid "No such tag"
+msgstr "Tag inconnu"
+
+#: taguette/web/api.py:511 taguette/web/api.py:585
+msgid "No such highlight"
+msgstr "Marque inconnue"
+
+#: taguette/web/api.py:751
+msgid "There must be one admin"
+msgstr "Il doit y avoir un admin"
+
+#: taguette/web/api.py:806
+msgid ""
+"This database is an unknown version. It might have been written by a more "
+"recent version of Taguette, please check for updates"
+msgstr ""
+"Cette base de données est une version inconnue. Elle a pu être créée par une"
+" version de Taguette plus récente, merci de chercher une mise à jour."
+
+#: taguette/web/api.py:812
+msgid "This database could not be updated to the current version"
+msgstr "Cette base de données n'a pas pu être convertie à la version actuelle"
+
+#: taguette/web/api.py:816 taguette/web/api.py:850
+msgid "This is not a Taguette project file"
+msgstr "Ce fichier n'est pas un projet Taguette"
+
 #: taguette/web/views.py:138
 msgid "Invalid login or password"
 msgstr "Nom d'utilisateur ou mot de passe invalide"
@@ -870,13 +910,13 @@ msgstr "Erreur 404"
 msgid "This page does not exist."
 msgstr "Cette page n'existe pas."
 
-#: taguette/web/base.py:569
+#: taguette/web/base.py:570
 #, python-format
 msgctxt "page title"
 msgid "Error %d"
 msgstr "Erreur %d"
 
-#: taguette/database/__init__.py:135
+#: taguette/database/__init__.py:144
 msgid ""
 "\n"
 "    The database schema used by Taguette has changed! We will try to\n"
@@ -886,7 +926,7 @@ msgstr ""
 "    Le schéma de la base de données utilisée par Taguette a changé ! Je vais\n"
 "    tenter de mettre à jour votre espace de travail automatiquement.\n"
 
-#: taguette/database/__init__.py:147
+#: taguette/database/__init__.py:156
 #, python-format
 msgid ""
 "\n"
@@ -899,7 +939,7 @@ msgstr ""
 "    mise à hour échoue, conservez précieusement ce fichier et contactez nous:\n"
 "    %(backup)s\n"
 
-#: taguette/database/__init__.py:155
+#: taguette/database/__init__.py:168
 #, python-format
 msgid ""
 "\n"
