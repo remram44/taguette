@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Taguette\n"
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
-"POT-Creation-Date: 2022-04-05 14:57-0400\n"
+"POT-Creation-Date: 2022-04-30 21:15-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -745,6 +745,44 @@ msgctxt "form submit button"
 msgid "Import project"
 msgstr ""
 
+#: taguette/web/api.py:50
+msgid "Not logged in"
+msgstr ""
+
+#: taguette/web/api.py:80 taguette/web/api.py:111 taguette/web/api.py:202
+#: taguette/web/api.py:241 taguette/web/api.py:306 taguette/web/api.py:341
+#: taguette/web/api.py:377 taguette/web/api.py:402 taguette/web/api.py:455
+#: taguette/web/api.py:507 taguette/web/api.py:582 taguette/web/api.py:688
+msgid "Unauthorized"
+msgstr ""
+
+#: taguette/web/api.py:346 taguette/web/api.py:380 taguette/web/api.py:412
+#: taguette/web/api.py:468 taguette/web/api.py:537
+msgid "No such tag"
+msgstr ""
+
+#: taguette/web/api.py:511 taguette/web/api.py:585
+msgid "No such highlight"
+msgstr ""
+
+#: taguette/web/api.py:751
+msgid "There must be one admin"
+msgstr ""
+
+#: taguette/web/api.py:806
+msgid ""
+"This database is an unknown version. It might have been written by a more"
+" recent version of Taguette, please check for updates"
+msgstr ""
+
+#: taguette/web/api.py:812
+msgid "This database could not be updated to the current version"
+msgstr ""
+
+#: taguette/web/api.py:816 taguette/web/api.py:850
+msgid "This is not a Taguette project file"
+msgstr ""
+
 #: taguette/web/views.py:138
 msgid "Invalid login or password"
 msgstr ""
@@ -826,20 +864,20 @@ msgstr ""
 msgid "This page does not exist."
 msgstr ""
 
-#: taguette/web/base.py:569
+#: taguette/web/base.py:570
 #, python-format
 msgctxt "page title"
 msgid "Error %d"
 msgstr ""
 
-#: taguette/database/__init__.py:135
+#: taguette/database/__init__.py:144
 msgid ""
 "\n"
 "    The database schema used by Taguette has changed! We will try to\n"
 "    update your workspace automatically.\n"
 msgstr ""
 
-#: taguette/database/__init__.py:147
+#: taguette/database/__init__.py:156
 #, python-format
 msgid ""
 "\n"
@@ -848,7 +886,7 @@ msgid ""
 "    %(backup)s\n"
 msgstr ""
 
-#: taguette/database/__init__.py:155
+#: taguette/database/__init__.py:168
 #, python-format
 msgid ""
 "\n"
