@@ -1,3 +1,4 @@
+import alembic.util.exc
 import asyncio
 import functools
 import json
@@ -46,7 +47,7 @@ def api_auth(method):
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
         if not self.current_user:
-            return self.send_error_json(403, "Not logged in")
+            return self.send_error_json(403, self.gettext("Not logged in"))
         return method(self, *args, **kwargs)
 
     return wrapper
@@ -76,7 +77,7 @@ class ProjectMeta(BaseHandler):
     def post(self, project_id):
         project, privileges = self.get_project(project_id)
         if not privileges.can_edit_project_meta():
-            return self.send_error_json(403, "Unauthorized")
+            return self.send_error_json(403, self.gettext("Unauthorized"))
         try:
             obj = self.get_json()
             validate.project_name(obj['name'])
@@ -107,7 +108,9 @@ class DocumentAdd(BaseHandler):
     async def post(self, project_id):
         project, privileges = self.get_project(project_id)
         if not privileges.can_add_document():
-            return await self.send_error_json(403, "Unauthorized")
+            return await self.send_error_json(403, self.gettext(
+                "Unauthorized",
+            ))
         try:
             name = self.get_body_argument('name')
             validate.document_name(name)
@@ -124,8 +127,10 @@ class DocumentAdd(BaseHandler):
             try:
                 direction = database.TextDirection[direction]
             except KeyError:
-                return await self.send_error_json(400,
-                                                  "Invalid text direction")
+                return await self.send_error_json(
+                    400,
+                    "Invalid text direction",
+                )
 
             # Close DB connection to not overflow the connection pool
             self.close_db_connection()
@@ -194,7 +199,7 @@ class Document(BaseHandler):
     def post(self, project_id, document_id):
         document, privileges = self.get_document(project_id, document_id)
         if not privileges.can_edit_document():
-            return self.send_error_json(403, "Unauthorized")
+            return self.send_error_json(403, self.gettext("Unauthorized"))
         try:
             obj = self.get_json()
             if obj:
@@ -209,8 +214,10 @@ class Document(BaseHandler):
                     try:
                         direction = database.TextDirection[direction]
                     except KeyError:
-                        return self.send_error_json(400,
-                                                    "Invalid text direction")
+                        return self.send_error_json(
+                            400,
+                            "Invalid text direction",
+                        )
                     document.text_direction = direction
                 cmd = database.Command.document_add(
                     self.current_user,
@@ -231,7 +238,7 @@ class Document(BaseHandler):
     def delete(self, project_id, document_id):
         document, privileges = self.get_document(project_id, document_id)
         if not privileges.can_delete_document():
-            return self.send_error_json(403, "Unauthorized")
+            return self.send_error_json(403, self.gettext("Unauthorized"))
         self.db.delete(document)
         cmd = database.Command.document_delete(
             self.current_user,
@@ -296,7 +303,7 @@ class TagAdd(BaseHandler):
     def post(self, project_id):
         project, privileges = self.get_project(project_id)
         if not privileges.can_add_tag():
-            return self.send_error_json(403, "Unauthorized")
+            return self.send_error_json(403, self.gettext("Unauthorized"))
         try:
             obj = self.get_json()
             validate.tag_path(obj['path'])
@@ -331,12 +338,12 @@ class TagUpdate(BaseHandler):
     def post(self, project_id, tag_id):
         project, privileges = self.get_project(project_id)
         if not privileges.can_update_tag():
-            return self.send_error_json(403, "Unauthorized")
+            return self.send_error_json(403, self.gettext("Unauthorized"))
         try:
             obj = self.get_json()
             tag = self.db.query(database.Tag).get(int(tag_id))
             if tag is None or tag.project_id != project.id:
-                return self.send_error_json(404, "No such tag")
+                return self.send_error_json(404, self.gettext("No such tag"))
             if obj:
                 if 'path' in obj:
                     validate.tag_path(obj['path'])
@@ -367,10 +374,10 @@ class TagUpdate(BaseHandler):
     def delete(self, project_id, tag_id):
         project, privileges = self.get_project(project_id)
         if not privileges.can_delete_tag():
-            return self.send_error_json(403, "Unauthorized")
+            return self.send_error_json(403, self.gettext("Unauthorized"))
         tag = self.db.query(database.Tag).get(int(tag_id))
         if tag is None or tag.project_id != project.id:
-            return self.send_error_json(404, "No such tag")
+            return self.send_error_json(404, self.gettext("No such tag"))
         self.db.delete(tag)
         cmd = database.Command.tag_delete(
             self.current_user,
@@ -392,7 +399,7 @@ class TagMerge(BaseHandler):
     def post(self, project_id):
         project, privileges = self.get_project(project_id)
         if not privileges.can_merge_tags():
-            return self.send_error_json(403, "Unauthorized")
+            return self.send_error_json(403, self.gettext("Unauthorized"))
         obj = self.get_json()
         tag_src = self.db.query(database.Tag).get(obj['src'])
         tag_dest = self.db.query(database.Tag).get(obj['dest'])
@@ -402,7 +409,7 @@ class TagMerge(BaseHandler):
             or tag_dest is None
             or tag_dest.project_id != project.id
         ):
-            return self.send_error_json(404, "No such tag")
+            return self.send_error_json(404, self.gettext("No such tag"))
 
         # Remove tag from tag_src if it's already in tag_dest
         highlights_in_dest = (
@@ -445,7 +452,7 @@ class HighlightAdd(BaseHandler):
     def post(self, project_id, document_id):
         document, privileges = self.get_document(project_id, document_id, True)
         if not privileges.can_add_highlight():
-            return self.send_error_json(403, "Unauthorized")
+            return self.send_error_json(403, self.gettext("Unauthorized"))
         obj = self.get_json()
         start, end = obj['start_offset'], obj['end_offset']
         new_tags = set(obj.get('tags', []))
@@ -458,7 +465,7 @@ class HighlightAdd(BaseHandler):
             .all()
         )
         if set(tag.id for tag in tags) != new_tags:
-            return self.send_error_json(400, "Tag not in project")
+            return self.send_error_json(400, self.gettext("No such tag"))
 
         snippet = extract.extract(document.contents, start, end)
         hl = database.Highlight(document=document,
@@ -497,11 +504,11 @@ class HighlightUpdate(BaseHandler):
     def post(self, project_id, document_id, highlight_id):
         document, privileges = self.get_document(project_id, document_id)
         if not privileges.can_add_highlight():
-            return self.send_error_json(403, "Unauthorized")
+            return self.send_error_json(403, self.gettext("Unauthorized"))
         obj = self.get_json()
         hl = self.db.query(database.Highlight).get(int(highlight_id))
         if hl is None or hl.document_id != document.id:
-            return self.send_error_json(404, "No such highlight")
+            return self.send_error_json(404, self.gettext("No such highlight"))
         if obj:
             if 'start_offset' in obj:
                 hl.start_offset = obj['start_offset']
@@ -525,7 +532,10 @@ class HighlightUpdate(BaseHandler):
                         .all()
                 )
                 if set(tag.id for tag in tags) != new_tags:
-                    return self.send_error_json(400, "Tag not in project")
+                    return self.send_error_json(
+                        400,
+                        self.gettext("No such tag"),
+                    )
 
                 # Update tags in database
                 (
@@ -569,10 +579,10 @@ class HighlightUpdate(BaseHandler):
     def delete(self, project_id, document_id, highlight_id):
         document, privileges = self.get_document(project_id, document_id)
         if not privileges.can_delete_highlight():
-            return self.send_error_json(403, "Unauthorized")
+            return self.send_error_json(403, self.gettext("Unauthorized"))
         hl = self.db.query(database.Highlight).get(int(highlight_id))
         if hl is None or hl.document_id != document.id:
-            return self.send_error_json(404, "No such highlight")
+            return self.send_error_json(404, self.gettext("No such highlight"))
         old_tags = list(
             self.db.query(database.HighlightTag)
             .filter(database.HighlightTag.highlight == hl)
@@ -675,7 +685,7 @@ class MembersUpdate(BaseHandler):
             # Special case: you are always allowed to remove yourself
             pass
         elif not privileges.can_edit_members():
-            return self.send_error_json(403, "Unauthorized")
+            return self.send_error_json(403, self.gettext("Unauthorized"))
 
         # Get all members
         members = (
@@ -736,7 +746,10 @@ class MembersUpdate(BaseHandler):
                 break
         else:
             self.db.rollback()
-            return self.send_error_json(400, "There must be one admin")
+            return self.send_error_json(
+                400,
+                self.gettext("There must be one admin"),
+            )
 
         self.db.commit()
         for cmd in commands:
@@ -789,11 +802,20 @@ class ProjectImport(BaseHandler):
                 'sqlite:///%s' % filename,
                 external=True,
             )()
+        except database.UnknownVersion:
+            return self.send_error_json(400, self.gettext(
+                "This database is an unknown version. It might have been "
+                + "written by a more recent version of Taguette, please check "
+                + "for updates",
+            ))
+        except alembic.util.exc.CommandError:
+            return self.send_error_json(500, self.gettext(
+                "This database could not be updated to the current version",
+            ))
         except (DatabaseError, NoSuchTableError):
-            return self.send_error_json(
-                400,
+            return self.send_error_json(400, self.gettext(
                 "This is not a Taguette project file",
-            )
+            ))
 
         # List projects
         projects = src_db.execute(database.Project.__table__.select())
@@ -825,10 +847,9 @@ class ProjectImport(BaseHandler):
                 external=True,
             )()
         except (DatabaseError, NoSuchTableError):
-            return self.send_error_json(
-                400,
+            return self.send_error_json(400, self.gettext(
                 "This is not a Taguette project file",
-            )
+            ))
 
         # Copy data
         new_project_id = database.copy_project(

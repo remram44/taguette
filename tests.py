@@ -831,7 +831,7 @@ class TestMultiuser(MyHTTPTestCase):
         ) as response:
             self.assertEqual(response.status, 400)
             self.assertEqual(await response.json(),
-                             {"error": "Tag not in project"})
+                             {"error": "No such tag"})
 
         # Create highlight in document 2, using tags from project 1
         async with self.apost(
@@ -840,7 +840,7 @@ class TestMultiuser(MyHTTPTestCase):
         ) as response:
             self.assertEqual(response.status, 400)
             self.assertEqual(await response.json(),
-                             {"error": "Tag not in project"})
+                             {"error": "No such tag"})
 
         # Create highlight 2 in document 2
         async with self.apost(
