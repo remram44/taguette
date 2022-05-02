@@ -392,7 +392,7 @@ python-versions = ">=3.7"
 
 [[package]]
 name = "opentelemetry-api"
-version = "1.10.0"
+version = "1.6.2"
 description = "OpenTelemetry Python API"
 category = "main"
 optional = false
@@ -400,6 +400,22 @@ python-versions = ">=3.6"
 
 [package.dependencies]
 Deprecated = ">=1.2.6"
+
+[[package]]
+name = "opentelemetry-distro"
+version = "0.25b2"
+description = "OpenTelemetry Python Distro"
+category = "main"
+optional = true
+python-versions = ">=3.6"
+
+[package.dependencies]
+opentelemetry-api = ">=1.3,<2.0"
+opentelemetry-instrumentation = "0.25b2"
+opentelemetry-sdk = "1.6.2"
+
+[package.extras]
+otlp = ["opentelemetry-exporter-otlp (==1.6.2)"]
 
 [[package]]
 name = "opentelemetry-instrumentation"
@@ -449,6 +465,18 @@ opentelemetry-util-http = "0.25b2"
 [package.extras]
 instruments = ["tornado (>=6.0)"]
 test = ["opentelemetry-test (==0.25b2)", "tornado (>=6.0)"]
+
+[[package]]
+name = "opentelemetry-sdk"
+version = "1.6.2"
+description = "OpenTelemetry Python SDK"
+category = "main"
+optional = true
+python-versions = ">=3.6"
+
+[package.dependencies]
+opentelemetry-api = "1.6.2"
+opentelemetry-semantic-conventions = "0.25b2"
 
 [[package]]
 name = "opentelemetry-semantic-conventions"
@@ -896,13 +924,13 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 
 [extras]
 mysql = ["pymysql", "cryptography"]
-otel = ["opentelemetry-instrumentation-sqlalchemy", "opentelemetry-instrumentation-tornado"]
+otel = ["opentelemetry-distro", "opentelemetry-instrumentation-sqlalchemy", "opentelemetry-instrumentation-tornado"]
 postgres = ["psycopg2"]
 
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<4"
-content-hash = "9dd93855f8bd599697f2566cab51a56da1b47a2cc8ec99e0728b6db17b7e8ae0"
+content-hash = "ec689582722884db491590fc7cb1c37858308f62dd4e4b47c7621d7476d3f5dc"
 
 [metadata.files]
 aiohttp = [
@@ -1422,8 +1450,12 @@ multidict = [
     {file = "multidict-6.0.2.tar.gz", hash = "sha256:5ff3bd75f38e4c43f1f470f2df7a4d430b821c4ce22be384e1459cb57d6bb013"},
 ]
 opentelemetry-api = [
-    {file = "opentelemetry-api-1.10.0.tar.gz", hash = "sha256:210178a9bc0c3b62290d604b6351b17fbccbc5eb0ac475ec60dd22242529d226"},
-    {file = "opentelemetry_api-1.10.0-py3-none-any.whl", hash = "sha256:ee56d74d8576807d86e0791bcfa44ec2c9abeec3f5ea080de09fd5fe7c442655"},
+    {file = "opentelemetry-api-1.6.2.tar.gz", hash = "sha256:d28513e948014a61b66472a9a5c51b6cc5f9f9f7f2785ad2c3d0006e9b0b9103"},
+    {file = "opentelemetry_api-1.6.2-py3-none-any.whl", hash = "sha256:223ba94033cc03cf3dc9be20304e90300402a8e9b60979ae7f4b76c4b1f76b0a"},
+]
+opentelemetry-distro = [
+    {file = "opentelemetry-distro-0.25b2.tar.gz", hash = "sha256:a80b12cb8fb50fc82bd7bb1e4862ee3fa0500f9e31980967d9eeb1da5b4d74c6"},
+    {file = "opentelemetry_distro-0.25b2-py3-none-any.whl", hash = "sha256:d8e8c55a4a80dc445656fc2404627d5c3ed30aa97e2870fd2cf97e4ca91da057"},
 ]
 opentelemetry-instrumentation = [
     {file = "opentelemetry-instrumentation-0.25b2.tar.gz", hash = "sha256:473426972781b544047acf0ffee757cdbe2254842e6dc44a8d56c027a0e5aaa1"},
@@ -1436,6 +1468,10 @@ opentelemetry-instrumentation-sqlalchemy = [
 opentelemetry-instrumentation-tornado = [
     {file = "opentelemetry-instrumentation-tornado-0.25b2.tar.gz", hash = "sha256:6af8c88bc4d908235f845643d898c71df83ec13b110955cf3071fdaa4e006137"},
     {file = "opentelemetry_instrumentation_tornado-0.25b2-py3-none-any.whl", hash = "sha256:34c0487f4ec89d79bab0f60d78544cba3eab1573a429844c01e925b8ad23a76e"},
+]
+opentelemetry-sdk = [
+    {file = "opentelemetry-sdk-1.6.2.tar.gz", hash = "sha256:223a73aff23a07655378d74b9ec8aa2fb412a36be538b1c7179619194cc02b6e"},
+    {file = "opentelemetry_sdk-1.6.2-py3-none-any.whl", hash = "sha256:68d29873212184b975dcd280737b451355bd249af0ee27977faf85a0d5cf615e"},
 ]
 opentelemetry-semantic-conventions = [
     {file = "opentelemetry-semantic-conventions-0.25b2.tar.gz", hash = "sha256:f59a06acc3258b29b9048c4c83ea72032bf7c3c9607a7dfa6bf40593f8fbdd91"},

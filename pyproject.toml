@@ -68,6 +68,7 @@ subtitle-parser = ">=1,<2"
 tornado = ">=6.1"
 XlsxWriter = ">=1.4,<4"
 
+opentelemetry-distro = {version = "*", optional = true}
 opentelemetry-instrumentation-sqlalchemy = {version = ">=0.24b0,<0.26", optional = true}
 opentelemetry-instrumentation-tornado = {version = ">=0.24b0,<0.26", optional = true}
 
@@ -86,6 +87,7 @@ selenium = ">=4,<5"
 
 [tool.poetry.extras]
 otel = [
+    "opentelemetry-distro",
     "opentelemetry-instrumentation-sqlalchemy",
     "opentelemetry-instrumentation-tornado",
 ]
