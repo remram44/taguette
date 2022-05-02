@@ -1,8 +1,8 @@
 Changelog
 =========
 
-1.3.0 (???)
------------
+1.3.0 (2022-05-02)
+------------------
 
 Bugfixes:
 * Fix JavaScript error when trying to import a SQLite3 file with no projects in it
