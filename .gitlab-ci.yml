@@ -114,6 +114,23 @@ mariadb:
     - scripts/update_translations.sh
     - python -Wd tests.py -v
 
+mssql:
+  stage: test
+  image: python:3.10
+  services:
+    - alias: mssql
+      name: mcr.microsoft.com/mssql/server:2019-CU15-ubuntu-20.04
+  variables:
+    ACCEPT_EULA: y
+    SA_PASSWORD: H4ckmeH4ckme
+    TAGUETTE_TEST_DB: mssql+pyodbc://sa:H4ckmeH4ckme@mssql/msdb
+  script:
+    - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.12
+    - $HOME/.poetry/bin/poetry config virtualenvs.create false
+    - $HOME/.poetry/bin/poetry install --no-interaction -E mssql
+    - scripts/update_translations.sh
+    - python -Wd tests.py -v
+
 sqlite3_pypy:
   stage: test
   image: pypy:3.8
