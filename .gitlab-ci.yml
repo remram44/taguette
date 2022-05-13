@@ -123,8 +123,12 @@ mssql:
   variables:
     ACCEPT_EULA: y
     SA_PASSWORD: H4ckmeH4ckme
-    TAGUETTE_TEST_DB: mssql+pyodbc://sa:H4ckmeH4ckme@mssql/msdb
+    TAGUETTE_TEST_DB: mssql+pyodbc://sa:H4ckmeH4ckme@mssql/msdb?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=Yes
   script:
+    - curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+    - curl https://packages.microsoft.com/config/debian/11/prod.list > /etc/apt/sources.list.d/mssql-release.list
+    - apt-get update
+    - DEBIAN_FRONTEND=noninteractive apt-get install -yy unixodbc-dev msodbcsql18
     - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.12
     - $HOME/.poetry/bin/poetry config virtualenvs.create false
     - $HOME/.poetry/bin/poetry install --no-interaction -E mssql
