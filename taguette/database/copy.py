@@ -67,7 +67,7 @@ def copy_project(
         validators=dict(
             name=validate.document_name,
             description=validate.description,
-            filename=validate.filename,
+            filename=lambda n: n == validate.filename(n),
             contents=convert.is_html_safe,
         ),
     )
@@ -155,7 +155,7 @@ def copy_project(
             tag_path=validate.tag_path,
             src_tag_id=lambda v: isinstance(v, int),
             dest_tag_id=lambda v: isinstance(v, int),
-            member=validate.user_login,
+            member=lambda n: n == validate.user_login(n),
             privileges=lambda v: v in Privileges.__members__,
         )
 
