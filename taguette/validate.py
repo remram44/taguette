@@ -121,6 +121,7 @@ def filename(name):
         name = name[name.rindex('\\') + 1:]
     name, ext = os.path.splitext(name)
     name = name[:20]
+    ext = ext[:8]
     name = _not_ascii_re.sub('', name).strip('._')
     if not name:
         name = '_'
