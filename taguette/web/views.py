@@ -45,22 +45,17 @@ class Index(BaseHandler):
     def get(self):
         if self.current_user is not None:
             if self.get_query_argument('token', None):
+                # Remove the token from the URL
                 return self.redirect(self.reverse_url('index'))
             user = self.db.query(database.User).get(self.current_user)
-            if user is None:
-                logger.warning("User is logged in as non-existent user %r",
-                               self.current_user)
-                self.logout()
-                # Fall through to welcome page
-            else:
-                return self.render(
-                    'index.html',
-                    user=user,
-                    projects=[m.project for m in user.project_memberships],
-                    can_import_project=(
-                        self.application.config['SQLITE3_IMPORT_ENABLED']
-                    ),
-                )
+            return self.render(
+                'index.html',
+                user=user,
+                projects=[m.project for m in user.project_memberships],
+                can_import_project=(
+                    self.application.config['SQLITE3_IMPORT_ENABLED']
+                ),
+            )
         elif not self.application.config['MULTIUSER']:
             token = self.get_query_argument('token', None)
             if token and token == self.application.single_user_token:
@@ -247,11 +242,6 @@ class Account(BaseHandler):
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         user = self.db.query(database.User).get(self.current_user)
-        if user is None:
-            logger.warning("User is logged in as non-existent user %r",
-                           self.current_user)
-            self.logout()
-            raise HTTPError(403)
         return self.render('account.html', user=user,
                            languages=self.get_languages(),
                            current_language=user.language)
@@ -262,11 +252,6 @@ class Account(BaseHandler):
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         user = self.db.query(database.User).get(self.current_user)
-        if user is None:
-            logger.warning("User is logged in as non-existent user %r",
-                           self.current_user)
-            self.logout()
-            raise HTTPError(403)
         try:
             email = self.get_body_argument('email', None)
             language = self.get_body_argument('language', None)
@@ -284,10 +269,6 @@ class Account(BaseHandler):
             if language not in tornado.locale.get_supported_locales():
                 language = None
             user.language = language
-            if language is None:
-                self.clear_cookie('language')
-            else:
-                self.set_secure_cookie('language', language)
             self.db.commit()
             return self.redirect(self.reverse_url('account'))
         except validate.InvalidFormat as e:
