@@ -26,6 +26,8 @@ def main():
                         help="Validate documents")
     parser.add_argument('--tags', action='store_true',
                         help="Validate tags")
+    parser.add_argument('--export', action='store_true',
+                        help="Try to export all projects")
 
     args = parser.parse_args()
 
