@@ -323,7 +323,7 @@ def main():
                 missing = True
         if missing:
             sys.exit(2)
-        if not config['BASE_PATH'] or config['BASE_PATH'][0] != '/':
+        if config['BASE_PATH'] and config['BASE_PATH'][0] != '/':
             print(_("Invalid BASE_PATH"))
         config['BASE_PATH'] = config['BASE_PATH'].strip('/')
         if config['BASE_PATH']:
