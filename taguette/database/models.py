@@ -13,7 +13,7 @@ from sqlalchemy import Column, ForeignKey, Index, TypeDecorator, MetaData, \
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import column_property, deferred, relationship
 from sqlalchemy.sql import functions
-from sqlalchemy.types import DateTime, Enum, Integer, String, Text
+from sqlalchemy.types import Boolean, DateTime, Enum, Integer, String, Text
 
 from .base import PROM_COMMAND
 
@@ -54,6 +54,7 @@ class User(Base):
     created = Column(DateTime, nullable=False,
                      default=lambda: datetime.utcnow())
     hashed_password = Column(String(192), nullable=True)
+    disabled = Column(Boolean, nullable=False, default=False)
     password_set_date = Column(DateTime, nullable=True)
     language = Column(String(10), nullable=True)
     email = Column(String(256), nullable=True, index=True, unique=True)
