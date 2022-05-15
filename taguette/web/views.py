@@ -123,7 +123,7 @@ class Login(BaseHandler):
         else:
             password = self.get_body_argument('password')
             user = self.db.query(database.User).get(login)
-            if user is None:
+            if user is None or user.disabled:
                 logger.info("Login: non-existent user")
             elif not await user.check_password(password):
                 logger.info("Login: invalid password for %r", user.login)
@@ -295,7 +295,9 @@ class AskResetPassword(BaseHandler):
             raise HTTPError(404)
         email = self.get_body_argument('email')
         user = (
-            self.db.query(database.User).filter(database.User.email == email)
+            self.db.query(database.User)
+            .filter(database.User.email == email)
+            .filter(database.User.disabled == False)  # noqa: E712
         ).one_or_none()
         if user is None:
             return await self.render(
@@ -374,7 +376,7 @@ class SetNewPassword(BaseHandler):
             raise HTTPError(403, _f("Invalid token"))
         ts, login, email = reset_token_clear.decode('utf-8').split('|', 2)
         user = self.db.query(database.User).get(login)
-        if not user or user.email != email:
+        if not user or user.disabled or user.email != email:
             raise HTTPError(403, _f("No user associated with that token"))
         if user.password_set_date >= datetime.utcfromtimestamp(int(ts)):
             # Password has been changed after the reset token was created
