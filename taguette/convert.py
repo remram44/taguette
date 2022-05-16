@@ -19,7 +19,7 @@ import sys
 import tempfile
 from xml.etree import ElementTree
 
-from .utils import log_and_wait_proc
+from .utils import log_and_wait_proc, sanitize_filename
 
 
 logger = logging.getLogger(__name__)
@@ -459,7 +459,7 @@ async def to_html(body, content_type, filename, config):
         tmp = tempfile.mkdtemp(prefix='taguette_wv_')
         try:
             # Write file to temporary directory
-            input_filename = os.path.join(tmp, filename)
+            input_filename = os.path.join(tmp, sanitize_filename(filename))
             with open(input_filename, 'wb') as fp:
                 fp.write(body)
 

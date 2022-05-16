@@ -12,6 +12,7 @@ import tempfile
 from tornado.concurrent import Future
 import tornado.log
 from tornado.web import MissingArgumentError, HTTPError
+from urllib.parse import unquote
 
 from .. import exact_version
 from .. import convert
@@ -61,7 +62,7 @@ class CheckUser(BaseHandler):
             raise HTTPError(404)
         login = self.get_json()['login']
         try:
-            login = validate.user_login(login)
+            login = validate.fix_user_login(login)
         except validate.InvalidFormat:
             pass
         else:
@@ -121,7 +122,7 @@ class DocumentAdd(BaseHandler):
             except (KeyError, IndexError):
                 raise MissingArgumentError('file')
             content_type = file.content_type
-            filename = validate.filename(file.filename)
+            filename = validate.fix_filename(unquote(file.filename))
             direction = self.get_body_argument('text_direction',
                                                'LEFT_TO_RIGHT')
             try:
@@ -698,7 +699,7 @@ class MembersUpdate(BaseHandler):
         commands = []
         for login, user_info in obj.items():
             try:
-                login = validate.user_login(login)
+                login = validate.fix_user_login(login)
             except validate.InvalidFormat as e:
                 return self.send_error_json(400, self.gettext(e.message))
             if not user_info:

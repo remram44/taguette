@@ -118,7 +118,7 @@ class Login(BaseHandler):
             raise HTTPError(404)
         login = self.get_body_argument('login')
         try:
-            login = validate.user_login(login)
+            login = validate.fix_user_login(login)
         except validate.InvalidFormat:
             logger.info("Login: invalid login")
         else:
@@ -176,7 +176,7 @@ class Register(BaseHandler):
             login = self.get_body_argument('login')
             password1 = self.get_body_argument('password1')
             password2 = self.get_body_argument('password2')
-            login = validate.user_login(login, new=True)
+            login = validate.fix_user_login(login, new=True)
             validate.user_password(password1)
             email = self.get_body_argument('email', '')
             if email:

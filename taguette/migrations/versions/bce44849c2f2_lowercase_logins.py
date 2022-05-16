@@ -62,7 +62,7 @@ def upgrade():
     for row in logins:
         login, = row
         try:
-            changed = validate.user_login(login)
+            changed = validate.fix_user_login(login)
         except validate.InvalidFormat:
             error = True
             print("User login %r does not abide to new restrictions" % login,
