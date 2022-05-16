@@ -24,6 +24,7 @@ from xml.etree import ElementTree
 from taguette import exact_version
 from taguette import convert, database, extract, import_codebook, main, \
     validate, web
+from taguette.utils import sanitize_filename
 
 
 if 'TAGUETTE_TEST_DB' in os.environ:
@@ -135,22 +136,29 @@ class TestConvert(AsyncTestCase):
         )
 
     def test_filename(self):
-        validate.filename.windows = True  # escape device names
-
-        self.assertEqual(validate.filename('/etc/passwd'), 'passwd')
-        self.assertEqual(validate.filename('/etc/passwd.txt'), 'passwd.txt')
-        self.assertEqual(validate.filename('ééé'), '_')
-        self.assertEqual(validate.filename('ééé.pdf'), '_.pdf')
-        self.assertEqual(validate.filename('/tmp/NUL.pdf'), '_NUL.pdf')
-        self.assertEqual(validate.filename('/tmp/nul.pdf'), '_nul.pdf')
-        self.assertEqual(
-            validate.filename('a_very_long_file_name.pdf'),
-            'a_very_long_file_nam.pdf',
-        )
-        self.assertEqual(
-            validate.filename('a_very_long_file_name'),
-            'a_very_long_file_nam',
-        )
+        old_windows_flag = sanitize_filename.windows
+        sanitize_filename.windows = True  # escape device names
+        try:
+            self.assertEqual(sanitize_filename('/etc/passwd'), 'passwd')
+            self.assertEqual(sanitize_filename('/etc/pass.txt'), 'pass.txt')
+            self.assertEqual(sanitize_filename('ééé'), '_')
+            self.assertEqual(sanitize_filename('ééé.pdf'), '_.pdf')
+            self.assertEqual(sanitize_filename('/tmp/NUL.pdf'), '_NUL.pdf')
+            self.assertEqual(sanitize_filename('/tmp/nul.pdf'), '_nul.pdf')
+            self.assertEqual(
+                sanitize_filename('a_very_long_file_name.pdf'),
+                'a_very_long_file_nam.pdf',
+            )
+            self.assertEqual(
+                sanitize_filename('a_very_long_file_name'),
+                'a_very_long_file_nam',
+            )
+            self.assertEqual(
+                sanitize_filename('a_long.file_extension'),
+                'a_long.file_ex',
+            )
+        finally:
+            sanitize_filename.windows = old_windows_flag
 
     @gen_test
     async def test_webvtt(self):
@@ -731,7 +739,9 @@ class TestMultiuser(MyHTTPTestCase):
         async with self.apost(
             '/api/project/1/document/new',
             data=dict(name=name, description=''),
-            files=dict(file=('../NUL.html', 'text/plain', b'content here')),
+            files=dict(
+                file=('/dir/r\xE9 mi.html', 'text/plain', b'content here'),
+            ),
         ) as response:
             self.assertEqual(response.status, 200)
             self.assertEqual(await response.json(), {"created": 1})
@@ -739,7 +749,7 @@ class TestMultiuser(MyHTTPTestCase):
         doc = db.query(database.Document).get(1)
         self.assertEqual(doc.name, name)
         self.assertEqual(doc.description, '')
-        self.assertEqual(doc.filename, '_NUL.html')
+        self.assertEqual(doc.filename, 'ré mi.html')
         self.assertEqual(
             await poll_proj1,
             {'type': 'document_add', 'id': 3, 'document_id': 1,

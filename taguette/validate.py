@@ -1,5 +1,4 @@
 import os
-import re
 import string
 
 from .utils import _f
@@ -37,18 +36,25 @@ ALLOWED_LOGIN_CHARACTERS = (
 )
 
 
-def user_login(login, new=False):
+def fix_user_login(login, *, new=False):
+    login = login.lower()
+    user_login(login, new=new)
+    return login
+
+
+def user_login(login, *, new=False):
     if not isinstance(login, str):
         raise ValueError("Login is not a string")
     if not login:
         raise InvalidFormat(_f("User login cannot be empty"))
     if len(login) > (20 if new else 25):
         raise InvalidFormat(_f("User login is too long"))
-    login = login.lower()
+    if login != login.lower():
+        raise InvalidFormat(_f("User login is not lowercase"))
     chars = ALLOWED_LOGIN_CHARACTERS_NEW if new else ALLOWED_LOGIN_CHARACTERS
     if any(c not in chars for c in login):
         raise InvalidFormat(_f("User login contains forbidden characters"))
-    return login
+    return True
 
 
 def user_email(email):
@@ -93,46 +99,36 @@ def tag_path(path):
     return True
 
 
-_windows_device_files = ('CON', 'AUX', 'COM1', 'COM2', 'COM3', 'COM4', 'LPT1',
-                         'LPT2', 'LPT3', 'PRN', 'NUL')
-_not_ascii_re = re.compile(r'[^A-Za-z0-9_.-]')
-_percent_escapes_re = re.compile(r'%[0-9A-Fa-f]{2}')
-
-
 def filename(name):
-    """Sanitize a filename.
-
-    This takes a filename, for example provided by a browser with a file
-    upload, and turn it into something that is safe for opening.
-
-    Adapted from werkzeug's secure_filename(), copyright 2007 the Pallets team.
-    https://palletsprojects.com/p/werkzeug/
-    """
     if not isinstance(name, str):
         raise ValueError("File name is not a string")
     if not name:
         raise ValueError("File name cannot be empty")
-    name = _percent_escapes_re.sub('_', name)
+    if len(name) > 100:
+        raise InvalidFormat(_f("File name is too long"))
+    if '\x00' in name:
+        raise InvalidFormat(_f("Invalid file name"))
+    return True
+
+
+def fix_filename(name):
+    if not isinstance(name, str):
+        raise ValueError("File name is not a string")
+    if not name:
+        raise ValueError("File name cannot be empty")
     if '/' in name:
         name = name[name.rindex('/') + 1:]
-    if filename.windows and '\\' in name:
+    if fix_filename.windows and '\\' in name:
         # It seems that IE gets that wrong, at least when the file is from
         # a network share
         name = name[name.rindex('\\') + 1:]
     name, ext = os.path.splitext(name)
-    name = name[:20]
+    name = name[:50]
     ext = ext[:8]
-    name = _not_ascii_re.sub('', name).strip('._')
     if not name:
         name = '_'
-    ext = _not_ascii_re.sub('', ext)
-    if (
-        filename.windows
-        and name.split('.')[0].upper() in _windows_device_files
-    ):
-        name = '_' + name
     name = name + ext
     return name
 
 
-filename.windows = os.name == 'nt'
+fix_filename.windows = os.name == 'nt'
