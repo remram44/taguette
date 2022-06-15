@@ -573,6 +573,11 @@ class ImportCodebook(BaseHandler):
             try:
                 tags = import_codebook.list_tags(reader)
             except import_codebook.InvalidCodebook as e:
+                logger.warning(
+                    "Invalid codebook: %s%s",
+                    e.message,
+                    (" (row %d)" % e.row) if e.row is not None else '',
+                )
                 msg = self.gettext(e.message)
                 if e.row is not None:
                     msg = self.gettext("Row %d: %s") % (e.row, msg)
