@@ -5,6 +5,7 @@
 {% block contents %}
 <h1>{% trans "title" %}Import a codebook{% endtrans %}</h1>
 <p>{% trans %}Use this form to import an existing codebook into your project. Existing tags will not be deleted, new tags will be added alongside them.{% endtrans %}</p>
+<p>{% trans %}The file should have a column for the tag names, called 'name' or 'tag' or 'path'. It can also optionally have a column called 'description'. Other columns are ignored.{% endtrans %}</p>
 {% if error %}
 <div class="alert alert-danger">{{ error }}</div>
 {% endif %}
