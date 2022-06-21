@@ -11,6 +11,7 @@ Bugfixes:
 Enhancements:
 * Add Swedish translation
 * Add a script to validate the current database, useful if you have been using it across Taguette versions, or if you're writing to it programmatically
+* When adding a document, automatically change to it
 
 1.3.0 (2022-05-02)
 ------------------
