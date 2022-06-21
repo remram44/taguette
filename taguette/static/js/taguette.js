@@ -766,6 +766,7 @@ function addTag(tag) {
   }
   tags[tag.id] = tag;
   updateTagsList();
+  document.getElementById('highlight-add-tags-' + tag.id).checked = true; 
 }
 
 function removeTag(tag_id) {
