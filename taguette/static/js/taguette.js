@@ -648,6 +648,10 @@ document.getElementById('document-add-form').addEventListener('submit', function
       $(document_add_modal).modal('hide');
       document.getElementById('document-add-form').reset();
       console.log("Document upload complete");
+      var doc_id = xhr.response.created;
+      var url = base_path + '/project/' + project_id + '/document/' + doc_id;
+      window.history.pushState({document_id: doc_id}, "Document " + doc_id, url);
+      loadDocument(doc_id);
     } else {
       console.error("Document upload failed: status", xhr.status);
       var error = null;
