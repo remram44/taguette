@@ -524,6 +524,7 @@ project_description_input.addEventListener('blur', projectMetadataChanged);
 
 var current_document = null;
 var current_tag = null;
+var added_tag = null;
 var documents_list = document.getElementById('documents-list');
 
 function linkDocument(elem, doc_id) {
@@ -766,7 +767,9 @@ function addTag(tag) {
   }
   tags[tag.id] = tag;
   updateTagsList();
-  document.getElementById('highlight-add-tags-' + tag.id).checked = true; 
+  if(tag.id == added_tag){
+    document.getElementById('highlight-add-tags-' + tag.id).checked = true; 
+  }
 }
 
 function removeTag(tag_id) {
@@ -973,8 +976,9 @@ document.getElementById('tag-add-form').addEventListener('submit', function(e) {
     );
   }
   showSpinner();
-  req.then(function() {
+  req.then(function(reply) {
     console.log("Tag posted");
+    added_tag = reply.id;
     $(tag_add_modal).modal('hide');
     document.getElementById('tag-add-form').reset();
   })
