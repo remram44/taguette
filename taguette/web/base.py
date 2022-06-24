@@ -191,6 +191,11 @@ class Application(GracefulExitApplication):
         else:
             self.terms_of_service = None
 
+        if config['EXTRA_FOOTER']:
+            self.extra_footer = config['EXTRA_FOOTER']
+        else:
+            self.extra_footer = None
+
         if config['MULTIUSER']:
             self.single_user_token = None
             logger.info("Starting in multi-user mode")
@@ -479,6 +484,7 @@ class BaseHandler(RequestHandler):
                     'REGISTRATION_ENABLED'
                 ],
                 tos=self.application.terms_of_service is not None,
+                extra_footer=self.application.extra_footer,
                 show_messages=self.current_user == 'admin',
                 version=exact_version(),
                 gettext=self.gettext,
