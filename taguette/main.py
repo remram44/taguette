@@ -105,8 +105,8 @@ TOS_FILE = 'tos.html'
 
 # Extra footer at the bottom of every page
 #EXTRA_FOOTER = """
-#  <p>This instance of Taguette is managed by Example University.
-#  Please <a href="mailto:it@example.org">email IT</a> with any questions.</p>
+#  | This instance of Taguette is managed by Example University.
+#  Please <a href="mailto:it@example.org">email IT</a> with any questions.
 #"""
 
 # Default language
