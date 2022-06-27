@@ -466,6 +466,14 @@ class BaseHandler(RequestHandler):
         self.clear_cookie('language')
 
     def render_string(self, template_name, **kwargs):
+        extra_footer = self.application.config['EXTRA_FOOTER']
+        if not extra_footer:
+            extra_footer = self.gettext(
+                ' | Please report issues via '
+                + '<a href="https://gitlab.com/remram44/taguette">GitLab</a> '
+                + 'or <a href="mailto:hi@taguette.org">hi@taguette.org</a>!'
+            )
+
         with tracer.start_as_current_span(
             'render_template',
             attributes={'template_name': template_name},
@@ -479,6 +487,7 @@ class BaseHandler(RequestHandler):
                     'REGISTRATION_ENABLED'
                 ],
                 tos=self.application.terms_of_service is not None,
+                extra_footer=extra_footer,
                 show_messages=self.current_user == 'admin',
                 version=exact_version(),
                 gettext=self.gettext,

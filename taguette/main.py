@@ -103,6 +103,12 @@ TOS_FILE = 'tos.html'
 # If set to None, no terms of service link will be displayed anywhere
 #TOS_FILE = None
 
+# Extra footer at the bottom of every page
+#EXTRA_FOOTER = """
+#  | This instance of Taguette is managed by Example University.
+#  Please <a href="mailto:it@example.org">email IT</a> with any questions.
+#"""
+
 # Default language
 DEFAULT_LANGUAGE = 'en_US'
 
@@ -145,6 +151,7 @@ DEFAULT_CONFIG = {
     'MULTIUSER': True,
     'BIND_ADDRESS': '0.0.0.0',
     'BASE_PATH': '',
+    'EXTRA_FOOTER': None,
     'REGISTRATION_ENABLED': True,
     'REDIS_SERVER': None,
     'SQLITE3_IMPORT_ENABLED': True,
