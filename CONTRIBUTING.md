@@ -37,7 +37,7 @@ Please follow the [Contributor Covenant](CODE_OF_CONDUCT.md) in all your interac
 
 # Resolving Merge Conflicts
 
-Depending on the order that merge requests get processed, your MR may result in a conflict and become un-mergable.  To correct this, do the following from the command line:
+Depending on the order that merge requests get processed, your MR may result in a conflict and become un-mergeable.  To correct this, do the following from the command line:
 
 Switch to your branch: `git checkout my-feature-branch-name`
 Pull in the latest upstream changes: `git pull upstream master`
@@ -68,7 +68,7 @@ The merge request should automatically update to reflect your changes.
 
 ## Best Practices for Contributing
 
-* Before you start coding, open an issue so that the community can discuss your change to ensure it is in line with the goals of the project and not being worked on by someone else. This allows for discussion and fine-tuning of your feature and results in a more succint and focused addition.
+* Before you start coding, open an issue so that the community can discuss your change to ensure it is in line with the goals of the project and not being worked on by someone else. This allows for discussion and fine-tuning of your feature and results in a more succinct and focused addition.
     * If you are fixing a small glitch or bug, you may make a MR without opening an issue.
     * If you are adding a large feature, create an issue so that we may give you feedback and agree on what makes the most sense for the project before making your change and submitting a MR (this will make sure you don't have to do major changes down the line).
 
