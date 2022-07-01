@@ -6,14 +6,14 @@ A spin on the phrase "tag it!", `Taguette <https://www.taguette.org/>`__ is a fr
 + Import PDFs, Word Docs (``.docx``), Text files (``.txt``), HTML, EPUB, MOBI, Open Documents (``.odt``), and Rich Text Files (``.rtf``).
 + Highlight words, sentences, or paragraphs and tag them with the codes *you* create.
 + (not yet) Group imported documents together (e.g. as 'Interview' or 'Lit Review').
-+ Export tagged documents, highlights for a specific tag, a list of tags with description and colors, and whole projects.
++ Export tagged documents, highlights for a specific tag, a list of tags with descriptions and colors, and whole projects.
 
 `Check out our website to learn more about how to install and get started. <https://www.taguette.org/>`__
 
 Motivation and goal
 -------------------
 
-Qualitative methods generate rich, detailed research materials that leave individuals’ perspectives intact  as well as provide multiple contexts for understanding phenomenon under study. Qualitative methods are used by a wide range of fields, such as anthropology, education, nursing, psychology, sociology, and marketing. Qualitative data has a similarly wide range: observations, interviews, documents, audiovisual materials, and more.
+Qualitative methods generate rich, detailed research materials that leave individuals' perspectives intact as well as provide multiple contexts for understanding the phenomenon under study. Qualitative methods are used by a wide range of fields, such as anthropology, education, nursing, psychology, sociology, and marketing. Qualitative data has a similarly wide range: observations, interviews, documents, audiovisual materials, and more.
 
 However - the software options for qualitative researchers are either **far too expensive**, don't allow for the seminal method of highlighting and tagging materials, *or actually perform quantitative analysis*, just on text.
 
