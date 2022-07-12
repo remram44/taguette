@@ -4,7 +4,7 @@ stages:
 
 sqlite3:
   stage: test
-  image: python:3.10
+  image: python:3.11.0b3
   script:
     - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.12
     - $HOME/.poetry/bin/poetry config virtualenvs.create false
@@ -22,7 +22,7 @@ sqlite3:
 
 sqlite3_redis:
   stage: test
-  image: python:3.10
+  image: python:3.11.0b3
   services:
     - redis:latest
   script:
@@ -34,7 +34,7 @@ sqlite3_redis:
 
 frontend_firefox:
   stage: test
-  image: python:3.10
+  image: python:3.11.0b3
   script:
     - apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -yy xvfb firefox-esr
     - curl -Lo /tmp/geckodriver.tar.gz https://github.com/mozilla/geckodriver/releases/download/v0.30.0/geckodriver-v0.30.0-linux64.tar.gz
@@ -48,7 +48,7 @@ frontend_firefox:
 
 frontend_chromium:
   stage: test
-  image: python:3.10
+  image: python:3.11.0b3
   script:
     - apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -yy xvfb chromium-driver
     - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.12
@@ -59,7 +59,7 @@ frontend_chromium:
 
 frontend_chromium_subdir:
   stage: test
-  image: python:3.10
+  image: python:3.11.0b3
   script:
     - apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -yy xvfb chromium-driver
     - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.12
@@ -70,19 +70,19 @@ frontend_chromium_subdir:
 
 sqlite3_latest:
   stage: test
-  image: python:3.10
+  image: python:3.11.0b3
   script:
     - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.12
     - $HOME/.poetry/bin/poetry config virtualenvs.create false
     - rm poetry.lock
-    - sed -i 's/^python = ".*$/python = "^3.10"/' pyproject.toml
+    - sed -i 's/^python = ".*$/python = "^3.11"/' pyproject.toml
     - $HOME/.poetry/bin/poetry install --no-interaction
     - scripts/update_translations.sh
     - python -Wd tests.py -v
 
 postgres:
   stage: test
-  image: python:3.10
+  image: python:3.11.0b3
   services:
     - postgres:latest
   variables:
@@ -98,7 +98,7 @@ postgres:
 
 mariadb:
   stage: test
-  image: python:3.10
+  image: python:3.11.0b3
   services:
     - mariadb:latest
   variables:
@@ -111,28 +111,5 @@ mariadb:
     - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.12
     - $HOME/.poetry/bin/poetry config virtualenvs.create false
     - $HOME/.poetry/bin/poetry install --no-interaction -E mysql
-    - scripts/update_translations.sh
-    - python -Wd tests.py -v
-
-sqlite3_pypy:
-  stage: test
-  image: pypy:3.8
-  script:
-    - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.12
-    - $HOME/.poetry/bin/poetry config virtualenvs.create false
-    - pypy3 -m venv /tmp/venv
-    - . /tmp/venv/bin/activate
-    - pypy3 -m pip install -U pip
-    - $HOME/.poetry/bin/poetry install --no-interaction
-    - scripts/update_translations.sh
-    - python -Wd tests.py -v
-
-sqlite3_py3.7:
-  stage: test
-  image: python:3.7
-  script:
-    - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.12
-    - $HOME/.poetry/bin/poetry config virtualenvs.create false
-    - $HOME/.poetry/bin/poetry install --no-interaction
     - scripts/update_translations.sh
     - python -Wd tests.py -v
