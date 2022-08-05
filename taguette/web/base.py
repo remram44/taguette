@@ -355,6 +355,8 @@ class BaseHandler(RequestHandler):
 
     def set_default_headers(self):
         self.set_header('Server', 'Taguette/%s' % exact_version())
+        self.set_header('X-Frame-Options', 'DENY')
+        self.set_header('Content-Security-Policy', "frame-ancestors 'none';")
 
     @property
     def db(self):
