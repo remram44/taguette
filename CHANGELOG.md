@@ -12,6 +12,8 @@ Enhancements:
 * Add Swedish translation
 * Add a script to validate the current database, useful if you have been using it across Taguette versions, or if you're writing to it programmatically
 * When adding a document, automatically change to it
+* Add `EXTRA_FOOTER` config setting to easily add information about a self-hosted instance
+* Enable SQLite's auto_vacuum mode on newly created databases
 
 1.3.0 (2022-05-02)
 ------------------
