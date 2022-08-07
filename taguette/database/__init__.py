@@ -2,7 +2,6 @@ import alembic.command
 import alembic.config
 from alembic.runtime.migration import MigrationContext
 from alembic.script import ScriptDirectory
-import contextlib
 import logging
 import opentelemetry.trace
 import os
@@ -31,22 +30,9 @@ class UnknownVersion(ValueError):
 
 
 def set_sqlite_pragma(dbapi_connection, connection_record):
-    if set_sqlite_pragma.enabled:
-        cursor = dbapi_connection.cursor()
-        cursor.execute("PRAGMA foreign_keys=ON")
-        cursor.close()
-
-
-set_sqlite_pragma.enabled = True
-
-
-@contextlib.contextmanager
-def no_sqlite_pragma_check():
-    taguette.database.set_sqlite_pragma.enabled = False
-    try:
-        yield
-    finally:
-        taguette.database.set_sqlite_pragma.enabled = True
+    cursor = dbapi_connection.cursor()
+    cursor.execute("PRAGMA foreign_keys=ON")
+    cursor.close()
 
 
 def connect(db_url, *, external=False, create_tables=None):

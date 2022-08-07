@@ -9,7 +9,6 @@ from alembic import op
 from sqlalchemy.orm import Session
 import sys
 
-from taguette.database import no_sqlite_pragma_check
 from taguette import validate
 
 
@@ -22,27 +21,26 @@ depends_on = None
 
 def upgrade():
     # Add ON UPDATE CASCADE to foreign keys
-    with no_sqlite_pragma_check():
-        with op.batch_alter_table('project_members') as batch_op:
-            batch_op.drop_constraint(
-                'fk_project_members_user_login_users',
-                type_='foreignkey',
-            )
-            batch_op.create_foreign_key(
-                batch_op.f('fk_project_members_user_login_users'),
-                'users', ['user_login'], ['login'],
-                onupdate='CASCADE', ondelete='CASCADE',
-            )
-        with op.batch_alter_table('commands') as batch_op:
-            batch_op.drop_constraint(
-                'fk_commands_user_login_users',
-                type_='foreignkey',
-            )
-            batch_op.create_foreign_key(
-                batch_op.f('fk_commands_user_login_users'),
-                'users', ['user_login'], ['login'],
-                onupdate='CASCADE',
-            )
+    with op.batch_alter_table('project_members') as batch_op:
+        batch_op.drop_constraint(
+            'fk_project_members_user_login_users',
+            type_='foreignkey',
+        )
+        batch_op.create_foreign_key(
+            batch_op.f('fk_project_members_user_login_users'),
+            'users', ['user_login'], ['login'],
+            onupdate='CASCADE', ondelete='CASCADE',
+        )
+    with op.batch_alter_table('commands') as batch_op:
+        batch_op.drop_constraint(
+            'fk_commands_user_login_users',
+            type_='foreignkey',
+        )
+        batch_op.create_foreign_key(
+            batch_op.f('fk_commands_user_login_users'),
+            'users', ['user_login'], ['login'],
+            onupdate='CASCADE',
+        )
 
     # Update the login
     op.execute('UPDATE users SET login = lower(login);')
@@ -77,23 +75,22 @@ def upgrade():
 
 
 def downgrade():
-    with no_sqlite_pragma_check():
-        with op.batch_alter_table('project_members') as batch_op:
-            batch_op.drop_constraint(
-                batch_op.f('fk_project_members_user_login_users'),
-                type_='foreignkey',
-            )
-            batch_op.create_foreign_key(
-                'fk_project_members_user_login_users',
-                'users', ['user_login'], ['login'],
-                ondelete='CASCADE',
-            )
-        with op.batch_alter_table('commands') as batch_op:
-            batch_op.drop_constraint(
-                batch_op.f('fk_commands_user_login_users'),
-                type_='foreignkey',
-            )
-            batch_op.create_foreign_key(
-                'fk_commands_user_login_users',
-                'users', ['user_login'], ['login'],
-            )
+    with op.batch_alter_table('project_members') as batch_op:
+        batch_op.drop_constraint(
+            batch_op.f('fk_project_members_user_login_users'),
+            type_='foreignkey',
+        )
+        batch_op.create_foreign_key(
+            'fk_project_members_user_login_users',
+            'users', ['user_login'], ['login'],
+            ondelete='CASCADE',
+        )
+    with op.batch_alter_table('commands') as batch_op:
+        batch_op.drop_constraint(
+            batch_op.f('fk_commands_user_login_users'),
+            type_='foreignkey',
+        )
+        batch_op.create_foreign_key(
+            'fk_commands_user_login_users',
+            'users', ['user_login'], ['login'],
+        )
