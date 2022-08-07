@@ -94,6 +94,12 @@ def connect(db_url, *, external=False, create_tables=None):
                 if not engine.dialect.has_table(conn, table.name):
                     raise NoSuchTableError(table.name)
         elif create_tables:
+            # Set SQLite's auto_vacuum mode
+            if db_url.startswith('sqlite:'):
+                conn.exec_driver_sql(
+                    "PRAGMA auto_vacuum=1;"
+                )
+
             logger.warning("The tables don't seem to exist; creating")
             Base.metadata.create_all(bind=engine)
 
