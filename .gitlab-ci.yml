@@ -1,13 +1,13 @@
 before_script:
-  - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.12 && /root/.poetry/bin/poetry config virtualenvs.create false
-  - $HOME/.poetry/bin/poetry install --no-interaction
+  - curl -sSL https://install.python-poetry.org | python3 - && /root/.local/bin/poetry config virtualenvs.create false
+  - $HOME/.local/bin/poetry install --no-interaction
 
 pages:
   stage: deploy
   image: python:3.10
   script:
     - mkdir public
-    - $HOME/.poetry/bin/poetry run python scripts/generate.py public/
+    - $HOME/.local/bin/poetry run python scripts/generate.py public/
   artifacts:
     paths:
       - public
@@ -19,7 +19,7 @@ pages_test:
   image: python:3.10
   script:
     - mkdir pages
-    - TAGUETTE_TEST_LOCALE=y $HOME/.poetry/bin/poetry run python scripts/generate.py pages/
+    - TAGUETTE_TEST_LOCALE=y $HOME/.local/bin/poetry run python scripts/generate.py pages/
   artifacts:
     paths:
       - pages
