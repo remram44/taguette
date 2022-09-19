@@ -68,9 +68,9 @@ subtitle-parser = ">=1,<2"
 tornado = ">=6.1"
 XlsxWriter = ">=1.4,<4"
 
-opentelemetry-distro = {version = "*", optional = true}
-opentelemetry-instrumentation-sqlalchemy = {version = ">=0.24b0,<0.26", optional = true}
-opentelemetry-instrumentation-tornado = {version = ">=0.24b0,<0.26", optional = true}
+opentelemetry-distro = {version = "*", optional = true, allow-prereleases = true}
+opentelemetry-instrumentation-sqlalchemy = {version = ">=0.24b0,<0.26", optional = true, allow-prereleases = true}
+opentelemetry-instrumentation-tornado = {version = ">=0.24b0,<0.26", optional = true, allow-prereleases = true}
 
 psycopg2 = {version = ">=2.8,<3", optional = true}
 pymysql = {version = ">=1.0,<2", optional = true}
