@@ -6,4 +6,4 @@ metadata:
     {{- include "taguette.labels" . | nindent 4 }}
 data:
   config.py: |
-    {{- toYaml .Values.configFile | nindent 4 }}
+    {{- .Values.configFile | nindent 4 }}

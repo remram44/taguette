@@ -68,7 +68,7 @@ tolerations: []
 
 affinity: {}
 
-config: |
+configFile: |
   # This is the configuration file for Taguette
   # It is a Python file, so you can use the full Python syntax
   import os
@@ -91,7 +91,7 @@ config: |
   # https://docs.sqlalchemy.org/en/latest/core/engines.html
   # If using SQLite3 on Unix, note the 4 slashes for an absolute path
   # (keep 3 before a relative path)
-  DATABASE = "postgresql://postgres:{pwd}@{host}/postgres".format(
+  DATABASE = "postgresql://pguser:{pwd}@{host}/postgres".format(
       pwd=os.environ['POSTGRES_PASSWORD'],
       host=os.environ['POSTGRES_HOST'],
   )
@@ -113,6 +113,7 @@ config: |
   DEFAULT_LANGUAGE = 'en_US'
 
   # SMTP server to use to send emails
+  MAIL_SERVER = None
   #MAIL_SERVER = {
   #    "ssl": True,
   #    "host": "smtp.sendgrid.net",
