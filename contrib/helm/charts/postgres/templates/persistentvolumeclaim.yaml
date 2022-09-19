@@ -1,0 +1,15 @@
+{{- if .Values.storage.create }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: "{{ .Values.storage.persistentClaimName | default (include "postgres.fullname" .) }}"
+  labels:
+    {{- include "postgres.labels" . | nindent 4 }}
+spec:
+  storageClassName: {{ .Values.storage.storageClass | quote }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.storage.capacity }}
+{{- end }}

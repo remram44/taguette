@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "taguette.fullname" . }}
+  labels:
+    {{- include "taguette.labels" . | nindent 4 }}
+data:
+  config.py: |
+    {{- toYaml .Values.configFile | nindent 4 }}
