@@ -81,6 +81,18 @@ sqlite3_latest:
     - scripts/update_translations.sh
     - python -Wd tests.py -v
 
+sqlite3_latest_pip:
+  stage: test
+  image: python:3.10
+  script:
+    - curl -sSL https://install.python-poetry.org | python3 -
+    - pip --disable-pip-version-check --no-cache-dir install "babel<3"
+    - scripts/update_translations.sh
+    - $HOME/.local/bin/poetry build
+    - rm -rf taguette
+    - pip --disable-pip-version-check --no-cache-dir install --upgrade dist/taguette-*.whl bcrypt "aiohttp>=3.4,<4"
+    - python -Wd tests.py -v
+
 postgres:
   stage: test
   image: python:3.10
@@ -123,7 +135,6 @@ sqlite3_pypy:
     - $HOME/.local/bin/poetry config virtualenvs.create false
     - pypy3 -m venv /tmp/venv
     - . /tmp/venv/bin/activate
-    - pypy3 -m pip install -U pip
     - $HOME/.local/bin/poetry install --no-interaction
     - scripts/update_translations.sh
     - python -Wd tests.py -v
