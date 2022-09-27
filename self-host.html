@@ -25,6 +25,19 @@ edit /srv/taguette/config.py  # Edit configuration file, see below
 docker run -ti -p 80:7465 -v /srv/taguette:/data --restart=always quay.io/remram44/taguette server /data/config.py</pre>
   {% endtrans %}
 
+  {% trans %}
+  <p>If you want to use docker-compose, you can replace the last command (after setting up the configuration file) by <code>docker-compose up</code>, with a <code>docker-compose.yml</code> like:</p>
+  <pre>version: "2.4"
+services:
+  taguette:
+    image: quay.io/remram44/taguette
+    command: ["server", "/config.py"]
+    ports: ["127.0.0.1:7465:7465"]
+    volumes:
+      - "./config.py:/config.py:ro"
+      - "./data:/data"</pre>
+  {% endtrans %}
+
   <h2 id="native">{% trans %}"Native" installation on a server{% endtrans %}</h2>
 
   {% trans %}
