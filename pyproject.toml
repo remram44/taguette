@@ -82,7 +82,7 @@ coverage = "*"
 flake8 = "*"
 readme_renderer = "*"
 babel = ">=2.6,<3" # Keep babel and pytz in sync with Dockerfile
-bcrypt = "*"
+bcrypt = ">=3.2.0,<4"
 aiohttp = ">=3.4,<4"
 selenium = ">=4.5,<4.6"
 
