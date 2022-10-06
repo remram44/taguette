@@ -49,7 +49,7 @@ class User(Base):
     login = Column(String(30), primary_key=True)
     created = Column(DateTime, nullable=False,
                      default=lambda: datetime.utcnow())
-    hashed_password = Column(String(120), nullable=True)
+    hashed_password = Column(String(192), nullable=True)
     password_set_date = Column(DateTime, nullable=True)
     language = Column(String(10), nullable=True)
     email = Column(String(256), nullable=True, index=True, unique=True)
