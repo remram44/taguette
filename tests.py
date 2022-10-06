@@ -221,7 +221,6 @@ class TestPassword(unittest.TestCase):
             user = database.User(login='user')
             user.set_password(password, 'scrypt')
             self.assertTrue(user.hashed_password.startswith('scrypt:'))
-            print(user.hashed_password)
 
             self.assertTrue(user.check_password(password))
             self.assertFalse(user.check_password(password[:-1]))
@@ -232,7 +231,6 @@ class TestPassword(unittest.TestCase):
             user = database.User(login='user')
             user.set_password(password, 'pbkdf2')
             self.assertTrue(user.hashed_password.startswith('pbkdf2:'))
-            print(user.hashed_password)
 
             self.assertTrue(user.check_password(password))
             self.assertFalse(user.check_password(password[:-1]))
@@ -243,7 +241,6 @@ class TestPassword(unittest.TestCase):
             user = database.User(login='user')
             user.set_password(password, 'bcrypt')
             self.assertTrue(user.hashed_password.startswith('bcrypt:'))
-            print(user.hashed_password)
 
             self.assertTrue(user.check_password(password))
             self.assertFalse(user.check_password(password[:-1]))
