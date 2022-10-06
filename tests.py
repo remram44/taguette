@@ -2260,10 +2260,12 @@ class SeleniumTest(MyHTTPTestCase):
         await asyncio.sleep(0.2)
 
     async def s_click_button(self, text, tag='button', parent=None):
+        from selenium.webdriver.common.by import By
+
         await asyncio.sleep(0.2)
         if parent is None:
             parent = self.driver
-        buttons = parent.find_elements_by_tag_name(tag)
+        buttons = parent.find_elements(By.TAG_NAME, tag)
         correct_button, = [
             button for button in buttons
             if button.text == text
@@ -2336,16 +2338,18 @@ class TestSeleniumMultiuser(SeleniumTest):
 
     @gen_test(timeout=120)
     async def test_login(self):
+        from selenium.webdriver.common.by import By
+
         # Fetch index, should have welcome message and register link
         await self.s_get('/')
         self.assertEqual(self.driver.title, 'Welcome | Taguette')
         self.assertEqual(
-            [el.text for el in self.driver.find_elements_by_tag_name('h1')],
+            [el.text for el in self.driver.find_elements(By.TAG_NAME, 'h1')],
             ['Welcome'],
         )
         self.assertIn(
             'Register now',
-            [el.text for el in self.driver.find_elements_by_tag_name('a')],
+            [el.text for el in self.driver.find_elements(By.TAG_NAME, 'a')],
         )
 
         # Only admin so far
@@ -2366,11 +2370,11 @@ class TestSeleniumMultiuser(SeleniumTest):
         self.assertEqual(self.s_path, '/register')
 
         # Register
-        elem = self.driver.find_element_by_id('register-login')
+        elem = self.driver.find_element(By.ID, 'register-login')
         elem.send_keys('Tester')
-        elem = self.driver.find_element_by_id('register-password1')
+        elem = self.driver.find_element(By.ID, 'register-password1')
         elem.send_keys('hacktoo')
-        elem = self.driver.find_element_by_id('register-password2')
+        elem = self.driver.find_element(By.ID, 'register-password2')
         elem.send_keys('hacktoo')
         await self.s_click_button('Register')
 
@@ -2383,19 +2387,19 @@ class TestSeleniumMultiuser(SeleniumTest):
         # Fetch index, should have project list
         await self.s_get('/')
         self.assertEqual(
-            [el.text for el in self.driver.find_elements_by_tag_name('h1')],
+            [el.text for el in self.driver.find_elements(By.TAG_NAME, 'h1')],
             ['Welcome tester'],
         )
         self.assertIn(
             'Here are your projects:',
-            [el.text for el in self.driver.find_elements_by_tag_name('p')],
+            [el.text for el in self.driver.find_elements(By.TAG_NAME, 'p')],
         )
 
         # Fetch project creation page
         await self.s_get('/project/new')
 
         # Create a project
-        elem = self.driver.find_element_by_id('project-name')
+        elem = self.driver.find_element(By.ID, 'project-name')
         elem.send_keys('test project')
         await self.s_click_button('Create')
         self.assertEqual(self.s_path, '/project/1')
@@ -2407,7 +2411,7 @@ class TestSeleniumMultiuser(SeleniumTest):
         # Hit error page
         await self.s_get('/api/project/1/highlights/')
         self.assertNotEqual(
-            self.driver.find_element_by_tag_name('body').text.find(
+            self.driver.find_element(By.TAG_NAME, 'body').text.find(
                 '"Not logged in"',
             ),
             -1,
@@ -2425,9 +2429,9 @@ class TestSeleniumMultiuser(SeleniumTest):
         await self.s_get(
             '/login?' + urlencode(dict(next=self.base_path + '/project/1')),
         )
-        elem = self.driver.find_element_by_id('log-in-login')
+        elem = self.driver.find_element(By.ID, 'log-in-login')
         elem.send_keys('Tester')
-        elem = self.driver.find_element_by_id('log-in-password')
+        elem = self.driver.find_element(By.ID, 'log-in-password')
         elem.send_keys('hacktoo')
         await self.s_click_button('Log in')
         self.assertEqual(self.s_path, '/project/1')
@@ -2437,9 +2441,11 @@ class TestSeleniumMultiuser(SeleniumTest):
         self.assertEqual(self.s_path, '/account')
 
     def get_highlight_add_tags(self):
+        from selenium.webdriver.common.by import By
+
         tags = {}
-        form = self.driver.find_element_by_id('highlight-add-form')
-        for elem in form.find_elements_by_tag_name('input'):
+        form = self.driver.find_element(By.ID, 'highlight-add-form')
+        for elem in form.find_elements(By.TAG_NAME, 'input'):
             if elem.get_attribute('type') == 'checkbox':
                 id = elem.get_attribute('id')
                 self.assertTrue(id.startswith('highlight-add-tags-'))
@@ -2471,6 +2477,7 @@ class TestSeleniumMultiuser(SeleniumTest):
         # highlights: [1, 2, 3]
 
         from selenium.webdriver import ActionChains
+        from selenium.webdriver.common.by import By
         from selenium.webdriver.common.keys import Keys
         from selenium.webdriver.support.select import Select
 
@@ -2481,18 +2488,18 @@ class TestSeleniumMultiuser(SeleniumTest):
 
         # Log in
         await self.s_get('/login')
-        elem = self.driver.find_element_by_id('log-in-login')
+        elem = self.driver.find_element(By.ID, 'log-in-login')
         elem.send_keys('admin')
-        elem = self.driver.find_element_by_id('log-in-password')
+        elem = self.driver.find_element(By.ID, 'log-in-password')
         elem.send_keys('hackme')
         await self.s_click_button('Log in')
         self.assertEqual(self.s_path, '/')
 
         # Create project 1
         await self.s_get('/project/new')
-        elem = self.driver.find_element_by_id('project-name')
+        elem = self.driver.find_element(By.ID, 'project-name')
         elem.send_keys('one')
-        elem = self.driver.find_element_by_id('project-description')
+        elem = self.driver.find_element(By.ID, 'project-description')
         elem.send_keys("Remi's project")
         await self.s_click_button('Create')
         self.assertEqual(self.s_path, '/project/1')
@@ -2522,22 +2529,22 @@ class TestSeleniumMultiuser(SeleniumTest):
         )
         self.assertTrue(any(
             expected.strip() == script.get_property('textContent').strip()
-            for script in self.driver.find_elements_by_tag_name('script')
+            for script in self.driver.find_elements(By.TAG_NAME, 'script')
         ))
 
         # Create tag 2 in project 1
-        await self.s_click(self.driver.find_element_by_id('tags-tab'))
+        await self.s_click(self.driver.find_element(By.ID, 'tags-tab'))
         await self.s_click_button('Create a tag', tag='a')
-        elem = self.driver.find_element_by_id('tag-add-path')
+        elem = self.driver.find_element(By.ID, 'tag-add-path')
         elem.send_keys('people')
-        elem = self.driver.find_element_by_id('tag-add-description')
+        elem = self.driver.find_element(By.ID, 'tag-add-description')
         elem.send_keys('People of interest')
         await self.s_click_button('Save & Close')
 
         # Check tags
         tag_links = (
-            self.driver.find_element_by_id('tags-list')
-            .find_elements_by_class_name('tag-name')
+            self.driver.find_element(By.ID, 'tags-list')
+            .find_elements(By.CLASS_NAME, 'tag-name')
         )
         self.assertEqual(
             [link.text for link in tag_links],
@@ -2545,11 +2552,11 @@ class TestSeleniumMultiuser(SeleniumTest):
         )
 
         # Create document 1 in project 1
-        await self.s_click(self.driver.find_element_by_id('documents-tab'))
+        await self.s_click(self.driver.find_element(By.ID, 'documents-tab'))
         await self.s_click_button('Add a document', tag='a')
-        elem = self.driver.find_element_by_id('document-add-name')
+        elem = self.driver.find_element(By.ID, 'document-add-name')
         elem.send_keys('otherdoc')
-        elem = self.driver.find_element_by_id('document-add-file')
+        elem = self.driver.find_element(By.ID, 'document-add-file')
         with tempfile.NamedTemporaryFile('wb', suffix='.html') as tmp:
             tmp.write(b'different content')
             tmp.flush()
@@ -2565,18 +2572,18 @@ class TestSeleniumMultiuser(SeleniumTest):
 
         # Change project 2 metadata
         self.assertEqual(
-            self.driver.find_element_by_class_name('project-name').text,
+            self.driver.find_element(By.CLASS_NAME, 'project-name').text,
             'one',
         )
-        await self.s_click(self.driver.find_element_by_id('project-tab'))
-        elem = self.driver.find_element_by_id('project-name')
+        await self.s_click(self.driver.find_element(By.ID, 'project-tab'))
+        elem = self.driver.find_element(By.ID, 'project-name')
         await self.s_perform_action(
             ActionChains(self.driver)
             .click(elem)
             .key_down(Keys.CONTROL).send_keys('a').key_up(Keys.CONTROL)
             .send_keys('new project')
         )
-        elem = self.driver.find_element_by_id('project-description')
+        elem = self.driver.find_element(By.ID, 'project-description')
         elem.click()
         await asyncio.sleep(0.5)
         await self.s_perform_action(
@@ -2585,10 +2592,12 @@ class TestSeleniumMultiuser(SeleniumTest):
         )
         await asyncio.sleep(0.5)
         elem.send_keys('Meaningful')
-        await self.s_click(self.driver.find_element_by_id('document-contents'))
+        await self.s_click(
+            self.driver.find_element(By.ID, 'document-contents'),
+        )
         await asyncio.sleep(10)  # Wait for XHR
         self.assertEqual(
-            self.driver.find_element_by_class_name('project-name').text,
+            self.driver.find_element(By.CLASS_NAME, 'project-name').text,
             'new project',
         )
         db = self.application.DBSession()
@@ -2597,14 +2606,14 @@ class TestSeleniumMultiuser(SeleniumTest):
         self.assertEqual(proj.description, 'Meaningful')
 
         # Create document 2 in project 1
-        await self.s_click(self.driver.find_element_by_id('documents-tab'))
+        await self.s_click(self.driver.find_element(By.ID, 'documents-tab'))
         await self.s_click_button('Add a document', tag='a')
-        elem = self.driver.find_element_by_id('document-add-name')
+        elem = self.driver.find_element(By.ID, 'document-add-name')
         elem.send_keys('third')
-        elem = self.driver.find_element_by_id('document-add-description')
+        elem = self.driver.find_element(By.ID, 'document-add-description')
         elem.send_keys('Last one')
         await self.s_click_button('Right to left', tag='label')
-        elem = self.driver.find_element_by_id('document-add-file')
+        elem = self.driver.find_element(By.ID, 'document-add-file')
         with tempfile.NamedTemporaryFile('wb', suffix='.html') as tmp:
             tmp.write(b'<strong>Opinions</strong> and <em>facts</em>!')
             tmp.flush()
@@ -2620,8 +2629,8 @@ class TestSeleniumMultiuser(SeleniumTest):
 
         # Create highlight 1 in document 1
         await self.s_click(
-            self.driver.find_element_by_id('document-link-1')
-            .find_element_by_class_name('document-link-a')
+            self.driver.find_element(By.ID, 'document-link-1')
+            .find_element(By.CLASS_NAME, 'document-link-a')
         )
         self.driver.execute_script('restoreSelection([0, 4]);')
         await self.s_click_button('new highlight\n(shortcut: n)', tag='a')
@@ -2630,7 +2639,7 @@ class TestSeleniumMultiuser(SeleniumTest):
             {1: False, 2: False},
         )
         await self.s_click(
-            self.driver.find_element_by_id('highlight-add-tags-1'),
+            self.driver.find_element(By.ID, 'highlight-add-tags-1'),
         )
         await self.s_click_button('Save & Close')
 
@@ -2642,15 +2651,15 @@ class TestSeleniumMultiuser(SeleniumTest):
             {1: False, 2: False},
         )
         await self.s_click(
-            self.driver.find_element_by_id('highlight-add-tags-1'),
+            self.driver.find_element(By.ID, 'highlight-add-tags-1'),
         )
         await self.s_click(
-            self.driver.find_element_by_id('highlight-add-tags-2'),
+            self.driver.find_element(By.ID, 'highlight-add-tags-2'),
         )
         await self.s_click_button('Save & Close')
 
         # Edit highlight 1 in document 1
-        hl, = self.driver.find_elements_by_class_name('highlight-1')
+        hl, = self.driver.find_elements(By.CLASS_NAME, 'highlight-1')
         await self.s_click(hl)
         self.assertEqual(
             self.get_highlight_add_tags(),
@@ -2659,11 +2668,11 @@ class TestSeleniumMultiuser(SeleniumTest):
 
         # Create tag 3 in project 1
         await self.s_click_button('Create a tag', tag='a')
-        elem = self.driver.find_element_by_id('tag-add-path')
+        elem = self.driver.find_element(By.ID, 'tag-add-path')
         elem.send_keys('interesting.places')
         await self.s_click_button(
             'Save & Close',
-            parent=self.driver.find_element_by_id('tag-add-form'),
+            parent=self.driver.find_element(By.ID, 'tag-add-form'),
         )
 
         # Finish editing highlight 1 in document 1
@@ -2673,10 +2682,10 @@ class TestSeleniumMultiuser(SeleniumTest):
             {1: True, 2: False, 3: False},
         )
         await self.s_click(
-            self.driver.find_element_by_id('highlight-add-tags-1')
+            self.driver.find_element(By.ID, 'highlight-add-tags-1')
         )
         await self.s_click(
-            self.driver.find_element_by_id('highlight-add-tags-3')
+            self.driver.find_element(By.ID, 'highlight-add-tags-3')
         )
         self.assertEqual(
             self.get_highlight_add_tags(),
@@ -2685,10 +2694,10 @@ class TestSeleniumMultiuser(SeleniumTest):
         await self.s_click_button('Save & Close')
 
         # Check tags
-        await self.s_click(self.driver.find_element_by_id('tags-tab'))
+        await self.s_click(self.driver.find_element(By.ID, 'tags-tab'))
         tag_links = (
-            self.driver.find_element_by_id('tags-list')
-            .find_elements_by_class_name('tag-name')
+            self.driver.find_element(By.ID, 'tags-list')
+            .find_elements(By.CLASS_NAME, 'tag-name')
         )
         self.assertEqual(
             [link.text for link in tag_links],
@@ -2696,10 +2705,10 @@ class TestSeleniumMultiuser(SeleniumTest):
         )
 
         # Create highlight 3 in document 2
-        await self.s_click(self.driver.find_element_by_id('documents-tab'))
+        await self.s_click(self.driver.find_element(By.ID, 'documents-tab'))
         await self.s_click(
-            self.driver.find_element_by_id('document-link-2')
-            .find_element_by_class_name('document-link-a')
+            self.driver.find_element(By.ID, 'document-link-2')
+            .find_element(By.CLASS_NAME, 'document-link-a')
         )
         self.driver.execute_script('restoreSelection([0, 7]);')
         await self.s_click_button('new highlight\n(shortcut: n)', tag='a')
@@ -2708,16 +2717,16 @@ class TestSeleniumMultiuser(SeleniumTest):
             {1: False, 2: False, 3: False},
         )
         await self.s_click(
-            self.driver.find_element_by_id('highlight-add-tags-2'),
+            self.driver.find_element(By.ID, 'highlight-add-tags-2'),
         )
         await self.s_click_button('Save & Close')
 
         # List highlights in project 1 under 'people'
-        await self.s_click(self.driver.find_element_by_id('tags-tab'))
-        await self.s_click(self.driver.find_element_by_id('tag-link-2'))
+        await self.s_click(self.driver.find_element(By.ID, 'tags-tab'))
+        await self.s_click(self.driver.find_element(By.ID, 'tag-link-2'))
         self.assertEqual(self.s_path, '/project/1/highlights/people')
         self.assertEqual(
-            self.driver.find_element_by_id('document-contents').text,
+            self.driver.find_element(By.ID, 'document-contents').text,
             'tent\notherdoc interesting people\nOpinion\nthird people',
         )
 
@@ -2725,7 +2734,7 @@ class TestSeleniumMultiuser(SeleniumTest):
         await self.s_get('/project/1/highlights/interesting.places')
         await asyncio.sleep(1)  # Wait for XHR
         self.assertEqual(
-            self.driver.find_element_by_id('document-contents').text,
+            self.driver.find_element(By.ID, 'document-contents').text,
             'diff\notherdoc interesting.places',
         )
 
@@ -2733,18 +2742,18 @@ class TestSeleniumMultiuser(SeleniumTest):
         await self.s_get('/project/1/highlights/interesting')
         await asyncio.sleep(1)  # Wait for XHR
         self.assertEqual(
-            self.driver.find_element_by_id('document-contents').text,
+            self.driver.find_element(By.ID, 'document-contents').text,
             ('diff\notherdoc interesting.places\n'
              'tent\notherdoc interesting people'),
         )
 
         # List all highlights in project 1
-        await self.s_click(self.driver.find_element_by_id('tags-tab'))
+        await self.s_click(self.driver.find_element(By.ID, 'tags-tab'))
         await self.s_click_button('See all highlights', tag='a')
         await asyncio.sleep(1)  # Wait for XHR
         self.assertEqual(self.s_path, '/project/1/highlights/')
         self.assertEqual(
-            self.driver.find_element_by_id('document-contents').text,
+            self.driver.find_element(By.ID, 'document-contents').text,
             ('diff\notherdoc interesting.places\n'
              'tent\notherdoc interesting people\n'
              'Opinion\nthird people'),
@@ -2757,8 +2766,8 @@ class TestSeleniumMultiuser(SeleniumTest):
         links = [
             (link.text, self.extract_path(link.get_attribute('href')))
             for link in (
-                self.driver.find_element_by_id('export-button')
-                .find_elements_by_tag_name('a')
+                self.driver.find_element(By.ID, 'export-button')
+                .find_elements(By.TAG_NAME, 'a')
             )
             if link.text
         ]
@@ -2775,8 +2784,8 @@ class TestSeleniumMultiuser(SeleniumTest):
         links = [
             (link.text, self.extract_path(link.get_attribute('href')))
             for link in (
-                self.driver.find_element_by_id('export-button')
-                .find_elements_by_tag_name('a')
+                self.driver.find_element(By.ID, 'export-button')
+                .find_elements(By.TAG_NAME, 'a')
             )
             if link.text
         ]
@@ -2790,14 +2799,14 @@ class TestSeleniumMultiuser(SeleniumTest):
         ])
 
         # Check codebook export options of project 1
-        await self.s_click(self.driver.find_element_by_id('project-tab'))
+        await self.s_click(self.driver.find_element(By.ID, 'project-tab'))
         await self.s_click_button('Export codebook')
         links = [
             (link.text, self.extract_path(link.get_attribute('href')))
             for link in (
-                self.driver.find_element_by_id('dropdown-codebook')
-                .find_element_by_xpath('./..')
-                .find_elements_by_tag_name('a')
+                self.driver.find_element(By.ID, 'dropdown-codebook')
+                .find_element(By.XPATH, './..')
+                .find_elements(By.TAG_NAME, 'a')
             )
             if link.text
         ]
@@ -2811,19 +2820,19 @@ class TestSeleniumMultiuser(SeleniumTest):
         ])
 
         # Merge tag 2 into 1
-        await self.s_click(self.driver.find_element_by_id('tags-tab'))
+        await self.s_click(self.driver.find_element(By.ID, 'tags-tab'))
         edit_button, = [
             b
             for b in (
-                self.driver.find_element_by_id('tag-link-2')
-                .find_element_by_xpath('./../..')
-                .find_elements_by_tag_name('a')
+                self.driver.find_element(By.ID, 'tag-link-2')
+                .find_element(By.XPATH, './../..')
+                .find_elements(By.TAG_NAME, 'a')
             )
             if b.text == 'Edit'
         ]
         await self.s_click(edit_button)
         await self.s_click_button('Merge...')
-        select = Select(self.driver.find_element_by_id('tag-merge-dest'))
+        select = Select(self.driver.find_element(By.ID, 'tag-merge-dest'))
         select.select_by_value('1')
         await self.s_click_button('Merge tags')
 
@@ -2832,7 +2841,7 @@ class TestSeleniumMultiuser(SeleniumTest):
         await asyncio.sleep(1)  # Wait for XHR
         self.assertEqual(self.s_path, '/project/1/highlights/')
         self.assertEqual(
-            self.driver.find_element_by_id('document-contents').text,
+            self.driver.find_element(By.ID, 'document-contents').text,
             ('diff\notherdoc interesting.places\n'
              'tent\notherdoc interesting\n'
              'Opinion\nthird interesting'),
