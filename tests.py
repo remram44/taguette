@@ -196,11 +196,30 @@ class TestPassword(unittest.TestCase):
         password = [random.choice(alphabet) for _ in range(4, 16)]
         return ''.join(password)
 
+    def test_default(self):
+        has_scrypt = True
+        try:
+            from hashlib import scrypt as _scrypt  # noqa: F401
+        except ImportError:
+            has_scrypt = False
+
+        user = database.User(login='user')
+        user.set_password('test')
+        if has_scrypt:
+            self.assertTrue(user.hashed_password.startswith('scrypt:'))
+        else:
+            self.assertTrue(user.hashed_password.startswith('pbkdf2:'))
+
     def test_scrypt(self):
+        try:
+            from hashlib import scrypt as _scrypt  # noqa: F401
+        except ImportError:
+            self.skipTest("Doesn't have scrypt")
+
         for _ in range(3):
             password = self.random_password()
             user = database.User(login='user')
-            user.set_password(password)
+            user.set_password(password, 'scrypt')
             self.assertTrue(user.hashed_password.startswith('scrypt:'))
             print(user.hashed_password)
 

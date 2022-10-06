@@ -56,7 +56,14 @@ class User(Base):
     email_sent = Column(DateTime, nullable=True)
     projects = relationship('Project', secondary='project_members')
 
-    def set_password(self, password, method='scrypt'):
+    def set_password(self, password, method=None):
+        if method is None:
+            try:
+                from hashlib import scrypt as _scrypt  # noqa: F401
+                method = 'scrypt'
+            except ImportError:
+                method = 'pbkdf2'
+
         if method == 'scrypt':
             N = 16384
             R = 8
