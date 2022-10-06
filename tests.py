@@ -196,23 +196,23 @@ class TestPassword(unittest.TestCase):
         password = [random.choice(alphabet) for _ in range(4, 16)]
         return ''.join(password)
 
-    def test_bcrypt(self):
-        for _ in range(3):
-            password = self.random_password()
-            user = database.User(login='user')
-            user.set_password(password, 'bcrypt')
-            self.assertTrue(user.hashed_password.startswith('bcrypt:'))
-            print(user.hashed_password)
-
-            self.assertTrue(user.check_password(password))
-            self.assertFalse(user.check_password(password[:-1]))
-
     def test_pbkdf2(self):
         for _ in range(3):
             password = self.random_password()
             user = database.User(login='user')
             user.set_password(password)
             self.assertTrue(user.hashed_password.startswith('pbkdf2:'))
+            print(user.hashed_password)
+
+            self.assertTrue(user.check_password(password))
+            self.assertFalse(user.check_password(password[:-1]))
+
+    def test_bcrypt(self):
+        for _ in range(3):
+            password = self.random_password()
+            user = database.User(login='user')
+            user.set_password(password, 'bcrypt')
+            self.assertTrue(user.hashed_password.startswith('bcrypt:'))
             print(user.hashed_password)
 
             self.assertTrue(user.check_password(password))

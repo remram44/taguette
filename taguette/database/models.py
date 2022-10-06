@@ -57,16 +57,7 @@ class User(Base):
     projects = relationship('Project', secondary='project_members')
 
     def set_password(self, password, method='pbkdf2'):
-        if method == 'bcrypt':
-            import bcrypt
-            with tracer.start_as_current_span(
-                'taguette/set_password',
-                attributes={'method': method},
-            ):
-                h = bcrypt.hashpw(password.encode('utf-8'),
-                                  bcrypt.gensalt())
-                self.hashed_password = 'bcrypt:%s' % h.decode('utf-8')
-        elif method == 'pbkdf2':
+        if method == 'pbkdf2':
             ITERATIONS = 500000
             with tracer.start_as_current_span(
                 'taguette/set_password',
@@ -80,6 +71,15 @@ class User(Base):
                     ITERATIONS,
                     binascii.hexlify(h).decode('ascii'),
                 )
+        elif method == 'bcrypt':
+            import bcrypt
+            with tracer.start_as_current_span(
+                'taguette/set_password',
+                attributes={'method': method},
+            ):
+                h = bcrypt.hashpw(password.encode('utf-8'),
+                                  bcrypt.gensalt())
+                self.hashed_password = 'bcrypt:%s' % h.decode('utf-8')
         else:
             raise ValueError("Unsupported encryption method %r" % method)
         self.password_set_date = datetime.utcnow()
@@ -87,15 +87,7 @@ class User(Base):
     def check_password(self, password):
         if self.hashed_password is None:
             return False
-        elif self.hashed_password.startswith('bcrypt:'):
-            import bcrypt
-            with tracer.start_as_current_span(
-                'taguette/check_password',
-                attributes={'method': 'bcrypt'},
-            ):
-                return bcrypt.checkpw(password.encode('utf-8'),
-                                      self.hashed_password[7:].encode('utf-8'))
-        elif self.hashed_password.startswith('pbkdf2:'):
+        if self.hashed_password.startswith('pbkdf2:'):
             with tracer.start_as_current_span(
                 'taguette/check_password',
                 attributes={'method': 'pbkdf2'},
@@ -110,6 +102,14 @@ class User(Base):
                     hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'),
                                         salt, iterations)
                 )
+        elif self.hashed_password.startswith('bcrypt:'):
+            import bcrypt
+            with tracer.start_as_current_span(
+                'taguette/check_password',
+                attributes={'method': 'bcrypt'},
+            ):
+                return bcrypt.checkpw(password.encode('utf-8'),
+                                      self.hashed_password[7:].encode('utf-8'))
         else:
             logger.warning("Password uses unknown encryption method")
             return False
