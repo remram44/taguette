@@ -56,8 +56,24 @@ class User(Base):
     email_sent = Column(DateTime, nullable=True)
     projects = relationship('Project', secondary='project_members')
 
-    def set_password(self, password, method='pbkdf2'):
-        if method == 'pbkdf2':
+    def set_password(self, password, method='scrypt'):
+        if method == 'scrypt':
+            N = 16384
+            R = 8
+            P = 1
+            with tracer.start_as_current_span(
+                'taguette/set_password',
+                attributes={'method': method, 'factor': N},
+            ):
+                salt = os.urandom(16)
+                h = hashlib.scrypt(password.encode('utf-8'),
+                                   salt=salt, n=N, r=R, p=P)
+                self.hashed_password = 'scrypt:%s$%d$%d$%d$%s' % (
+                    binascii.hexlify(salt).decode('ascii'),
+                    N, R, P,
+                    binascii.hexlify(h).decode('ascii'),
+                )
+        elif method == 'pbkdf2':
             ITERATIONS = 500000
             with tracer.start_as_current_span(
                 'taguette/set_password',
@@ -87,7 +103,24 @@ class User(Base):
     def check_password(self, password):
         if self.hashed_password is None:
             return False
-        if self.hashed_password.startswith('pbkdf2:'):
+        if self.hashed_password.startswith('scrypt'):
+            with tracer.start_as_current_span(
+                'taguette/check_password',
+                attributes={'method': 'scrypt'},
+            ):
+                pw = self.hashed_password[7:]
+                salt, n, r, p, hash_pw = pw.split('$', 4)
+                salt = binascii.unhexlify(salt.encode('ascii'))
+                n = int(n, 10)
+                r = int(r, 10)
+                p = int(p, 10)
+                hash_pw = binascii.unhexlify(hash_pw.encode('ascii'))
+                return hmac.compare_digest(
+                    hash_pw,
+                    hashlib.scrypt(password.encode('utf-8'),
+                                   salt=salt, n=n, r=r, p=p),
+                )
+        elif self.hashed_password.startswith('pbkdf2:'):
             with tracer.start_as_current_span(
                 'taguette/check_password',
                 attributes={'method': 'pbkdf2'},
@@ -100,7 +133,7 @@ class User(Base):
                 return hmac.compare_digest(
                     hash_pw,
                     hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'),
-                                        salt, iterations)
+                                        salt, iterations),
                 )
         elif self.hashed_password.startswith('bcrypt:'):
             import bcrypt
