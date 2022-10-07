@@ -86,6 +86,7 @@ sqlite3_latest_pip:
   image: python:3.10
   script:
     - curl -sSL https://install.python-poetry.org | python3 -
+    - pip --disable-pip-version-check --no-cache-dir install --upgrade pip
     - pip --disable-pip-version-check --no-cache-dir install "babel<3"
     - scripts/update_translations.sh
     - $HOME/.local/bin/poetry build
@@ -135,6 +136,7 @@ sqlite3_pypy:
     - $HOME/.local/bin/poetry config virtualenvs.create false
     - pypy3 -m venv /tmp/venv
     - . /tmp/venv/bin/activate
+    - pip --disable-pip-version-check --no-cache-dir install --upgrade pip
     - $HOME/.local/bin/poetry install --no-interaction
     - scripts/update_translations.sh
     - python -Wd tests.py -v
