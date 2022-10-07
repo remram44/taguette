@@ -43,6 +43,9 @@ class JSON(TypeDecorator):
         return json.loads(value)
 
 
+SCRYPT_MAX_MEM = 64 << 20
+
+
 class User(Base):
     __tablename__ = 'users'
 
@@ -65,7 +68,7 @@ class User(Base):
                 method = 'pbkdf2'
 
         if method == 'scrypt':
-            N = 16384
+            N = 1 << 15
             R = 8
             P = 1
             with tracer.start_as_current_span(
@@ -74,7 +77,8 @@ class User(Base):
             ):
                 salt = os.urandom(16)
                 h = hashlib.scrypt(password.encode('utf-8'),
-                                   salt=salt, n=N, r=R, p=P)
+                                   salt=salt, n=N, r=R, p=P,
+                                   maxmem=SCRYPT_MAX_MEM)
                 self.hashed_password = 'scrypt:%s$%d$%d$%d$%s' % (
                     binascii.hexlify(salt).decode('ascii'),
                     N, R, P,
@@ -125,7 +129,8 @@ class User(Base):
                 return hmac.compare_digest(
                     hash_pw,
                     hashlib.scrypt(password.encode('utf-8'),
-                                   salt=salt, n=n, r=r, p=p),
+                                   salt=salt, n=n, r=r, p=p,
+                                   maxmem=SCRYPT_MAX_MEM),
                 )
         elif self.hashed_password.startswith('pbkdf2:'):
             with tracer.start_as_current_span(
