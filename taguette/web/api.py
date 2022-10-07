@@ -916,7 +916,10 @@ class ProjectEvents(BaseHandler):
         else:
             # Wait for an event (which comes in JSON)
             self.wait_future = Future()
-            self.application.observe_project(project.id, self.wait_future)
+            await self.application.observe_project(
+                project.id,
+                self.wait_future,
+            )
             self.db.expire_all()
 
             # Close DB connection to not overflow the connection pool

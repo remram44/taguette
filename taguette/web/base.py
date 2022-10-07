@@ -13,7 +13,7 @@ import os
 import pkg_resources
 from prometheus_async.aio import time as prom_async_time
 import prometheus_client
-import redis
+import redis.asyncio as aioredis
 import signal
 import smtplib
 from sqlalchemy.orm import joinedload, undefer
@@ -26,6 +26,7 @@ from urllib.parse import urlencode
 
 from .. import __version__, exact_version
 from .. import database
+from ..utils import background_task
 
 
 logger = logging.getLogger(__name__)
@@ -158,14 +159,11 @@ class Application(GracefulExitApplication):
         self.event_waiters = {}
 
         if config['REDIS_SERVER'] is not None:
-            self.redis = redis.Redis.from_url(config['REDIS_SERVER'])
+            self.redis = aioredis.Redis.from_url(config['REDIS_SERVER'])
             self.redis_pubsub = self.redis.pubsub()
-            # FIXME: Can't call run_in_thread with no subscription
-            self.redis_pubsub.subscribe(_fixme=lambda msg: None)
-            self.redis_pubsub.run_in_thread(sleep_time=0.1, daemon=True)
+            background_task(self._redis_reader(), should_never_exit=True)
         else:
-            self.redis = None
-            self.redis_pubsub = None
+            self.redis = self.redis_pubsub = None
 
         if config['TOS_FILE']:
             with open(config['TOS_FILE']) as fp:
@@ -224,7 +222,22 @@ class Application(GracefulExitApplication):
         self.io_loop.call_later(86400,  # 24 hours
                                 self.check_messages)
 
-    def observe_project(self, project_id, future):
+    async def _redis_reader(self):
+        # FIXME: Can't call listen() with no subscription
+        await self.redis_pubsub.subscribe('_fixme')
+
+        async for message in self.redis_pubsub.listen():
+            if message['type'] == 'message':
+                data = message['data'].decode('utf-8')
+                cmd_json = json.loads(data)
+                project_id = cmd_json['project_id']
+                # Deliver to waiting handlers
+                for future in self.event_waiters.pop(project_id, []):
+                    future.set_result(cmd_json)
+                # Unsubscribe
+                await self.redis_pubsub.unsubscribe('project:%d' % project_id)
+
+    async def observe_project(self, project_id, future):
         assert isinstance(project_id, int)
         if project_id in self.event_waiters:
             # We're already watching, add a future to notify
@@ -234,22 +247,7 @@ class Application(GracefulExitApplication):
             self.event_waiters[project_id] = set((future,))
             if self.redis is not None:
                 # Listen for Redis messages
-                self.redis_pubsub.subscribe(**{
-                    'project:%d' % project_id: self._on_redis_message_thread,
-                })
-
-    def _on_redis_message_thread(self, msg):
-        # Call _on_redis_message on loop thread from Redis thread
-        self.io_loop.call_soon_threadsafe(lambda: self._on_redis_message(msg))
-
-    def _on_redis_message(self, msg):
-        cmd_json = json.loads(msg['data'])
-        project_id = cmd_json['project_id']
-        # Deliver to waiting handlers
-        for future in self.event_waiters.pop(project_id, []):
-            future.set_result(cmd_json)
-        # Unsubscribe
-        self.redis_pubsub.unsubscribe('project:%d' % project_id)
+                await self.redis_pubsub.subscribe('project:%d' % project_id)
 
     def unobserve_project(self, project_id, future):
         assert isinstance(project_id, int)
@@ -259,7 +257,9 @@ class Application(GracefulExitApplication):
             if not self.event_waiters[project_id]:
                 del self.event_waiters[project_id]
                 if self.redis is not None:
-                    self.redis_pubsub.unsubscribe('project:%d' % project_id)
+                    background_task(self.redis_pubsub.unsubscribe(
+                        'project:%d' % project_id,
+                    ))
 
     def notify_project(self, project_id, cmd):
         assert isinstance(project_id, int)
@@ -270,10 +270,11 @@ class Application(GracefulExitApplication):
                 future.set_result(cmd_json)
         else:
             # Push to Redis
-            self.redis.publish(
+            data = json.dumps(cmd_json, sort_keys=True, separators=(',', ':'))
+            background_task(self.redis.publish(
                 'project:%d' % project_id,
-                json.dumps(cmd_json, sort_keys=True, separators=(',', ':')),
-            )
+                data.encode('utf-8)'),
+            ))
 
     @tracer.start_as_current_span('send_mail')
     def send_mail(self, msg):
