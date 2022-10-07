@@ -44,7 +44,7 @@ msgid ""
 " tags</strong>. There is no way to undo."
 msgstr ""
 "Apakah Anda yakin hendak menghapus proyek ini? Proyek ini mempunyai"
-"<strong>%(document)s dokumen dan %(highlights)s sorotan/highlight dalam "
+"<strong>%(documents)s dokumen dan %(highlights)s sorotan/highlight dalam "
 "%(tags)s tag</strong>.  Proyek yang telah dihapus tidak dapat dikembalikan."
 
 #: taguette/templates/project_delete.html:13
