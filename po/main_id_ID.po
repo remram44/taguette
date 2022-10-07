@@ -17,7 +17,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.1\n"
-"Language: id\n"
+"Language: id_ID\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: taguette/templates/project_delete.html:3
 msgctxt "page title"
@@ -622,7 +623,6 @@ msgstr "Kode Buku Taguette"
 msgid "%(number)d highlight"
 msgid_plural "%(number)d highlights"
 msgstr[0] "%(number)d sorotan"
-msgstr[1] "%(number)d sorotan"
 
 #: taguette/templates/token_needed.html:3
 msgctxt "page title"
