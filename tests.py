@@ -186,7 +186,7 @@ class TestConvert(AsyncTestCase):
         )
 
 
-class TestPassword(unittest.TestCase):
+class TestPassword(AsyncTestCase):
     @staticmethod
     def random_password():
         alphabet = (
@@ -196,7 +196,8 @@ class TestPassword(unittest.TestCase):
         password = [random.choice(alphabet) for _ in range(4, 16)]
         return ''.join(password)
 
-    def test_default(self):
+    @gen_test(timeout=15)
+    async def test_default(self):
         has_scrypt = True
         try:
             from hashlib import scrypt as _scrypt  # noqa: F401
@@ -204,13 +205,14 @@ class TestPassword(unittest.TestCase):
             has_scrypt = False
 
         user = database.User(login='user')
-        user.set_password('test')
+        await user.set_password('test')
         if has_scrypt:
             self.assertTrue(user.hashed_password.startswith('scrypt:'))
         else:
             self.assertTrue(user.hashed_password.startswith('pbkdf2:'))
 
-    def test_scrypt(self):
+    @gen_test(timeout=15)
+    async def test_scrypt(self):
         try:
             from hashlib import scrypt as _scrypt  # noqa: F401
         except ImportError:
@@ -219,31 +221,33 @@ class TestPassword(unittest.TestCase):
         for _ in range(3):
             password = self.random_password()
             user = database.User(login='user')
-            user.set_password(password, 'scrypt')
+            await user.set_password(password, 'scrypt')
             self.assertTrue(user.hashed_password.startswith('scrypt:'))
 
-            self.assertTrue(user.check_password(password))
-            self.assertFalse(user.check_password(password[:-1]))
+            self.assertTrue(await user.check_password(password))
+            self.assertFalse(await user.check_password(password[:-1]))
 
-    def test_pbkdf2(self):
+    @gen_test(timeout=15)
+    async def test_pbkdf2(self):
         for _ in range(3):
             password = self.random_password()
             user = database.User(login='user')
-            user.set_password(password, 'pbkdf2')
+            await user.set_password(password, 'pbkdf2')
             self.assertTrue(user.hashed_password.startswith('pbkdf2:'))
 
-            self.assertTrue(user.check_password(password))
-            self.assertFalse(user.check_password(password[:-1]))
+            self.assertTrue(await user.check_password(password))
+            self.assertFalse(await user.check_password(password[:-1]))
 
-    def test_bcrypt(self):
+    @gen_test(timeout=15)
+    async def test_bcrypt(self):
         for _ in range(3):
             password = self.random_password()
             user = database.User(login='user')
-            user.set_password(password, 'bcrypt')
+            await user.set_password(password, 'bcrypt')
             self.assertTrue(user.hashed_password.startswith('bcrypt:'))
 
-            self.assertTrue(user.check_password(password))
-            self.assertFalse(user.check_password(password[:-1]))
+            self.assertTrue(await user.check_password(password))
+            self.assertFalse(await user.check_password(password[:-1]))
 
 
 class TestMeasure(unittest.TestCase):
@@ -513,27 +517,33 @@ class MyHTTPTestCase(AsyncHTTPTestCase):
         return self._fetch(url, method='POST', allow_redirects=False, **kwargs)
 
 
-def set_dumb_password(self, user):
-    user.set_password('hackme')
+async def set_dumb_password(DBSession):
+    db = DBSession()
+    admin = database.User(login='admin')
+    await admin.set_password('hackme')
+    db.add(admin)
+    db.commit()
+    db.close()
 
 
 class TestMultiuser(MyHTTPTestCase):
     def get_app(self):
-        with mock.patch.object(web.Application, '_set_password',
-                               new=set_dumb_password):
-            self.application = web.make_app(dict(
-                main.DEFAULT_CONFIG,
-                NAME="Test Taguette instance", PORT=7465,
-                DATABASE=DATABASE_URI,
-                REDIS_SERVER=REDIS,
-                TOS_FILE=None,
-                EMAIL='test@example.com',
-                MAIL_SERVER={'host': 'localhost', 'port': 25},
-                COOKIES_PROMPT=True,
-                MULTIUSER=True,
-                SECRET_KEY='2PbQ/5Rs005G/nTuWfibaZTUAo3Isng3QuRirmBK',
-            ))
-            return self.application
+        self.application = web.make_app(dict(
+            main.DEFAULT_CONFIG,
+            NAME="Test Taguette instance", PORT=7465,
+            DATABASE=DATABASE_URI,
+            REDIS_SERVER=REDIS,
+            TOS_FILE=None,
+            EMAIL='test@example.com',
+            MAIL_SERVER={'host': 'localhost', 'port': 25},
+            COOKIES_PROMPT=True,
+            MULTIUSER=True,
+            SECRET_KEY='2PbQ/5Rs005G/nTuWfibaZTUAo3Isng3QuRirmBK',
+        ))
+        self.io_loop.run_sync(
+            lambda: set_dumb_password(self.application.DBSession)
+        )
+        return self.application
 
     def tearDown(self):
         super(TestMultiuser, self).tearDown()
@@ -1240,8 +1250,8 @@ class TestMultiuser(MyHTTPTestCase):
                 (
                     user.login,
                     bool(user.hashed_password), bool(user.password_set_date),
-                    user.check_password('pass1'),
-                    user.check_password('pass2'),
+                    await user.check_password('pass1'),
+                    await user.check_password('pass2'),
                 )
                 for user in db.query(database.User).all()
             ],
@@ -1309,8 +1319,8 @@ class TestMultiuser(MyHTTPTestCase):
                 (
                     user.login,
                     bool(user.hashed_password), bool(user.password_set_date),
-                    user.check_password('pass1'),
-                    user.check_password('pass2'),
+                    await user.check_password('pass1'),
+                    await user.check_password('pass2'),
                 )
                 for user in db.query(database.User).all()
             ],
@@ -1333,10 +1343,10 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(response.status, 403)
 
     @classmethod
-    def make_basic_db(cls, db, db_num):
+    async def make_basic_db(cls, db, db_num):
         # Populate database
         user = database.User(login='db%duser' % db_num)
-        user.set_password('hackme')
+        await user.set_password('hackme')
         db.add(user)
         cls.make_basic_project(db, db_num, 1)
         cls.make_basic_project(db, db_num, 2)
@@ -1442,7 +1452,7 @@ class TestMultiuser(MyHTTPTestCase):
     async def test_import(self, tmp):
         # Populate database
         db1 = self.application.DBSession()
-        self.make_basic_db(db1, 1)
+        await self.make_basic_db(db1, 1)
         db1.commit()
 
         # Log in
@@ -1462,7 +1472,7 @@ class TestMultiuser(MyHTTPTestCase):
         db2_path = os.path.join(tmp, 'db.sqlite3')
         db2 = database.connect('sqlite:///' + db2_path)()
         db2.add(database.User(login='admin'))
-        self.make_basic_db(db2, 2)
+        await self.make_basic_db(db2, 2)
         db2.commit()
 
         # List projects in database
@@ -1628,7 +1638,7 @@ class TestMultiuser(MyHTTPTestCase):
     async def test_export(self, tmp):
         # Populate database
         db1 = self.application.DBSession()
-        self.make_basic_db(db1, 1)
+        await self.make_basic_db(db1, 1)
         db1.commit()
 
         # Log in
@@ -2098,24 +2108,25 @@ class TestMultiuser(MyHTTPTestCase):
 
 class TestSingleuser(MyHTTPTestCase):
     def get_app(self):
-        with mock.patch.object(web.Application, '_set_password',
-                               new=set_dumb_password):
-            self.application = web.make_app(
-                dict(
-                    main.DEFAULT_CONFIG,
-                    NAME="Test Taguette instance", PORT=7465,
-                    DATABASE=DATABASE_URI,
-                    REDIS_SERVER=REDIS,
-                    TOS_FILE=None,
-                    EMAIL='test@example.com',
-                    MAIL_SERVER={'host': 'localhost', 'port': 25},
-                    COOKIES_PROMPT=False,
-                    MULTIUSER=False,
-                    SECRET_KEY='bq7ZoAtO7LtRJJ4P0iHSdH8yvcmCqynfeGB+x9y1',
-                ),
-                xsrf_cookies=False,
-            )
-            return self.application
+        self.application = web.make_app(
+            dict(
+                main.DEFAULT_CONFIG,
+                NAME="Test Taguette instance", PORT=7465,
+                DATABASE=DATABASE_URI,
+                REDIS_SERVER=REDIS,
+                TOS_FILE=None,
+                EMAIL='test@example.com',
+                MAIL_SERVER={'host': 'localhost', 'port': 25},
+                COOKIES_PROMPT=False,
+                MULTIUSER=False,
+                SECRET_KEY='bq7ZoAtO7LtRJJ4P0iHSdH8yvcmCqynfeGB+x9y1',
+            ),
+            xsrf_cookies=False,
+        )
+        self.io_loop.run_sync(
+            lambda: set_dumb_password(self.application.DBSession)
+        )
+        return self.application
 
     def tearDown(self):
         super(TestSingleuser, self).tearDown()
@@ -2345,23 +2356,24 @@ class SeleniumTest(MyHTTPTestCase):
 )
 class TestSeleniumMultiuser(SeleniumTest):
     def get_app(self):
-        with mock.patch.object(web.Application, '_set_password',
-                               new=set_dumb_password):
-            self.base_path = os.environ.get('TAGUETTE_TEST_BASE_PATH', '')
-            self.application = web.make_app(dict(
-                main.DEFAULT_CONFIG,
-                NAME="Test Taguette instance", PORT=7465,
-                DATABASE=DATABASE_URI,
-                BASE_PATH=self.base_path,
-                REDIS_SERVER=REDIS,
-                TOS_FILE=None,
-                EMAIL='test@example.com',
-                MAIL_SERVER={'host': 'localhost', 'port': 25},
-                COOKIES_PROMPT=True,
-                MULTIUSER=True,
-                SECRET_KEY='2PbQ/5Rs005G/nTuWfibaZTUAo3Isng3QuRirmBK',
-            ))
-            return self.application
+        self.base_path = os.environ.get('TAGUETTE_TEST_BASE_PATH', '')
+        self.application = web.make_app(dict(
+            main.DEFAULT_CONFIG,
+            NAME="Test Taguette instance", PORT=7465,
+            DATABASE=DATABASE_URI,
+            BASE_PATH=self.base_path,
+            REDIS_SERVER=REDIS,
+            TOS_FILE=None,
+            EMAIL='test@example.com',
+            MAIL_SERVER={'host': 'localhost', 'port': 25},
+            COOKIES_PROMPT=True,
+            MULTIUSER=True,
+            SECRET_KEY='2PbQ/5Rs005G/nTuWfibaZTUAo3Isng3QuRirmBK',
+        ))
+        self.io_loop.run_sync(
+            lambda: set_dumb_password(self.application.DBSession)
+        )
+        return self.application
 
     @gen_test(timeout=120)
     async def test_login(self):

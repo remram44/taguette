@@ -1,3 +1,4 @@
+import asyncio
 import binascii
 from datetime import datetime
 import enum
@@ -59,7 +60,7 @@ class User(Base):
     email_sent = Column(DateTime, nullable=True)
     projects = relationship('Project', secondary='project_members')
 
-    def set_password(self, password, method=None):
+    async def set_password(self, password, method=None):
         if method is None:
             try:
                 from hashlib import scrypt as _scrypt  # noqa: F401
@@ -76,9 +77,14 @@ class User(Base):
                 attributes={'method': method, 'factor': N},
             ):
                 salt = os.urandom(16)
-                h = hashlib.scrypt(password.encode('utf-8'),
-                                   salt=salt, n=N, r=R, p=P,
-                                   maxmem=SCRYPT_MAX_MEM)
+                h = await asyncio.get_event_loop().run_in_executor(
+                    None,
+                    lambda: hashlib.scrypt(
+                        password.encode('utf-8'),
+                        salt=salt, n=N, r=R, p=P,
+                        maxmem=SCRYPT_MAX_MEM,
+                    ),
+                )
                 self.hashed_password = 'scrypt:%s$%d$%d$%d$%s' % (
                     binascii.hexlify(salt).decode('ascii'),
                     N, R, P,
@@ -91,8 +97,13 @@ class User(Base):
                 attributes={'method': method, 'iterations': ITERATIONS},
             ):
                 salt = os.urandom(16)
-                h = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'),
-                                        salt, ITERATIONS)
+                h = await asyncio.get_event_loop().run_in_executor(
+                    None,
+                    lambda: hashlib.pbkdf2_hmac(
+                        'sha256', password.encode('utf-8'),
+                        salt, ITERATIONS,
+                    ),
+                )
                 self.hashed_password = 'pbkdf2:%s$%d$%s' % (
                     binascii.hexlify(salt).decode('ascii'),
                     ITERATIONS,
@@ -104,14 +115,17 @@ class User(Base):
                 'taguette/set_password',
                 attributes={'method': method},
             ):
-                h = bcrypt.hashpw(password.encode('utf-8'),
-                                  bcrypt.gensalt())
+                h = await asyncio.get_event_loop().run_in_executor(
+                    None,
+                    lambda: bcrypt.hashpw(password.encode('utf-8'),
+                                          bcrypt.gensalt()),
+                )
                 self.hashed_password = 'bcrypt:%s' % h.decode('utf-8')
         else:
             raise ValueError("Unsupported encryption method %r" % method)
         self.password_set_date = datetime.utcnow()
 
-    def check_password(self, password):
+    async def check_password(self, password):
         if self.hashed_password is None:
             return False
         if self.hashed_password.startswith('scrypt'):
@@ -126,11 +140,17 @@ class User(Base):
                 r = int(r, 10)
                 p = int(p, 10)
                 hash_pw = binascii.unhexlify(hash_pw.encode('ascii'))
+                h = await asyncio.get_event_loop().run_in_executor(
+                    None,
+                    lambda: hashlib.scrypt(
+                        password.encode('utf-8'),
+                        salt=salt, n=n, r=r, p=p,
+                        maxmem=SCRYPT_MAX_MEM,
+                    ),
+                )
                 return hmac.compare_digest(
                     hash_pw,
-                    hashlib.scrypt(password.encode('utf-8'),
-                                   salt=salt, n=n, r=r, p=p,
-                                   maxmem=SCRYPT_MAX_MEM),
+                    h,
                 )
         elif self.hashed_password.startswith('pbkdf2:'):
             with tracer.start_as_current_span(
@@ -142,10 +162,16 @@ class User(Base):
                 salt = binascii.unhexlify(salt.encode('ascii'))
                 iterations = int(iterations, 10)
                 hash_pw = binascii.unhexlify(hash_pw.encode('ascii'))
+                h = await asyncio.get_event_loop().run_in_executor(
+                    None,
+                    lambda: hashlib.pbkdf2_hmac(
+                        'sha256', password.encode('utf-8'),
+                        salt, iterations,
+                    ),
+                )
                 return hmac.compare_digest(
                     hash_pw,
-                    hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'),
-                                        salt, iterations),
+                    h,
                 )
         elif self.hashed_password.startswith('bcrypt:'):
             import bcrypt
@@ -153,8 +179,13 @@ class User(Base):
                 'taguette/check_password',
                 attributes={'method': 'bcrypt'},
             ):
-                return bcrypt.checkpw(password.encode('utf-8'),
-                                      self.hashed_password[7:].encode('utf-8'))
+                return await asyncio.get_event_loop().run_in_executor(
+                    None,
+                    lambda: bcrypt.checkpw(
+                        password.encode('utf-8'),
+                        self.hashed_password[7:].encode('utf-8'),
+                    ),
+                )
         else:
             logger.warning("Password uses unknown encryption method")
             return False

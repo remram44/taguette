@@ -157,24 +157,6 @@ class Application(GracefulExitApplication):
         self.DBSession = database.connect(config['DATABASE'])
         self.event_waiters = {}
 
-        db = self.DBSession()
-        admin = (
-            db.query(database.User)
-            .filter(database.User.login == 'admin')
-            .one_or_none()
-        )
-        if admin is None:
-            logger.warning("Creating user 'admin'")
-            admin = database.User(login='admin')
-            if config['MULTIUSER']:
-                self._set_password(admin)
-            db.add(admin)
-            db.commit()
-        elif config['MULTIUSER'] and not admin.hashed_password:
-            self._set_password(admin)
-            db.commit()
-        db.close()
-
         if config['REDIS_SERVER'] is not None:
             self.redis = redis.Redis.from_url(config['REDIS_SERVER'])
             self.redis_pubsub = self.redis.pubsub()
@@ -241,11 +223,6 @@ class Application(GracefulExitApplication):
         f_msg.add_done_callback(self._check_messages_callback)
         self.io_loop.call_later(86400,  # 24 hours
                                 self.check_messages)
-
-    def _set_password(self, user):
-        import getpass
-        passwd = getpass.getpass("Enter password for user %r: " % user.login)
-        user.set_password(passwd)
 
     def observe_project(self, project_id, future):
         assert isinstance(project_id, int)
