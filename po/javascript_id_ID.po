@@ -3,7 +3,8 @@
 # This file is distributed under the same license as the Taguette project.
 # Remi Rampin <remi@rampin.org>, 2018.
 #
-#, fuzzy
+# Translators:
+# Mohammad Rizki <mohammadrizki.md@gmail.com>, 2022
 msgid ""
 msgstr ""
 "Project-Id-Version: Taguette\n"
