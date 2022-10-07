@@ -43,7 +43,7 @@ msgid ""
 " tags</strong>. There is no way to undo."
 msgstr ""
 "Apakah Anda yakin hendak menghapus proyek ini? Proyek ini mempunyai"
-"<strong>%(document)s dokumen dan %(highlights)s sorotan/highlight dalam" 
+"<strong>%(document)s dokumen dan %(highlights)s sorotan/highlight dalam "
 "%(tags)s tag</strong>.  Proyek yang telah dihapus tidak dapat dikembalikan."
 
 #: taguette/templates/project_delete.html:13
@@ -411,7 +411,7 @@ msgstr "Hapus tag"
 
 #: taguette/templates/project.html:371
 msgid "<em>n</em>ew highlight <span class=\"sr-only\">(shortcut: n)</span>"
-msgstr "sorotan baru<span class=\"sr-only\">(shortcut: n)</span>"
+msgstr "sorotan baru <span class=\"sr-only\">(shortcut: n)</span>"
 
 #: taguette/templates/index.html:10
 #, python-format
@@ -459,7 +459,7 @@ msgid ""
 "below. Those <strong>are not</strong> \"third-party\" or \"tracking\" "
 "cookies."
 msgstr ""
-"Website ini menggunakan cookie untuk menyimpan identitas Anda (jika Anda memilih login)"
+"Website ini menggunakan cookie untuk menyimpan identitas Anda (jika Anda memilih login) "
 "dan sebagai perlindungan terhadap <a href=\"https://en.wikipedia.org/wiki"
 "/Cross-site_request_forgery\">cross-site request forgery (CSRF)</a>. "
 "Sebelum melanjutkan, Anda harus menerima penggunaan cookie dengan klik tombol "
