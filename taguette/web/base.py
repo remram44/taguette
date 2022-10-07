@@ -180,7 +180,7 @@ class Application(GracefulExitApplication):
             self.redis_pubsub = self.redis.pubsub()
             # FIXME: Can't call run_in_thread with no subscription
             self.redis_pubsub.subscribe(_fixme=lambda msg: None)
-            self.redis_pubsub.run_in_thread(daemon=True)
+            self.redis_pubsub.run_in_thread(sleep_time=0.1, daemon=True)
         else:
             self.redis = None
             self.redis_pubsub = None
