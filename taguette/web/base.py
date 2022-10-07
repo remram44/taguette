@@ -242,12 +242,19 @@ class Application(GracefulExitApplication):
         if project_id in self.event_waiters:
             # We're already watching, add a future to notify
             self.event_waiters[project_id].add(future)
+            # We can't have missed an event, we were already watching
+            return False
         else:
             # Start watching
             self.event_waiters[project_id] = set((future,))
-            if self.redis is not None:
+            if self.redis is None:
+                # We can't have missed an event, this is the only thread
+                return False
+            else:
                 # Listen for Redis messages
                 await self.redis_pubsub.subscribe('project:%d' % project_id)
+                # We may have missed events before subscription completed
+                return True
 
     def unobserve_project(self, project_id, future):
         assert isinstance(project_id, int)
