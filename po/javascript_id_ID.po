@@ -84,7 +84,7 @@ msgstr "Tidak dapat menggabungkan tag!"
 #. Key used to create a new highlight
 #: taguette/static/js/taguette.js:1182
 msgid "n"
-msgstr "n"
+msgstr "b"
 
 #: taguette/static/js/taguette.js:1245
 msgid "Couldn't create highlight!"

@@ -411,7 +411,7 @@ msgstr "Hapus tag"
 
 #: taguette/templates/project.html:371
 msgid "<em>n</em>ew highlight <span class=\"sr-only\">(shortcut: n)</span>"
-msgstr "sorotan baru <span class=\"sr-only\">(shortcut: n)</span>"
+msgstr "sorotan <em>b</em>aru <span class=\"sr-only\">(shortcut: b)</span>"
 
 #: taguette/templates/index.html:10
 #, python-format
