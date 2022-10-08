@@ -8,6 +8,7 @@ Bugfixes:
 * Fix some validation on project import, filename mangling on document import
 * Relax filename requirements
 * When importing codebook, ignore case when looking at column names
+* Fix the resource usage when using Redis, and avoid dropping events in specific conditions
 
 Enhancements:
 * Add Swedish translation
@@ -16,6 +17,9 @@ Enhancements:
 * When adding a document, automatically change to it
 * Add `EXTRA_FOOTER` config setting to easily add information about a self-hosted instance
 * Enable SQLite's auto_vacuum mode on newly created databases
+* Update the password hashing method to scrypt, more secure
+* Perform password hashing and verification in background threads, to avoid locking up the application for everyone else
+* Prevent clickjacking attacks by serving the relevant headers, in case they are not already set by your reverse proxy
 
 1.3.0 (2022-05-02)
 ------------------
