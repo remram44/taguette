@@ -869,12 +869,19 @@ class ProjectImport(BaseHandler):
         return await self.send_json({'project_id': new_project_id})
 
 
+class TooManyCommands(Exception):
+    """There are too many commands, have the client reload instead.
+    """
+
+
 class ProjectEvents(BaseHandler):
     response_cancelled = False
     polling_clients = set()
     PROM_POLLING_CLIENTS.set_function(
         lambda: len(ProjectEvents.polling_clients)
     )
+
+    wait_future = None
 
     @api_auth
     @PROM_REQUESTS.async_('events')
@@ -896,36 +903,12 @@ class ProjectEvents(BaseHandler):
         project, _ = self.get_project(project_id)
         self.project_id = int(project_id)
 
-        # Limit over which we won't send update but rather reload the frontend
-        LIMIT = 20
-
-        # Check for immediate update
-        cmds = (
-            self.db.query(database.Command)
-            .filter(database.Command.id > from_id)
-            .filter(database.Command.project_id == project.id)
-            .limit(LIMIT)
-        ).all()
-
-        if len(cmds) == LIMIT:
+        try:
+            cmds_json = await self._get_commands(project.id, from_id)
+        except TooManyCommands:
             return await self.send_json({'reload': True})
-
-        if cmds:
-            # Convert to JSON
-            cmds_json = [cmd.to_json() for cmd in cmds]
-        else:
-            # Wait for an event (which comes in JSON)
-            self.wait_future = Future()
-            self.application.observe_project(project.id, self.wait_future)
-            self.db.expire_all()
-
-            # Close DB connection to not overflow the connection pool
-            self.close_db_connection()
-
-            try:
-                cmds_json = [await self.wait_future]
-            except asyncio.CancelledError:
-                return
+        except asyncio.CancelledError:
+            return
 
         # Remove 'project_id' from each event
         def _change_cmd_json(old):
@@ -937,9 +920,62 @@ class ProjectEvents(BaseHandler):
 
         return await self.send_json({'events': cmds_json})
 
+    async def _get_commands(self, project_id, from_id):
+        # Limit over which we won't send update but rather reload the frontend
+        LIMIT = 20
+
+        # Check for immediate update
+        cmds = (
+            self.db.query(database.Command)
+            .filter(database.Command.id > from_id)
+            .filter(database.Command.project_id == project_id)
+            .limit(LIMIT)
+        ).all()
+
+        if len(cmds) >= LIMIT:
+            raise TooManyCommands
+
+        if cmds:
+            # Convert to JSON, return
+            return [cmd.to_json() for cmd in cmds]
+
+        # Subscribe for events (which come as JSON)
+        self.wait_future = Future()
+        recheck = await self.application.observe_project(
+            project_id,
+            self.wait_future,
+        )
+
+        # Check again, if necessary
+        if recheck:
+            cmds = (
+                self.db.query(database.Command)
+                .filter(database.Command.id > from_id)
+                .filter(database.Command.project_id == project_id)
+                .limit(LIMIT)
+            ).all()
+            if cmds:
+                # Events happened while we were subscribing:
+                # Cancel subscription, return them
+                self.wait_future.cancel()
+                self.application.unobserve_project(
+                    self.project_id,
+                    self.wait_future,
+                )
+                self.wait_future = None
+                return [cmd.to_json() for cmd in cmds]
+
+        self.db.expire_all()
+
+        # Close DB connection to not overflow the connection pool
+        self.close_db_connection()
+
+        return [await self.wait_future]
+
     def on_connection_close(self):
         self.response_cancelled = True
-        self.wait_future.cancel()
+        if self.wait_future:
+            self.wait_future.cancel()
         self.application.unobserve_project(self.project_id, self.wait_future)
 
     def on_finish(self):
