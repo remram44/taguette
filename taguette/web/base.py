@@ -120,7 +120,7 @@ class GracefulExitApplication(tornado.web.Application):
         if exit_time:
             exit_time = int(exit_time, 10)
         else:
-            exit_time = 3  # Default to 3 seconds
+            exit_time = 1  # Default to 1 seconds
 
         def exit():
             logger.info("Shutting down")
