@@ -9,7 +9,7 @@ import logging
 import opentelemetry.trace
 import os
 from sqlalchemy import Column, ForeignKey, Index, TypeDecorator, MetaData, \
-    UniqueConstraint, select
+    Table, UniqueConstraint, select
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import column_property, deferred, relationship
 from sqlalchemy.sql import functions
@@ -58,7 +58,7 @@ class User(Base):
     language = Column(String(10), nullable=True)
     email = Column(String(256), nullable=True, index=True, unique=True)
     email_sent = Column(DateTime, nullable=True)
-    projects = relationship('Project', secondary='project_members')
+    project_memberships = relationship('ProjectMember', back_populates='user')
 
     async def set_password(self, password, method=None):
         if method is None:
@@ -207,13 +207,15 @@ class Project(Base):
     description = Column(Text, nullable=False)
     created = Column(DateTime, nullable=False,
                      default=lambda: datetime.utcnow())
-    members = relationship('User', secondary='project_members')
+    members = relationship('ProjectMember', back_populates='project')
     commands = relationship('Command', cascade='all,delete-orphan',
-                            passive_deletes=True)
+                            passive_deletes=True,
+                            back_populates='project')
     documents = relationship('Document', cascade='all,delete-orphan',
                              passive_deletes=True)
     tags = relationship('Tag', cascade='all,delete-orphan', order_by='Tag.id',
-                        passive_deletes=True)
+                        passive_deletes=True,
+                        back_populates='project')
 
     def __repr__(self):
         return '<%s.%s %r %r>' % (
@@ -268,12 +270,12 @@ class ProjectMember(Base):
 
     project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
                         primary_key=True, index=True)
-    project = relationship('Project')
+    project = relationship('Project', back_populates='members')
     user_login = Column(String(30),
                         ForeignKey('users.login',
                                    ondelete='CASCADE', onupdate='CASCADE'),
                         primary_key=True, index=True)
-    user = relationship('User')
+    user = relationship('User', back_populates='project_memberships')
     privileges = Column(Enum(Privileges), nullable=False)
 
     def __repr__(self):
@@ -339,7 +341,7 @@ class Command(Base):
     user = relationship('User')
     project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
                         nullable=False, index=True)
-    project = relationship('Project')
+    project = relationship('Project', back_populates='commands')
     document_id = Column(Integer,  # Not ForeignKey, document can go away
                          nullable=True, index=True)
     payload = Column(JSON, nullable=False)
@@ -586,7 +588,8 @@ class Highlight(Base):
     start_offset = Column(Integer, nullable=False)
     end_offset = Column(Integer, nullable=False)
     snippet = Column(Text, nullable=False)
-    tags = relationship('Tag', secondary='highlight_tags')
+    tags = relationship('Tag', secondary='highlight_tags',
+                        back_populates='highlights')
 
     def __repr__(self):
         return '<%s.%s %r document_id=%r tags=[%s]>' % (
@@ -605,7 +608,7 @@ class Tag(Base):
     id = Column(Integer, primary_key=True)
     project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
                         nullable=False, index=True)
-    project = relationship('Project')
+    project = relationship('Project', back_populates='tags')
 
     path = Column(String(200), nullable=False, index=True)
     description = Column(Text, nullable=False)
@@ -614,7 +617,10 @@ class Tag(Base):
         UniqueConstraint('project_id', 'path'),
     ) + __table_args__
 
-    highlights = relationship('Highlight', secondary='highlight_tags')
+    highlights = relationship(
+        'Highlight', secondary='highlight_tags',
+        back_populates='tags',
+    )
 
     def __repr__(self):
         return '<%s.%s %r %r project_id=%r>' % (
@@ -626,34 +632,23 @@ class Tag(Base):
         )
 
 
-class HighlightTag(Base):
-    __tablename__ = 'highlight_tags'
-
-    highlight_id = Column(Integer, ForeignKey('highlights.id',
-                                              ondelete='CASCADE'),
-                          primary_key=True, index=True)
-    highlight = relationship('Highlight')
-    tag_id = Column(Integer, ForeignKey('tags.id',
-                                        ondelete='CASCADE'),
-                    primary_key=True, index=True)
-    tag = relationship('Tag')
-
-    def __repr__(self):
-        return '<%s.%s highlight_id=%r tag_id=%r>' % (
-            self.__class__.__module__,
-            self.__class__.__name__,
-            self.highlight_id,
-            self.tag_id,
-        )
+highlight_tags = Table(
+    'highlight_tags',
+    Base.metadata,
+    Column('highlight_id', ForeignKey('highlights.id', ondelete='CASCADE'),
+           primary_key=True, index=True),
+    Column('tag_id', ForeignKey('tags.id', ondelete='CASCADE'),
+           primary_key=True, index=True),
+)
 
 
 Tag.highlights_count = column_property(
     select(
-        [functions.count(HighlightTag.highlight_id)],
+        [functions.count(highlight_tags.c.highlight_id)],
     )
     .where(
-        HighlightTag.tag_id == Tag.id,
+        highlight_tags.c.tag_id == Tag.id,
     )
-    .correlate_except(HighlightTag)
+    .correlate_except(highlight_tags)
     .scalar_subquery()
 )

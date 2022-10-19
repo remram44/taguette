@@ -1466,8 +1466,8 @@ class TestMultiuser(MyHTTPTestCase):
         db.add(hl1)
         db.add(hl2)
         db.flush()
-        db.add(database.HighlightTag(highlight_id=hl1.id, tag_id=tag2.id))
-        db.add(database.HighlightTag(highlight_id=hl2.id, tag_id=tag1.id))
+        hl1.tags.append(tag2)
+        hl2.tags.append(tag1)
         db.add(database.ProjectMember(user_login='admin', project=project1,
                                       privileges=database.Privileges.ADMIN))
         db.add(database.ProjectMember(user_login=user,
@@ -1692,8 +1692,8 @@ class TestMultiuser(MyHTTPTestCase):
         )
         self.assertRowsEqualsExceptDates(
             db1.execute(
-                database.HighlightTag.__table__.select()
-                .order_by(database.HighlightTag.__table__.c.highlight_id)
+                database.highlight_tags.select()
+                .order_by(database.highlight_tags.c.highlight_id)
             ),
             [(1, 2), (2, 1), (4, 5), (5, 4), (7, 8), (8, 7)],
         )
@@ -1846,8 +1846,8 @@ class TestMultiuser(MyHTTPTestCase):
         )
         self.assertRowsEqualsExceptDates(
             db2.execute(
-                database.HighlightTag.__table__.select()
-                .order_by(database.HighlightTag.__table__.c.highlight_id)
+                database.highlight_tags.select()
+                .order_by(database.highlight_tags.c.highlight_id)
             ),
             [(1, 2), (2, 1)],
         )

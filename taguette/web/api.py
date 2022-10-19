@@ -6,6 +6,7 @@ import logging
 import math
 import os
 import prometheus_client
+from sqlalchemy import and_
 from sqlalchemy.exc import IntegrityError, DatabaseError, NoSuchTableError
 from sqlalchemy.orm import aliased, defer, joinedload
 import tempfile
@@ -414,20 +415,23 @@ class TagMerge(BaseHandler):
 
         # Remove tag from tag_src if it's already in tag_dest
         highlights_in_dest = (
-            self.db.query(database.HighlightTag.highlight_id)
-            .filter(database.HighlightTag.tag_id == tag_dest.id)
+            self.db.query(database.highlight_tags.c.highlight_id)
+            .filter(database.highlight_tags.c.tag_id == tag_dest.id)
         )
-        (
-            self.db.query(database.HighlightTag)
-                .filter(database.HighlightTag.tag_id == tag_src.id)
-                .filter(database.HighlightTag.highlight_id.in_(
-                    highlights_in_dest
-                ))
-        ).delete(synchronize_session=False)
+        self.db.execute(
+            database.highlight_tags.delete(
+                and_(
+                    database.highlight_tags.c.tag_id == tag_src.id,
+                    database.highlight_tags.c.highlight_id.in_(
+                        highlights_in_dest
+                    ),
+                )
+            )
+        )
         # Update tags that are in tag_src to be in tag_dest
         self.db.execute(
-            database.HighlightTag.__table__.update()
-            .where(database.HighlightTag.tag_id == tag_src.id)
+            database.highlight_tags.update()
+            .where(database.highlight_tags.c.tag_id == tag_src.id)
             .values(tag_id=tag_dest.id)
         )
         # Delete tag_src
@@ -477,13 +481,17 @@ class HighlightAdd(BaseHandler):
         self.db.flush()  # Need to flush to get hl.id
 
         # Insert tags in database
-        self.db.bulk_insert_mappings(database.HighlightTag, [
-            dict(
-                highlight_id=hl.id,
-                tag_id=tag,
+        if new_tags:
+            self.db.execute(
+                database.highlight_tags.insert(),
+                [
+                    dict(
+                        highlight_id=hl.id,
+                        tag_id=tag,
+                    )
+                    for tag in sorted(new_tags)
+                ],
             )
-            for tag in sorted(new_tags)
-        ])
         cmd = database.Command.highlight_add(
             self.current_user,
             document,
@@ -517,12 +525,12 @@ class HighlightUpdate(BaseHandler):
                 hl.end_offset = obj['end_offset']
             if 'tags' in obj:
                 # Obtain old tags from database
-                old_tags = (
-                    self.db.query(database.HighlightTag)
-                    .filter(database.HighlightTag.highlight == hl)
+                old_tags = set(
+                    row[0]
+                    for row in self.db.query(database.highlight_tags.c.tag_id)
+                    .filter(database.highlight_tags.c.highlight_id == hl.id)
                     .all()
                 )
-                old_tags = set(hl_tag.tag_id for hl_tag in old_tags)
                 new_tags = set(obj['tags'])
 
                 # Check the tags exist and are in this project
@@ -539,17 +547,22 @@ class HighlightUpdate(BaseHandler):
                     )
 
                 # Update tags in database
-                (
-                    self.db.query(database.HighlightTag)
-                    .filter(database.HighlightTag.highlight == hl)
-                ).delete()
-                self.db.bulk_insert_mappings(database.HighlightTag, [
-                    dict(
-                        highlight_id=hl.id,
-                        tag_id=tag,
+                self.db.execute(
+                    database.highlight_tags.delete(
+                        database.highlight_tags.c.highlight_id == hl.id
                     )
-                    for tag in sorted(new_tags)
-                ])
+                )
+                if new_tags:
+                    self.db.execute(
+                        database.highlight_tags.insert(),
+                        [
+                            dict(
+                                highlight_id=hl.id,
+                                tag_id=tag,
+                            )
+                            for tag in sorted(new_tags)
+                        ],
+                    )
 
                 # Compute the change in tag counts
                 tag_count_changes = {}
@@ -561,8 +574,8 @@ class HighlightUpdate(BaseHandler):
                 # Obtain old tags from database
                 new_tags = set(
                     row[0]
-                    for row in self.db.query(database.HighlightTag.tag_id)
-                    .filter(database.HighlightTag.highlight == hl)
+                    for row in self.db.query(database.highlight_tags.c.tag_id)
+                    .filter(database.highlight_tags.c.highlight_id == hl.id)
                     .all()
                 )
                 tag_count_changes = {}
@@ -590,12 +603,12 @@ class HighlightUpdate(BaseHandler):
         hl = self.db.query(database.Highlight).get(int(highlight_id))
         if hl is None or hl.document_id != document.id:
             return self.send_error_json(404, self.gettext("No such highlight"))
-        old_tags = list(
-            self.db.query(database.HighlightTag)
-            .filter(database.HighlightTag.highlight == hl)
+        old_tags = [
+            row[0]
+            for row in self.db.query(database.highlight_tags.c.tag_id)
+            .filter(database.highlight_tags.c.highlight_id == hl.id)
             .all()
-        )
-        old_tags = [hl_tag.tag_id for hl_tag in old_tags]
+        ]
         self.db.delete(hl)
         cmd = database.Command.highlight_delete(
             self.current_user,
@@ -629,13 +642,13 @@ class Highlights(BaseHandler):
 
         if path:
             tag = aliased(database.Tag)
-            hltag = aliased(database.HighlightTag)
+            hltag = aliased(database.highlight_tags)
             document = aliased(database.Document)
             query = (
                 self.db.query(database.Highlight, document.text_direction)
                 .options(joinedload(database.Highlight.tags))
-                .join(hltag, hltag.highlight_id == database.Highlight.id)
-                .join(tag, hltag.tag_id == tag.id)
+                .join(hltag, hltag.c.highlight_id == database.Highlight.id)
+                .join(tag, hltag.c.tag_id == tag.id)
                 .join(document, document.id == database.Highlight.document_id)
                 .filter(tag.path.startswith(path))
                 .filter(tag.project == project)
