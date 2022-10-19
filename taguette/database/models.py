@@ -207,7 +207,10 @@ class Project(Base):
     description = Column(Text, nullable=False)
     created = Column(DateTime, nullable=False,
                      default=lambda: datetime.utcnow())
-    members = relationship('User', secondary='project_members')
+    members = relationship(
+        'User', secondary='project_members',
+        overlaps='projects',  # GITLAB-270
+    )
     commands = relationship('Command', cascade='all,delete-orphan',
                             passive_deletes=True)
     documents = relationship('Document', cascade='all,delete-orphan',
@@ -268,12 +271,18 @@ class ProjectMember(Base):
 
     project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
                         primary_key=True, index=True)
-    project = relationship('Project')
+    project = relationship(
+        'Project',
+        overlaps='members,projects',  # GITLAB-270
+    )
     user_login = Column(String(30),
                         ForeignKey('users.login',
                                    ondelete='CASCADE', onupdate='CASCADE'),
                         primary_key=True, index=True)
-    user = relationship('User')
+    user = relationship(
+        'User',
+        overlaps='members,projects',  # GITLAB-270
+    )
     privileges = Column(Enum(Privileges), nullable=False)
 
     def __repr__(self):
@@ -339,7 +348,10 @@ class Command(Base):
     user = relationship('User')
     project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
                         nullable=False, index=True)
-    project = relationship('Project')
+    project = relationship(
+        'Project',
+        overlaps='commands',  # GITLAB-270
+    )
     document_id = Column(Integer,  # Not ForeignKey, document can go away
                          nullable=True, index=True)
     payload = Column(JSON, nullable=False)
@@ -605,7 +617,10 @@ class Tag(Base):
     id = Column(Integer, primary_key=True)
     project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
                         nullable=False, index=True)
-    project = relationship('Project')
+    project = relationship(
+        'Project',
+        overlaps='tags',  # GITLAB-270
+    )
 
     path = Column(String(200), nullable=False, index=True)
     description = Column(Text, nullable=False)
@@ -614,7 +629,10 @@ class Tag(Base):
         UniqueConstraint('project_id', 'path'),
     ) + __table_args__
 
-    highlights = relationship('Highlight', secondary='highlight_tags')
+    highlights = relationship(
+        'Highlight', secondary='highlight_tags',
+        overlaps='tags',  # GITLAB-270
+    )
 
     def __repr__(self):
         return '<%s.%s %r %r project_id=%r>' % (
@@ -632,11 +650,17 @@ class HighlightTag(Base):
     highlight_id = Column(Integer, ForeignKey('highlights.id',
                                               ondelete='CASCADE'),
                           primary_key=True, index=True)
-    highlight = relationship('Highlight')
+    highlight = relationship(
+        'Highlight',
+        overlaps='highlights,tags',  # GITLAB-270
+    )
     tag_id = Column(Integer, ForeignKey('tags.id',
                                         ondelete='CASCADE'),
                     primary_key=True, index=True)
-    tag = relationship('Tag')
+    tag = relationship(
+        'Tag',
+        overlaps='highlights,tags',  # GITLAB-270
+    )
 
     def __repr__(self):
         return '<%s.%s highlight_id=%r tag_id=%r>' % (
