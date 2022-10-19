@@ -9,6 +9,7 @@ Bugfixes:
 * Relax filename requirements
 * When importing codebook, ignore case when looking at column names
 * Fix the resource usage when using Redis, and avoid dropping events in specific conditions
+* Fix the database warnings shown at startup
 
 Enhancements:
 * Add Swedish translation
@@ -20,6 +21,7 @@ Enhancements:
 * Update the password hashing method to scrypt, more secure
 * Perform password hashing and verification in background threads, to avoid locking up the application for everyone else
 * Prevent clickjacking attacks by serving the relevant headers, in case they are not already set by your reverse proxy
+* Add a script `register_user.py` to register a user even if registration is disabled
 
 1.3.0 (2022-05-02)
 ------------------
