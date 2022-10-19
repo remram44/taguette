@@ -53,10 +53,14 @@ class Index(BaseHandler):
                 self.logout()
                 # Fall through to welcome page
             else:
-                return self.render('index.html',
-                                   user=user, projects=user.projects,
-                                   can_import_project=self.application.config[
-                                       'SQLITE3_IMPORT_ENABLED'])
+                return self.render(
+                    'index.html',
+                    user=user,
+                    projects=[m.project for m in user.project_memberships],
+                    can_import_project=(
+                        self.application.config['SQLITE3_IMPORT_ENABLED']
+                    ),
+                )
         elif not self.application.config['MULTIUSER']:
             token = self.get_query_argument('token', None)
             if token and token == self.application.single_user_token:
