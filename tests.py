@@ -659,6 +659,7 @@ class TestMultiuser(MyHTTPTestCase):
         #                         tag 4 'interesting.places'
         # doc 1
         #                         doc 2
+        # hl 1 doc=1 tags=[]
         # hl 1 doc=1 tags=[1]
         #                         change project metadata
         #                         doc 3
@@ -821,16 +822,44 @@ class TestMultiuser(MyHTTPTestCase):
         # Create highlight 1 in document 1
         async with self.apost(
             '/api/project/1/document/1/highlight/new',
-            json=dict(start_offset=3, end_offset=7, tags=[1]),
+            json=dict(start_offset=3, end_offset=5, tags=[]),
         ) as response:
             self.assertEqual(response.status, 200)
             self.assertEqual(await response.json(), {"id": 1})
         self.assertEqual(
             await poll_proj1,
             {'type': 'highlight_add', 'id': 5, 'highlight_id': 1,
+             'document_id': 1, 'start_offset': 3, 'end_offset': 5,
+             'tags': [], 'tag_count_changes': {}})
+        poll_proj1 = await self.poll_event(1, 5)
+
+        # Update highlight 1 in document 1: change position
+        async with self.apost(
+            '/api/project/1/document/1/highlight/1',
+            json=dict(start_offset=3, end_offset=7),
+        ) as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(await response.json(), {"id": 1})
+        self.assertEqual(
+            await poll_proj1,
+            {'type': 'highlight_add', 'id': 6, 'highlight_id': 1,
+             'document_id': 1, 'start_offset': 3, 'end_offset': 7,
+             'tags': [], 'tag_count_changes': {}})
+        poll_proj1 = await self.poll_event(1, 6)
+
+        # Update highlight 1 in document 1: change tags
+        async with self.apost(
+            '/api/project/1/document/1/highlight/1',
+            json=dict(tags=[1]),
+        ) as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(await response.json(), {"id": 1})
+        self.assertEqual(
+            await poll_proj1,
+            {'type': 'highlight_add', 'id': 7, 'highlight_id': 1,
              'document_id': 1, 'start_offset': 3, 'end_offset': 7,
              'tags': [1], 'tag_count_changes': {'1': 1}})
-        poll_proj1 = await self.poll_event(1, 5)
+        poll_proj1 = await self.poll_event(1, 7)
 
         # Change project 2 metadata
         async with self.apost(
@@ -841,9 +870,9 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(await response.json(), {})
         self.assertEqual(
             await poll_proj2,
-            {'type': 'project_meta', 'id': 6,
+            {'type': 'project_meta', 'id': 8,
              'project_name': 'new project', 'description': 'Meaningful'})
-        poll_proj2 = await self.poll_event(2, 6)
+        poll_proj2 = await self.poll_event(2, 8)
 
         # Create document 3 in project 2
         async with self.apost(
@@ -860,10 +889,10 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(await response.json(), {"created": 3})
         self.assertEqual(
             await poll_proj2,
-            {'type': 'document_add', 'id': 7, 'document_id': 3,
+            {'type': 'document_add', 'id': 9, 'document_id': 3,
              'text_direction': 'RIGHT_TO_LEFT',
              'document_name': 'third', 'description': 'Last one'})
-        poll_proj2 = await self.poll_event(2, 7)
+        poll_proj2 = await self.poll_event(2, 9)
 
         # Create highlight in document 2, using wrong project id
         async with self.apost(
@@ -899,10 +928,10 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(await response.json(), {"id": 2})
         self.assertEqual(
             await poll_proj2,
-            {'type': 'highlight_add', 'id': 8, 'highlight_id': 2,
+            {'type': 'highlight_add', 'id': 10, 'highlight_id': 2,
              'document_id': 2, 'start_offset': 0, 'end_offset': 4,
              'tags': [4], 'tag_count_changes': {'4': 1}})
-        poll_proj2 = await self.poll_event(2, 8)
+        poll_proj2 = await self.poll_event(2, 10)
 
         # Create highlight 3 in document 2
         async with self.apost(
@@ -913,10 +942,10 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(await response.json(), {"id": 3})
         self.assertEqual(
             await poll_proj2,
-            {'type': 'highlight_add', 'id': 9, 'highlight_id': 3,
+            {'type': 'highlight_add', 'id': 11, 'highlight_id': 3,
              'document_id': 2, 'start_offset': 13, 'end_offset': 17,
              'tags': [2, 3], 'tag_count_changes': {'2': 1, '3': 1}})
-        poll_proj2 = await self.poll_event(2, 9)
+        poll_proj2 = await self.poll_event(2, 11)
 
         # Create highlight 4 in document 3
         async with self.apost(
@@ -927,10 +956,10 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(await response.json(), {"id": 4})
         self.assertEqual(
             await poll_proj2,
-            {'type': 'highlight_add', 'id': 10, 'highlight_id': 4,
+            {'type': 'highlight_add', 'id': 12, 'highlight_id': 4,
              'document_id': 3, 'start_offset': 0, 'end_offset': 7,
              'tags': [3], 'tag_count_changes': {'3': 1}})
-        poll_proj2 = await self.poll_event(2, 10)
+        poll_proj2 = await self.poll_event(2, 12)
 
         # List highlights in project 2 under 'people'
         async with self.aget('/api/project/2/highlights/people') as response:
@@ -1197,9 +1226,9 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(await response.json(), {'id': 2})
         self.assertEqual(
             await poll_proj2,
-            {'type': 'tag_merge', 'id': 11, 'src_tag_id': 3, 'dest_tag_id': 2},
+            {'type': 'tag_merge', 'id': 13, 'src_tag_id': 3, 'dest_tag_id': 2},
         )
-        poll_proj2 = await self.poll_event(2, 11)
+        poll_proj2 = await self.poll_event(2, 13)
 
         # List all highlights in project 2
         async with self.aget('/api/project/2/highlights/') as response:
