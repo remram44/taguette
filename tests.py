@@ -517,6 +517,14 @@ class MyHTTPTestCase(AsyncHTTPTestCase):
             kwargs['data'] = data
         return self._fetch(url, method='POST', allow_redirects=False, **kwargs)
 
+    def adelete(self, url):
+        cookies = self.http_client.cookie_jar.filter_cookies(self.get_url('/'))
+        if '_xsrf' in cookies:
+            token = cookies['_xsrf'].value
+            url = '%s%s%s' % (url, '&' if '?' in url else '?',
+                              urlencode(dict(_xsrf=token)))
+        return self._fetch(url, method='DELETE')
+
 
 async def set_dumb_password(DBSession):
     db = DBSession()
@@ -665,14 +673,16 @@ class TestMultiuser(MyHTTPTestCase):
         #                         doc 3
         #                         hl 2 doc=2 tags=[4]
         #                         hl 3 doc=2 tags=[2, 3]
-        #                         hl 4 doc=3 tags=[3]
-        #                         highlights 'people*': [3, 4]
+        #                         hl 4 doc=2 tags=[3]
+        #                         delete hl 4 doc=2
+        #                         hl 5 doc=3 tags=[3]
+        #                         highlights 'people*': [3, 5]
         #                         highlights 'interesting.places*': [2]
         #                         highlights 'interesting*': [2, 3]
-        #                         highlights: [2, 3, 4]
+        #                         highlights: [2, 3, 5]
         #                         export doc 2
         #                         merge tag 3 -> 2
-        #                         highlights: [2, 3, 4]
+        #                         highlights: [2, 3, 5]
 
         # Accept cookies
         async with self.apost('/cookies', data=dict()) as response:
@@ -947,9 +957,9 @@ class TestMultiuser(MyHTTPTestCase):
              'tags': [2, 3], 'tag_count_changes': {'2': 1, '3': 1}})
         poll_proj2 = await self.poll_event(2, 11)
 
-        # Create highlight 4 in document 3
+        # Create highlight 4 in document 2
         async with self.apost(
-            '/api/project/2/document/3/highlight/new',
+            '/api/project/2/document/2/highlight/new',
             json=dict(start_offset=0, end_offset=7, tags=[3]),
         ) as response:
             self.assertEqual(response.status, 200)
@@ -957,9 +967,34 @@ class TestMultiuser(MyHTTPTestCase):
         self.assertEqual(
             await poll_proj2,
             {'type': 'highlight_add', 'id': 12, 'highlight_id': 4,
-             'document_id': 3, 'start_offset': 0, 'end_offset': 7,
+             'document_id': 2, 'start_offset': 0, 'end_offset': 7,
              'tags': [3], 'tag_count_changes': {'3': 1}})
         poll_proj2 = await self.poll_event(2, 12)
+
+        # Delete highlight 4 in document 2
+        async with self.adelete(
+            '/api/project/2/document/2/highlight/4',
+        ) as response:
+            self.assertEqual(response.status, 204)
+        self.assertEqual(
+            await poll_proj2,
+            {'type': 'highlight_delete', 'id': 13, 'highlight_id': 4,
+             'document_id': 2, 'tag_count_changes': {'3': -1}})
+        poll_proj2 = await self.poll_event(2, 13)
+
+        # Create highlight 5 in document 3
+        async with self.apost(
+            '/api/project/2/document/3/highlight/new',
+            json=dict(start_offset=0, end_offset=7, tags=[3]),
+        ) as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(await response.json(), {"id": 5})
+        self.assertEqual(
+            await poll_proj2,
+            {'type': 'highlight_add', 'id': 14, 'highlight_id': 5,
+             'document_id': 3, 'start_offset': 0, 'end_offset': 7,
+             'tags': [3], 'tag_count_changes': {'3': 1}})
+        poll_proj2 = await self.poll_event(2, 14)
 
         # List highlights in project 2 under 'people'
         async with self.aget('/api/project/2/highlights/people') as response:
@@ -968,7 +1003,7 @@ class TestMultiuser(MyHTTPTestCase):
                 'highlights': [
                     {'id': 3, 'document_id': 2, 'tags': [2, 3],
                      'text_direction': 'LEFT_TO_RIGHT', 'content': "tent"},
-                    {'id': 4, 'document_id': 3, 'tags': [3],
+                    {'id': 5, 'document_id': 3, 'tags': [3],
                      'text_direction': 'RIGHT_TO_LEFT',
                      'content': "<strong>Opinion</strong>"},
                 ],
@@ -1012,7 +1047,7 @@ class TestMultiuser(MyHTTPTestCase):
                      'text_direction': 'LEFT_TO_RIGHT', 'content': "diff"},
                     {'id': 3, 'document_id': 2, 'tags': [2, 3],
                      'text_direction': 'LEFT_TO_RIGHT', 'content': "tent"},
-                    {'id': 4, 'document_id': 3, 'tags': [3],
+                    {'id': 5, 'document_id': 3, 'tags': [3],
                      'text_direction': 'RIGHT_TO_LEFT',
                      'content': "<strong>Opinion</strong>"},
                 ],
@@ -1226,9 +1261,9 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(await response.json(), {'id': 2})
         self.assertEqual(
             await poll_proj2,
-            {'type': 'tag_merge', 'id': 13, 'src_tag_id': 3, 'dest_tag_id': 2},
+            {'type': 'tag_merge', 'id': 15, 'src_tag_id': 3, 'dest_tag_id': 2},
         )
-        poll_proj2 = await self.poll_event(2, 13)
+        poll_proj2 = await self.poll_event(2, 15)
 
         # List all highlights in project 2
         async with self.aget('/api/project/2/highlights/') as response:
@@ -1239,7 +1274,7 @@ class TestMultiuser(MyHTTPTestCase):
                      'text_direction': 'LEFT_TO_RIGHT', 'content': "diff"},
                     {'id': 3, 'document_id': 2, 'tags': [2],
                      'text_direction': 'LEFT_TO_RIGHT', 'content': "tent"},
-                    {'id': 4, 'document_id': 3, 'tags': [2],
+                    {'id': 5, 'document_id': 3, 'tags': [2],
                      'text_direction': 'RIGHT_TO_LEFT',
                      'content': "<strong>Opinion</strong>"},
                 ],
