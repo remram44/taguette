@@ -558,8 +558,14 @@ class HighlightUpdate(BaseHandler):
                 for tag in new_tags - old_tags:
                     tag_count_changes[tag] = 1
             else:
-                new_tags = None
-                tag_count_changes = None
+                # Obtain old tags from database
+                new_tags = set(
+                    row[0]
+                    for row in self.db.query(database.HighlightTag.tag_id)
+                    .filter(database.HighlightTag.highlight == hl)
+                    .all()
+                )
+                tag_count_changes = {}
 
             cmd = database.Command.highlight_add(
                 self.current_user,
