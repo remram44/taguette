@@ -500,7 +500,7 @@ class MyHTTPTestCase(AsyncHTTPTestCase):
             if 'data' in kwargs:
                 if isinstance(kwargs['data'], dict):
                     kwargs['data'] = dict(kwargs['data'], _xsrf=token)
-            elif 'json' in kwargs:
+            else:
                 url = '%s%s%s' % (url, '&' if '?' in url else '?',
                                   urlencode(dict(_xsrf=token)))
         if 'files' in kwargs:
@@ -683,6 +683,7 @@ class TestMultiuser(MyHTTPTestCase):
         #                         export doc 2
         #                         merge tag 3 -> 2
         #                         highlights: [2, 3, 5]
+        # delete project
 
         # Accept cookies
         async with self.apost('/cookies', data=dict()) as response:
@@ -1284,6 +1285,12 @@ class TestMultiuser(MyHTTPTestCase):
         await asyncio.sleep(2)
         self.assertNotDone(poll_proj1)
         self.assertNotDone(poll_proj2)
+
+        poll_proj1.cancel()
+
+        async with self.apost('/project/1/delete') as response:
+            self.assertEqual(response.status, 302)
+            self.assertEqual(response.headers['Location'], '/')
 
     @gen_test(timeout=60)
     async def test_reset_password(self):
