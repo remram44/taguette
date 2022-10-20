@@ -522,6 +522,16 @@ class BaseHandler(RequestHandler):
         member, document = res
         return document, member.privileges
 
+    def redirect(self, url, permanent=False, status=None):
+        if status is None:
+            if permanent:
+                status = 301
+            elif self.request.method == 'GET':
+                status = 302
+            else:
+                status = 303
+        return super(BaseHandler, self).redirect(url, status=status)
+
     def get_json(self):
         type_ = self.request.headers.get('Content-Type', '')
         if not type_.startswith('application/json'):

@@ -586,7 +586,7 @@ class TestMultiuser(MyHTTPTestCase):
             '/cookies',
             data=dict(next='/register'),
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/register')
 
         # Fetch registration page
@@ -599,7 +599,7 @@ class TestMultiuser(MyHTTPTestCase):
             data=dict(login='Tester',
                       password1='hacktoo', password2='hacktoo'),
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/')
 
         # User exists in database
@@ -623,7 +623,7 @@ class TestMultiuser(MyHTTPTestCase):
             '/project/new',
             data=dict(name='test project', description=''),
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/project/1')
 
         # Log out
@@ -647,7 +647,7 @@ class TestMultiuser(MyHTTPTestCase):
             '/login',
             data=dict(next='/project/1', login='admin', password='hackme'),
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/project/1')
 
         # Check redirect to account
@@ -687,7 +687,7 @@ class TestMultiuser(MyHTTPTestCase):
 
         # Accept cookies
         async with self.apost('/cookies', data=dict()) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/')
 
         # Log in
@@ -697,7 +697,7 @@ class TestMultiuser(MyHTTPTestCase):
             '/login',
             data=dict(next='/', login='admin', password='hackme'),
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/')
 
         # Create project 1
@@ -711,7 +711,7 @@ class TestMultiuser(MyHTTPTestCase):
                 description="R\xE9mi's project",
             ),
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/project/1')
 
         # Check project page
@@ -755,7 +755,7 @@ class TestMultiuser(MyHTTPTestCase):
             '/project/new',
             data=dict(name='other project', description=''),
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/project/2')
 
         # Start polling
@@ -1289,14 +1289,14 @@ class TestMultiuser(MyHTTPTestCase):
         poll_proj1.cancel()
 
         async with self.apost('/project/1/delete') as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/')
 
     @gen_test(timeout=60)
     async def test_reset_password(self):
         # Accept cookies
         async with self.apost('/cookies', data=dict()) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/')
 
         # Fetch registration page
@@ -1312,7 +1312,7 @@ class TestMultiuser(MyHTTPTestCase):
                 email='test@example.com',
             ),
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/')
 
         # User exists in database
@@ -1342,9 +1342,8 @@ class TestMultiuser(MyHTTPTestCase):
         time.sleep(1)
 
         # Send reset link
-        async with self.aget('/reset_password'):
-            self.assertEqual(response.status, 302)
-            self.assertEqual(response.headers['Location'], '/')
+        async with self.aget('/reset_password') as response:
+            self.assertEqual(response.status, 200)
         with mock.patch.object(self.application, 'send_mail') as mo:
             async with self.apost(
                 '/reset_password',
@@ -1381,7 +1380,7 @@ class TestMultiuser(MyHTTPTestCase):
                 password1='pass2', password2='pass2',
             ),
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/')
 
         # User exists in database
@@ -1529,7 +1528,7 @@ class TestMultiuser(MyHTTPTestCase):
 
         # Log in
         async with self.apost('/cookies', data=dict()) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/')
         async with self.aget('/login') as response:
             self.assertEqual(response.status, 200)
@@ -1537,7 +1536,7 @@ class TestMultiuser(MyHTTPTestCase):
             '/login',
             data=dict(next='/', login='db1user', password='hackme'),
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/')
 
         # Create second database
@@ -1715,7 +1714,7 @@ class TestMultiuser(MyHTTPTestCase):
 
         # Log in
         async with self.apost('/cookies', data=dict()) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/')
         async with self.aget('/login') as response:
             self.assertEqual(response.status, 200)
@@ -1723,7 +1722,7 @@ class TestMultiuser(MyHTTPTestCase):
             '/login',
             data=dict(next='/', login='db1user', password='hackme'),
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/')
 
         # Export project
@@ -1865,7 +1864,7 @@ class TestMultiuser(MyHTTPTestCase):
     async def _setup_import_codebook_project(self):
         # Log in
         async with self.apost('/cookies', data=dict()) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/')
         async with self.aget('/login') as response:
             self.assertEqual(response.status, 200)
@@ -1873,7 +1872,7 @@ class TestMultiuser(MyHTTPTestCase):
             '/login',
             data=dict(next='/', login='admin', password='hackme'),
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/')
 
         # Create project 1
@@ -1883,7 +1882,7 @@ class TestMultiuser(MyHTTPTestCase):
             '/project/new',
             data=dict(name='my project', description=''),
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/project/1')
 
         db = self.application.DBSession()
@@ -2064,7 +2063,7 @@ class TestMultiuser(MyHTTPTestCase):
                 'tag2-description': 'disabled',
             },
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'],
                              '/project/1')
 
@@ -2118,7 +2117,7 @@ class TestMultiuser(MyHTTPTestCase):
                 'tag2-description': 'disabled',
             },
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'],
                              '/project/1')
 
@@ -2261,7 +2260,7 @@ class TestSingleuser(MyHTTPTestCase):
             '/project/new',
             data=dict(name='test project', description=''),
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/project/1')
 
         # Fetch logout page
