@@ -506,7 +506,10 @@ class BaseHandler(RequestHandler):
 
         query = (
             self.db.query(database.ProjectMember, database.Document)
-            .filter(database.Document.project_id == project_id)
+            .join(
+                database.Document,
+                database.Document.project_id == project_id,
+            )
             .filter(database.Document.id == document_id)
             .filter(database.ProjectMember.user_login == self.current_user)
             .filter(database.ProjectMember.project_id == project_id)
