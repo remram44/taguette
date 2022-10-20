@@ -207,7 +207,8 @@ class Project(Base):
     description = Column(Text, nullable=False)
     created = Column(DateTime, nullable=False,
                      default=lambda: datetime.utcnow())
-    members = relationship('ProjectMember', back_populates='project')
+    members = relationship('ProjectMember', cascade='all,delete-orphan',
+                           back_populates='project')
     commands = relationship('Command', cascade='all,delete-orphan',
                             passive_deletes=True,
                             back_populates='project')
