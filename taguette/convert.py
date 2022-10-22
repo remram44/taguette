@@ -216,10 +216,13 @@ def get_html_body(body):
     # Use bleach to sanitize the content
     body = bleach.clean(
         body,
-        tags=['p', 'br', 'a', 'img',
-              'h1', 'h2', 'h3', 'h4', 'h5',
+        tags=['p', 'br', 
+              'a', 'img',
+              'h1', 'h2', 'h3', 'h4', 'h5', # headers
               'strong', 'em', 'b', 'u',
-              'ul', 'ol', 'li'],
+              'ul', 'ol', 'li', 
+              'table', 'thead', 'tbody', 'tr', 'th', 'td' #tables
+              ],
         attributes={'a': ['href', 'title'], 'img': ['src']},
         strip=True,
     )
