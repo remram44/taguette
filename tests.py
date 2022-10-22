@@ -118,8 +118,9 @@ class TestConvert(AsyncTestCase):
             b'links: <a href=\"here\">1</a> '
             b'<a title=\"important\" href=\"/over/there\">2</a> '
             b'<a href=\"http://and/the/last/one\" class=\"a\">3</a></p>\n'
-            b'<table><thead><tr><th>Header1</th><th>Another Header</th></tr></thead>'
-            b'<tbody><tr><td>1</td><td>34.9</td><td>2</td><td>98.1</td></tr></tbody></table>'
+            b'<table><thead><tr><th>Header1</th><th>Another</th></tr></thead>'
+            b'<tbody><tr><td>1</td><td>34.9</td><td>2</td><td>98.1</td></tr>'
+            b'</tbody></table>'
             b'</body></html>\n'
         )
         with mock.patch('tornado.process.Subprocess', object()):
@@ -136,8 +137,9 @@ class TestConvert(AsyncTestCase):
             'links: <a title="here">1</a> '
             '<a title="/over/there">2</a> '
             '<a href="http://and/the/last/one">3</a></p>\n'
-            '<table><thead><tr><th>Header1</th><th>Another Header</th></tr></thead>'
-            '<tbody><tr><td>1</td><td>34.9</td><td>2</td><td>98.1</td></tr></tbody></table>'
+            '<table><thead><tr><th>Header1</th><th>Another</th></tr></thead>'
+            '<tbody><tr><td>1</td><td>34.9</td><td>2</td><td>98.1</td></tr>'
+            '</tbody></table>'
         )
 
     def test_filename(self):
