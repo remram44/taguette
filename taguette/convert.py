@@ -220,7 +220,7 @@ def get_html_body(body):
               'a', 'img', # non-text 
               'h1', 'h2', 'h3', 'h4', 'h5', # headers
               'strong', 'em', 'b', 'u', 'q', 'del', # emphasis
-              'ul', 'ol', 'li', 'dl', 'dt', 'dd' # lists
+              'ul', 'ol', 'li', 'dl', 'dt', 'dd', # lists
               'table', 'thead', 'tbody', 'tr', 'th', 'td', 'colgroup', 'col', #tables
               ],
         attributes={'a': ['href', 'title'], 'img': ['src']},
