@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.3.1 (???)
+1.4.0 (???)
 -----------
 
 Bugfixes:
@@ -10,6 +10,7 @@ Bugfixes:
 * When importing codebook, ignore case when looking at column names
 * Fix the resource usage when using Redis, and avoid dropping events in specific conditions
 * Fix the database warnings shown at startup
+* Fix language setting sometimes being out of sync between devices
 
 Enhancements:
 * Add Swedish translation
@@ -22,6 +23,8 @@ Enhancements:
 * Perform password hashing and verification in background threads, to avoid locking up the application for everyone else
 * Prevent clickjacking attacks by serving the relevant headers, in case they are not already set by your reverse proxy
 * Add a script `register_user.py` to register a user even if registration is disabled
+* Allow more HTML tags in imported documents, like tables
+* Add a 'disabled' flag to users and a script to delete all user data (only keeping the 'login' in the database to prevent re-use)
 
 1.3.0 (2022-05-02)
 ------------------
