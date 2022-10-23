@@ -282,7 +282,7 @@ def is_html_safe(text):
 async def calibre_to_html(input_filename, temp_dir, config):
     PROM_CALIBRE_TOHTML.inc()
 
-    output_dir = os.path.join("tmp", 'output')
+    output_dir = os.path.join(temp_dir, 'output')
     output = []
     convert = 'ebook-convert'
     if os.environ.get('CALIBRE'):
