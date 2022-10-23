@@ -258,8 +258,8 @@ def is_html_safe(text):
             return False
 
     # Use bleach to sanitize the content
-    body = bleach.clean(
-        body,
+    cleaned = bleach.clean(
+        text,
         tags=['p', 'br', 'code', 'blockquote', 'pre',  # formatting
               'sub', 'sup', 'caption',
               'a', 'img',  # non-text
