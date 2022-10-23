@@ -68,7 +68,7 @@ class CheckUser(BaseHandler):
             pass
         else:
             user = self.db.query(database.User).get(login)
-            if user is not None:
+            if user is not None and not user.disabled:
                 return self.send_json({'exists': True})
         return self.send_json({'exists': False})
 

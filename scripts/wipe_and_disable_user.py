@@ -11,7 +11,7 @@ from taguette import database
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate a password reset link for manual delivery",
+        description="Wipe user data and disable it",
     )
     parser.add_argument('config_file', help="Configuration file")
     parser.add_argument('user_login')
@@ -33,23 +33,18 @@ def main():
         sys.exit(1)
 
     if user.disabled:
-        print("WARNING: USER IS DISABLED")
+        print("User is already disabled")
+        sys.exit(3)
 
-    # Generate a signed token
-    reset_token = '%s|%s|%s' % (
-        int(time.time()),
-        user.login,
-        user.email,
-    )
-    reset_token = create_signed_value(
-        config['SECRET_KEY'],
-        'reset_token',
-        reset_token,
-    )
-    reset_token = reset_token.decode('utf-8')
-    reset_link = '/new_password?reset_token=' + reset_token
+    if user.projects:
+        print("User has projects")
+        sys.exit(1)
 
-    print(reset_link)
+    user.hashed_password = ''
+    user.language = None
+    user.email = None
+    user.disabled = True
+    db.commit()
 
 
 if __name__ == '__main__':

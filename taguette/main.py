@@ -395,11 +395,7 @@ def main():
     loop = tornado.ioloop.IOLoop.current()
 
     db = app.DBSession()
-    admin = (
-        db.query(database.User)
-        .filter(database.User.login == 'admin')
-        .one_or_none()
-    )
+    admin = db.query(database.User).get('admin')
     if admin is None:
         logger.warning("Creating user 'admin'")
         admin = database.User(login='admin')
