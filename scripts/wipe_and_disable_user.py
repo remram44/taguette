@@ -36,7 +36,7 @@ def main():
         print("User is already disabled")
         sys.exit(3)
 
-    if user.projects:
+    if user.project_memberships:
         print("User has projects")
         sys.exit(1)
 
