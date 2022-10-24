@@ -59,7 +59,11 @@ class User(Base):
     language = Column(String(10), nullable=True)
     email = Column(String(256), nullable=True, index=True, unique=True)
     email_sent = Column(DateTime, nullable=True)
-    project_memberships = relationship('ProjectMember', back_populates='user')
+    project_memberships = relationship(
+        'ProjectMember',
+        cascade='all,delete-orphan',
+        back_populates='user',
+    )
 
     async def set_password(self, password, method=None):
         if method is None:
