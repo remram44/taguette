@@ -70,12 +70,12 @@ frontend_chromium_subdir:
 
 sqlite3_latest:
   stage: test
-  image: python:3.10
+  image: python:3.11
   script:
     - curl -sSL https://install.python-poetry.org | python3 -
     - $HOME/.local/bin/poetry config virtualenvs.create false
     - rm poetry.lock
-    - sed -i 's/^python = ".*$/python = "^3.10"/' pyproject.toml
+    - sed -i 's/^python = ".*$/python = "^3.11"/' pyproject.toml
     - cat pyproject.toml
     - $HOME/.local/bin/poetry install --no-interaction
     - scripts/update_translations.sh
