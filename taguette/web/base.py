@@ -319,7 +319,21 @@ class Application(GracefulExitApplication):
         )
 
 
-class BaseHandler(RequestHandler):
+class HandleStreamClosed(RequestHandler):
+    def log_exception(self, typ, value, tb):
+        if isinstance(value, tornado.iostream.StreamClosedError):
+            return
+        super(HandleStreamClosed, self).log_exception(typ, value, tb)
+
+    def send_error(self, status_code=500, **kwargs):
+        if 'exc_info' in kwargs:
+            exception = kwargs['exc_info'][1]
+            if isinstance(exception, tornado.iostream.StreamClosedError):
+                return
+        super(HandleStreamClosed, self).send_error(status_code, **kwargs)
+
+
+class BaseHandler(HandleStreamClosed, RequestHandler):
     """Base class for all request handlers.
     """
     application: Application
@@ -538,12 +552,6 @@ class BaseHandler(RequestHandler):
     def send_error_json(self, status, message, reason=None):
         self.set_status(status, reason)
         return self.send_json({'error': message})
-
-    def log_exception(self, typ, value, tb):
-        if isinstance(value, tornado.iostream.StreamClosedError):
-            pass
-        else:
-            super(BaseHandler, self).log_exception(typ, value, tb)
 
     def write_error(self, status_code, **kwargs):
         # If database session has failed, can't use it to render the error
