@@ -117,7 +117,7 @@ class TestConvert(AsyncTestCase):
             b'<img src=\"http://and/the/last/one.png\" class=\"a\">, and '
             b'links: <a href=\"here\">1</a> '
             b'<a title=\"important\" href=\"/over/there\">2</a> '
-            b'<a href=\"http://and/the/last/one\" class=\"a\">3</a></p>\n'
+            b'<a title=\"t\"href=\"http://last/one\" class=\"a\">3</a></p>\n'
             b'<table><thead><tr><th>Header1</th><th>Another</th></tr></thead>'
             b'<tbody><tr><td>1</td><td>34.9</td><td>2</td><td>98.1</td></tr>'
             b'</tbody></table>'
@@ -136,11 +136,13 @@ class TestConvert(AsyncTestCase):
             '<img src="/static/missing.png">, and '
             'links: <a title="here">1</a> '
             '<a title="/over/there">2</a> '
-            '<a href="http://and/the/last/one">3</a></p>\n'
+            '<a href="http://last/one">3</a></p>\n'
             '<table><thead><tr><th>Header1</th><th>Another</th></tr></thead>'
             '<tbody><tr><td>1</td><td>34.9</td><td>2</td><td>98.1</td></tr>'
             '</tbody></table>'
         )
+
+        self.assertTrue(convert.is_html_safe(body))
 
     def test_filename(self):
         old_windows_flag = sanitize_filename.windows
@@ -212,6 +214,7 @@ class TestPassword(AsyncTestCase):
             has_scrypt = False
 
         user = database.User(login='user')
+        self.assertFalse(await user.check_password('hackme'))
         await user.set_password('test')
         if has_scrypt:
             self.assertTrue(user.hashed_password.startswith('scrypt:'))
@@ -661,6 +664,26 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(response.status, 301)
             self.assertEqual(response.headers['Location'], '/account')
 
+        # Check /api/check_user endpoint
+        async with self.apost(
+            '/api/check_user',
+            json=dict(login='admin'),
+        ) as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(await response.json(), {"exists": True})
+        async with self.apost(
+            '/api/check_user',
+            json=dict(login='\xE9'),
+        ) as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(await response.json(), {"exists": False})
+        async with self.apost(
+            '/api/check_user',
+            json=dict(login='clay'),
+        ) as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(await response.json(), {"exists": False})
+
     @gen_test(timeout=30)
     async def test_projects(self):
         # project 1               project 2
@@ -877,6 +900,17 @@ class TestMultiuser(MyHTTPTestCase):
              'document_id': 1, 'start_offset': 3, 'end_offset': 7,
              'tags': [1], 'tag_count_changes': {'1': 1}})
         poll_proj1 = await self.poll_event(1, 7)
+
+        # Change project 2 metadata (invalid)
+        async with self.apost(
+            '/api/project/2',
+            json={'name': '', 'description': "Meaningful"},
+        ) as response:
+            self.assertEqual(response.status, 400)
+            self.assertEqual(await response.json(),
+                             {'error': 'Project name cannot be empty'})
+        time.sleep(0.3)
+        self.assertFalse(poll_proj2.done())
 
         # Change project 2 metadata
         async with self.apost(
@@ -1171,6 +1205,56 @@ class TestMultiuser(MyHTTPTestCase):
                     </html>'''),
             )
 
+        # Export all highlights in project 2 to HTML
+        async with self.aget(
+            '/project/2/export/highlights/.html',
+        ) as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(
+                await response.text(),
+                textwrap.dedent('''\
+                    <!DOCTYPE html>
+                    <html>
+                      <head>
+                        <meta charset="UTF-8">
+                        <title>Taguette highlights</title>
+                        <style>
+                          h1 {
+                            margin-bottom: 1em;
+                          }
+                        </style>
+                      </head>
+                      <body>
+                        <h1>Taguette highlights</h1>
+
+                        diff
+                        <p>
+                          <strong>Document:</strong> otherdoc
+                          <strong>Tags:</strong>
+                            interesting.places
+                        </p>
+                        <hr>
+
+                        tent
+                        <p>
+                          <strong>Document:</strong> otherdoc
+                          <strong>Tags:</strong>
+                            interesting,
+                            people
+                        </p>
+                        <hr>
+
+                        <strong>Opinion</strong>
+                        <p>
+                          <strong>Document:</strong> third
+                          <strong>Tags:</strong>
+                            people
+                        </p>
+
+                      </body>
+                    </html>'''),
+            )
+
         # Export highlights in project 2 under 'interesting' to CSV
         async with self.aget(
             '/project/2/export/highlights/interesting.csv',
@@ -1288,11 +1372,13 @@ class TestMultiuser(MyHTTPTestCase):
                 'pages': 1,
             })
 
-        await asyncio.sleep(2)
-        self.assertNotDone(poll_proj1)
-        self.assertNotDone(poll_proj2)
+        # TODO: Collaborators
 
+        await asyncio.sleep(2)
+        self.assertFalse(poll_proj1.done())
         poll_proj1.cancel()
+        self.assertFalse(poll_proj2.done())
+        poll_proj2.cancel()
 
         async with self.apost('/project/1/delete') as response:
             self.assertEqual(response.status, 303)
@@ -2178,9 +2264,6 @@ class TestMultiuser(MyHTTPTestCase):
         fut = asyncio.ensure_future(self._poll_event(proj, from_id))
         await asyncio.sleep(0.2)  # Give time for the request to be sent
         return fut
-
-    def assertNotDone(self, fut):
-        self.assertTrue(fut.cancel())
 
 
 class TestSingleuser(MyHTTPTestCase):

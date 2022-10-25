@@ -375,28 +375,18 @@ class BaseHandler(RequestHandler):
             self._db = None
             PROM_DB_CONNECTIONS.dec()
 
-    def gettext(self, message, **kwargs):
-        trans = self.locale.translate(message)
-        if kwargs:
-            trans = trans % kwargs
-        return trans
+    def gettext(self, message):
+        return self.locale.translate(message)
 
-    def ngettext(self, singular, plural, n, **kwargs):
-        trans = self.locale.translate(singular, plural, n)
-        if kwargs:
-            trans = trans % kwargs
-        return trans
+    def ngettext(self, singular, plural, n):
+        return self.locale.translate(singular, plural, n)
 
     def pgettext(
         self,
         context, message, plural_message=None,
         n=None,
-        **kwargs,
     ):
-        trans = self.locale.pgettext(context, message, plural_message, n)
-        if kwargs:
-            trans = trans % kwargs
-        return trans
+        return self.locale.pgettext(context, message, plural_message, n)
 
     def get_current_user(self):
         user = self.get_secure_cookie('user')

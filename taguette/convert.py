@@ -77,11 +77,6 @@ template_env = jinja2.Environment(
 )
 
 
-def _render_string(template_name, **kwargs):
-    template = template_env.get_template(template_name)
-    return template.render(**kwargs)
-
-
 class ConversionError(ValueError):
     """Error converting document.
     """
