@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-04-05 16:41-0400\n"
+"POT-Creation-Date: 2022-11-18 16:45-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.9.1\n"
+"Generated-By: Babel 2.10.3\n"
 
 #: _layout.html:6
 msgctxt "html description"
@@ -1339,10 +1339,28 @@ msgid ""
 msgstr ""
 
 #: self-host.html:28
+msgid ""
+"\n"
+"  <p>If you want to use docker-compose, you can replace the last command "
+"(after setting up the configuration file) by <code>docker-compose "
+"up</code>, with a <code>docker-compose.yml</code> like:</p>\n"
+"  <pre>version: \"2.4\"\n"
+"services:\n"
+"  taguette:\n"
+"    image: quay.io/remram44/taguette\n"
+"    command: [\"server\", \"/config.py\"]\n"
+"    ports: [\"127.0.0.1:7465:7465\"]\n"
+"    volumes:\n"
+"      - \"./config.py:/config.py:ro\"\n"
+"      - \"./data:/data\"</pre>\n"
+"  "
+msgstr ""
+
+#: self-host.html:41
 msgid "\"Native\" installation on a server"
 msgstr ""
 
-#: self-host.html:30
+#: self-host.html:43
 msgid ""
 "\n"
 "  <p>You need Python 3.5 or better to run Taguette. Simply run <code>pip "
@@ -1365,11 +1383,11 @@ msgid ""
 "  "
 msgstr ""
 
-#: self-host.html:46
+#: self-host.html:59
 msgid "Configuration file"
 msgstr ""
 
-#: self-host.html:48
+#: self-host.html:61
 msgid ""
 "\n"
 "  <p>In either case, running the server requires a configuration file. "
@@ -1383,11 +1401,11 @@ msgid ""
 "  "
 msgstr ""
 
-#: self-host.html:54
+#: self-host.html:67
 msgid "Using a proxy server"
 msgstr ""
 
-#: self-host.html:56
+#: self-host.html:69
 msgid ""
 "\n"
 "  <p>For performance or security reasons, or simply because you want to "
@@ -1404,11 +1422,11 @@ msgid ""
 "  "
 msgstr ""
 
-#: self-host.html:61
+#: self-host.html:74
 msgid "Database"
 msgstr ""
 
-#: self-host.html:63
+#: self-host.html:76
 msgid ""
 "\n"
 "  <p>The <code>DATABASE</code> setting should be a SQLAlchemy connection "
