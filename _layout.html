@@ -137,7 +137,7 @@
         {%- set ns = namespace(first=True) -%}
         {%- for lang in languages -%}
           {% if lang.link != current_language.link %}
-            {%- if not ns.first -%}{% set ns.first = False %},{% endif %}
+            {%- if ns.first -%}{% set ns.first = False %}{% else %},{% endif %}
             <a href="{% if current_language.link %}../{% endif %}{% if lang.link %}{{ lang.link }}/{% endif %}{{ current_page_link }}">
               {{- lang.name -}}
             </a>
