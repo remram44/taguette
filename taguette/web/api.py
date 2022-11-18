@@ -473,6 +473,9 @@ class HighlightAdd(BaseHandler):
             return self.send_error_json(400, self.gettext("No such tag"))
 
         snippet = extract.extract(document.contents, start, end)
+        if all(c in '\r\n\t' for c in snippet):
+            return self.send_error_json(400, self.gettext("Empty highlight"))
+
         hl = database.Highlight(document=document,
                                 start_offset=start,
                                 end_offset=end,
