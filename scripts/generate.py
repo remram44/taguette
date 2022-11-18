@@ -127,6 +127,8 @@ class PseudoTranslation(object):
 LANGUAGE_NAMES = {
     None: 'English',
     'fr': 'French',
+    'sv': 'Swedish',
+    'vi': 'Vietnamese',
     'qps-ploc': 'Pseudo-locale',
 }
 

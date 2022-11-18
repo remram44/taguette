@@ -1,0 +1,1367 @@
+# Translations template for the Taguette website.
+# Copyright (C) 2018 Remi Rampin, Vicky Rampin, and contributors
+# This file is distributed under the same license as the Taguette project.
+# Remi Rampin <remi@rampin.org>, 2018.
+# 
+# Translators:
+# Ketil Thorgersen <github@rytmisk.net>, 2021
+# Elinor Bratt, 2022
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2022-11-18 16:45-0500\n"
+"PO-Revision-Date: 2021-03-01 04:12+0000\n"
+"Last-Translator: Elinor Bratt, 2022\n"
+"Language-Team: Swedish (Sweden) (https://www.transifex.com/remram44/teams/98824/sv_SE/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+"Language: sv_SE\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: _layout.html:6
+msgctxt "html description"
+msgid ""
+"Taguette is a free an open-source text tagging tool for qualitative data "
+"analysis and qualitative research"
+msgstr ""
+"Taguette är ett gratis texttaggningsverktyg med öppen källkod för kvalitativ"
+" dataanalys och kvalitativ forskning"
+
+#: _layout.html:18 faq.html:4 index.html:4
+msgctxt "page title"
+msgid "Taguette, the free and open-source qualitative data analysis tool"
+msgstr ""
+"Taguette, det kostnadsfria verktyget för kvalitativ dataanalys med öppen "
+"källkod"
+
+#: _layout.html:83
+msgid "Taguette"
+msgstr "Taguette"
+
+#. Screen-reader only indication of the current tab in navbar
+#: _layout.html:92
+msgctxt "screen-reader only"
+msgid "(current)"
+msgstr "(nuvarande)"
+
+#: _layout.html:106
+msgid "Home"
+msgstr "Hem"
+
+#: _layout.html:107
+msgid "About"
+msgstr "Om"
+
+#: _layout.html:108
+msgid "Install"
+msgstr "Installera"
+
+#: _layout.html:110
+msgid "Guides"
+msgstr "Guider"
+
+#: _layout.html:112
+msgid "Getting Started"
+msgstr "Komma igång"
+
+#: _layout.html:113
+msgid "Self-Host"
+msgstr "Self-Host"
+
+#: _layout.html:114
+msgid "FAQ"
+msgstr "FAQ"
+
+#: _layout.html:117
+#, python-format
+msgid "Try it %(external_icon)s"
+msgstr "Testa %(external_icon)s"
+
+#: _layout.html:134
+msgid ""
+"Email: <a href=\"mailto:hi@taguette.org\">hi@taguette.org</a> | Mailing-"
+"lists: <a href=\"https://groups.io/g/taguette\">users</a>, <a "
+"href=\"https://groups.io/g/taguette-announce\">announce</a> | Twitter: <a "
+"href=\"https://twitter.com/TaguetteProject\">@TaguetteProject</a> | Found a "
+"bug in Taguette? Tell us on <a "
+"href=\"https://gitlab.com/remram44/taguette\">GitLab</a>! | Want to donate "
+"to Taguette? Check out <a href=\"https://opencollective.com/taguette\">our "
+"Open Collective</a>"
+msgstr ""
+"Email: <a href=\"mailto:hi@taguette.org\">hi@taguette.org</a> | Mail-listor:"
+" <a href=\"https://groups.io/g/taguette\">användare</a>, <a "
+"href=\"https://groups.io/g/taguette-announce\">meddela</a> | Twitter: <a "
+"href=\"https://twitter.com/TaguetteProject\">@TaguetteProject</a> | Hittat "
+"en bugg i Taguette? Berätta på <a "
+"href=\"https://gitlab.com/remram44/taguette\">GitLab</a>! | Vill du donera "
+"till Taguette? Kolla in <a href=\"https://opencollective.com/taguette\">Open"
+" Collective</a>"
+
+#: about.html:4
+msgctxt "page title"
+msgid ""
+"About Taguette, the free and open-source qualitative data analysis tool"
+msgstr ""
+"Om Taguette, det kostnadsfria verktyget för kvalitativ dataanalys med öppen "
+"källkod"
+
+#: about.html:9
+msgid "About <span style=\"font-family: BadScript;\">TAGUETTE</span>"
+msgstr "Om <span style=\"font-family: BadScript;\">TAGUETTE</span>"
+
+#: about.html:11
+msgid ""
+"\n"
+"  <p>A spin on the phrase \"tag it!\", <a href=\"https://www.taguette.org/\">Taguette</a> is a free and open-source qualitative research tool (which works on all operating systems!) that allows users to:</p>\n"
+"\n"
+"  <ul>\n"
+"    <li>Import PDFs, Word Docs (.docx), Text files (.txt), HTML, EPUB, MOBI, Open Documents (.odt), and Rich Text Files (.rtf).</li>\n"
+"    <li>Highlight words, sentences, or paragraphs and tag them with the codes you create.</li>\n"
+"    <li>Work collaboratively with other users (if <a href=\"self-host.html\">self-hosting</a> or using <a href=\"https://app.taguette.org\">app.taguette.org</a>).</li>\n"
+"    <li>Your data stays your own; export everything including your project, highlights, documents, and codes.</li>\n"
+"  </ul>\n"
+"\n"
+"  <p>...and much more! You can view our development queue on GitLab here: <a href=\"https://gitlab.com/remram44/taguette/-/issues\">https://gitlab.com/remram44/taguette/-/issues</a>. You can always add feature requests, bug reports, or general feedback via GitLab issues. If you are not sure how to do that, feel free to email us your feedback at <a href=\"mailto:hi@taguette.org\">hi@taguette.org</a>.</p>\n"
+"\n"
+"  <p>If you use Taguette for your research, please cite it with the following:</p>\n"
+"  "
+msgstr ""
+
+#: about.html:28
+msgid "Why did we make Taguette?"
+msgstr "Varför skapade vi Taguette?"
+
+#: about.html:30
+msgid ""
+"\n"
+"  <p>Qualitative methods generate rich, detailed research materials that leave individuals’ perspectives intact as well as provide multiple contexts for understanding the phenomenon under study. Qualitative methods are used in a wide range of fields, such as anthropology, education, nursing, psychology, sociology, and marketing. Qualitative data has a similarly wide range: observations, interviews, documents, audiovisual materials, and more.</p>\n"
+"\n"
+"  <p>However - the software options for qualitative researchers are either <strong>far too expensive</strong>, don't allow for the seminal method of highlighting and tagging materials, <em>or actually perform quantitative analysis</em>, just on text.</p>\n"
+"\n"
+"  <p><strong>It's not right or fair that qualitative researchers without massive research funds cannot afford the basic software to do their research.</strong></p>\n"
+"\n"
+"  <p>So, to bolster a fair and equitable entry into qualitative methods, we've made Taguette!</p>\n"
+"  "
+msgstr ""
+
+#: about.html:40
+msgid "The Team"
+msgstr "Teamet"
+
+#: about.html:42
+msgid ""
+"Taguette was developed by Rémi Rampin. Vicky Rampin and Sarah DeMott "
+"provided the functional requirements, user needs, and testing in order to "
+"influence the development process."
+msgstr ""
+"Taguette utvecklades av Rémi Rampin. Vicky Rampin och Sarah DeMott "
+"tillhandahöll funktionella krav, användarbehov och testning för att påverka "
+"utvecklingsprocessen."
+
+#: about.html:48
+msgid "Main Dev"
+msgstr ""
+
+#: about.html:49
+msgid "Product Manager"
+msgstr "Product Manager"
+
+#: about.html:50
+msgid "Trainer &amp; User Liaison"
+msgstr "Trainer &amp; Användarkontakt"
+
+#: faq.html:4
+msgctxt "page title"
+msgid "FAQ"
+msgstr "FAQ"
+
+#: faq.html:9
+msgid "Frequently Asked Questions"
+msgstr "Vanliga frågor"
+
+#: faq.html:11
+msgid ""
+"This is a non-exhaustive list of FAQs for Taguette &mdash; if you feel "
+"something else should be covered in this guide, please email us at <a "
+"href=\"mailto:hi@taguette.org\">hi@taguette.org</a>."
+msgstr ""
+"Detta är en icke-uttömmande lista med vanliga frågor om Taguette &mdash; om "
+"du tycker att något annat bör tas upp i den här guiden, vänligen maila oss "
+"på <a href=\"mailto:hi@taguette.org\">hi@taguette.org</a>."
+
+#: faq.html:15
+msgid "General info"
+msgstr "Allmän info"
+
+#: faq.html:20
+msgid "How do you pronounce Taguette?"
+msgstr "Hur uttalar man Taguette?"
+
+#: faq.html:25
+msgid ""
+"It's pronounced like 'baguette' just with a 't' instead of a 'b' at the "
+"start! <code>/tæˈɡɛt/</code>"
+msgstr ""
+"Det uttalas som \"baguette\" bara med ett \"t\" istället för ett \"b\" i "
+"början! <code>/tæˈɡɛt/</code>"
+
+#: faq.html:33
+msgid "How much does it cost?"
+msgstr "Hur mycket kostar det?"
+
+#: faq.html:38
+msgid ""
+"\n"
+"          <p>It's free!</p>\n"
+"          <p>Taguette costs nothing, either to use on your own machine or install on a server. It is published under an open license (BSD), which you can read here: <a href=\"https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt\">gitlab.com/remram44/taguette/blob/master/LICENSE.txt</a>.</p>\n"
+"          <p>If you would like to make a donation to Taguette, you can do so at our Open Collective: <a href=\"https://opencollective.com/taguette\">opencollective.com/taguette</a>. Contributions will go towards maintenance work.</p>\n"
+"          "
+msgstr ""
+"\n"
+"          <p>Det är gratis!</p>\n"
+"          <p>Taguette kostar ingenting, varken att använda på din egen maskin eller att installera på en server. Den är publicerad under en öppen licens (BSD), som du kan läsa här: <a href=\"https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt\">gitlab.com/remram44/taguette/blob/master/LICENSE.txt</a>.</p>\n"
+"          <p>Om du vill donera till Taguette kan du göra det på Open Collective: <a href=\"https://opencollective.com/taguette\">opencollective.com/taguette</a>. Bidragen kommer att gå till underhållsarbete.</p>\n"
+"          "
+
+#: faq.html:50
+msgid "Where can I install Taguette?"
+msgstr "Var kan jag installera Taguette?"
+
+#: faq.html:55
+msgid ""
+"You can install Taguette on your own personal computer running macOS, "
+"Windows, or Linux &mdash; full instructions and download links can be found "
+"on our <a href=\"install.html\">installation guide</a>. You can also install"
+" Taguette on a server if you need to collaborate with others &mdash; get a "
+"walkthrough on this process on our <a href=\"self-host.html\">self-host "
+"guide</a>."
+msgstr ""
+"Du kan installera Taguette på din egen dator som kör macOS, Windows eller "
+"Linux &mdash; fullständiga instruktioner och nedladdningslänkar finns i vår "
+"<a href=\"install.html\">installationsguide</a>. Du kan också installera "
+"Taguette på en server om du behöver samarbeta med andra &mdash; få en "
+"genomgång av denna process i vår <a href=\"self-host.html\">egen värd "
+"guide</a>."
+
+#: faq.html:63
+msgid "How do I learn to use Taguette?"
+msgstr "Hur lär jag mig att använda Taguette?"
+
+#: faq.html:68
+msgid ""
+"You could begin over at our <a href=\"getting-started.html\">getting started"
+" guide</a>, which walks through all the current functionality of Taguette "
+"with screenshots. We also have a few presentations walkthroughs of "
+"Taguette's full capabilities that are hosted on the Open Science Framework "
+"here: <a href=\"https://osf.io/xdszm/files/\">osf.io/xdszm/files/</a>. "
+"Please make sure to look at the date for each presentation and pick the most"
+" recent one!"
+msgstr ""
+
+#: faq.html:76
+msgid "Where can I get support for Taguette?"
+msgstr "Var kan jag få hjälp med Taguette?"
+
+#: faq.html:81
+msgid ""
+"\n"
+"          <p>Feel free to shoot us an email over at <a href=\"mailto:hi@taguette.org\">hi@taguette.org</a> with your problem or question, and we will do our best to get back to you quickly &mdash; though please note we are not working on Taguette full-time, so give us a few days (though we will try to be as quick as possible!).</p>\n"
+"          <p>If you run into a bug or problem while using Taguette, or if you have a feature request, feel free to open an issue on GitLab, where Taguette's development takes place: <a href=\"https://gitlab.com/remram44/taguette/-/issues\">gitlab.com/remram44/taguette/-/issues</a> or email us with that as well if you are not comfortable with GitLab.</p>\n"
+"          "
+msgstr ""
+
+#: faq.html:92
+msgid "Which file formats can I use with Taguette?"
+msgstr "Vilka filformat kan jag använda med Taguette?"
+
+#: faq.html:97
+msgid ""
+"\n"
+"          <p>Taguette uses <a href=\"https://calibre-ebook.com/\">Calibre</a> to convert documents to HTML, so you can use all the formats it supports, including:</p>\n"
+"          <ul>\n"
+"            <li>Ebook formats (AZW, MOBI, EPUB)</li>\n"
+"            <li>Microsoft Word (DOCX)</li>\n"
+"            <li>LibreOffice (ODT)</li>\n"
+"            <li>PDF</li>\n"
+"            <li>Plain text (TXT)</li>\n"
+"            <li>HTML</li>\n"
+"          </ul>\n"
+"          <p>See also <a href=\"https://manual.calibre-ebook.com/faq.html#what-formats-does-calibre-support-conversion-to-from\">their own FAQ entry</a> on the subject.</p>\n"
+"          "
+msgstr ""
+
+#: faq.html:116
+msgid ""
+"I used Taguette for research and I want to cite you/give you credit &mdash; "
+"how can I do that?"
+msgstr ""
+"Jag använde Taguette för forskning och vill citera er/ge er kredit &mdash; "
+"hur gör jag det?"
+
+#: faq.html:121
+msgid ""
+"A mention is always appreciated! If you use Taguette for your research, "
+"please cite it with the following:"
+msgstr ""
+"En omtalan är alltid uppskattat! Om du använder Taguette för din forskning, "
+"vänligen citera det med följande:"
+
+#: faq.html:123
+msgid "If you need Bibtex, please use the following:"
+msgstr "Om du behöver Bibtex, använd följande:"
+
+#: faq.html:142
+msgid "Desktop/Single-user Info"
+msgstr "Skrivbord/Singelanvändare Info"
+
+#: faq.html:147
+msgid "Why do you call the desktop version of Taguette 'single user mode'?"
+msgstr ""
+"Varför kallar ni skrivbordsversionen av Taguette för \"singelanvändarläge\"?"
+
+#: faq.html:152
+msgid ""
+"Simply because you cannot collaborate with others using our desktop version "
+"of Taguette! If you want to be able to collaborate, see our <a href=\"self-"
+"host.html\">self-hosting guide</a> that walks you through how to install "
+"Taguette on a server for multi-user collaboration."
+msgstr ""
+"För att du enkelt inte kan samarbeta med andra genom skrivbordsversionen av "
+"Taguette! För att kunna samarbeta, se vår <a href=\"self-host.html\">self-"
+"hosting guide </a>som går igenom hur du installerar Taguette på en server "
+"för samarbete mellan flera användare."
+
+#: faq.html:160
+msgid "Does Taguette work on all operating systems?"
+msgstr "Fungerar Taguette på alla operativsystem?"
+
+#: faq.html:165
+msgid "Yes! You can install Taguette on macOS, Windows, and Linux."
+msgstr "Ja! Du kan installera Taguette på macOS, Windows och Linux."
+
+#: faq.html:173
+msgid "When I use Taguette on my personal computer, where is the data?"
+msgstr "Var finns all data när jag använder Taguette på min personliga dator?"
+
+#: faq.html:178
+msgid ""
+"All your projects and documents are kept in a single database file. On macOS"
+" and Linux, you can find it at "
+"<code>~/.local/share/taguette/taguette.sqlite3</code>. On Windows, you can "
+"find it at: <code>My Documents/Taguette/taguette.sqlite3</code>."
+msgstr ""
+"Alla dina projekt och dokument lagras i en enda databasfil. På macOS och "
+"Linux kan du hitta den på "
+"<code>~/.local/share/taguette/taguette.sqlite3</code>. På Windows kan du "
+"hitta den på: <code>Mina Dokument/Taguette/taguette.sqlite3</code>."
+
+#: faq.html:186
+msgid ""
+"SQLite is ok, but I prefer another database system. Can I change what "
+"Taguette uses?"
+msgstr ""
+"SQLite är ok, men jag föredrar ett annat databassystem. Kan jag ändra vad "
+"Taguette använder?"
+
+#: faq.html:191
+msgid ""
+"\n"
+"          <p>Yes! On the terminal, use the <code>--database</code> option to change the location of your database or use a different database system. The argument is in the <a href=\"https://docs.sqlalchemy.org/en/13/core/engines.html\">format used by SQLAlchemy</a>, so for instance:</p>\n"
+"          <ul>\n"
+"            <li><code>sqlite:////home/myname/myfile.sqlite3</code> (Unix or MacOS) or <code>sqlite3:///C:\\Users\\myname\\Documents\\myfile.sqlite3</code> (Windows)</li>\n"
+"            <li><code>postgresql://username:password@host:port/databasename</code></li>\n"
+"            <li><code>mysql://user:password@host:port/databasename</code></li>\n"
+"            <li>Any of the <a href=\"https://docs.sqlalchemy.org/en/13/core/engines.html\">other backends supported by SQLAlchemy</a></li>\n"
+"          </ul>\n"
+"          "
+msgstr ""
+
+#: faq.html:206
+msgid "Self-hosting/multiuser mode Info"
+msgstr "Self-hosting/multanvändarläge Info"
+
+#: faq.html:211
+msgid "Can I install Taguette on my own server?"
+msgstr "Kan jag installera Taguette på min egen server?"
+
+#: faq.html:216
+msgid ""
+"Absolutely! We know that putting choice in the hands of our users is what "
+"open source is all about 😊 You can install Taguette on your server via "
+"Docker or right from the source. Both methods can be found with step-by-step"
+" instructions on our <a href=\"self-host.html\">self-hosting guide</a>."
+msgstr ""
+"Absolut! Att lägga valet i händerna på våra användare är vad öppen källkod "
+"handlar om 😊 Du kan installera Taguette på din server via Docker eller "
+"direkt från källan. Båda metoderna kan hittas med steg-för-steg-"
+"instruktioner i vår <a href=\"self-host.html\">self-hosting guide</a>."
+
+#: faq.html:224
+msgid ""
+"I thought I followed the instructions but something went wrong -- what "
+"should I look at first?"
+msgstr ""
+
+#: faq.html:229
+msgid ""
+"\n"
+"          <p>Make sure you have <strong>correctly installed all the dependencies</strong> (via our <a href=\"self-host.html\">self-hosting guide</a>) and have also <strong>edited the configuration file</strong>. We have two sample configurations for you to work from as well: <a href=\"https://gitlab.com/remram44/taguette/-/blob/master/contrib/nginx.conf\">nginx</a> and <a href=\"https://gitlab.com/remram44/taguette/-/blob/master/contrib/apache2.conf\">apache2</a>.</p>\n"
+"\n"
+"          <p>If you can't quite figure out what happened, either <a href=\"https://gitlab.com/remram44/taguette/issues\">submit an issue on GitLab</a>, or email us at <a href=\"mailto:hi@taguette.org\">hi@taguette.org</a>.</p>\n"
+"          "
+msgstr ""
+
+#: faq.html:240
+#, python-format
+msgid "%(hosted_app_link)s Info"
+msgstr "%(hosted_app_link)sInfo"
+
+#: faq.html:245
+msgid "What is app.taguette.org?"
+msgstr "Vad är app.taguette.org?"
+
+#. About app.taguette.org
+#: faq.html:250
+msgid ""
+"It is a version of Taguette hosted on our servers for free use by anyone! We"
+" host this from a rented dedicated server from <a "
+"href=\"https://www.ovhcloud.com/en/bare-metal/\">OVH</a>, and our server's "
+"location is in France."
+msgstr ""
+"Det är en version av Taguette som finns på våra servrar med fri användning "
+"för alla! Vi är värd för den genom en dedikerad server hyrd från <a "
+"href=\"https://www.ovhcloud.com/en/bare-metal/\">OVH</a>, och vår servers "
+"plats är i Frankrike."
+
+#: faq.html:258
+msgid ""
+"What do we need to register for an account, and what do you do with our "
+"account information?"
+msgstr ""
+"Vad behöver vi för att registrera ett konto och vad gör ni med vår "
+"kontoinformation?"
+
+#: faq.html:263
+msgid ""
+"To use <a href=\"https://app.taguette.org\">app.taguette.org</a>, you need "
+"to register with a username and a password. You can provide an email address"
+" optionally, which we only use in case you forget your password. We will "
+"never sell your information to anyone else, and we will only use it to log "
+"you into your account."
+msgstr ""
+
+#: faq.html:271
+msgid "What type of data should I upload to app.taguette.org?"
+msgstr "Vilken typ av data ska jag ladda upp till app.taguette.org?"
+
+#: faq.html:276
+msgid ""
+"\n"
+"          <p>TL;DR: do not upload sensitive data (e.g. patient information, student records) to our hosted version of Taguette.</p>\n"
+"\n"
+"          <p>A good reference for what data could be safely uploaded into <a href=\"https://app.taguette.org\">app.taguette.org</a> is the U.S. Health and Human Services <a href=\"https://www.hhs.gov/ohrp/regulations-and-policy/decision-charts/index.html#c2\">Institutional Review Board exemption decision chart</a> -- if the data is exempt under this chart, it's most likely OK to upload to our hosted version of Taguette. If you're in a country outside the U.S., please refer to the ethics or human subject research boards of your country for exact information.</p>\n"
+"\n"
+"          <p> If you need to work collaboratively on sensitive data, then we would recommend reaching out to information technology at your organization and asking about a secure server in which they could install Taguette. If you are an independent researcher or do not have an IT unit at your institution that can do this for you, we would recommend procuring a secure server and installing Taguette there using our <a href=\"self-host.html\">self-hosting guide</a>. Taguette can run well in many cloud hosting providers' free tiers (depending on the size of your data), and many of these providers have addendums to cover sensitive data (which may or may not incur a cost).</p>\n"
+"          "
+msgstr ""
+
+#: faq.html:290
+msgid "Do you back up the data on app.taguette.org?"
+msgstr "Säkerhetskopierar ni datan på app.taguette.org?"
+
+#: faq.html:295
+msgid ""
+"Yes, we back up <a href=\"https://app.taguette.org\">app.taguette.org</a> "
+"daily and keep those backups for a year. We send backups to a bucket in "
+"Amazon Web Services, in encrypted form only."
+msgstr ""
+"Ja, vi säkerhetskopierar <a "
+"href=\"https://app.taguette.org\">app.taguette.org</a> dagligen och behåller"
+" dessa säkerhetskopior i ett år. Vi skickar säkerhetskopior till en hink i "
+"Amazon Web Services, endast i krypterad form."
+
+#: getting-started.html:4
+msgctxt "page title"
+msgid ""
+"Start With Taguette, the free and open-source qualitative data analysis tool"
+msgstr ""
+"Börja Med Taguette, det kostnadsfria verktyget för kvalitativ dataanalys med"
+" öppen källkod"
+
+#: getting-started.html:11
+msgctxt "nav menu title"
+msgid "Explore the guide:"
+msgstr "Utforska guiden:"
+
+#: getting-started.html:13
+msgid "Open Taguette"
+msgstr "Öppna Taguette"
+
+#: getting-started.html:14
+msgid "Start a project"
+msgstr "Starta ett projekt"
+
+#: getting-started.html:15
+msgid "Upload materials"
+msgstr "Ladda upp material"
+
+#: getting-started.html:16
+msgid "Change interface language (server only)"
+msgstr "Förändra användargränssnittets språk (endast server)"
+
+#: getting-started.html:17
+msgid "Add collaborators (server only)"
+msgstr "Lägg till samarbetspartners (endast server)"
+
+#: getting-started.html:18
+msgid "Create tags"
+msgstr "Skapa taggar"
+
+#: getting-started.html:19
+msgid "Change/delete tags"
+msgstr "Ändra/ta bort taggar"
+
+#: getting-started.html:20
+msgid "Merge tags"
+msgstr "Sammanfoga taggar"
+
+#: getting-started.html:21
+msgid "Highlight materials"
+msgstr "Markera material"
+
+#: getting-started.html:22
+msgid "View tagged materials"
+msgstr "Visa taggat material"
+
+#: getting-started.html:23
+msgid "Export options"
+msgstr "Exportalternativ"
+
+#: getting-started.html:29
+msgid ""
+"Getting started with <span style=\"font-family: BadScript;\">TAGUETTE</span>"
+msgstr "Kom igång med <span style=\"font-family: BadScript;\">TAGUETTE</span>"
+
+#: getting-started.html:31
+msgid ""
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-play-circle\"></use></svg> "
+"Open Taguette"
+msgstr ""
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-play-circle\"></use></svg> "
+"Öppna Taguette"
+
+#: getting-started.html:33
+msgid ""
+"If you've downloaded and installed Taguette on your computer, you should be "
+"able to double-click on the Taguette icon and start it up! You'll see the "
+"command line will pop up and be running. This is ok! Don't worry about the "
+"terminal but do leave it running. If you exit the terminal, Taguette will "
+"stop. Taguette should automatically pop up in your web browser, but if for "
+"some reason it doesn't, navigate to <a "
+"href=\"http://localhost:7465\"><code>localhost:7465</code></a> to begin "
+"working on your projects! It should look something like this (if you're "
+"using Taguette on a server, you should see 'account' where 'single-user "
+"mode' is):"
+msgstr ""
+
+#: getting-started.html:37
+msgid ""
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-folder-plus\"></use></svg> "
+"Start a project"
+msgstr ""
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-folder-plus\"></use></svg> "
+"Starta projekt"
+
+#: getting-started.html:39
+msgid ""
+"You will see a page that greets you as the admin and has a button to "
+"<strong>Create a project</strong>. Click that button and you'll be prompted "
+"to enter a Title and Description for your new project. This can be changed "
+"later on if you want."
+msgstr ""
+
+#: getting-started.html:43
+msgid ""
+"Upon clicking <strong>Create</strong>, you'll be taken to the "
+"<strong>Project View</strong>, which has a left and a right pane. The left "
+"pane contains the information about your project information ('Project "
+"Info'), uploaded materials ('Documents'), and tags ('Highlights') as tabs. "
+"You can go between these tabs as you like. The right pane will render "
+"documents and will be the area where you'll do the highlighting and tagging."
+msgstr ""
+
+#: getting-started.html:47
+msgid ""
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-upload\"></use></svg> Upload"
+" materials"
+msgstr ""
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-upload\"></use></svg> Ladda "
+"upp material"
+
+#: getting-started.html:49
+msgid ""
+"To get an idea of how to work in Taguette, let's upload a document and get "
+"you tagging! In the left pane, click on the <strong>Documents tab</strong>. "
+"You should see a button that says <strong>Add a document</strong>. Click "
+"that and pick just one document from your computer, either a: "
+"<code>.pdf</code>, <code>.docx</code>, <code>.txt</code>, <code>.odt</code>,"
+" <code>.md</code>, or <code>.html</code>."
+msgstr ""
+
+#: getting-started.html:53
+msgid ""
+"Just one file to be uploaded. You'll be prompted to give the new document a "
+"Name (should be something human-readable, required) and Description (like a "
+"note about the file, optional). When you have picked a document and at least"
+" given it a name, click the <strong>Import</strong> button."
+msgstr ""
+
+#: getting-started.html:57
+msgid ""
+"You should then see that file immediately in the Documents tab. If not, just"
+" refresh the page and it should be shown then. If you cannot see your "
+"document, you might be uploading a file type that Taguette cannot yet "
+"handle. Please let us know at <a "
+"href=\"mailto:hi@taguette.org\">hi@taguette.org</a>."
+msgstr ""
+
+#: getting-started.html:59
+msgid ""
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-language\"></use></svg> "
+"Change interface language (server only)"
+msgstr ""
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-language\"></use></svg> "
+"Ändra gränssnittsspråk (endast server)"
+
+#: getting-started.html:61
+msgid ""
+"If you are working on <a "
+"href=\"https://app.taguette.org\">app.taguette.org</a> or hosting Taguette "
+"on your own server, you have the option to change the language of the "
+"interface. In the upper righthand corner, you should see a dropdown menu "
+"labeled \"Account\". Click that dropdown, and then click \"Settings.\" You "
+"will see a dropdown menu in your profile settings to change the language "
+"that Taguette will be in. By default, it will auto-detect a language from "
+"your Internet browser."
+msgstr ""
+
+#: getting-started.html:63
+msgid ""
+"If you do not see your language represented in this list, we would encourage"
+" you to add a translation via our Transifex project: <a "
+"href=\"https://www.transifex.com/remram44/taguette/\">https://www.transifex.com/remram44/taguette/</a>"
+" or by sending us a .po file via GitLab, instructions: <a "
+"href=\"https://gitlab.com/remram44/taguette/-/tree/master/po\">https://gitlab.com/remram44/taguette/-/tree/master/po</a>."
+msgstr ""
+
+#: getting-started.html:67
+msgid ""
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-users\"></use></svg> Adding "
+"collaborators (server only)"
+msgstr ""
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-users\"></use></svg> Lägga "
+"till medarbetare (endast server)"
+
+#: getting-started.html:69
+msgid ""
+"If you are working on <a "
+"href=\"https://app.taguette.org\">app.taguette.org</a> or hosting Taguette "
+"on your own server, you have the option to work with others! In the "
+"<strong>Project Info tab</strong> of your Taguette project, you should see a"
+" grey button labeled <strong>Manage Collaborators</strong>:"
+msgstr ""
+
+#: getting-started.html:73
+msgid ""
+"Click that and you should get a modal with the option to add and remove "
+"collaborators, as well as change their permissions on the project. You must "
+"add their Taguette username and pick from the list of permissions, click "
+"<strong>Add to project</strong>, and to make sure that you've fully added "
+"your collaborator, next click <strong>Save & Close</strong>."
+msgstr ""
+
+#: getting-started.html:77
+msgid "You can add collaborators with the following permissions:"
+msgstr "Du kan lägga till medarbetare med följande behörigheter:"
+
+#: getting-started.html:82
+msgid "Permission level"
+msgstr "Behörighetsnivå"
+
+#: getting-started.html:83
+msgid "View project"
+msgstr "Visa projekt"
+
+#: getting-started.html:84
+msgid "Change highlights"
+msgstr "Ändra markering"
+
+#: getting-started.html:85
+msgid "Change tags"
+msgstr "Ändra taggar"
+
+#: getting-started.html:86
+msgid "Add/delete documents"
+msgstr "Lägg till/Ta bort dokument"
+
+#: getting-started.html:87
+msgid "Change collaborators"
+msgstr "Ändra medarbetare"
+
+#: getting-started.html:88
+msgid "Delete project"
+msgstr "Ta bort projekt"
+
+#. Has to match the permission level name in the app
+#: getting-started.html:93
+msgctxt "permission level"
+msgid "Full permission"
+msgstr "Fullständig behörighet"
+
+#. Has to match the permission level name in the app
+#: getting-started.html:102
+msgctxt "permission level"
+msgid "Can't change collaborators/delete project"
+msgstr "Det går inte att ändra medarbetare / ta bort projekt"
+
+#. Has to match the permission level name in the app
+#: getting-started.html:111
+msgctxt "permission level"
+msgid "View and make changes"
+msgstr "Visa och gör ändringar"
+
+#. Has to match the permission level name in the app
+#: getting-started.html:120
+msgctxt "permission level"
+msgid "View Only"
+msgstr "Visa Bara"
+
+#: getting-started.html:131
+msgid ""
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-tags\"></use></svg> Create "
+"Tags"
+msgstr ""
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-tags\"></use></svg> Skapa "
+"Taggar"
+
+#: getting-started.html:133
+msgid ""
+"Taguette ships with one existing tag (or <em>codes</em>, if you're familiar "
+"with qualitative research): <code>interesting</code>. This is just there to "
+"get you started -- you can add and remove tags as often as you'd like! To "
+"view all your existing tags, click the <strong>Highlights</strong> tab in "
+"the left pane. You will see a list of tags you have and a count of the "
+"number of times you have highlighted your materials with a given tag."
+msgstr ""
+
+#: getting-started.html:137
+msgid ""
+"You should see a list of existing tags for the project - again, if you "
+"haven't added any yet, you will still see <code>interesting</code>. To add "
+"your own tags to this project, click <strong>Create a tag</strong>. You will"
+" get a popup asking you for the Name and Description of the tag you want to "
+"create:"
+msgstr ""
+
+#: getting-started.html:141
+msgid ""
+"After you give the tag a good name and a bit of description about what it "
+"means, you should see it added to the list in alphabetical order."
+msgstr ""
+
+#: getting-started.html:143
+msgid ""
+"<strong>A note on hierarchical tagging</strong>: you can use <em>any "
+"punctuation</em> to make hierarchies. So <code>tech.floss</code> lives "
+"underneath <code>tech</code>. If I click on <code>tech.floss</code>, then "
+"I'll see only materials relating to that tag. If I click on "
+"<code>tech</code>, I'll see everything in that tag as well as "
+"<code>tech.floss</code> and any other sub-tag."
+msgstr ""
+
+#: getting-started.html:145
+msgid ""
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-eraser\"></use></svg> "
+"Delete/change Tags"
+msgstr ""
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-eraser\"></use></svg> Ta "
+"bort/ändra Taggar"
+
+#: getting-started.html:147
+msgid ""
+"You can also change or delete a tag by clicking the <code>edit</code> badge "
+"to the right of the name of the tag in the list. This will bring you back to"
+" the same popup - you can edit the name of the tag, its description, or you "
+"can click the grey <strong>Delete</strong> button next to the blue "
+"<strong>Save &amp; Close</strong> button."
+msgstr ""
+
+#: getting-started.html:151
+msgid ""
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-object-group\"></use></svg> "
+"Merge Tags"
+msgstr ""
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-object-group\"></use></svg> "
+"Sammanfoga Taggar"
+
+#: getting-started.html:153
+msgid ""
+"If you want to merge one tag into another, you can also do this from the "
+"edit window. Click the <code>edit</code> badge to the right of the name of "
+"the tag in the list. This will bring you back to the same popup for editing "
+"and deleting a tag. Instead, if you click <strong>Merge</strong>, then you "
+"will be prompted to select the tag that you want to merge into. Once you "
+"select a tag and click <strong>Merge tags</strong>, then all the highlights "
+"for the first tag will be moved to the second tag."
+msgstr ""
+
+#: getting-started.html:157
+msgid ""
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-highlighter\"></use></svg> "
+"Highlighting"
+msgstr ""
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-highlighter\"></use></svg> "
+"Markering"
+
+#: getting-started.html:159
+msgid ""
+"Once uploaded, you should see the document in the 'Documents' tab. Click on "
+"it and you should see the contents of your document in the right pane. Once "
+"you see the text in the right pane, we can start highlighting it!"
+msgstr ""
+
+#: getting-started.html:163
+msgid ""
+"Select some text by left-clicking and dragging it over the text you'd like "
+"to highlight. Once you let go of your left-click, a pop-up that says "
+"<strong>new highlight</strong> will appear next to the highlighted text. "
+msgstr ""
+
+#: getting-started.html:167
+msgid ""
+"Click that pop-up, and you will get a list of existing tags from which to "
+"choose. You can select one or more tags to apply to the highlighted text."
+msgstr ""
+
+#: getting-started.html:171
+msgid ""
+"If you want to add a tag instead of using one that already exists, then "
+"simply click <strong>Create a tag</strong>, and you'll be sent to the same "
+"popup where made tags earlier."
+msgstr ""
+
+#: getting-started.html:175
+msgid ""
+"Once you make your tag, you'll be dropped back into the popup above where "
+"you should select a tag for the highlighted text. After you've checked off "
+"which tags you'd like to associate with the highlighted text, click "
+"<strong>Save &amp; Close</strong>, and the text you've just tagged should "
+"now be highlighted with the color associated with the tag (e.g. bright "
+"yellow)."
+msgstr ""
+
+#: getting-started.html:177
+msgid ""
+"If you've accidentally tagged a section of text you didn't want to, you can "
+"delete it by clicking on the highlighted text. This will give you the same "
+"pop-up window that you used to tag it. Next to the save button, there is a "
+"red button called <strong>Delete highlight</strong>. Click that, and the "
+"tags will be removed from the text. It should no longer be highlighted."
+msgstr ""
+
+#: getting-started.html:179
+msgid ""
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-file-invoice\"></use></svg> "
+"View highlighted &amp; tagged text"
+msgstr ""
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-file-invoice\"></use></svg> "
+"Visa markerad &amp; taggad text"
+
+#: getting-started.html:181
+msgid ""
+"If you want to see all the highlighted text associated with a given tag, "
+"first go to the <strong>Highlights</strong> tab in the left pane. Click a "
+"tag, and in the right pane, you will see a list of quotes with a blue link "
+"to the document where they originated from and all their associated tags "
+"with a black badge. The tag on the left pane will also be highlighted:"
+msgstr ""
+
+#: getting-started.html:185
+msgid ""
+"If you want to see all the highlighted text for <em>all documents</em> and "
+"<em>all tags</em>, click <strong>See all highlights</strong> and you will "
+"see a list of quotes with a blue link to the document where they originated "
+"from and all their associated tags with a black badge:"
+msgstr ""
+
+#: getting-started.html:189
+msgid ""
+"You can also view the document with all its highlights by navigating to the "
+"<strong>Documents</strong> tab in the left pane. Then just click on the "
+"document you wish to view, and if you've highlighted it, you should see:"
+msgstr ""
+
+#: getting-started.html:193
+msgid ""
+"If you hover your mouse over a highlighted section of text, you will see "
+"tags in a tooltip to the right of your mouse cursor. To explore your "
+"highlighted document in a different way, you can try clicking on the "
+"<strong>Backlight</strong> checkbox. You can see it at the bottom of the "
+"pane. It will grey out all the non-highlighted text to make the highlighted "
+"text really pop. We found this to be a nice view for exploring the texts "
+"differently:"
+msgstr ""
+
+#: getting-started.html:197
+msgid ""
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-file-export\"></use></svg> "
+"Export Options"
+msgstr ""
+"<svg class=\"svg-icon\"><use xlink:href=\"#icon-file-export\"></use></svg> "
+"Exportalternativ"
+
+#: getting-started.html:199
+msgid ""
+"You can export everything out of Taguette that you put in: tags, highlights,"
+" codebooks, documents, and even the entire project! "
+msgstr ""
+"Du kan exportera allt du lägger in från Taguette: taggar, markeringar, "
+"kodböcker, dokument, till och med hela projektet!"
+
+#: getting-started.html:201
+msgid ""
+"To export the codebook of your project - this is a list of all the tags that"
+" you've created alongside their description - use the dropdown menu in the "
+"<strong>Project</strong> tab in the left pane of Taguette, underneath the "
+"project description. There is a variety of export options, including "
+"<code>QDC</code> (REFI-QDA standard), <code>CSV</code> (spreadsheet), "
+"<code>XLSX</code> (Microsoft Excel), <code>DOCX</code> (Microsoft Word), "
+"<code>HTML</code>, and <code>PDF</code>."
+msgstr ""
+
+#: getting-started.html:205
+msgid ""
+"To export all the associated highlights for a given tag, navigate to the "
+"<strong>Highlights</strong> tab in the left pane, and click on the tag of "
+"the highlights you'd want to export. Then you can use the <strong>Export "
+"this view</strong> dropdown menu at the top right in the right pane. You "
+"will have a choice of <code>HTML</code> (a webpage), <code>CSV</code>, "
+"<code>XLSX</code>, <code>DOCX</code> (editable), or <code>PDF</code> (not "
+"easily editable). While you will see the document with all the highlights, "
+"right now you won't be able to tell from that doc which tags go with the "
+"highlights."
+msgstr ""
+
+#: getting-started.html:209
+msgid ""
+"You will see all the highlighted text for the particular tag with "
+"information about each highlight right underneath it -- which document it "
+"came from, and which tags are associated with it. This is how it looks with "
+"the <code>DOCX</code> export:"
+msgstr ""
+
+#: getting-started.html:213
+msgid ""
+"To export all the tags with all associated highlights, navigate to the "
+"<strong>Highlights</strong> tab in the left pane, and click on <strong>See "
+"all highlights</strong>. Then you can use the <strong>Export this "
+"view</strong> dropdown menu at the top right in the right pane. Again, you "
+"will have a choice of <code>HTML</code>, <code>DOCX</code>, or "
+"<code>PDF</code>."
+msgstr ""
+
+#: getting-started.html:217
+msgid ""
+"You will see all the highlighted text for all tags with information about it"
+" -- which document it came from, and which tags are associated with it. This"
+" is how it looks with the <code>DOCX</code> export:"
+msgstr ""
+
+#: getting-started.html:221
+msgid ""
+"To export the document that you've highlighted, first navigate to the "
+"<strong>Documents</strong> tab in the left pane, and click on the document "
+"that you want to export. Then you can use the <strong>Export this "
+"view</strong> dropdown menu at the top right in the right pane. Again, you "
+"will have a choice of <code>HTML</code>, <code>DOCX</code>, or "
+"<code>PDF</code>."
+msgstr ""
+
+#: getting-started.html:225
+msgid ""
+"You will see the document with your highlight in yellow, and the associated "
+"tag(s) next to the highlighted text, itself highlighted in light red and in "
+"brackets. Yellow = quote, light red = tag(s). This is how it looks with the "
+"<code>DOCX</code> export:"
+msgstr ""
+
+#: getting-started.html:229
+msgid ""
+"You can also import and export projects in Taguette! To export your project,"
+" go to the <strong>Project Info</strong> tab in the left pane. You should "
+"see a button that says <strong>Export project</strong>. Click that, and you "
+"should get a download started of a <code>SQLite3</code> file. This holds "
+"your Taguette project, all files, as well as all highlights and codes:"
+msgstr ""
+
+#: getting-started.html:233
+msgid ""
+"To import your project onto another instance of Taguette (for instance, a "
+"locally running copy on your computer or another server), go to the welcome "
+"screen in Taguette and click \"Import a project file\":"
+msgstr ""
+
+#: getting-started.html:237
+msgid ""
+"From there, you select a project to upload. It should have the "
+"<code>SQLite3</code> file extension to be uploaded. Click Browse and select "
+"the file. Taguette will confirm on this screen the name of the project, and "
+"once you hit \"Import\", all project materials will be imported!"
+msgstr ""
+
+#: getting-started.html:241
+msgid ""
+"If you want to browse the database directly, you can find documentation "
+"about the schema <a "
+"href=\"https://gitlab.com/remram44/taguette/-/blob/master/ARCHITECTURE.md#the-"
+"database\">in our internal documentation</a>."
+msgstr ""
+
+#: index.html:10
+msgctxt "subtitle"
+msgid "FEEDING YOUR QUALITATIVE NEEDS"
+msgstr "MATA DINA KVALITATIVA BEHOV"
+
+#: index.html:12
+msgid ""
+"Have you ever searched \"free qualitative research software\" only to be "
+"disappointed that nothing lets you tag your materials? Search no more! "
+"Taguette is a <strong>free and open-source</strong> tool for qualitative "
+"research. You can import your research materials, highlight and tag quotes, "
+"and export the results!"
+msgstr ""
+
+#: index.html:13
+msgid "Learn more &raquo;"
+msgstr "Lär dig mer &raquo;"
+
+#: index.html:13
+#, python-format
+msgid "Try out Taguette on our server %(external_icon)s"
+msgstr "Prova Taguette på vår server %(external_icon)s"
+
+#: index.html:20
+msgid "Work Locally"
+msgstr "Jobba Lokalt"
+
+#: index.html:21
+msgid ""
+"Taguette works both on your local computer (macOS, Windows, Linux) and on a "
+"server. When running Taguette locally, <strong>your data is as secure as "
+"your computer</strong>. That means that if you can have your data on your "
+"computer, you can run Taguette with no worries."
+msgstr ""
+
+#: index.html:22
+msgctxt "button"
+msgid "Install now &raquo;"
+msgstr "Installera nu &raquo;"
+
+#: index.html:25
+msgid "Highlight &amp; Tag"
+msgstr "Markera &amp; Tagga"
+
+#: index.html:26
+msgid ""
+"Taguette allows you to upload your research materials and tag them, just as "
+"you would use different color highlighters with printed paper. You can add "
+"new tags, then just select some text, click 'new highlight', and add "
+"whatever tag you find to be most relevant!"
+msgstr ""
+"Taguette låter dig ladda upp ditt forskningsmaterial och tagga det, precis "
+"som du skulle använda överstrykningspennor i olika färger på tryckt papper. "
+"Du kan lägga till nya taggar, sen välja lite text, klicka på \"ny "
+"markering\" och lägg till den tagg du tycker är mest relevant!"
+
+#: index.html:27
+msgctxt "button"
+msgid "Get started &raquo;"
+msgstr "Kom igång &raquo;"
+
+#: index.html:30
+msgid "Export Results"
+msgstr "Exportera Resultat"
+
+#: index.html:31
+msgid ""
+"After you've done your work highlighting materials in Taguette, you can "
+"export in a variety of ways -- your whole project, codebook, all your "
+"highlighted quotes (or ones for a specific tag!), and highlighted documents."
+" It's a good practice to keep an archival copy of your work!"
+msgstr ""
+"När du markerat klart ditt material i Taguette kan du exportera på en mängd "
+"olika sätt -- hela ditt projekt, kodbok, alla dina markerade citat (eller de"
+" för en specifik tagg!) och markerade dokument. Det är en bra tumregel att "
+"behålla en arkivkopia av ditt arbete!"
+
+#: index.html:32
+msgctxt "button"
+msgid "View details &raquo;"
+msgstr "Visa detaljer &raquo;"
+
+#: install.html:4
+msgctxt "page title"
+msgid ""
+"Install Taguette, the free and open-source qualitative data analysis tool"
+msgstr ""
+"Installera Taguette, det kostnadsfria verktyget för kvalitativ dataanalys "
+"med öppen källkod"
+
+#: install.html:9
+msgid "Install <span style=\"font-family: BadScript;\">TAGUETTE</span>"
+msgstr "Installera <span style=\"font-family: BadScript;\">TAGUETTE</span>"
+
+#: install.html:11
+msgid ""
+"\n"
+"  <p>Taguette is released under <a href=\"https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt\">the BSD license</a>. You can read about the team behind Taguette on our <a href=\"about.html#team\">About</a> page.</p>\n"
+"\n"
+"  <p>You are able to use Taguette on our server for free at <a href=\"https://app.taguette.org\">https://app.taguette.org</a> and also install Taguette locally on your computer and/or server (if you'd like to self-host!). Using Taguette on our server (or your own) means that you will be able to collaborate with others while using Taguette on your own computer means you can use it offline and by yourself.</p>\n"
+"  "
+msgstr ""
+
+#: install.html:17
+msgid "Installers"
+msgstr "Installatörer"
+
+#: install.html:19
+msgid ""
+"Taguette works on macOS, Windows, and Linux. The installers for macOS and "
+"Windows include Python, Taguette, and Calibre, so you don't need to install "
+"anything else. For Linux, the easiest way to install Taguette is to use "
+"<code>pip</code>, and those instructions are <a href=\"#pip\">below</a>."
+msgstr ""
+"Taguette fungerar på macOS, Windows och Linux. Installationsprogrammen för "
+"macOS och Windows inkluderar Python, Taguette och Calibre, så du behöver "
+"inte installera något annat. För Linux är det enklaste sättet att installera"
+" Taguette att använda <code>pip</code>, och dessa instruktioner finns <a "
+"href=\"#pip\">nedanför</a>."
+
+#: install.html:25
+msgctxt "popup for installation instructions"
+msgid "On Windows..."
+msgstr "På Windows..."
+
+#: install.html:27
+#, python-format
+msgid ""
+"\n"
+"          <p>Download the EXE file from <a href=\"%(download_page)s\">our latest release page</a>.</p>\n"
+"          <p>Open it. On some versions of Windows, you might get a warning that Taguette comes from an \"unknown publisher\". In that case, click on \"more info\" then \"run anyway\".</p>\n"
+"          <p><img src=\"imgs/windows.png\" width=\"696\" height=\"319\" class=\"mx-auto d-block\"/></p>\n"
+"          <p>Click through the installer wizard's steps. A \"Taguette\" entry will appear in your Start Menu and on your Desktop, if you selected that option.</p>\n"
+"          "
+msgstr ""
+
+#: install.html:38
+msgctxt "popup for installation instructions"
+msgid "On macOS..."
+msgstr "På macOS..."
+
+#: install.html:40
+#, python-format
+msgid ""
+"\n"
+"          <p>Download the DMG file from <a href=\"%(download_page)s\">our latest release page</a>.</p>\n"
+"          <p><img src=\"imgs/mac-01.png\" width=\"543\" height=\"158\" class=\"mx-auto d-block\"/></p>\n"
+"          <p>When you open it, you will see a Finder window. You should drag the \"Taguette.app\" file to the \"Applications\" folder.</p>\n"
+"          <p><img src=\"imgs/mac-02.png\" width=\"543\" height=\"158\" class=\"mx-auto d-block\"/></p>\n"
+"          <p>Then double-click on \"Applications\", and right-click on \"Taguette.app\" and choose \"Open\".</p>\n"
+"          <p><img src=\"imgs/mac-03.png\" width=\"780\" height=\"238\" class=\"mx-auto d-block\"/></p>\n"
+"          <p><img src=\"imgs/mac-04.png\" width=\"262\" height=\"386\" class=\"mx-auto d-block\"/></p>\n"
+"          <p>You will only have to do this the first time. After this, you will be able to start Taguette from the Launchpad or Spotlight.</p>\n"
+"          "
+msgstr ""
+
+#: install.html:55
+msgid ""
+"Once you start the application, you will see a terminal window appear. This "
+"is normal! You can ignore it completely and use Taguette from your web "
+"browser (<a href=\"http://localhost:7465/\"><code>localhost:7465</code></a> "
+"should open automatically). Simply leave the terminal window open until you "
+"are done using Taguette, after which you can close that terminal window to "
+"stop Taguette."
+msgstr ""
+
+#: install.html:57
+msgid "Installation using pip"
+msgstr ""
+
+#: install.html:59
+msgid ""
+"\n"
+"  <p>You first need to install <a href=\"https://www.python.org/downloads/\">Python 3</a> and <a href=\"https://calibre-ebook.com/\">Calibre</a>, the open-source e-book management software. Taguette uses a part of Calibre to convert documents into HTML, allowing you to highlight and tag parts of them.</p>\n"
+"\n"
+"  <p>On Debian or Ubuntu, you can run <code>sudo apt install python3 calibre</code></p>\n"
+"\n"
+"  <p>Once you've installed Python, you can create a Python 3 virtual environment and install Taguette with its dependencies from the command line with the following:</p>\n"
+"\n"
+"  <pre>python3 -m venv taguette.virtualenv\n"
+". taguette.virtualenv/bin/activate\n"
+"pip install taguette</pre>\n"
+"\n"
+"  <p>After which you can simply run <code>taguette.virtualenv/bin/taguette</code> in the terminal to get it going. You'll see the command line will still be running. This is ok! Don't worry about the terminal, but do leave it open. A browser window should appear, pointing you to <a href=\"http://localhost:7465/\"><code>localhost:7465</code></a>, and you can begin working on your projects!</p>\n"
+"  "
+msgstr ""
+
+#: install.html:73
+msgid "Development set-up"
+msgstr ""
+
+#: install.html:75
+msgid ""
+"\n"
+"  <p>You can also install from a local clone of this repository, which will allow you to easily change the sources to suit your needs:</p>\n"
+"\n"
+"  <ol>\n"
+"    <li>Clone this git repository from the terminal: <code>git clone https://gitlab.com/remram44/taguette.git</code></li>\n"
+"    <li>Navigate on the command line to the repository you've just cloned locally, using the <code>cd</code> command. To get help using <code>cd</code>, use <a href=\"https://swcarpentry.github.io/shell-novice/02-filedir/index.html\">this tutorial</a>.</li>\n"
+"    <li>Taguette uses <a href=\"https://python-poetry.org/\">Poetry</a> for its packaging and dependency management. You will need to <a href=\"https://python-poetry.org/docs/#installation\">install Poetry</a>.</li>\n"
+"    <li>Install Taguette and its dependencies by running <code>poetry install</code>. Poetry will create a virtual environment for you by default, activate it by running <code>poetry shell</code>.</li>\n"
+"    <li>Build translation files using <code>scripts/update_translations.sh</code>.</li>\n"
+"    <li>You can start taguette in development mode using <code>taguette --debug</code> (or <code>taguette --debug server &lt;config_file&gt;</code>). This will start Tornado in debug mode, which means in particular that it will auto-restart every time you make changes.</li>\n"
+"    <li>Navigate to <a href=\"http://localhost:7465/\"><code>localhost:7465</code></a> to use Taguette!</li>\n"
+"  </ol>\n"
+"  "
+msgstr ""
+
+#: install.html:89
+msgid ""
+"Learn about using Taguette at our <a href=\"getting-started.html\">getting "
+"started</a> page!"
+msgstr ""
+"Lär dig hur du använder Taguette på <a href=\"getting-started.html\">kom "
+"igång</a>sida!"
+
+#: self-host.html:4
+msgctxt "page title"
+msgid ""
+"Self Hosting Taguette, the free and open-source qualitative data analysis "
+"tool"
+msgstr ""
+"Self Hosting Taguette, det kostnadsfria verktyget för kvalitativ dataanalys "
+"med öppen källkod"
+
+#: self-host.html:9
+msgid "Self-hosting <span style=\"font-family: BadScript;\">TAGUETTE</span>"
+msgstr "Self-hosting <span style=\"font-family: BadScript;\">TAGUETTE</span>"
+
+#: self-host.html:11
+msgid ""
+"\n"
+"  <p>Taguette can be run in two separate ways:</p>\n"
+"  <ul>\n"
+"    <li>On your machine, after <a href=\"install.html\">installing it</a>. This requires no complex setup, and your data never has to leave your machine!</li>\n"
+"    <li>On a server. This is more difficult to set up, but users can then use that installed version with nothing more than their web browser! We host a publicly available Taguette server at <a href=\"https://app.taguette.org/\">app.taguette.org</a> at the moment, so you can feel free to use that. If you want to deploy your own server for your organization, read on!</li>\n"
+"  </ul>\n"
+"  "
+msgstr ""
+
+#: self-host.html:19
+msgid "Using Docker"
+msgstr "Använda Docker"
+
+#: self-host.html:21
+msgid ""
+"\n"
+"  <p>If you so choose, you can simply run the <a href=\"https://quay.io/repository/remram44/taguette\"><code>quay.io/remram44/taguette</code> Docker image</a>. You will be prompted for an 'admin' password the first time. You can persist the data by mounting a volume over <code>/data</code>, like so:</p>\n"
+"  <pre>docker run --rm quay.io/remram44/taguette default-config &gt;/srv/taguette/config.py\n"
+"edit /srv/taguette/config.py  # Edit configuration file, see below\n"
+"docker run -ti -p 80:7465 -v /srv/taguette:/data --restart=always quay.io/remram44/taguette server /data/config.py</pre>\n"
+"  "
+msgstr ""
+
+#: self-host.html:28
+msgid ""
+"\n"
+"  <p>If you want to use docker-compose, you can replace the last command (after setting up the configuration file) by <code>docker-compose up</code>, with a <code>docker-compose.yml</code> like:</p>\n"
+"  <pre>version: \"2.4\"\n"
+"services:\n"
+"  taguette:\n"
+"    image: quay.io/remram44/taguette\n"
+"    command: [\"server\", \"/config.py\"]\n"
+"    ports: [\"127.0.0.1:7465:7465\"]\n"
+"    volumes:\n"
+"      - \"./config.py:/config.py:ro\"\n"
+"      - \"./data:/data\"</pre>\n"
+"  "
+msgstr ""
+
+#: self-host.html:41
+msgid "\"Native\" installation on a server"
+msgstr "\"Native\" installation på en server"
+
+#: self-host.html:43
+msgid ""
+"\n"
+"  <p>You need Python 3.5 or better to run Taguette. Simply run <code>pip install taguette</code> to install the software. To be able to import non-HTML documents, you also need Calibre installed (specifically, the <code>ebook-convert</code> command).</p>\n"
+"\n"
+"  <p>Using a virtual environment is recommended. Example installation on Ubuntu:</p>\n"
+"\n"
+"  <pre>apt update\n"
+"apt install calibre python3.5 virtualenv\n"
+"virtualenv --python=python3.5 /srv/taguette\n"
+". /srv/taguette/bin/activate\n"
+"pip install taguette\n"
+"taguette default-config &gt;config.py\n"
+"edit config.py  # Edit configuration file, see below\n"
+"taguette --no-browser server config.py</pre>\n"
+"\n"
+"  "
+msgstr ""
+
+#: self-host.html:59
+msgid "Configuration file"
+msgstr "Konfigurationsfil"
+
+#: self-host.html:61
+msgid ""
+"\n"
+"  <p>In either case, running the server requires a configuration file. This file contains important information, such as email server and addresses, the port number to listen on, which database to use, whether registration of new accounts is enabled, etc.</p>\n"
+"  <p>You can make Taguette print a configuration file for you to edit using <code>taguette default-config</code>.</p>\n"
+"  <p>You might want to change the <code>PORT</code> to <code>80</code>, or better yet configure a web-server to act as a proxy, see below.</p>\n"
+"  "
+msgstr ""
+
+#: self-host.html:67
+msgid "Using a proxy server"
+msgstr "Använda en proxy server"
+
+#: self-host.html:69
+msgid ""
+"\n"
+"  <p>For performance or security reasons, or simply because you want to host multiple sites on your machine, you might want to put a web-server (such as <a href=\"https://nginx.org/\">nginx</a> or <a href=\"https://httpd.apache.org/\">Apache</a>) in front of Taguette. That server will then simply relay connections to Taguette (a setup we call reverse proxy). You can use it to provide encryption using TLS (recommended) for example using <a href=\"https://letsencrypt.org/\">Let's Encrypt</a>, free.</p>\n"
+"  <p>To help with this, we provide <a href=\"https://gitlab.com/remram44/taguette/-/blob/master/contrib\">example configuration files</a> that you can use.</p>\n"
+"  "
+msgstr ""
+
+#: self-host.html:74
+msgid "Database"
+msgstr "Databas"
+
+#: self-host.html:76
+msgid ""
+"\n"
+"  <p>The <code>DATABASE</code> setting should be a SQLAlchemy connection string. For example, you can use:</p>\n"
+"  <ul>\n"
+"    <li>a SQLite database file (note the 4 slashes): <code>sqlite:////srv/taguette/taguette.sqlite3</code></li>\n"
+"    <li>a PostgreSQL database: <code>postgresql://user:secretpassword@localhost/taguette</code> (you need to <code>pip install psycopg2-binary</code>)</li>\n"
+"    <li>a MariaDB database (<a href=\"https://gitlab.com/remram44/taguette/-/merge_requests/84\">MySQL currently doesn't work</a>): <code>mysql+pymysql://user:secretpassword@localhost/taguette</code> (you need to <code>pip install pymysql cryptography</code>)</li>\n"
+"    <li>... or any of the <a href=\"https://docs.sqlalchemy.org/en/13/core/engines.html\">other databases supported by SQLAlchemy</a>. Note that we don't test any other database, so you might run into issues.</li>\n"
+"  </ul>\n"
+"  "
+msgstr ""
