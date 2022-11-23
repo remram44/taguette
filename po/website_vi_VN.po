@@ -89,6 +89,14 @@ msgid ""
 "to Taguette? Check out <a href=\"https://opencollective.com/taguette\">our "
 "Open Collective</a>"
 msgstr ""
+"Email: <a href=\"mailto:hi@taguette.org\">hi@taguette.org</a> | Danh sách "
+"Email: <a href=\"https://groups.io/g/taguette\">Người sử dụng</a>, <a "
+"href=\"https://groups.io/g/taguette-announce\">thông báo</a> | Twitter: <a "
+"href=\"https://twitter.com/TaguetteProject\">@TaguetteProject</a> | Phát "
+"hiện lỗi trong Taguette? Báo chúng tôi qua <a "
+"href=\"https://gitlab.com/remram44/taguette\">GitLab! | Muốn ủng hộ "
+"Taguette? Truy cập<a href=\"https://opencollective.com/taguette\">our Open "
+"Collective</a>"
 
 #: about.html:4
 msgctxt "page title"
@@ -160,7 +168,7 @@ msgstr ""
 
 #: about.html:40
 msgid "The Team"
-msgstr "Đội"
+msgstr "Đội ngũ sáng lập chính"
 
 #: about.html:42
 msgid ""
@@ -349,7 +357,7 @@ msgstr "Nếu bạn cần Bibtex, hãy sử dụng như sau:"
 
 #: faq.html:142
 msgid "Desktop/Single-user Info"
-msgstr "Thông tin máy PC/ Người dùng đơn"
+msgstr "Thông tin máy PC/ Người dùng đơn lẻ"
 
 #: faq.html:147
 msgid "Why do you call the desktop version of Taguette 'single user mode'?"
@@ -600,7 +608,7 @@ msgstr "Tô sáng tài liệu"
 
 #: getting-started.html:22
 msgid "View tagged materials"
-msgstr "Xem các tài liệu đã được tô sáng"
+msgstr "Xem các tài liệu đã được gắn thẻ"
 
 #: getting-started.html:23
 msgid "Export options"
@@ -768,7 +776,7 @@ msgstr ""
 "Nếu bạn chưa thấy ngôn ngữ mình cần trong danh sách, chúng tôi khuyến khích "
 "bạn bổ sung phần dịch đó qua dự án Transifex của chúng tôi: <a "
 "href=\"https://www.transifex.com/remram44/taguette/\">https://www.transifex.com/remram44/taguette/</a>"
-" or by sending us a .po file via GitLab, instructions: <a "
+" hoặc gửi tệp dạng .po quá GitLab, chỉ dẫn: <a "
 "href=\"https://gitlab.com/remram44/taguette/-/tree/master/po\">https://gitlab.com/remram44/taguette/-/tree/master/po</a>."
 
 #: getting-started.html:67
@@ -1105,6 +1113,13 @@ msgid ""
 "text really pop. We found this to be a nice view for exploring the texts "
 "differently:"
 msgstr ""
+"Nếu di chuột qua phần văn bản được đánh dấu, bạn sẽ thấy các thẻ trong chú "
+"giải công cụ ở bên phải con trỏ chuột. Để khám phá tài liệu được đánh dấu "
+"của bạn theo một cách khác, bạn có thể thử nhấp vào hộp kiểm "
+"<strong>Backlight</strong>.  Bạn có thể thấynhìn thấy nó ở dưới cùng của "
+"khung. Nó sẽ tô xám tất cả các văn bản không được tô sáng để làm cho văn bản"
+" được tô sáng thực sự nổi bật. Chúng tôi thấy đây là một chế độ xem đẹp để "
+"khám phá các văn bản khác nhau:"
 
 #: getting-started.html:197
 msgid ""
@@ -1151,6 +1166,15 @@ msgid ""
 "right now you won't be able to tell from that doc which tags go with the "
 "highlights."
 msgstr ""
+"Để xuất tất cả các điểm nổi bật được liên kết cho một thẻ nhất định, hãy "
+"điều hướng đến thẻ <strong>Highlights</strong> ở bên phía trái, sau đó chọn "
+"và các phần đánh dấu mà bạn muốn xuất ra. Sau đó bạn có thể sử dụng danh mục"
+" thả xuống <strong>Export this view</strong> ở phí trên bên phải của cửa sổ."
+" Bạn có các lựa chọn <code>HTML</code> (1 trang web), <code>CSV</code>, "
+"<code>XLSX</code>, <code>DOCX</code> (có thể chỉnh sưat), hay "
+"<code>PDF</code> (khó chỉnh sửa hơn). Trong khi bạn sẽ thấy tài liệu với tất"
+" cả các phần đánh dấu, lúc này bạn sẽ không thể biết từ tài liệu đó thẻ nào "
+"đi cùng với các điểm đánh dấu."
 
 #: getting-started.html:209
 msgid ""
@@ -1159,6 +1183,10 @@ msgid ""
 "came from, and which tags are associated with it. This is how it looks with "
 "the <code>DOCX</code> export:"
 msgstr ""
+"Bạn sẽ thấy tất cả văn bản được tô sáng cho thẻ cụ thể với thông tin về từng"
+" phần tô sáng ngay bên dưới nó -- văn bản đó đến từ tài liệu nào và thẻ nào "
+"được liên kết với nó. Đây là giao diện của nó với định dạng tệp xuất ra "
+"là<code>DOCX</code>:"
 
 #: getting-started.html:213
 msgid ""
@@ -1169,6 +1197,11 @@ msgid ""
 "will have a choice of <code>HTML</code>, <code>DOCX</code>, or "
 "<code>PDF</code>."
 msgstr ""
+"Để xuất ra tất cả các phần tô sáng được liên kết,  hãy chuyển đến thẻ "
+"<strong> Highlights</strong>và nhấp vào <strong>See all highlights</strong>."
+" Sau đó sử dụng trình đổ xuống <strong>Export this view</strong> góc trên "
+"bên phải. Một lần nữa, bạn có các tùy chọn <code>HTML</code>, "
+"<code>DOCX</code>, hay <code>PDF</code>."
 
 #: getting-started.html:217
 msgid ""
@@ -1176,6 +1209,9 @@ msgid ""
 " -- which document it came from, and which tags are associated with it. This"
 " is how it looks with the <code>DOCX</code> export:"
 msgstr ""
+"Bạn sẽ thấy tất cả văn bản được đánh dấu cho tất cả các thẻ có thông tin về "
+"nó -- nó đến từ tài liệu nào và các thẻ nào được liên kết với nó. Đây là "
+"giao diện của nó với tùy chọn <code>DOCX</code>:"
 
 #: getting-started.html:221
 msgid ""
@@ -1186,6 +1222,11 @@ msgid ""
 "will have a choice of <code>HTML</code>, <code>DOCX</code>, or "
 "<code>PDF</code>."
 msgstr ""
+"Để xuất tài liệu mà bạn đã đánh dấu, trước tiên hãy điều hướng đến thẻ "
+"<strong>Documents</strong> ở bên phía trái, chọn tài liệu mà bạn muốn xuất "
+"nội dung. Sau đó bạn chọn trình đổ xuống<strong>Export this view</strong> ở "
+"phía trên bên phải. Một lần nữa, bạn có các tùy chọn <code>HTML</code>, "
+"<code>DOCX</code>, hay <code>PDF</code>."
 
 #: getting-started.html:225
 msgid ""
@@ -1194,6 +1235,10 @@ msgid ""
 "brackets. Yellow = quote, light red = tag(s). This is how it looks with the "
 "<code>DOCX</code> export:"
 msgstr ""
+"Bạn sẽ thấy các tài liệu cùng các phần đã được tô vàng và tương ứng với nó "
+"là các thẻ tương ứng ở bên cạnh, bản thân nó có màu đỏ và được đặt trong "
+"ngoặc đơn. Vàng = Trích dẫn, đỏ  = Thẻ. Đây là giao diện của nó với việc "
+"xuất ra dạng <code>DOCX</code>:"
 
 #: getting-started.html:229
 msgid ""
@@ -1203,6 +1248,11 @@ msgid ""
 "should get a download started of a <code>SQLite3</code> file. This holds "
 "your Taguette project, all files, as well as all highlights and codes:"
 msgstr ""
+"Bạn có thể nhập vào và xuất các dự án trong Taguette! Để xuất ra, hãy đi đến"
+" thẻ <strong>Project Info</strong> bên phía trái. Tại đây sẽ có thẻ "
+"<strong>Export project</strong>. Nhấp chọn và bạn sẽ thấy một file mang định"
+" dạng <code>SQLite3</code> để tài xuống xuất hiện. File này chứa dự án "
+"Taguette của bạn, tất cả các tệp, cũng như tất cả các điểm đánh dấu và mã:"
 
 #: getting-started.html:233
 msgid ""
@@ -1210,6 +1260,9 @@ msgid ""
 "locally running copy on your computer or another server), go to the welcome "
 "screen in Taguette and click \"Import a project file\":"
 msgstr ""
+"Để nhập dự án của bạn vào một phiên bản Taguette khác (ví dụ: bản sao chạy "
+"cục bộ trên máy tính của bạn hoặc máy chủ khác), hãy chuyển đến màn hình "
+"chào mừng trong Taguette và nhấp vào \"Import a project file\":"
 
 #: getting-started.html:237
 msgid ""
@@ -1218,6 +1271,10 @@ msgid ""
 "the file. Taguette will confirm on this screen the name of the project, and "
 "once you hit \"Import\", all project materials will be imported!"
 msgstr ""
+"Từ đó, bạn chọn một dự án để tải lên. Nó cần có định dạng "
+"<code>SQLite3</code> để tải lên. Nhấp chọn Browse và lựa chọn File cần tìm. "
+"Taguette sẽ thông báo xác nhận tên của dự án, khi bạn đã chọn \"Import\", dự"
+" án cùng tất cả nội dung liên quan sẽ được tải lên!"
 
 #: getting-started.html:241
 msgid ""
@@ -1226,11 +1283,15 @@ msgid ""
 "href=\"https://gitlab.com/remram44/taguette/-/blob/master/ARCHITECTURE.md#the-"
 "database\">in our internal documentation</a>."
 msgstr ""
+"Nếu bạn muốn duyệt trực tiếp cơ sở dữ liệu, bạn có thể tìm tài liệu về lược "
+"đồ<a "
+"href=\"https://gitlab.com/remram44/taguette/-/blob/master/ARCHITECTURE.md#the-"
+"database\">in our internal documentation</a>."
 
 #: index.html:10
 msgctxt "subtitle"
 msgid "FEEDING YOUR QUALITATIVE NEEDS"
-msgstr ""
+msgstr "ĐÁP ỨNG CÁC NHU CẦU ĐỊNH TÍNH CỦA BẠN"
 
 #: index.html:12
 msgid ""
@@ -1240,19 +1301,25 @@ msgid ""
 "research. You can import your research materials, highlight and tag quotes, "
 "and export the results!"
 msgstr ""
+"Bạn đã bao giờ tìm kiếm \"Phần mềm nghiên cứu định tính miễn phí\" để rồi "
+"nhận về nỗi thất vọng vì không có gì có thể giúp bạn đánh dấu cho các tài "
+"liệu nghiên cứu của bạn? Đừng tìm nữa! Taguette là một công cụ <strong>miễn "
+"phí và mã nguồn mở</strong> cho nghiên cứu định tính. Bạn có thể nhập tài "
+"liệu nghiên cứu của mình, đánh dấu và gắn thẻ trích dẫn cũng như xuất kết "
+"quả!"
 
 #: index.html:13
 msgid "Learn more &raquo;"
-msgstr ""
+msgstr "Tìm hiểu thêm &raquo;"
 
 #: index.html:13
 #, python-format
 msgid "Try out Taguette on our server %(external_icon)s"
-msgstr ""
+msgstr "Thử Taguette trên server của chúng tôi%(external_icon)s"
 
 #: index.html:20
 msgid "Work Locally"
-msgstr ""
+msgstr "Làm việc độc lập"
 
 #: index.html:21
 msgid ""
@@ -1261,15 +1328,19 @@ msgid ""
 "your computer</strong>. That means that if you can have your data on your "
 "computer, you can run Taguette with no worries."
 msgstr ""
+"Taguette hoạt động cả trên máy tính cục bộ của bạn (macOS, Windows, Linux) "
+"và trên máy chủ. Khi chạy Taguette cục bộ,<strong>dữ liệu an toàn như máy "
+"tính của bạn</strong>. Điều đó có nghía là nếu bạn có dữ liệu trên máy tính,"
+" bạn có thể chạy Taguette mà không phải băn khoăn gì."
 
 #: index.html:22
 msgctxt "button"
 msgid "Install now &raquo;"
-msgstr ""
+msgstr "Cài đặt ngay &raquo;"
 
 #: index.html:25
 msgid "Highlight &amp; Tag"
-msgstr ""
+msgstr "Đánh dấu &amp; Thẻ"
 
 #: index.html:26
 msgid ""
@@ -1278,11 +1349,15 @@ msgid ""
 "new tags, then just select some text, click 'new highlight', and add "
 "whatever tag you find to be most relevant!"
 msgstr ""
+"Taguette cho phép bạn tải tài liệu nghiên cứu của mình lên và gắn thẻ chúng,"
+" giống như bạn sử dụng bút đánh dấu màu khác nhau với tài liệu giấy. Bạn có "
+"thể thêm các thẻ mới, sau đó chỉ cần chọn một số văn bản, nhấp vào 'Tô sáng'"
+" và thêm bất kỳ thẻ nào bạn thấy là phù hợp nhất!"
 
 #: index.html:27
 msgctxt "button"
 msgid "Get started &raquo;"
-msgstr ""
+msgstr "Bắt đầu &raquo;"
 
 #: index.html:30
 msgid "Export Results"
@@ -1295,21 +1370,27 @@ msgid ""
 "highlighted quotes (or ones for a specific tag!), and highlighted documents."
 " It's a good practice to keep an archival copy of your work!"
 msgstr ""
+"Sau khi bạn hoàn thành công việc của mình các tài liệu đánh dấu trong "
+"Taguette, bạn có thể xuất theo nhiều cách - toàn bộ dự án, sổ mã, tất cả các"
+" trích dẫn được đánh dấu của bạn (hoặc các tài liệu cho một thẻ cụ thể!) Và "
+"các tài liệu được đánh dấu. Đó là một cách làm tốt tốt để giữ một bản sao "
+"lưu trữ của công việc của bạn!"
 
 #: index.html:32
 msgctxt "button"
 msgid "View details &raquo;"
-msgstr ""
+msgstr "Xem chi tiết &raquo;"
 
 #: install.html:4
 msgctxt "page title"
 msgid ""
 "Install Taguette, the free and open-source qualitative data analysis tool"
 msgstr ""
+"Cài đặt Taguette, công cụ phân tích dữ liệu định tính nguồn mở và miễn phí"
 
 #: install.html:9
 msgid "Install <span style=\"font-family: BadScript;\">TAGUETTE</span>"
-msgstr ""
+msgstr "Cài đặt <span style=\"font-family: BadScript;\">TAGUETTE</span>"
 
 #: install.html:11
 msgid ""
@@ -1319,10 +1400,15 @@ msgid ""
 "  <p>You are able to use Taguette on our server for free at <a href=\"https://app.taguette.org\">https://app.taguette.org</a> and also install Taguette locally on your computer and/or server (if you'd like to self-host!). Using Taguette on our server (or your own) means that you will be able to collaborate with others while using Taguette on your own computer means you can use it offline and by yourself.</p>\n"
 "  "
 msgstr ""
+"\n"
+"  <p>Taguette được tung ra dưới  <a href=\"https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt\">Giấy phép BSD </a>. Bạn có thể đọc về đội ngũ đằng sau Taguette trên trang <a href=\"about.html#team\">About</a>.</p>\n"
+"\n"
+"  <p>Bạn có thể sử dụng Taguette miễn phí trên máy chủ của chúng tôi tại <a href=\"https://app.taguette.org\">https://app.taguette.org</a> và cũng có thể cài đặt Taguette trên máy cục bộ hoặc server (nếu bạn thích!).  Sử dụng Taguette trên máy chủ của chúng tôi (hoặc của riêng bạn) có nghĩa là bạn sẽ có thể cộng tác với những người khác trong khi sử dụng Taguette trên máy tính của riêng bạn, nghĩa là bạn có thể sử dụng nó ngoại tuyến và một mình.</p>\n"
+"  "
 
 #: install.html:17
 msgid "Installers"
-msgstr ""
+msgstr "Bộ cài đặt"
 
 #: install.html:19
 msgid ""
@@ -1331,11 +1417,15 @@ msgid ""
 "anything else. For Linux, the easiest way to install Taguette is to use "
 "<code>pip</code>, and those instructions are <a href=\"#pip\">below</a>."
 msgstr ""
+"Taguette hoạt động trên HĐH macOS, Windows và Linux. Trình cài đặt cho macOS"
+" và Windows bao gồm Python, Taguette và Calibre, vì vậy bạn không cần phải "
+"cài đặt bất kỳ thứ gì khác. Đối với Linux, cách dễ nhất để cài đặt Taguette "
+"là sử dụng <code>pip</code>, và các hướng đẫn ở <a href=\"#pip\">below</a>."
 
 #: install.html:25
 msgctxt "popup for installation instructions"
 msgid "On Windows..."
-msgstr ""
+msgstr "Trong Windows..."
 
 #: install.html:27
 #, python-format
@@ -1347,11 +1437,17 @@ msgid ""
 "          <p>Click through the installer wizard's steps. A \"Taguette\" entry will appear in your Start Menu and on your Desktop, if you selected that option.</p>\n"
 "          "
 msgstr ""
+"\n"
+"          <p>Tải tệp EXE xuống từ  <a href=\"%(download_page)s\">Trang chứa phiên bản mới nhất</a>.</p>\n"
+"          <p>Mở ra. Trên một số phiên bản của Windows, bạn sẽ thấy thông báo rằng Taguette đến từ \"Nhà phát triển không rõ\", trong trường hợp đó, nhấp vào \"more info\" và chọn tiếp \"run anyway\".</p>\n"
+"          <p><img src=\"imgs/windows.png\" width=\"696\" height=\"319\" class=\"mx-auto d-block\"/></p>\n"
+"          <p>Nhấp qua các bước cài đặt. . Một biểu tượng \"Taguette\" sẽ xuất hiện trên Start Menu và trên Desktop máy tính của bạn, nếu bạn đã chọn các tùy chọn đó trong khi cài đặt.</p>\n"
+"          "
 
 #: install.html:38
 msgctxt "popup for installation instructions"
 msgid "On macOS..."
-msgstr ""
+msgstr "Trên macOS..."
 
 #: install.html:40
 #, python-format
@@ -1367,6 +1463,16 @@ msgid ""
 "          <p>You will only have to do this the first time. After this, you will be able to start Taguette from the Launchpad or Spotlight.</p>\n"
 "          "
 msgstr ""
+"\n"
+"          <p>Tải file DMG từ <a href=\"%(download_page)s\">trang có phiên bản mới nhất</a>.</p>\n"
+"          <p><img src=\"imgs/mac-01.png\" width=\"543\" height=\"158\" class=\"mx-auto d-block\"/></p>\n"
+"          <p>Khi mở ra, bạn sẽ thấy một cửa sổ Finder. Bạn hãy rê tệp \"Taguette.app\" vào Folder \"Applications\".</p>\n"
+"          <p><img src=\"imgs/mac-02.png\" width=\"543\" height=\"158\" class=\"mx-auto d-block\"/></p>\n"
+"          <p>Kích đúp vào \"Applications\", kích chuột phải vào \"Taguette.app\" và chọn \"Open\".</p>\n"
+"          <p><img src=\"imgs/mac-03.png\" width=\"780\" height=\"238\" class=\"mx-auto d-block\"/></p>\n"
+"          <p><img src=\"imgs/mac-04.png\" width=\"262\" height=\"386\" class=\"mx-auto d-block\"/></p>\n"
+"          <p>Bạn sẽ chỉ phải làm điều này lần đầu tiên. Sau này, bạn sẽ có thể bắt đầu Taguette từ Launchpad hoặc Spotlight.</p>\n"
+"          "
 
 #: install.html:55
 msgid ""
@@ -1377,10 +1483,16 @@ msgid ""
 "are done using Taguette, after which you can close that terminal window to "
 "stop Taguette."
 msgstr ""
+"Khi bạn khởi động ứng dụng, bạn sẽ thấy một cửa sổ đầu cuối xuất hiện. Điều "
+"này là bình thường! Bạn hoàn toàn có thể bỏ qua nó và sử dụng Taguette từ "
+"trình duyệt web của mình (<a "
+"href=\"http://localhost:7465/\"><code>localhost:7465</code></a> để mở tự "
+"động). Duy trì việc mở cửa sổ đầu cuối cho đến khi bạn sử dụng xong "
+"Taguette, sau đó bạn có thể đóng cửa sổ đầu cuối đó để dừng Taguette."
 
 #: install.html:57
 msgid "Installation using pip"
-msgstr ""
+msgstr "Cài dặt đùng PIP"
 
 #: install.html:59
 msgid ""
@@ -1398,10 +1510,23 @@ msgid ""
 "  <p>After which you can simply run <code>taguette.virtualenv/bin/taguette</code> in the terminal to get it going. You'll see the command line will still be running. This is ok! Don't worry about the terminal, but do leave it open. A browser window should appear, pointing you to <a href=\"http://localhost:7465/\"><code>localhost:7465</code></a>, and you can begin working on your projects!</p>\n"
 "  "
 msgstr ""
+"\n"
+"  <p>Trước tiên cần cài đặt  <a href=\"https://www.python.org/downloads/\">Python 3</a> và<a href=\"https://calibre-ebook.com/\">Calibre</a>, phần mềm quản lý sách điện tử mã nguồn mở. Taguette sử dụng một phần của Calibre để chuyển đổi tài liệu thành HTML, cho phép bạn đánh dấu và gắn thẻ các phần của chúng.</p>\n"
+"\n"
+"  <p> Đối với Debian hay Ubuntu, bạn cần chạy app <code>sudo apt install python3 calibre</code></p>\n"
+"\n"
+"  <p>Sau khi đã cài xong Python, bạn cần tạo môi trường Python 3 ảo rồi cài đặt Taguette với các tham số của nó từ dòng lệnh như sau:</p>\n"
+"\n"
+"  <pre>python3 -m venv taguette.virtualenv\n"
+". taguette.virtualenv/bin/activate\n"
+"pip install taguette</pre>\n"
+"\n"
+"  <p>Sau đó, bạn chỉ cần chạy <code>taguette.virtualenv/bin/taguette</code> trong cửa số đầu cuối. Bạn sẽ thấy các dòng lệnh chạy. Đó là điều bình thường. Đừng lo lắng, đừng tắt cửa số đó đi. Một cửa sổ trình duyệt sẽ xuất hiện, trỏ bạn đến <a href=\"http://localhost:7465/\"><code>localhost:7465</code></a>, và bạn đã có thể bắt đầu dự án của mình được rồi!</p>\n"
+"  "
 
 #: install.html:73
 msgid "Development set-up"
-msgstr ""
+msgstr "Thiết lập cho nhà phát triển"
 
 #: install.html:75
 msgid ""
@@ -1419,12 +1544,27 @@ msgid ""
 "  </ol>\n"
 "  "
 msgstr ""
+"\n"
+"  <p>Bạn cũng có thể cài đặt từ một bản sao cục bộ của kho lưu trữ này, điều này sẽ cho phép bạn dễ dàng thay đổi các nguồn cho phù hợp với nhu cầu của mình:</p>\n"
+"\n"
+"  <ol>\n"
+"    <li>Sao chép kho lưu trữ git này từ thiết bị đầu cuối: <code>git clone https://gitlab.com/remram44/taguette.git</code></li>\n"
+"    <li>điều hướng trên dòng lệnh đến kho lưu trữ mà bạn vừa sao chép cục bộ, bằng cách sử dụng lệnh <code>cd</code>. Để nhận trợ giúp, dùng lệnh <code>cd</code>, lệnh<a href=\"https://swcarpentry.github.io/shell-novice/02-filedir/index.html\">this tutorial</a>.</li>\n"
+"    <li>Taguette sử dụng <a href=\"https://python-poetry.org/\">Poetry</a> cho việc đóng gói và quản lý các tham số. Bạn sẽ cần <a href=\"https://python-poetry.org/docs/#installation\">cài Poetry</a>.</li>\n"
+"    <li>Cài đặt Taguette và các tham số phụ thuộc của nó bằng cách chạy <code>poetry install</code>. Poetry sẽ mặc định tạo một môi trường ảo cho bạn, hãy kích hoạt nó bằng cách chạy <code>poetry shell</code>.</li>\n"
+"    <li>Xây dựng tệp dịch bằng cách sử dụng <code>scripts/update_translations.sh</code>.</li>\n"
+"    <li>Bạn có thể bắt đầu taguette ở chế độ phát triển bằng cách sử dụng <code>taguette --debug</code> (hay <code>taguette --debug server &lt;config_file&gt;</code>). Thao tác này sẽ khởi động Tornado ở chế độ gỡ lỗi, có nghĩa là nó sẽ tự động khởi động lại mỗi khi bạn thực hiện thay đổi.</li>\n"
+"    <li>Điều hướng đến <a href=\"http://localhost:7465/\"><code>localhost:7465</code></a> để sử dụng Taguette!</li>\n"
+"  </ol>\n"
+"  "
 
 #: install.html:89
 msgid ""
 "Learn about using Taguette at our <a href=\"getting-started.html\">getting "
 "started</a> page!"
 msgstr ""
+"Học cách sử dụng Taguette tại trang <a href=\"getting-started.html\">getting"
+" started</a> của chúng tôi!"
 
 #: self-host.html:4
 msgctxt "page title"
@@ -1432,10 +1572,12 @@ msgid ""
 "Self Hosting Taguette, the free and open-source qualitative data analysis "
 "tool"
 msgstr ""
+"Tự lưu trữ Taguette, công cụ phân tích dữ liệu định tính nguồn mở và miễn "
+"phí"
 
 #: self-host.html:9
 msgid "Self-hosting <span style=\"font-family: BadScript;\">TAGUETTE</span>"
-msgstr ""
+msgstr "Tự lưu trữ <span style=\"font-family: BadScript;\">TAGUETTE</span>"
 
 #: self-host.html:11
 msgid ""
@@ -1447,10 +1589,17 @@ msgid ""
 "  </ul>\n"
 "  "
 msgstr ""
+"\n"
+"  <p>Taguette có thể chạy theo 2 cách riêng biệt:</p>\n"
+"  <ul>\n"
+"    <li>Trên máy tính, sau khi <a href=\"install.html\">cài đặt</a>. Điều nay không đòi hỏi thao tác gì phức tạp, và dữ liệu của bạn sẽ không bao giờ rời khỏi máy của bạn!</li>\n"
+"    <li>Trên server. Điều này khó thiết lập hơn, nhưng sau đó người dùng có thể sử dụng phiên bản đã cài đặt đó mà không cần gì khác ngoài trình duyệt Web của họ! Chúng tôi lưu trữ một máy chủ Taguette có sẵn công khai tại <a href=\"https://app.taguette.org/\">app.taguette.org</a> tại thời điểm này, vì vậy bạn có thể thoải mái sử dụng nó. Nếu bạn muốn triển khai máy chủ của riêng mình cho tổ chức của mình, hãy đọc tiếp!</li>\n"
+"  </ul>\n"
+"  "
 
 #: self-host.html:19
 msgid "Using Docker"
-msgstr ""
+msgstr "Sử dụng Docker"
 
 #: self-host.html:21
 msgid ""
@@ -1461,6 +1610,12 @@ msgid ""
 "docker run -ti -p 80:7465 -v /srv/taguette:/data --restart=always quay.io/remram44/taguette server /data/config.py</pre>\n"
 "  "
 msgstr ""
+"\n"
+"  <p>Nếu chọn cách này, bạn có thể chạy <a href=\"https://quay.io/repository/remram44/taguette\"><code>quay.io/remram44/taguette</code> hình ảnh Docker </a>. Bạn sẽ được nhắc nhập mật khẩu 'quản trị viên' lần đầu tiên. Bạn có thể duy trì dữ liệu bằng cách gắn một ổ đĩa trên<code>/data</code>, như này:</p>\n"
+"  <pre>docker run --rm quay.io/remram44/taguette default-config &gt;/srv/taguette/config.py\n"
+"edit /srv/taguette/config.py  # Edit configuration file, see below\n"
+"docker run -ti -p 80:7465 -v /srv/taguette:/data --restart=always quay.io/remram44/taguette server /data/config.py</pre>\n"
+"  "
 
 #: self-host.html:28
 msgid ""
@@ -1477,10 +1632,22 @@ msgid ""
 "      - \"./data:/data\"</pre>\n"
 "  "
 msgstr ""
+"\n"
+"  <p>Nếu muốn sử dụng docker-compose, bạn có thể thay thế dòng lệnh cuối cùng (sau khi đã thiết lập file cấu hình) từ <code>docker-compose up</code>, sang <code>docker-compose.yml</code> như:</p>\n"
+"  <pre>version: \"2.4\"\n"
+"services:\n"
+"  taguette:\n"
+"    image: quay.io/remram44/taguette\n"
+"    command: [\"server\", \"/config.py\"]\n"
+"    ports: [\"127.0.0.1:7465:7465\"]\n"
+"    volumes:\n"
+"      - \"./config.py:/config.py:ro\"\n"
+"      - \"./data:/data\"</pre>\n"
+"  "
 
 #: self-host.html:41
 msgid "\"Native\" installation on a server"
-msgstr ""
+msgstr "Cài đặt \"Gốc\" trên máy chủ"
 
 #: self-host.html:43
 msgid ""
@@ -1500,10 +1667,25 @@ msgid ""
 "\n"
 "  "
 msgstr ""
+"\n"
+"  <p>Bạn cần phiên bản Python 3.5 trở lên để chạy Taguette. Chạy <code>pip install taguette</code> để cài đặt phần mềm này. Để nhập được các tài liệu phi HTML, bạn cần cài Calibre (đặc biệt là phần lệnh<code>ebook-convert</code>).</p>\n"
+"\n"
+"  <p>Sử dụng một môi trường ảo được khuyến khích. Ví dụ cài đặt trên Ubuntu:</p>\n"
+"\n"
+"  <pre>apt update\n"
+"apt install calibre python3.5 virtualenv\n"
+"virtualenv --python=python3.5 /srv/taguette\n"
+". /srv/taguette/bin/activate\n"
+"pip install taguette\n"
+"taguette default-config &gt;config.py\n"
+"edit config.py  # Edit configuration file, see below\n"
+"taguette --no-browser server config.py</pre>\n"
+"\n"
+"  "
 
 #: self-host.html:59
 msgid "Configuration file"
-msgstr ""
+msgstr "Tệp cấu hình"
 
 #: self-host.html:61
 msgid ""
@@ -1513,10 +1695,15 @@ msgid ""
 "  <p>You might want to change the <code>PORT</code> to <code>80</code>, or better yet configure a web-server to act as a proxy, see below.</p>\n"
 "  "
 msgstr ""
+"\n"
+"  <p>Trong cả hai trường hợp, việc chạy máy chủ yêu cầu tệp cấu hình. Tệp này chứa thông tin quan trọng, chẳng hạn như máy chủ email và địa chỉ, số cổng để nghe, cơ sở dữ liệu nào sẽ sử dụng, đăng ký tài khoản mới có được bật hay không, v.v...</p>\n"
+"  <p>Bạn có thể làm cho Taguette in một tệp cấu hình để bạn chỉnh sửa bằng cách sử dụng <code>taguette default-config</code>.</p>\n"
+"  <p>Bạn có thể thay <code>PORT</code> sang<code>80</code>, hoặc tốt hơn là định cấu hình máy chủ web để hoạt động như một proxy, xem bên dưới.</p>\n"
+"  "
 
 #: self-host.html:67
 msgid "Using a proxy server"
-msgstr ""
+msgstr "Sử dụng máy chủ proxy"
 
 #: self-host.html:69
 msgid ""
@@ -1525,10 +1712,14 @@ msgid ""
 "  <p>To help with this, we provide <a href=\"https://gitlab.com/remram44/taguette/-/blob/master/contrib\">example configuration files</a> that you can use.</p>\n"
 "  "
 msgstr ""
+"\n"
+"  <p>Vì lý do hiệu suất hoặc bảo mật hoặc đơn giản là vì bạn muốn lưu trữ nhiều trang web trên máy của mình, bạn có thể muốn đặt một máy chủ web (như <a href=\"https://nginx.org/\">nginx</a> hay <a href=\"https://httpd.apache.org/\">Apache</a>) trước Taguette. Máy chủ này Sau đó, máy chủ đó sẽ chỉ chuyển tiếp các kết nối tới Taguette (một thiết lập mà chúng tôi gọi là Proxy ngược). Bạn có thể sử dụng nó để cung cấp mã hóa bằng TLS (được khuyến nghị) chẳng hạn bằng cách sử dụng <a href=\"https://letsencrypt.org/\">Let's Encrypt</a>, miễn phí.</p>\n"
+"  <p>Để trợ giúp việc này, chúng tôi cung cấp <a href=\"https://gitlab.com/remram44/taguette/-/blob/master/contrib\">tệp cấu hình mẫu</a> để bạn có thể sử dụng.</p>\n"
+"  "
 
 #: self-host.html:74
 msgid "Database"
-msgstr ""
+msgstr "Cơ sở dữ liệu"
 
 #: self-host.html:76
 msgid ""
@@ -1542,3 +1733,12 @@ msgid ""
 "  </ul>\n"
 "  "
 msgstr ""
+"\n"
+"  <p> Cài đặt<code>CƠ SỞ DỮ LIỆU</code> phải là chuỗi kết nối SQLAlchemy. Ví dụ: bạn có thể sử dụng:</p>\n"
+"  <ul>\n"
+"    <li>một tệp CSDL SQLite (lưu ý 4 dấu gạch chéo): <code>sqlite:////srv/taguette/taguette.sqlite3</code></li>\n"
+"    <li>một tệp CSDL PostgreSQL: <code>postgresql://user:secretpassword@localhost/taguette</code> (bạn cần <code>cài đặt pip psycopg2-binary</code>)</li>\n"
+"    <li>một tệp CSDL MariaDB (<a href=\"https://gitlab.com/remram44/taguette/-/merge_requests/84\">MySQL hiện tại không chạy</a>): <code>mysql+pymysql://user:secretpassword@localhost/taguette</code> (bạn cần <code>cài đặt pip pymysql đã mã </code>)</li>\n"
+"    <li>... hay bất kỳ <a href=\"https://docs.sqlalchemy.org/en/13/core/engines.html\">một CSDL nào khác được hỗ trợ bởi SQLAlchemy</a>. Lưu ý rằng chúng tôi không kiểm tra bất kỳ cơ sở dữ liệu nào khác, vì vậy bạn có thể gặp sự cố.</li>\n"
+"  </ul>\n"
+"  "
