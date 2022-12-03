@@ -44,4 +44,4 @@ License
 
 * Copyright (C) 2018, Rémi Rampin and Taguette contributors
 
-Licensed under a **BSD 3-clause "New" or "Revised" License**. See the `LICENSE <LICENSE.txt>`__ for details.
+Licensed under a **BSD 3-clause "New" or "Revised" License**. See the ``LICENSE.txt`` file for details.
