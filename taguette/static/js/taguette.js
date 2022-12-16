@@ -1157,8 +1157,6 @@ function selectionChanged() {
   var hlinfo = document.getElementById('hlinfo');
   if(current_selection !== null) {
     var current_range = window.getSelection().getRangeAt(0);
-    console.log(current_range.toString(), !!current_range.toString().match(_onlyWhitespace));
-    console.log(current_range.startOffset, ' ', current_range.endOffset);
     if(current_range.toString().match(_onlyWhitespace)) {
       hlinfo.style.display = 'none';
     } else if(current_range.endOffset > 0) {
