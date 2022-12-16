@@ -77,7 +77,6 @@ pymysql = {version = ">=1.0,<2", optional = true}
 cryptography = {version = "*", optional = true}
 
 [tool.poetry.dev-dependencies]
-# Keep in sync with CI 'sqlite3_latest_pip' job
 coverage = "*"
 flake8 = "*"
 readme_renderer = "*"
