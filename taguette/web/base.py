@@ -13,7 +13,7 @@ import os
 import pkg_resources
 from prometheus_async.aio import time as prom_async_time
 import prometheus_client
-import redis
+import redis.asyncio as aioredis
 import signal
 import smtplib
 from sqlalchemy.orm import joinedload, undefer
@@ -26,6 +26,7 @@ from urllib.parse import urlencode
 
 from .. import __version__, exact_version
 from .. import database
+from ..utils import background_task
 
 
 logger = logging.getLogger(__name__)
@@ -119,7 +120,7 @@ class GracefulExitApplication(tornado.web.Application):
         if exit_time:
             exit_time = int(exit_time, 10)
         else:
-            exit_time = 3  # Default to 3 seconds
+            exit_time = 1  # Default to 1 seconds
 
         def exit():
             logger.info("Shutting down")
@@ -157,33 +158,12 @@ class Application(GracefulExitApplication):
         self.DBSession = database.connect(config['DATABASE'])
         self.event_waiters = {}
 
-        db = self.DBSession()
-        admin = (
-            db.query(database.User)
-            .filter(database.User.login == 'admin')
-            .one_or_none()
-        )
-        if admin is None:
-            logger.warning("Creating user 'admin'")
-            admin = database.User(login='admin')
-            if config['MULTIUSER']:
-                self._set_password(admin)
-            db.add(admin)
-            db.commit()
-        elif config['MULTIUSER'] and not admin.hashed_password:
-            self._set_password(admin)
-            db.commit()
-        db.close()
-
         if config['REDIS_SERVER'] is not None:
-            self.redis = redis.Redis.from_url(config['REDIS_SERVER'])
+            self.redis = aioredis.Redis.from_url(config['REDIS_SERVER'])
             self.redis_pubsub = self.redis.pubsub()
-            # FIXME: Can't call run_in_thread with no subscription
-            self.redis_pubsub.subscribe(_fixme=lambda msg: None)
-            self.redis_pubsub.run_in_thread(daemon=True)
+            background_task(self._redis_reader(), should_never_exit=True)
         else:
-            self.redis = None
-            self.redis_pubsub = None
+            self.redis = self.redis_pubsub = None
 
         if config['TOS_FILE']:
             with open(config['TOS_FILE']) as fp:
@@ -242,37 +222,39 @@ class Application(GracefulExitApplication):
         self.io_loop.call_later(86400,  # 24 hours
                                 self.check_messages)
 
-    def _set_password(self, user):
-        import getpass
-        passwd = getpass.getpass("Enter password for user %r: " % user.login)
-        user.set_password(passwd)
+    async def _redis_reader(self):
+        # FIXME: Can't call listen() with no subscription
+        await self.redis_pubsub.subscribe('_fixme')
 
-    def observe_project(self, project_id, future):
+        async for message in self.redis_pubsub.listen():
+            if message['type'] == 'message':
+                data = message['data'].decode('utf-8')
+                cmd_json = json.loads(data)
+                project_id = cmd_json['project_id']
+                # Deliver to waiting handlers
+                for future in self.event_waiters.pop(project_id, []):
+                    future.set_result(cmd_json)
+                # Unsubscribe
+                await self.redis_pubsub.unsubscribe('project:%d' % project_id)
+
+    async def observe_project(self, project_id, future):
         assert isinstance(project_id, int)
         if project_id in self.event_waiters:
             # We're already watching, add a future to notify
             self.event_waiters[project_id].add(future)
+            # We can't have missed an event, we were already watching
+            return False
         else:
             # Start watching
             self.event_waiters[project_id] = set((future,))
-            if self.redis is not None:
+            if self.redis is None:
+                # We can't have missed an event, this is the only thread
+                return False
+            else:
                 # Listen for Redis messages
-                self.redis_pubsub.subscribe(**{
-                    'project:%d' % project_id: self._on_redis_message_thread,
-                })
-
-    def _on_redis_message_thread(self, msg):
-        # Call _on_redis_message on loop thread from Redis thread
-        self.io_loop.call_soon_threadsafe(lambda: self._on_redis_message(msg))
-
-    def _on_redis_message(self, msg):
-        cmd_json = json.loads(msg['data'])
-        project_id = cmd_json['project_id']
-        # Deliver to waiting handlers
-        for future in self.event_waiters.pop(project_id, []):
-            future.set_result(cmd_json)
-        # Unsubscribe
-        self.redis_pubsub.unsubscribe('project:%d' % project_id)
+                await self.redis_pubsub.subscribe('project:%d' % project_id)
+                # We may have missed events before subscription completed
+                return True
 
     def unobserve_project(self, project_id, future):
         assert isinstance(project_id, int)
@@ -282,7 +264,9 @@ class Application(GracefulExitApplication):
             if not self.event_waiters[project_id]:
                 del self.event_waiters[project_id]
                 if self.redis is not None:
-                    self.redis_pubsub.unsubscribe('project:%d' % project_id)
+                    background_task(self.redis_pubsub.unsubscribe(
+                        'project:%d' % project_id,
+                    ))
 
     def notify_project(self, project_id, cmd):
         assert isinstance(project_id, int)
@@ -293,10 +277,11 @@ class Application(GracefulExitApplication):
                 future.set_result(cmd_json)
         else:
             # Push to Redis
-            self.redis.publish(
+            data = json.dumps(cmd_json, sort_keys=True, separators=(',', ':'))
+            background_task(self.redis.publish(
                 'project:%d' % project_id,
-                json.dumps(cmd_json, sort_keys=True, separators=(',', ':')),
-            )
+                data.encode('utf-8)'),
+            ))
 
     @tracer.start_as_current_span('send_mail')
     def send_mail(self, msg):
@@ -334,7 +319,21 @@ class Application(GracefulExitApplication):
         )
 
 
-class BaseHandler(RequestHandler):
+class HandleStreamClosed(RequestHandler):
+    def log_exception(self, typ, value, tb):
+        if isinstance(value, tornado.iostream.StreamClosedError):
+            return
+        super(HandleStreamClosed, self).log_exception(typ, value, tb)
+
+    def send_error(self, status_code=500, **kwargs):
+        if 'exc_info' in kwargs:
+            exception = kwargs['exc_info'][1]
+            if isinstance(exception, tornado.iostream.StreamClosedError):
+                return
+        super(HandleStreamClosed, self).send_error(status_code, **kwargs)
+
+
+class BaseHandler(HandleStreamClosed, RequestHandler):
     """Base class for all request handlers.
     """
     application: Application
@@ -370,6 +369,8 @@ class BaseHandler(RequestHandler):
 
     def set_default_headers(self):
         self.set_header('Server', 'Taguette/%s' % exact_version())
+        self.set_header('X-Frame-Options', 'DENY')
+        self.set_header('Content-Security-Policy', "frame-ancestors 'none';")
 
     @property
     def db(self):
@@ -388,33 +389,27 @@ class BaseHandler(RequestHandler):
             self._db = None
             PROM_DB_CONNECTIONS.dec()
 
-    def gettext(self, message, **kwargs):
-        trans = self.locale.translate(message)
-        if kwargs:
-            trans = trans % kwargs
-        return trans
+    def gettext(self, message):
+        return self.locale.translate(message)
 
-    def ngettext(self, singular, plural, n, **kwargs):
-        trans = self.locale.translate(singular, plural, n)
-        if kwargs:
-            trans = trans % kwargs
-        return trans
+    def ngettext(self, singular, plural, n):
+        return self.locale.translate(singular, plural, n)
 
     def pgettext(
         self,
         context, message, plural_message=None,
         n=None,
-        **kwargs,
     ):
-        trans = self.locale.pgettext(context, message, plural_message, n)
-        if kwargs:
-            trans = trans % kwargs
-        return trans
+        return self.locale.pgettext(context, message, plural_message, n)
 
     def get_current_user(self):
         user = self.get_secure_cookie('user')
         if user is not None:
-            return user.decode('utf-8')
+            user = self.db.query(database.User).get(user.decode('utf-8'))
+            if user.disabled:
+                return None
+            self.language = user.language
+            return user.login
         else:
             return None
 
@@ -444,17 +439,10 @@ class BaseHandler(RequestHandler):
             return self._pseudolocale
     else:
         def get_user_locale(self):
-            language = self.get_secure_cookie('language')
-            if language is not None:
-                language = language.decode('utf-8')
-            elif self.current_user is not None:
-                user = self.db.query(database.User).get(self.current_user)
-                if user is not None and user.language is not None:
-                    language = user.language
-                    self.set_secure_cookie('language', language)
-
-            if language is not None:
-                return tornado.locale.get(language)
+            # Note that reading current_user first is important, it will
+            # call get_current_user() which sets self.language
+            if self.current_user is not None:
+                return tornado.locale.get(self.language)
 
     def login(self, username):
         logger.info("Logged in as %r", username)
@@ -463,9 +451,16 @@ class BaseHandler(RequestHandler):
     def logout(self):
         logger.info("Logged out")
         self.clear_cookie('user')
-        self.clear_cookie('language')
 
     def render_string(self, template_name, **kwargs):
+        extra_footer = self.application.config['EXTRA_FOOTER']
+        if not extra_footer:
+            extra_footer = self.gettext(
+                ' | Please report issues via '
+                + '<a href="https://gitlab.com/remram44/taguette">GitLab</a> '
+                + 'or <a href="mailto:hi@taguette.org">hi@taguette.org</a>!'
+            )
+
         with tracer.start_as_current_span(
             'render_template',
             attributes={'template_name': template_name},
@@ -479,6 +474,7 @@ class BaseHandler(RequestHandler):
                     'REGISTRATION_ENABLED'
                 ],
                 tos=self.application.terms_of_service is not None,
+                extra_footer=extra_footer,
                 show_messages=self.current_user == 'admin',
                 version=exact_version(),
                 gettext=self.gettext,
@@ -510,7 +506,10 @@ class BaseHandler(RequestHandler):
 
         query = (
             self.db.query(database.ProjectMember, database.Document)
-            .filter(database.Document.project_id == project_id)
+            .join(
+                database.Document,
+                database.Document.project_id == project_id,
+            )
             .filter(database.Document.id == document_id)
             .filter(database.ProjectMember.user_login == self.current_user)
             .filter(database.ProjectMember.project_id == project_id)
@@ -522,6 +521,16 @@ class BaseHandler(RequestHandler):
             raise HTTPError(404)
         member, document = res
         return document, member.privileges
+
+    def redirect(self, url, permanent=False, status=None):
+        if status is None:
+            if permanent:
+                status = 301
+            elif self.request.method == 'GET':
+                status = 302
+            else:
+                status = 303
+        return super(BaseHandler, self).redirect(url, status=status)
 
     def get_json(self):
         type_ = self.request.headers.get('Content-Type', '')
@@ -543,12 +552,6 @@ class BaseHandler(RequestHandler):
     def send_error_json(self, status, message, reason=None):
         self.set_status(status, reason)
         return self.send_json({'error': message})
-
-    def log_exception(self, typ, value, tb):
-        if isinstance(value, tornado.iostream.StreamClosedError):
-            pass
-        else:
-            super(BaseHandler, self).log_exception(typ, value, tb)
 
     def write_error(self, status_code, **kwargs):
         # If database session has failed, can't use it to render the error

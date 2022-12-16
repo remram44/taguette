@@ -22,6 +22,7 @@ def list_tags_csv(reader):
         header = next(reader)
     except (StopIteration, csv.Error, UnicodeDecodeError):
         raise InvalidCodebook(_f("Invalid file: CSV expected"))
+    header = [cell.lower() for cell in header]
 
     # Figure out which column has the tag path
     expected = ('tag' in header) + ('name' in header) + ('path' in header)

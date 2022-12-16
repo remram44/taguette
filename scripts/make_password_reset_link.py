@@ -32,6 +32,9 @@ def main():
         print("No such user: %r" % args.user_login, file=sys.stderr)
         sys.exit(1)
 
+    if user.disabled:
+        print("WARNING: USER IS DISABLED")
+
     # Generate a signed token
     reset_token = '%s|%s|%s' % (
         int(time.time()),

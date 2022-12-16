@@ -1,6 +1,6 @@
 FROM python:3.10 AS translations
 
-RUN pip install babel==2.9.1 pytz==2021.3  # Keep in sync with poetry.lock
+RUN pip install babel==2.10.3 pytz==2022.4  # Keep in sync with poetry.lock
 
 WORKDIR /usr/src/app
 COPY po po
@@ -18,14 +18,14 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Install Poetry
-RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python - --version 1.1.12 && /root/.poetry/bin/poetry config virtualenvs.create false
+RUN curl -sSL https://install.python-poetry.org | python3 - && /root/.local/bin/poetry config virtualenvs.create false
 
 # Set up app
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 COPY taguette taguette
 COPY pyproject.toml poetry.lock README.rst tests.py ./
-RUN /root/.poetry/bin/poetry install --no-interaction --no-dev -E postgres && rm -rf /root/.cache
+RUN /root/.local/bin/poetry install --no-interaction --no-dev -E postgres && rm -rf /root/.cache
 
 # Copy translation from other stage
 COPY --from=translations /usr/src/app/taguette/l10n taguette/l10n

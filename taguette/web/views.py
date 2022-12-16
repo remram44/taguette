@@ -45,18 +45,17 @@ class Index(BaseHandler):
     def get(self):
         if self.current_user is not None:
             if self.get_query_argument('token', None):
+                # Remove the token from the URL
                 return self.redirect(self.reverse_url('index'))
             user = self.db.query(database.User).get(self.current_user)
-            if user is None:
-                logger.warning("User is logged in as non-existent user %r",
-                               self.current_user)
-                self.logout()
-                # Fall through to welcome page
-            else:
-                return self.render('index.html',
-                                   user=user, projects=user.projects,
-                                   can_import_project=self.application.config[
-                                       'SQLITE3_IMPORT_ENABLED'])
+            return self.render(
+                'index.html',
+                user=user,
+                projects=[m.project for m in user.project_memberships],
+                can_import_project=(
+                    self.application.config['SQLITE3_IMPORT_ENABLED']
+                ),
+            )
         elif not self.application.config['MULTIUSER']:
             token = self.get_query_argument('token', None)
             if token and token == self.application.single_user_token:
@@ -112,8 +111,8 @@ class Login(BaseHandler):
             return self.render('login.html', register=False,
                                next=self.get_argument('next', ''))
 
-    @PROM_REQUESTS.sync('login')
-    def post(self):
+    @PROM_REQUESTS.async_('login')
+    async def post(self):
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         login = self.get_body_argument('login')
@@ -124,9 +123,9 @@ class Login(BaseHandler):
         else:
             password = self.get_body_argument('password')
             user = self.db.query(database.User).get(login)
-            if user is None:
+            if user is None or user.disabled:
                 logger.info("Login: non-existent user")
-            elif not user.check_password(password):
+            elif not await user.check_password(password):
                 logger.info("Login: invalid password for %r", user.login)
             else:
                 self.login(user.login)
@@ -166,8 +165,8 @@ class Register(BaseHandler):
         else:
             return self.render('login.html', register=True)
 
-    @PROM_REQUESTS.sync('register')
-    def post(self):
+    @PROM_REQUESTS.async_('register')
+    async def post(self):
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         if not self.application.config['REGISTRATION_ENABLED']:
@@ -194,7 +193,7 @@ class Register(BaseHandler):
                 raise validate.InvalidFormat(_f("Email address is already "
                                                 "used"))
             user = database.User(login=login)
-            user.set_password(password1)
+            await user.set_password(password1)
             if email:
                 user.email = email
             if (
@@ -211,8 +210,11 @@ class Register(BaseHandler):
             return self.redirect(self.reverse_url('index'))
         except validate.InvalidFormat as e:
             logger.info("Error validating Register: %r", e)
-            return self.render('login.html', register=True,
-                               register_error=self.gettext(e.message))
+            return await self.render(
+                'login.html',
+                register=True,
+                register_error=self.gettext(e.message),
+            )
 
 
 class TermsOfService(BaseHandler):
@@ -240,26 +242,16 @@ class Account(BaseHandler):
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         user = self.db.query(database.User).get(self.current_user)
-        if user is None:
-            logger.warning("User is logged in as non-existent user %r",
-                           self.current_user)
-            self.logout()
-            raise HTTPError(403)
         return self.render('account.html', user=user,
                            languages=self.get_languages(),
                            current_language=user.language)
 
     @authenticated
-    @PROM_REQUESTS.sync('account')
-    def post(self):
+    @PROM_REQUESTS.async_('account')
+    async def post(self):
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         user = self.db.query(database.User).get(self.current_user)
-        if user is None:
-            logger.warning("User is logged in as non-existent user %r",
-                           self.current_user)
-            self.logout()
-            raise HTTPError(403)
         try:
             email = self.get_body_argument('email', None)
             language = self.get_body_argument('language', None)
@@ -273,22 +265,21 @@ class Account(BaseHandler):
                 validate.user_password(password1)
                 if password1 != password2:
                     raise validate.InvalidFormat(_f("Passwords do not match"))
-                user.set_password(password1)
+                await user.set_password(password1)
             if language not in tornado.locale.get_supported_locales():
                 language = None
             user.language = language
-            if language is None:
-                self.clear_cookie('language')
-            else:
-                self.set_secure_cookie('language', language)
             self.db.commit()
             return self.redirect(self.reverse_url('account'))
         except validate.InvalidFormat as e:
             logger.info("Error validating Account: %r", e)
-            return self.render('account.html', user=user,
-                               languages=self.get_languages(),
-                               current_language=user.language,
-                               error=self.gettext(e.message))
+            return await self.render(
+                'account.html',
+                user=user,
+                languages=self.get_languages(),
+                current_language=user.language,
+                error=self.gettext(e.message),
+            )
 
 
 class AskResetPassword(BaseHandler):
@@ -304,7 +295,9 @@ class AskResetPassword(BaseHandler):
             raise HTTPError(404)
         email = self.get_body_argument('email')
         user = (
-            self.db.query(database.User).filter(database.User.email == email)
+            self.db.query(database.User)
+            .filter(database.User.email == email)
+            .filter(database.User.disabled == False)  # noqa: E712
         ).one_or_none()
         if user is None:
             return await self.render(
@@ -383,7 +376,7 @@ class SetNewPassword(BaseHandler):
             raise HTTPError(403, _f("Invalid token"))
         ts, login, email = reset_token_clear.decode('utf-8').split('|', 2)
         user = self.db.query(database.User).get(login)
-        if not user or user.email != email:
+        if not user or user.disabled or user.email != email:
             raise HTTPError(403, _f("No user associated with that token"))
         if user.password_set_date >= datetime.utcfromtimestamp(int(ts)):
             # Password has been changed after the reset token was created
@@ -405,8 +398,8 @@ class SetNewPassword(BaseHandler):
             )
         return self.render('new_password.html', reset_token=reset_token)
 
-    @PROM_REQUESTS.sync('new_password')
-    def post(self):
+    @PROM_REQUESTS.async_('new_password')
+    async def post(self):
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         reset_token = self.get_body_argument('reset_token')
@@ -414,7 +407,7 @@ class SetNewPassword(BaseHandler):
             user = self.decode_reset_token(reset_token)
         except HTTPError as e:
             self.set_status(403)
-            return self.render(
+            return await self.render(
                 'login.html', register=False,
                 login_error=self.gettext(e.log_message),
             )
@@ -425,13 +418,16 @@ class SetNewPassword(BaseHandler):
             if password1 != password2:
                 raise validate.InvalidFormat(_f("Passwords do not match"))
             logger.info("Password reset: changing password for %r", user.login)
-            user.set_password(password1)
+            await user.set_password(password1)
             self.db.commit()
             return self.redirect(self.reverse_url('index'))
         except validate.InvalidFormat as e:
             logger.info("Error validating SetNewPassword: %r", e)
-            return self.render('new_password.html', reset_token=reset_token,
-                               error=self.gettext(e.message))
+            return await self.render(
+                'new_password.html',
+                reset_token=reset_token,
+                error=self.gettext(e.message),
+            )
 
 
 class ProjectAdd(BaseHandler):

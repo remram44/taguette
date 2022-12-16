@@ -67,7 +67,10 @@
       <footer class="footer">
         <hr/>
         <div class="container">
-          <p>{% trans %}Taguette {{ version }} is released under a <a href="https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt">BSD-3-Clause license</a>, &#169; Rémi Rampin and Taguette contributors | <a href="https://www.taguette.org/getting-started.html">User Documentation</a> | Please report issues via <a href="https://gitlab.com/remram44/taguette">GitLab</a> or <a href="mailto:hi@taguette.org">hi@taguette.org</a>!{% endtrans %}</p>
+          <p>
+            {% trans %}Taguette {{ version }} is released under a <a href="https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt">BSD-3-Clause license</a>, &#169; Rémi Rampin and Taguette contributors | <a href="https://www.taguette.org/getting-started.html">User Documentation</a>{% endtrans %}
+            {{ extra_footer |safe }}
+          </p>
         </div>
       </footer>
     </div>

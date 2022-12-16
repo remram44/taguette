@@ -6,7 +6,7 @@
     <title>{% trans "exported highlights document title" %}Taguette highlights: {{ path }}{% endtrans %}</title>
     {%- else %}
     <title>{% trans "exported highlights document title" %}Taguette highlights{% endtrans %}</title>
-    {% endif %}
+    {%- endif %}
     <style>
       h1 {
         margin-bottom: 1em;
@@ -18,7 +18,7 @@
     <h1>{% trans "exported highlights document title" %}Taguette highlights: {{ path }}{% endtrans %}</h1>
     {%- else %}
     <h1>{% trans "exported highlights document title" %}Taguette highlights{% endtrans %}</h1>
-    {% endif %}
+    {%- endif %}
 {% for id, snippet, document, tags in highlights %}
     {{ snippet |safe }}
     <p>

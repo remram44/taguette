@@ -8,8 +8,6 @@ Create Date: 2020-04-03 15:54:14.870029
 from alembic import op
 import sqlalchemy as sa
 
-from taguette.database import no_sqlite_pragma_check
-
 
 # revision identifiers, used by Alembic.
 revision = 'b23f3b7a638e'
@@ -34,6 +32,5 @@ def upgrade():
 
 
 def downgrade():
-    with no_sqlite_pragma_check():
-        with op.batch_alter_table('users', schema=None) as batch_op:
-            batch_op.drop_column('password_set_date')
+    with op.batch_alter_table('users', schema=None) as batch_op:
+        batch_op.drop_column('password_set_date')

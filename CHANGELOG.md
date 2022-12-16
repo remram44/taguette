@@ -1,16 +1,30 @@
 Changelog
 =========
 
-1.3.1 (???)
+1.4.0 (???)
 -----------
 
 Bugfixes:
 * Fix some validation on project import, filename mangling on document import
 * Relax filename requirements
+* When importing codebook, ignore case when looking at column names
+* Fix the resource usage when using Redis, and avoid dropping events in specific conditions
+* Fix the database warnings shown at startup
+* Fix language setting sometimes being out of sync between devices
 
 Enhancements:
 * Add Swedish translation
+* Add Indonesian translation
 * Add a script to validate the current database, useful if you have been using it across Taguette versions, or if you're writing to it programmatically
+* When adding a document, automatically change to it
+* Add `EXTRA_FOOTER` config setting to easily add information about a self-hosted instance
+* Enable SQLite's auto_vacuum mode on newly created databases
+* Update the password hashing method to scrypt, more secure
+* Perform password hashing and verification in background threads, to avoid locking up the application for everyone else
+* Prevent clickjacking attacks by serving the relevant headers, in case they are not already set by your reverse proxy
+* Add a script `register_user.py` to register a user even if registration is disabled
+* Allow more HTML tags in imported documents, like tables
+* Add a 'disabled' flag to users and a script to delete all user data (only keeping the 'login' in the database to prevent re-use)
 
 1.3.0 (2022-05-02)
 ------------------

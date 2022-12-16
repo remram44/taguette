@@ -74,12 +74,12 @@ class _Translator(object):
 def _get_highlights_for_export(db, project_id, path):
     if path:
         t_highlight = database.Highlight.__table__
-        t_highlight_tag = database.HighlightTag.__table__
+        t_highlight_tag = database.highlight_tags
         t_tag = database.Tag.__table__
         t_document = database.Document.__table__
         # Join with tags a second time to find highlights that match the
         # given path, while returning all tags for those highlights
-        t_highlight_tag_m = database.HighlightTag.__table__.alias()
+        t_highlight_tag_m = database.highlight_tags.alias()
         t_tag_m = database.Tag.__table__.alias()
         query = (
             sqlalchemy.select([
@@ -124,7 +124,7 @@ def _get_highlights_for_export(db, project_id, path):
         # highlights that have no tag at all, so the startswith() condition
         # would not work
         t_highlight = database.Highlight.__table__
-        t_highlight_tag = database.HighlightTag.__table__
+        t_highlight_tag = database.highlight_tags
         t_tag = database.Tag.__table__
         t_document = database.Document.__table__
         query = (

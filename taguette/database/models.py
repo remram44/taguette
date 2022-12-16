@@ -1,3 +1,4 @@
+import asyncio
 import binascii
 from datetime import datetime
 import enum
@@ -8,11 +9,11 @@ import logging
 import opentelemetry.trace
 import os
 from sqlalchemy import Column, ForeignKey, Index, TypeDecorator, MetaData, \
-    UniqueConstraint, select
+    Table, UniqueConstraint, select
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import column_property, deferred, relationship
 from sqlalchemy.sql import functions
-from sqlalchemy.types import DateTime, Enum, Integer, String, Text
+from sqlalchemy.types import Boolean, DateTime, Enum, Integer, String, Text
 
 from .base import PROM_COMMAND
 
@@ -43,29 +44,57 @@ class JSON(TypeDecorator):
         return json.loads(value)
 
 
+SCRYPT_MAX_MEM = 64 << 20
+
+
 class User(Base):
     __tablename__ = 'users'
 
     login = Column(String(30), primary_key=True)
     created = Column(DateTime, nullable=False,
                      default=lambda: datetime.utcnow())
-    hashed_password = Column(String(120), nullable=True)
+    hashed_password = Column(String(192), nullable=True)
+    disabled = Column(Boolean, nullable=False, default=False)
     password_set_date = Column(DateTime, nullable=True)
     language = Column(String(10), nullable=True)
     email = Column(String(256), nullable=True, index=True, unique=True)
     email_sent = Column(DateTime, nullable=True)
-    projects = relationship('Project', secondary='project_members')
+    project_memberships = relationship(
+        'ProjectMember',
+        cascade='all,delete-orphan',
+        back_populates='user',
+    )
 
-    def set_password(self, password, method='pbkdf2'):
-        if method == 'bcrypt':
-            import bcrypt
+    async def set_password(self, password, method=None):
+        if method is None:
+            try:
+                from hashlib import scrypt as _scrypt  # noqa: F401
+                method = 'scrypt'
+            except ImportError:
+                method = 'pbkdf2'
+
+        if method == 'scrypt':
+            N = 1 << 15
+            R = 8
+            P = 1
             with tracer.start_as_current_span(
                 'taguette/set_password',
-                attributes={'method': method},
+                attributes={'method': method, 'factor': N},
             ):
-                h = bcrypt.hashpw(password.encode('utf-8'),
-                                  bcrypt.gensalt())
-                self.hashed_password = 'bcrypt:%s' % h.decode('utf-8')
+                salt = os.urandom(16)
+                h = await asyncio.get_event_loop().run_in_executor(
+                    None,
+                    lambda: hashlib.scrypt(
+                        password.encode('utf-8'),
+                        salt=salt, n=N, r=R, p=P,
+                        maxmem=SCRYPT_MAX_MEM,
+                    ),
+                )
+                self.hashed_password = 'scrypt:%s$%d$%d$%d$%s' % (
+                    binascii.hexlify(salt).decode('ascii'),
+                    N, R, P,
+                    binascii.hexlify(h).decode('ascii'),
+                )
         elif method == 'pbkdf2':
             ITERATIONS = 500000
             with tracer.start_as_current_span(
@@ -73,28 +102,61 @@ class User(Base):
                 attributes={'method': method, 'iterations': ITERATIONS},
             ):
                 salt = os.urandom(16)
-                h = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'),
-                                        salt, ITERATIONS)
+                h = await asyncio.get_event_loop().run_in_executor(
+                    None,
+                    lambda: hashlib.pbkdf2_hmac(
+                        'sha256', password.encode('utf-8'),
+                        salt, ITERATIONS,
+                    ),
+                )
                 self.hashed_password = 'pbkdf2:%s$%d$%s' % (
                     binascii.hexlify(salt).decode('ascii'),
                     ITERATIONS,
                     binascii.hexlify(h).decode('ascii'),
                 )
+        elif method == 'bcrypt':
+            import bcrypt
+            with tracer.start_as_current_span(
+                'taguette/set_password',
+                attributes={'method': method},
+            ):
+                h = await asyncio.get_event_loop().run_in_executor(
+                    None,
+                    lambda: bcrypt.hashpw(password.encode('utf-8'),
+                                          bcrypt.gensalt()),
+                )
+                self.hashed_password = 'bcrypt:%s' % h.decode('utf-8')
         else:
             raise ValueError("Unsupported encryption method %r" % method)
         self.password_set_date = datetime.utcnow()
 
-    def check_password(self, password):
+    async def check_password(self, password):
         if self.hashed_password is None:
             return False
-        elif self.hashed_password.startswith('bcrypt:'):
-            import bcrypt
+        if self.hashed_password.startswith('scrypt'):
             with tracer.start_as_current_span(
                 'taguette/check_password',
-                attributes={'method': 'bcrypt'},
+                attributes={'method': 'scrypt'},
             ):
-                return bcrypt.checkpw(password.encode('utf-8'),
-                                      self.hashed_password[7:].encode('utf-8'))
+                pw = self.hashed_password[7:]
+                salt, n, r, p, hash_pw = pw.split('$', 4)
+                salt = binascii.unhexlify(salt.encode('ascii'))
+                n = int(n, 10)
+                r = int(r, 10)
+                p = int(p, 10)
+                hash_pw = binascii.unhexlify(hash_pw.encode('ascii'))
+                h = await asyncio.get_event_loop().run_in_executor(
+                    None,
+                    lambda: hashlib.scrypt(
+                        password.encode('utf-8'),
+                        salt=salt, n=n, r=r, p=p,
+                        maxmem=SCRYPT_MAX_MEM,
+                    ),
+                )
+                return hmac.compare_digest(
+                    hash_pw,
+                    h,
+                )
         elif self.hashed_password.startswith('pbkdf2:'):
             with tracer.start_as_current_span(
                 'taguette/check_password',
@@ -105,10 +167,29 @@ class User(Base):
                 salt = binascii.unhexlify(salt.encode('ascii'))
                 iterations = int(iterations, 10)
                 hash_pw = binascii.unhexlify(hash_pw.encode('ascii'))
+                h = await asyncio.get_event_loop().run_in_executor(
+                    None,
+                    lambda: hashlib.pbkdf2_hmac(
+                        'sha256', password.encode('utf-8'),
+                        salt, iterations,
+                    ),
+                )
                 return hmac.compare_digest(
                     hash_pw,
-                    hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'),
-                                        salt, iterations)
+                    h,
+                )
+        elif self.hashed_password.startswith('bcrypt:'):
+            import bcrypt
+            with tracer.start_as_current_span(
+                'taguette/check_password',
+                attributes={'method': 'bcrypt'},
+            ):
+                return await asyncio.get_event_loop().run_in_executor(
+                    None,
+                    lambda: bcrypt.checkpw(
+                        password.encode('utf-8'),
+                        self.hashed_password[7:].encode('utf-8'),
+                    ),
                 )
         else:
             logger.warning("Password uses unknown encryption method")
@@ -131,13 +212,16 @@ class Project(Base):
     description = Column(Text, nullable=False)
     created = Column(DateTime, nullable=False,
                      default=lambda: datetime.utcnow())
-    members = relationship('User', secondary='project_members')
+    members = relationship('ProjectMember', cascade='all,delete-orphan',
+                           back_populates='project')
     commands = relationship('Command', cascade='all,delete-orphan',
-                            passive_deletes=True)
+                            passive_deletes=True,
+                            back_populates='project')
     documents = relationship('Document', cascade='all,delete-orphan',
                              passive_deletes=True)
     tags = relationship('Tag', cascade='all,delete-orphan', order_by='Tag.id',
-                        passive_deletes=True)
+                        passive_deletes=True,
+                        back_populates='project')
 
     def __repr__(self):
         return '<%s.%s %r %r>' % (
@@ -192,12 +276,12 @@ class ProjectMember(Base):
 
     project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
                         primary_key=True, index=True)
-    project = relationship('Project')
+    project = relationship('Project', back_populates='members')
     user_login = Column(String(30),
                         ForeignKey('users.login',
                                    ondelete='CASCADE', onupdate='CASCADE'),
                         primary_key=True, index=True)
-    user = relationship('User')
+    user = relationship('User', back_populates='project_memberships')
     privileges = Column(Enum(Privileges), nullable=False)
 
     def __repr__(self):
@@ -263,7 +347,7 @@ class Command(Base):
     user = relationship('User')
     project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
                         nullable=False, index=True)
-    project = relationship('Project')
+    project = relationship('Project', back_populates='commands')
     document_id = Column(Integer,  # Not ForeignKey, document can go away
                          nullable=True, index=True)
     payload = Column(JSON, nullable=False)
@@ -510,7 +594,8 @@ class Highlight(Base):
     start_offset = Column(Integer, nullable=False)
     end_offset = Column(Integer, nullable=False)
     snippet = Column(Text, nullable=False)
-    tags = relationship('Tag', secondary='highlight_tags')
+    tags = relationship('Tag', secondary='highlight_tags',
+                        back_populates='highlights')
 
     def __repr__(self):
         return '<%s.%s %r document_id=%r tags=[%s]>' % (
@@ -529,7 +614,7 @@ class Tag(Base):
     id = Column(Integer, primary_key=True)
     project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
                         nullable=False, index=True)
-    project = relationship('Project')
+    project = relationship('Project', back_populates='tags')
 
     path = Column(String(200), nullable=False, index=True)
     description = Column(Text, nullable=False)
@@ -538,7 +623,10 @@ class Tag(Base):
         UniqueConstraint('project_id', 'path'),
     ) + __table_args__
 
-    highlights = relationship('Highlight', secondary='highlight_tags')
+    highlights = relationship(
+        'Highlight', secondary='highlight_tags',
+        back_populates='tags',
+    )
 
     def __repr__(self):
         return '<%s.%s %r %r project_id=%r>' % (
@@ -550,34 +638,23 @@ class Tag(Base):
         )
 
 
-class HighlightTag(Base):
-    __tablename__ = 'highlight_tags'
-
-    highlight_id = Column(Integer, ForeignKey('highlights.id',
-                                              ondelete='CASCADE'),
-                          primary_key=True, index=True)
-    highlight = relationship('Highlight')
-    tag_id = Column(Integer, ForeignKey('tags.id',
-                                        ondelete='CASCADE'),
-                    primary_key=True, index=True)
-    tag = relationship('Tag')
-
-    def __repr__(self):
-        return '<%s.%s highlight_id=%r tag_id=%r>' % (
-            self.__class__.__module__,
-            self.__class__.__name__,
-            self.highlight_id,
-            self.tag_id,
-        )
+highlight_tags = Table(
+    'highlight_tags',
+    Base.metadata,
+    Column('highlight_id', ForeignKey('highlights.id', ondelete='CASCADE'),
+           primary_key=True, index=True),
+    Column('tag_id', ForeignKey('tags.id', ondelete='CASCADE'),
+           primary_key=True, index=True),
+)
 
 
 Tag.highlights_count = column_property(
     select(
-        [functions.count(HighlightTag.highlight_id)],
+        [functions.count(highlight_tags.c.highlight_id)],
     )
     .where(
-        HighlightTag.tag_id == Tag.id,
+        highlight_tags.c.tag_id == Tag.id,
     )
-    .correlate_except(HighlightTag)
+    .correlate_except(highlight_tags)
     .scalar_subquery()
 )

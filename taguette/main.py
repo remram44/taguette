@@ -16,7 +16,7 @@ import webbrowser
 
 import taguette
 from . import exact_version
-from .database import migrate
+from . import database
 from .web import make_app
 
 
@@ -103,6 +103,12 @@ TOS_FILE = 'tos.html'
 # If set to None, no terms of service link will be displayed anywhere
 #TOS_FILE = None
 
+# Extra footer at the bottom of every page
+#EXTRA_FOOTER = """
+#  | This instance of Taguette is managed by Example University.
+#  Please <a href="mailto:it@example.org">email IT</a> with any questions.
+#"""
+
 # Default language
 DEFAULT_LANGUAGE = 'en_US'
 
@@ -145,6 +151,7 @@ DEFAULT_CONFIG = {
     'MULTIUSER': True,
     'BIND_ADDRESS': '0.0.0.0',
     'BASE_PATH': '',
+    'EXTRA_FOOTER': None,
     'REGISTRATION_ENABLED': True,
     'REDIS_SERVER': None,
     'SQLITE3_IMPORT_ENABLED': True,
@@ -157,6 +164,12 @@ DEFAULT_CONFIG = {
 
 REQUIRED_CONFIG = ['NAME', 'PORT', 'SECRET_KEY', 'DATABASE', 'TOS_FILE',
                    'X_HEADERS', 'EMAIL', 'MAIL_SERVER', 'COOKIES_PROMPT']
+
+
+async def _set_password(user):
+    import getpass
+    passwd = getpass.getpass("Enter password for user %r: " % user.login)
+    await user.set_password(passwd)
 
 
 def main():
@@ -266,8 +279,10 @@ def main():
                                                   "database migration"))
     parser_migrate.add_argument('revision', action='store', default='head',
                                 nargs=argparse.OPTIONAL)
-    parser_migrate.set_defaults(
-        func=lambda args: migrate(prepare_db(args.database), args.revision))
+    parser_migrate.set_defaults(func=lambda args: database.migrate(
+        prepare_db(args.database),
+        args.revision,
+    ))
 
     parser_config = subparsers.add_parser(
         'default-config',
@@ -378,6 +393,20 @@ def main():
     app.listen(config['PORT'], address=config['BIND_ADDRESS'],
                xheaders=config.get('X_HEADERS', False))
     loop = tornado.ioloop.IOLoop.current()
+
+    db = app.DBSession()
+    admin = db.query(database.User).get('admin')
+    if admin is None:
+        logger.warning("Creating user 'admin'")
+        admin = database.User(login='admin')
+        if config['MULTIUSER']:
+            loop.run_sync(lambda: _set_password(admin))
+        db.add(admin)
+        db.commit()
+    elif config['MULTIUSER'] and not admin.hashed_password:
+        loop.run_sync(lambda: _set_password(admin))
+        db.commit()
+    db.close()
 
     if args.debug:
         logger.warning("Debug mode is ON")

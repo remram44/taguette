@@ -6,6 +6,7 @@ import functools
 import io
 import itertools
 import json
+import logging
 import os
 import random
 import re
@@ -116,7 +117,10 @@ class TestConvert(AsyncTestCase):
             b'<img src=\"http://and/the/last/one.png\" class=\"a\">, and '
             b'links: <a href=\"here\">1</a> '
             b'<a title=\"important\" href=\"/over/there\">2</a> '
-            b'<a href=\"http://and/the/last/one\" class=\"a\">3</a></p>\n'
+            b'<a title=\"t\"href=\"http://last/one\" class=\"a\">3</a></p>\n'
+            b'<table><thead><tr><th>Header1</th><th>Another</th></tr></thead>'
+            b'<tbody><tr><td>1</td><td>34.9</td><td>2</td><td>98.1</td></tr>'
+            b'</tbody></table>'
             b'</body></html>\n'
         )
         with mock.patch('tornado.process.Subprocess', object()):
@@ -132,8 +136,13 @@ class TestConvert(AsyncTestCase):
             '<img src="/static/missing.png">, and '
             'links: <a title="here">1</a> '
             '<a title="/over/there">2</a> '
-            '<a href="http://and/the/last/one">3</a></p>'
+            '<a href="http://last/one">3</a></p>\n'
+            '<table><thead><tr><th>Header1</th><th>Another</th></tr></thead>'
+            '<tbody><tr><td>1</td><td>34.9</td><td>2</td><td>98.1</td></tr>'
+            '</tbody></table>'
         )
+
+        self.assertTrue(convert.is_html_safe(body))
 
     def test_filename(self):
         old_windows_flag = sanitize_filename.windows
@@ -186,7 +195,7 @@ class TestConvert(AsyncTestCase):
         )
 
 
-class TestPassword(unittest.TestCase):
+class TestPassword(AsyncTestCase):
     @staticmethod
     def random_password():
         alphabet = (
@@ -196,27 +205,59 @@ class TestPassword(unittest.TestCase):
         password = [random.choice(alphabet) for _ in range(4, 16)]
         return ''.join(password)
 
-    def test_bcrypt(self):
-        for _ in range(3):
-            password = self.random_password()
-            user = database.User(login='user')
-            user.set_password(password, 'bcrypt')
-            self.assertTrue(user.hashed_password.startswith('bcrypt:'))
-            print(user.hashed_password)
+    @gen_test(timeout=15)
+    async def test_default(self):
+        has_scrypt = True
+        try:
+            from hashlib import scrypt as _scrypt  # noqa: F401
+        except ImportError:
+            has_scrypt = False
 
-            self.assertTrue(user.check_password(password))
-            self.assertFalse(user.check_password(password[:-1]))
-
-    def test_pbkdf2(self):
-        for _ in range(3):
-            password = self.random_password()
-            user = database.User(login='user')
-            user.set_password(password)
+        user = database.User(login='user')
+        self.assertFalse(await user.check_password('hackme'))
+        await user.set_password('test')
+        if has_scrypt:
+            self.assertTrue(user.hashed_password.startswith('scrypt:'))
+        else:
             self.assertTrue(user.hashed_password.startswith('pbkdf2:'))
-            print(user.hashed_password)
 
-            self.assertTrue(user.check_password(password))
-            self.assertFalse(user.check_password(password[:-1]))
+    @gen_test(timeout=15)
+    async def test_scrypt(self):
+        try:
+            from hashlib import scrypt as _scrypt  # noqa: F401
+        except ImportError:
+            self.skipTest("Doesn't have scrypt")
+
+        for _ in range(3):
+            password = self.random_password()
+            user = database.User(login='user')
+            await user.set_password(password, 'scrypt')
+            self.assertTrue(user.hashed_password.startswith('scrypt:'))
+
+            self.assertTrue(await user.check_password(password))
+            self.assertFalse(await user.check_password(password[:-1]))
+
+    @gen_test(timeout=15)
+    async def test_pbkdf2(self):
+        for _ in range(3):
+            password = self.random_password()
+            user = database.User(login='user')
+            await user.set_password(password, 'pbkdf2')
+            self.assertTrue(user.hashed_password.startswith('pbkdf2:'))
+
+            self.assertTrue(await user.check_password(password))
+            self.assertFalse(await user.check_password(password[:-1]))
+
+    @gen_test(timeout=15)
+    async def test_bcrypt(self):
+        for _ in range(3):
+            password = self.random_password()
+            user = database.User(login='user')
+            await user.set_password(password, 'bcrypt')
+            self.assertTrue(user.hashed_password.startswith('bcrypt:'))
+
+            self.assertTrue(await user.check_password(password))
+            self.assertFalse(await user.check_password(password[:-1]))
 
 
 class TestMeasure(unittest.TestCase):
@@ -468,7 +509,7 @@ class MyHTTPTestCase(AsyncHTTPTestCase):
             if 'data' in kwargs:
                 if isinstance(kwargs['data'], dict):
                     kwargs['data'] = dict(kwargs['data'], _xsrf=token)
-            elif 'json' in kwargs:
+            else:
                 url = '%s%s%s' % (url, '&' if '?' in url else '?',
                                   urlencode(dict(_xsrf=token)))
         if 'files' in kwargs:
@@ -485,28 +526,42 @@ class MyHTTPTestCase(AsyncHTTPTestCase):
             kwargs['data'] = data
         return self._fetch(url, method='POST', allow_redirects=False, **kwargs)
 
+    def adelete(self, url):
+        cookies = self.http_client.cookie_jar.filter_cookies(self.get_url('/'))
+        if '_xsrf' in cookies:
+            token = cookies['_xsrf'].value
+            url = '%s%s%s' % (url, '&' if '?' in url else '?',
+                              urlencode(dict(_xsrf=token)))
+        return self._fetch(url, method='DELETE')
 
-def set_dumb_password(self, user):
-    user.set_password('hackme')
+
+async def set_dumb_password(DBSession):
+    db = DBSession()
+    admin = database.User(login='admin')
+    await admin.set_password('hackme')
+    db.add(admin)
+    db.commit()
+    db.close()
 
 
 class TestMultiuser(MyHTTPTestCase):
     def get_app(self):
-        with mock.patch.object(web.Application, '_set_password',
-                               new=set_dumb_password):
-            self.application = web.make_app(dict(
-                main.DEFAULT_CONFIG,
-                NAME="Test Taguette instance", PORT=7465,
-                DATABASE=DATABASE_URI,
-                REDIS_SERVER=REDIS,
-                TOS_FILE=None,
-                EMAIL='test@example.com',
-                MAIL_SERVER={'host': 'localhost', 'port': 25},
-                COOKIES_PROMPT=True,
-                MULTIUSER=True,
-                SECRET_KEY='2PbQ/5Rs005G/nTuWfibaZTUAo3Isng3QuRirmBK',
-            ))
-            return self.application
+        self.application = web.make_app(dict(
+            main.DEFAULT_CONFIG,
+            NAME="Test Taguette instance", PORT=7465,
+            DATABASE=DATABASE_URI,
+            REDIS_SERVER=REDIS,
+            TOS_FILE=None,
+            EMAIL='test@example.com',
+            MAIL_SERVER={'host': 'localhost', 'port': 25},
+            COOKIES_PROMPT=True,
+            MULTIUSER=True,
+            SECRET_KEY='2PbQ/5Rs005G/nTuWfibaZTUAo3Isng3QuRirmBK',
+        ))
+        self.io_loop.run_sync(
+            lambda: set_dumb_password(self.application.DBSession)
+        )
+        return self.application
 
     def tearDown(self):
         super(TestMultiuser, self).tearDown()
@@ -540,7 +595,7 @@ class TestMultiuser(MyHTTPTestCase):
             '/cookies',
             data=dict(next='/register'),
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/register')
 
         # Fetch registration page
@@ -553,7 +608,7 @@ class TestMultiuser(MyHTTPTestCase):
             data=dict(login='Tester',
                       password1='hacktoo', password2='hacktoo'),
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/')
 
         # User exists in database
@@ -577,7 +632,7 @@ class TestMultiuser(MyHTTPTestCase):
             '/project/new',
             data=dict(name='test project', description=''),
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/project/1')
 
         # Log out
@@ -601,13 +656,33 @@ class TestMultiuser(MyHTTPTestCase):
             '/login',
             data=dict(next='/project/1', login='admin', password='hackme'),
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/project/1')
 
         # Check redirect to account
         async with self.aget('/.well-known/change-password') as response:
             self.assertEqual(response.status, 301)
             self.assertEqual(response.headers['Location'], '/account')
+
+        # Check /api/check_user endpoint
+        async with self.apost(
+            '/api/check_user',
+            json=dict(login='admin'),
+        ) as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(await response.json(), {"exists": True})
+        async with self.apost(
+            '/api/check_user',
+            json=dict(login='\xE9'),
+        ) as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(await response.json(), {"exists": False})
+        async with self.apost(
+            '/api/check_user',
+            json=dict(login='clay'),
+        ) as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(await response.json(), {"exists": False})
 
     @gen_test(timeout=30)
     async def test_projects(self):
@@ -621,23 +696,27 @@ class TestMultiuser(MyHTTPTestCase):
         #                         tag 4 'interesting.places'
         # doc 1
         #                         doc 2
+        # hl 1 doc=1 tags=[]
         # hl 1 doc=1 tags=[1]
         #                         change project metadata
         #                         doc 3
         #                         hl 2 doc=2 tags=[4]
         #                         hl 3 doc=2 tags=[2, 3]
-        #                         hl 4 doc=3 tags=[3]
-        #                         highlights 'people*': [3, 4]
+        #                         hl 4 doc=2 tags=[3]
+        #                         delete hl 4 doc=2
+        #                         hl 5 doc=3 tags=[3]
+        #                         highlights 'people*': [3, 5]
         #                         highlights 'interesting.places*': [2]
         #                         highlights 'interesting*': [2, 3]
-        #                         highlights: [2, 3, 4]
+        #                         highlights: [2, 3, 5]
         #                         export doc 2
         #                         merge tag 3 -> 2
-        #                         highlights: [2, 3, 4]
+        #                         highlights: [2, 3, 5]
+        # delete project
 
         # Accept cookies
         async with self.apost('/cookies', data=dict()) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/')
 
         # Log in
@@ -647,7 +726,7 @@ class TestMultiuser(MyHTTPTestCase):
             '/login',
             data=dict(next='/', login='admin', password='hackme'),
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/')
 
         # Create project 1
@@ -661,7 +740,7 @@ class TestMultiuser(MyHTTPTestCase):
                 description="R\xE9mi's project",
             ),
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/project/1')
 
         # Check project page
@@ -705,7 +784,7 @@ class TestMultiuser(MyHTTPTestCase):
             '/project/new',
             data=dict(name='other project', description=''),
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/project/2')
 
         # Start polling
@@ -783,16 +862,55 @@ class TestMultiuser(MyHTTPTestCase):
         # Create highlight 1 in document 1
         async with self.apost(
             '/api/project/1/document/1/highlight/new',
-            json=dict(start_offset=3, end_offset=7, tags=[1]),
+            json=dict(start_offset=3, end_offset=5, tags=[]),
         ) as response:
             self.assertEqual(response.status, 200)
             self.assertEqual(await response.json(), {"id": 1})
         self.assertEqual(
             await poll_proj1,
             {'type': 'highlight_add', 'id': 5, 'highlight_id': 1,
+             'document_id': 1, 'start_offset': 3, 'end_offset': 5,
+             'tags': [], 'tag_count_changes': {}})
+        poll_proj1 = await self.poll_event(1, 5)
+
+        # Update highlight 1 in document 1: change position
+        async with self.apost(
+            '/api/project/1/document/1/highlight/1',
+            json=dict(start_offset=3, end_offset=7),
+        ) as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(await response.json(), {"id": 1})
+        self.assertEqual(
+            await poll_proj1,
+            {'type': 'highlight_add', 'id': 6, 'highlight_id': 1,
+             'document_id': 1, 'start_offset': 3, 'end_offset': 7,
+             'tags': [], 'tag_count_changes': {}})
+        poll_proj1 = await self.poll_event(1, 6)
+
+        # Update highlight 1 in document 1: change tags
+        async with self.apost(
+            '/api/project/1/document/1/highlight/1',
+            json=dict(tags=[1]),
+        ) as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(await response.json(), {"id": 1})
+        self.assertEqual(
+            await poll_proj1,
+            {'type': 'highlight_add', 'id': 7, 'highlight_id': 1,
              'document_id': 1, 'start_offset': 3, 'end_offset': 7,
              'tags': [1], 'tag_count_changes': {'1': 1}})
-        poll_proj1 = await self.poll_event(1, 5)
+        poll_proj1 = await self.poll_event(1, 7)
+
+        # Change project 2 metadata (invalid)
+        async with self.apost(
+            '/api/project/2',
+            json={'name': '', 'description': "Meaningful"},
+        ) as response:
+            self.assertEqual(response.status, 400)
+            self.assertEqual(await response.json(),
+                             {'error': 'Project name cannot be empty'})
+        time.sleep(0.3)
+        self.assertFalse(poll_proj2.done())
 
         # Change project 2 metadata
         async with self.apost(
@@ -803,9 +921,9 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(await response.json(), {})
         self.assertEqual(
             await poll_proj2,
-            {'type': 'project_meta', 'id': 6,
+            {'type': 'project_meta', 'id': 8,
              'project_name': 'new project', 'description': 'Meaningful'})
-        poll_proj2 = await self.poll_event(2, 6)
+        poll_proj2 = await self.poll_event(2, 8)
 
         # Create document 3 in project 2
         async with self.apost(
@@ -822,10 +940,10 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(await response.json(), {"created": 3})
         self.assertEqual(
             await poll_proj2,
-            {'type': 'document_add', 'id': 7, 'document_id': 3,
+            {'type': 'document_add', 'id': 9, 'document_id': 3,
              'text_direction': 'RIGHT_TO_LEFT',
              'document_name': 'third', 'description': 'Last one'})
-        poll_proj2 = await self.poll_event(2, 7)
+        poll_proj2 = await self.poll_event(2, 9)
 
         # Create highlight in document 2, using wrong project id
         async with self.apost(
@@ -861,10 +979,10 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(await response.json(), {"id": 2})
         self.assertEqual(
             await poll_proj2,
-            {'type': 'highlight_add', 'id': 8, 'highlight_id': 2,
+            {'type': 'highlight_add', 'id': 10, 'highlight_id': 2,
              'document_id': 2, 'start_offset': 0, 'end_offset': 4,
              'tags': [4], 'tag_count_changes': {'4': 1}})
-        poll_proj2 = await self.poll_event(2, 8)
+        poll_proj2 = await self.poll_event(2, 10)
 
         # Create highlight 3 in document 2
         async with self.apost(
@@ -875,24 +993,49 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(await response.json(), {"id": 3})
         self.assertEqual(
             await poll_proj2,
-            {'type': 'highlight_add', 'id': 9, 'highlight_id': 3,
+            {'type': 'highlight_add', 'id': 11, 'highlight_id': 3,
              'document_id': 2, 'start_offset': 13, 'end_offset': 17,
              'tags': [2, 3], 'tag_count_changes': {'2': 1, '3': 1}})
-        poll_proj2 = await self.poll_event(2, 9)
+        poll_proj2 = await self.poll_event(2, 11)
 
-        # Create highlight 4 in document 3
+        # Create highlight 4 in document 2
         async with self.apost(
-            '/api/project/2/document/3/highlight/new',
+            '/api/project/2/document/2/highlight/new',
             json=dict(start_offset=0, end_offset=7, tags=[3]),
         ) as response:
             self.assertEqual(response.status, 200)
             self.assertEqual(await response.json(), {"id": 4})
         self.assertEqual(
             await poll_proj2,
-            {'type': 'highlight_add', 'id': 10, 'highlight_id': 4,
+            {'type': 'highlight_add', 'id': 12, 'highlight_id': 4,
+             'document_id': 2, 'start_offset': 0, 'end_offset': 7,
+             'tags': [3], 'tag_count_changes': {'3': 1}})
+        poll_proj2 = await self.poll_event(2, 12)
+
+        # Delete highlight 4 in document 2
+        async with self.adelete(
+            '/api/project/2/document/2/highlight/4',
+        ) as response:
+            self.assertEqual(response.status, 204)
+        self.assertEqual(
+            await poll_proj2,
+            {'type': 'highlight_delete', 'id': 13, 'highlight_id': 4,
+             'document_id': 2, 'tag_count_changes': {'3': -1}})
+        poll_proj2 = await self.poll_event(2, 13)
+
+        # Create highlight 5 in document 3
+        async with self.apost(
+            '/api/project/2/document/3/highlight/new',
+            json=dict(start_offset=0, end_offset=7, tags=[3]),
+        ) as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(await response.json(), {"id": 5})
+        self.assertEqual(
+            await poll_proj2,
+            {'type': 'highlight_add', 'id': 14, 'highlight_id': 5,
              'document_id': 3, 'start_offset': 0, 'end_offset': 7,
              'tags': [3], 'tag_count_changes': {'3': 1}})
-        poll_proj2 = await self.poll_event(2, 10)
+        poll_proj2 = await self.poll_event(2, 14)
 
         # List highlights in project 2 under 'people'
         async with self.aget('/api/project/2/highlights/people') as response:
@@ -901,7 +1044,7 @@ class TestMultiuser(MyHTTPTestCase):
                 'highlights': [
                     {'id': 3, 'document_id': 2, 'tags': [2, 3],
                      'text_direction': 'LEFT_TO_RIGHT', 'content': "tent"},
-                    {'id': 4, 'document_id': 3, 'tags': [3],
+                    {'id': 5, 'document_id': 3, 'tags': [3],
                      'text_direction': 'RIGHT_TO_LEFT',
                      'content': "<strong>Opinion</strong>"},
                 ],
@@ -945,7 +1088,7 @@ class TestMultiuser(MyHTTPTestCase):
                      'text_direction': 'LEFT_TO_RIGHT', 'content': "diff"},
                     {'id': 3, 'document_id': 2, 'tags': [2, 3],
                      'text_direction': 'LEFT_TO_RIGHT', 'content': "tent"},
-                    {'id': 4, 'document_id': 3, 'tags': [3],
+                    {'id': 5, 'document_id': 3, 'tags': [3],
                      'text_direction': 'RIGHT_TO_LEFT',
                      'content': "<strong>Opinion</strong>"},
                 ],
@@ -1062,6 +1205,56 @@ class TestMultiuser(MyHTTPTestCase):
                     </html>'''),
             )
 
+        # Export all highlights in project 2 to HTML
+        async with self.aget(
+            '/project/2/export/highlights/.html',
+        ) as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(
+                await response.text(),
+                textwrap.dedent('''\
+                    <!DOCTYPE html>
+                    <html>
+                      <head>
+                        <meta charset="UTF-8">
+                        <title>Taguette highlights</title>
+                        <style>
+                          h1 {
+                            margin-bottom: 1em;
+                          }
+                        </style>
+                      </head>
+                      <body>
+                        <h1>Taguette highlights</h1>
+
+                        diff
+                        <p>
+                          <strong>Document:</strong> otherdoc
+                          <strong>Tags:</strong>
+                            interesting.places
+                        </p>
+                        <hr>
+
+                        tent
+                        <p>
+                          <strong>Document:</strong> otherdoc
+                          <strong>Tags:</strong>
+                            interesting,
+                            people
+                        </p>
+                        <hr>
+
+                        <strong>Opinion</strong>
+                        <p>
+                          <strong>Document:</strong> third
+                          <strong>Tags:</strong>
+                            people
+                        </p>
+
+                      </body>
+                    </html>'''),
+            )
+
         # Export highlights in project 2 under 'interesting' to CSV
         async with self.aget(
             '/project/2/export/highlights/interesting.csv',
@@ -1159,9 +1352,9 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(await response.json(), {'id': 2})
         self.assertEqual(
             await poll_proj2,
-            {'type': 'tag_merge', 'id': 11, 'src_tag_id': 3, 'dest_tag_id': 2},
+            {'type': 'tag_merge', 'id': 15, 'src_tag_id': 3, 'dest_tag_id': 2},
         )
-        poll_proj2 = await self.poll_event(2, 11)
+        poll_proj2 = await self.poll_event(2, 15)
 
         # List all highlights in project 2
         async with self.aget('/api/project/2/highlights/') as response:
@@ -1172,22 +1365,30 @@ class TestMultiuser(MyHTTPTestCase):
                      'text_direction': 'LEFT_TO_RIGHT', 'content': "diff"},
                     {'id': 3, 'document_id': 2, 'tags': [2],
                      'text_direction': 'LEFT_TO_RIGHT', 'content': "tent"},
-                    {'id': 4, 'document_id': 3, 'tags': [2],
+                    {'id': 5, 'document_id': 3, 'tags': [2],
                      'text_direction': 'RIGHT_TO_LEFT',
                      'content': "<strong>Opinion</strong>"},
                 ],
                 'pages': 1,
             })
 
+        # TODO: Collaborators
+
         await asyncio.sleep(2)
-        self.assertNotDone(poll_proj1)
-        self.assertNotDone(poll_proj2)
+        self.assertFalse(poll_proj1.done())
+        poll_proj1.cancel()
+        self.assertFalse(poll_proj2.done())
+        poll_proj2.cancel()
+
+        async with self.apost('/project/1/delete') as response:
+            self.assertEqual(response.status, 303)
+            self.assertEqual(response.headers['Location'], '/')
 
     @gen_test(timeout=60)
     async def test_reset_password(self):
         # Accept cookies
         async with self.apost('/cookies', data=dict()) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/')
 
         # Fetch registration page
@@ -1203,7 +1404,7 @@ class TestMultiuser(MyHTTPTestCase):
                 email='test@example.com',
             ),
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/')
 
         # User exists in database
@@ -1213,8 +1414,8 @@ class TestMultiuser(MyHTTPTestCase):
                 (
                     user.login,
                     bool(user.hashed_password), bool(user.password_set_date),
-                    user.check_password('pass1'),
-                    user.check_password('pass2'),
+                    await user.check_password('pass1'),
+                    await user.check_password('pass2'),
                 )
                 for user in db.query(database.User).all()
             ],
@@ -1233,9 +1434,8 @@ class TestMultiuser(MyHTTPTestCase):
         time.sleep(1)
 
         # Send reset link
-        async with self.aget('/reset_password'):
-            self.assertEqual(response.status, 302)
-            self.assertEqual(response.headers['Location'], '/')
+        async with self.aget('/reset_password') as response:
+            self.assertEqual(response.status, 200)
         with mock.patch.object(self.application, 'send_mail') as mo:
             async with self.apost(
                 '/reset_password',
@@ -1272,7 +1472,7 @@ class TestMultiuser(MyHTTPTestCase):
                 password1='pass2', password2='pass2',
             ),
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/')
 
         # User exists in database
@@ -1282,8 +1482,8 @@ class TestMultiuser(MyHTTPTestCase):
                 (
                     user.login,
                     bool(user.hashed_password), bool(user.password_set_date),
-                    user.check_password('pass1'),
-                    user.check_password('pass2'),
+                    await user.check_password('pass1'),
+                    await user.check_password('pass2'),
                 )
                 for user in db.query(database.User).all()
             ],
@@ -1306,10 +1506,10 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(response.status, 403)
 
     @classmethod
-    def make_basic_db(cls, db, db_num):
+    async def make_basic_db(cls, db, db_num):
         # Populate database
         user = database.User(login='db%duser' % db_num)
-        user.set_password('hackme')
+        await user.set_password('hackme')
         db.add(user)
         cls.make_basic_project(db, db_num, 1)
         cls.make_basic_project(db, db_num, 2)
@@ -1364,8 +1564,8 @@ class TestMultiuser(MyHTTPTestCase):
         db.add(hl1)
         db.add(hl2)
         db.flush()
-        db.add(database.HighlightTag(highlight_id=hl1.id, tag_id=tag2.id))
-        db.add(database.HighlightTag(highlight_id=hl2.id, tag_id=tag1.id))
+        hl1.tags.append(tag2)
+        hl2.tags.append(tag1)
         db.add(database.ProjectMember(user_login='admin', project=project1,
                                       privileges=database.Privileges.ADMIN))
         db.add(database.ProjectMember(user_login=user,
@@ -1415,12 +1615,12 @@ class TestMultiuser(MyHTTPTestCase):
     async def test_import(self, tmp):
         # Populate database
         db1 = self.application.DBSession()
-        self.make_basic_db(db1, 1)
+        await self.make_basic_db(db1, 1)
         db1.commit()
 
         # Log in
         async with self.apost('/cookies', data=dict()) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/')
         async with self.aget('/login') as response:
             self.assertEqual(response.status, 200)
@@ -1428,14 +1628,14 @@ class TestMultiuser(MyHTTPTestCase):
             '/login',
             data=dict(next='/', login='db1user', password='hackme'),
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/')
 
         # Create second database
         db2_path = os.path.join(tmp, 'db.sqlite3')
         db2 = database.connect('sqlite:///' + db2_path)()
         db2.add(database.User(login='admin'))
-        self.make_basic_db(db2, 2)
+        await self.make_basic_db(db2, 2)
         db2.commit()
 
         # List projects in database
@@ -1590,8 +1790,8 @@ class TestMultiuser(MyHTTPTestCase):
         )
         self.assertRowsEqualsExceptDates(
             db1.execute(
-                database.HighlightTag.__table__.select()
-                .order_by(database.HighlightTag.__table__.c.highlight_id)
+                database.highlight_tags.select()
+                .order_by(database.highlight_tags.c.highlight_id)
             ),
             [(1, 2), (2, 1), (4, 5), (5, 4), (7, 8), (8, 7)],
         )
@@ -1601,12 +1801,12 @@ class TestMultiuser(MyHTTPTestCase):
     async def test_export(self, tmp):
         # Populate database
         db1 = self.application.DBSession()
-        self.make_basic_db(db1, 1)
+        await self.make_basic_db(db1, 1)
         db1.commit()
 
         # Log in
         async with self.apost('/cookies', data=dict()) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/')
         async with self.aget('/login') as response:
             self.assertEqual(response.status, 200)
@@ -1614,7 +1814,7 @@ class TestMultiuser(MyHTTPTestCase):
             '/login',
             data=dict(next='/', login='db1user', password='hackme'),
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/')
 
         # Export project
@@ -1744,8 +1944,8 @@ class TestMultiuser(MyHTTPTestCase):
         )
         self.assertRowsEqualsExceptDates(
             db2.execute(
-                database.HighlightTag.__table__.select()
-                .order_by(database.HighlightTag.__table__.c.highlight_id)
+                database.highlight_tags.select()
+                .order_by(database.highlight_tags.c.highlight_id)
             ),
             [(1, 2), (2, 1)],
         )
@@ -1756,7 +1956,7 @@ class TestMultiuser(MyHTTPTestCase):
     async def _setup_import_codebook_project(self):
         # Log in
         async with self.apost('/cookies', data=dict()) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/')
         async with self.aget('/login') as response:
             self.assertEqual(response.status, 200)
@@ -1764,7 +1964,7 @@ class TestMultiuser(MyHTTPTestCase):
             '/login',
             data=dict(next='/', login='admin', password='hackme'),
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/')
 
         # Create project 1
@@ -1774,7 +1974,7 @@ class TestMultiuser(MyHTTPTestCase):
             '/project/new',
             data=dict(name='my project', description=''),
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/project/1')
 
         db = self.application.DBSession()
@@ -1955,7 +2155,7 @@ class TestMultiuser(MyHTTPTestCase):
                 'tag2-description': 'disabled',
             },
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'],
                              '/project/1')
 
@@ -2009,7 +2209,7 @@ class TestMultiuser(MyHTTPTestCase):
                 'tag2-description': 'disabled',
             },
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'],
                              '/project/1')
 
@@ -2065,30 +2265,28 @@ class TestMultiuser(MyHTTPTestCase):
         await asyncio.sleep(0.2)  # Give time for the request to be sent
         return fut
 
-    def assertNotDone(self, fut):
-        self.assertTrue(fut.cancel())
-
 
 class TestSingleuser(MyHTTPTestCase):
     def get_app(self):
-        with mock.patch.object(web.Application, '_set_password',
-                               new=set_dumb_password):
-            self.application = web.make_app(
-                dict(
-                    main.DEFAULT_CONFIG,
-                    NAME="Test Taguette instance", PORT=7465,
-                    DATABASE=DATABASE_URI,
-                    REDIS_SERVER=REDIS,
-                    TOS_FILE=None,
-                    EMAIL='test@example.com',
-                    MAIL_SERVER={'host': 'localhost', 'port': 25},
-                    COOKIES_PROMPT=False,
-                    MULTIUSER=False,
-                    SECRET_KEY='bq7ZoAtO7LtRJJ4P0iHSdH8yvcmCqynfeGB+x9y1',
-                ),
-                xsrf_cookies=False,
-            )
-            return self.application
+        self.application = web.make_app(
+            dict(
+                main.DEFAULT_CONFIG,
+                NAME="Test Taguette instance", PORT=7465,
+                DATABASE=DATABASE_URI,
+                REDIS_SERVER=REDIS,
+                TOS_FILE=None,
+                EMAIL='test@example.com',
+                MAIL_SERVER={'host': 'localhost', 'port': 25},
+                COOKIES_PROMPT=False,
+                MULTIUSER=False,
+                SECRET_KEY='bq7ZoAtO7LtRJJ4P0iHSdH8yvcmCqynfeGB+x9y1',
+            ),
+            xsrf_cookies=False,
+        )
+        self.io_loop.run_sync(
+            lambda: set_dumb_password(self.application.DBSession)
+        )
+        return self.application
 
     def tearDown(self):
         super(TestSingleuser, self).tearDown()
@@ -2151,7 +2349,7 @@ class TestSingleuser(MyHTTPTestCase):
             '/project/new',
             data=dict(name='test project', description=''),
         ) as response:
-            self.assertEqual(response.status, 302)
+            self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/project/1')
 
         # Fetch logout page
@@ -2260,10 +2458,12 @@ class SeleniumTest(MyHTTPTestCase):
         await asyncio.sleep(0.2)
 
     async def s_click_button(self, text, tag='button', parent=None):
+        from selenium.webdriver.common.by import By
+
         await asyncio.sleep(0.2)
         if parent is None:
             parent = self.driver
-        buttons = parent.find_elements_by_tag_name(tag)
+        buttons = parent.find_elements(By.TAG_NAME, tag)
         correct_button, = [
             button for button in buttons
             if button.text == text
@@ -2316,36 +2516,39 @@ class SeleniumTest(MyHTTPTestCase):
 )
 class TestSeleniumMultiuser(SeleniumTest):
     def get_app(self):
-        with mock.patch.object(web.Application, '_set_password',
-                               new=set_dumb_password):
-            self.base_path = os.environ.get('TAGUETTE_TEST_BASE_PATH', '')
-            self.application = web.make_app(dict(
-                main.DEFAULT_CONFIG,
-                NAME="Test Taguette instance", PORT=7465,
-                DATABASE=DATABASE_URI,
-                BASE_PATH=self.base_path,
-                REDIS_SERVER=REDIS,
-                TOS_FILE=None,
-                EMAIL='test@example.com',
-                MAIL_SERVER={'host': 'localhost', 'port': 25},
-                COOKIES_PROMPT=True,
-                MULTIUSER=True,
-                SECRET_KEY='2PbQ/5Rs005G/nTuWfibaZTUAo3Isng3QuRirmBK',
-            ))
-            return self.application
+        self.base_path = os.environ.get('TAGUETTE_TEST_BASE_PATH', '')
+        self.application = web.make_app(dict(
+            main.DEFAULT_CONFIG,
+            NAME="Test Taguette instance", PORT=7465,
+            DATABASE=DATABASE_URI,
+            BASE_PATH=self.base_path,
+            REDIS_SERVER=REDIS,
+            TOS_FILE=None,
+            EMAIL='test@example.com',
+            MAIL_SERVER={'host': 'localhost', 'port': 25},
+            COOKIES_PROMPT=True,
+            MULTIUSER=True,
+            SECRET_KEY='2PbQ/5Rs005G/nTuWfibaZTUAo3Isng3QuRirmBK',
+        ))
+        self.io_loop.run_sync(
+            lambda: set_dumb_password(self.application.DBSession)
+        )
+        return self.application
 
     @gen_test(timeout=120)
     async def test_login(self):
+        from selenium.webdriver.common.by import By
+
         # Fetch index, should have welcome message and register link
         await self.s_get('/')
         self.assertEqual(self.driver.title, 'Welcome | Taguette')
         self.assertEqual(
-            [el.text for el in self.driver.find_elements_by_tag_name('h1')],
+            [el.text for el in self.driver.find_elements(By.TAG_NAME, 'h1')],
             ['Welcome'],
         )
         self.assertIn(
             'Register now',
-            [el.text for el in self.driver.find_elements_by_tag_name('a')],
+            [el.text for el in self.driver.find_elements(By.TAG_NAME, 'a')],
         )
 
         # Only admin so far
@@ -2366,11 +2569,11 @@ class TestSeleniumMultiuser(SeleniumTest):
         self.assertEqual(self.s_path, '/register')
 
         # Register
-        elem = self.driver.find_element_by_id('register-login')
+        elem = self.driver.find_element(By.ID, 'register-login')
         elem.send_keys('Tester')
-        elem = self.driver.find_element_by_id('register-password1')
+        elem = self.driver.find_element(By.ID, 'register-password1')
         elem.send_keys('hacktoo')
-        elem = self.driver.find_element_by_id('register-password2')
+        elem = self.driver.find_element(By.ID, 'register-password2')
         elem.send_keys('hacktoo')
         await self.s_click_button('Register')
 
@@ -2383,19 +2586,19 @@ class TestSeleniumMultiuser(SeleniumTest):
         # Fetch index, should have project list
         await self.s_get('/')
         self.assertEqual(
-            [el.text for el in self.driver.find_elements_by_tag_name('h1')],
+            [el.text for el in self.driver.find_elements(By.TAG_NAME, 'h1')],
             ['Welcome tester'],
         )
         self.assertIn(
             'Here are your projects:',
-            [el.text for el in self.driver.find_elements_by_tag_name('p')],
+            [el.text for el in self.driver.find_elements(By.TAG_NAME, 'p')],
         )
 
         # Fetch project creation page
         await self.s_get('/project/new')
 
         # Create a project
-        elem = self.driver.find_element_by_id('project-name')
+        elem = self.driver.find_element(By.ID, 'project-name')
         elem.send_keys('test project')
         await self.s_click_button('Create')
         self.assertEqual(self.s_path, '/project/1')
@@ -2407,7 +2610,7 @@ class TestSeleniumMultiuser(SeleniumTest):
         # Hit error page
         await self.s_get('/api/project/1/highlights/')
         self.assertNotEqual(
-            self.driver.find_element_by_tag_name('body').text.find(
+            self.driver.find_element(By.TAG_NAME, 'body').text.find(
                 '"Not logged in"',
             ),
             -1,
@@ -2425,9 +2628,9 @@ class TestSeleniumMultiuser(SeleniumTest):
         await self.s_get(
             '/login?' + urlencode(dict(next=self.base_path + '/project/1')),
         )
-        elem = self.driver.find_element_by_id('log-in-login')
+        elem = self.driver.find_element(By.ID, 'log-in-login')
         elem.send_keys('Tester')
-        elem = self.driver.find_element_by_id('log-in-password')
+        elem = self.driver.find_element(By.ID, 'log-in-password')
         elem.send_keys('hacktoo')
         await self.s_click_button('Log in')
         self.assertEqual(self.s_path, '/project/1')
@@ -2437,9 +2640,11 @@ class TestSeleniumMultiuser(SeleniumTest):
         self.assertEqual(self.s_path, '/account')
 
     def get_highlight_add_tags(self):
+        from selenium.webdriver.common.by import By
+
         tags = {}
-        form = self.driver.find_element_by_id('highlight-add-form')
-        for elem in form.find_elements_by_tag_name('input'):
+        form = self.driver.find_element(By.ID, 'highlight-add-form')
+        for elem in form.find_elements(By.TAG_NAME, 'input'):
             if elem.get_attribute('type') == 'checkbox':
                 id = elem.get_attribute('id')
                 self.assertTrue(id.startswith('highlight-add-tags-'))
@@ -2471,6 +2676,7 @@ class TestSeleniumMultiuser(SeleniumTest):
         # highlights: [1, 2, 3]
 
         from selenium.webdriver import ActionChains
+        from selenium.webdriver.common.by import By
         from selenium.webdriver.common.keys import Keys
         from selenium.webdriver.support.select import Select
 
@@ -2481,18 +2687,18 @@ class TestSeleniumMultiuser(SeleniumTest):
 
         # Log in
         await self.s_get('/login')
-        elem = self.driver.find_element_by_id('log-in-login')
+        elem = self.driver.find_element(By.ID, 'log-in-login')
         elem.send_keys('admin')
-        elem = self.driver.find_element_by_id('log-in-password')
+        elem = self.driver.find_element(By.ID, 'log-in-password')
         elem.send_keys('hackme')
         await self.s_click_button('Log in')
         self.assertEqual(self.s_path, '/')
 
         # Create project 1
         await self.s_get('/project/new')
-        elem = self.driver.find_element_by_id('project-name')
+        elem = self.driver.find_element(By.ID, 'project-name')
         elem.send_keys('one')
-        elem = self.driver.find_element_by_id('project-description')
+        elem = self.driver.find_element(By.ID, 'project-description')
         elem.send_keys("Remi's project")
         await self.s_click_button('Create')
         self.assertEqual(self.s_path, '/project/1')
@@ -2522,22 +2728,22 @@ class TestSeleniumMultiuser(SeleniumTest):
         )
         self.assertTrue(any(
             expected.strip() == script.get_property('textContent').strip()
-            for script in self.driver.find_elements_by_tag_name('script')
+            for script in self.driver.find_elements(By.TAG_NAME, 'script')
         ))
 
         # Create tag 2 in project 1
-        await self.s_click(self.driver.find_element_by_id('tags-tab'))
+        await self.s_click(self.driver.find_element(By.ID, 'tags-tab'))
         await self.s_click_button('Create a tag', tag='a')
-        elem = self.driver.find_element_by_id('tag-add-path')
+        elem = self.driver.find_element(By.ID, 'tag-add-path')
         elem.send_keys('people')
-        elem = self.driver.find_element_by_id('tag-add-description')
+        elem = self.driver.find_element(By.ID, 'tag-add-description')
         elem.send_keys('People of interest')
         await self.s_click_button('Save & Close')
 
         # Check tags
         tag_links = (
-            self.driver.find_element_by_id('tags-list')
-            .find_elements_by_class_name('tag-name')
+            self.driver.find_element(By.ID, 'tags-list')
+            .find_elements(By.CLASS_NAME, 'tag-name')
         )
         self.assertEqual(
             [link.text for link in tag_links],
@@ -2545,11 +2751,11 @@ class TestSeleniumMultiuser(SeleniumTest):
         )
 
         # Create document 1 in project 1
-        await self.s_click(self.driver.find_element_by_id('documents-tab'))
+        await self.s_click(self.driver.find_element(By.ID, 'documents-tab'))
         await self.s_click_button('Add a document', tag='a')
-        elem = self.driver.find_element_by_id('document-add-name')
+        elem = self.driver.find_element(By.ID, 'document-add-name')
         elem.send_keys('otherdoc')
-        elem = self.driver.find_element_by_id('document-add-file')
+        elem = self.driver.find_element(By.ID, 'document-add-file')
         with tempfile.NamedTemporaryFile('wb', suffix='.html') as tmp:
             tmp.write(b'different content')
             tmp.flush()
@@ -2565,18 +2771,18 @@ class TestSeleniumMultiuser(SeleniumTest):
 
         # Change project 2 metadata
         self.assertEqual(
-            self.driver.find_element_by_class_name('project-name').text,
+            self.driver.find_element(By.CLASS_NAME, 'project-name').text,
             'one',
         )
-        await self.s_click(self.driver.find_element_by_id('project-tab'))
-        elem = self.driver.find_element_by_id('project-name')
+        await self.s_click(self.driver.find_element(By.ID, 'project-tab'))
+        elem = self.driver.find_element(By.ID, 'project-name')
         await self.s_perform_action(
             ActionChains(self.driver)
             .click(elem)
             .key_down(Keys.CONTROL).send_keys('a').key_up(Keys.CONTROL)
             .send_keys('new project')
         )
-        elem = self.driver.find_element_by_id('project-description')
+        elem = self.driver.find_element(By.ID, 'project-description')
         elem.click()
         await asyncio.sleep(0.5)
         await self.s_perform_action(
@@ -2585,10 +2791,12 @@ class TestSeleniumMultiuser(SeleniumTest):
         )
         await asyncio.sleep(0.5)
         elem.send_keys('Meaningful')
-        await self.s_click(self.driver.find_element_by_id('document-contents'))
-        await asyncio.sleep(3)  # Wait for XHR
+        await self.s_click(
+            self.driver.find_element(By.ID, 'document-contents'),
+        )
+        await asyncio.sleep(10)  # Wait for XHR
         self.assertEqual(
-            self.driver.find_element_by_class_name('project-name').text,
+            self.driver.find_element(By.CLASS_NAME, 'project-name').text,
             'new project',
         )
         db = self.application.DBSession()
@@ -2597,14 +2805,14 @@ class TestSeleniumMultiuser(SeleniumTest):
         self.assertEqual(proj.description, 'Meaningful')
 
         # Create document 2 in project 1
-        await self.s_click(self.driver.find_element_by_id('documents-tab'))
+        await self.s_click(self.driver.find_element(By.ID, 'documents-tab'))
         await self.s_click_button('Add a document', tag='a')
-        elem = self.driver.find_element_by_id('document-add-name')
+        elem = self.driver.find_element(By.ID, 'document-add-name')
         elem.send_keys('third')
-        elem = self.driver.find_element_by_id('document-add-description')
+        elem = self.driver.find_element(By.ID, 'document-add-description')
         elem.send_keys('Last one')
         await self.s_click_button('Right to left', tag='label')
-        elem = self.driver.find_element_by_id('document-add-file')
+        elem = self.driver.find_element(By.ID, 'document-add-file')
         with tempfile.NamedTemporaryFile('wb', suffix='.html') as tmp:
             tmp.write(b'<strong>Opinions</strong> and <em>facts</em>!')
             tmp.flush()
@@ -2620,8 +2828,8 @@ class TestSeleniumMultiuser(SeleniumTest):
 
         # Create highlight 1 in document 1
         await self.s_click(
-            self.driver.find_element_by_id('document-link-1')
-            .find_element_by_class_name('document-link-a')
+            self.driver.find_element(By.ID, 'document-link-1')
+            .find_element(By.CLASS_NAME, 'document-link-a')
         )
         self.driver.execute_script('restoreSelection([0, 4]);')
         await self.s_click_button('new highlight\n(shortcut: n)', tag='a')
@@ -2630,7 +2838,7 @@ class TestSeleniumMultiuser(SeleniumTest):
             {1: False, 2: False},
         )
         await self.s_click(
-            self.driver.find_element_by_id('highlight-add-tags-1'),
+            self.driver.find_element(By.ID, 'highlight-add-tags-1'),
         )
         await self.s_click_button('Save & Close')
 
@@ -2642,15 +2850,15 @@ class TestSeleniumMultiuser(SeleniumTest):
             {1: False, 2: False},
         )
         await self.s_click(
-            self.driver.find_element_by_id('highlight-add-tags-1'),
+            self.driver.find_element(By.ID, 'highlight-add-tags-1'),
         )
         await self.s_click(
-            self.driver.find_element_by_id('highlight-add-tags-2'),
+            self.driver.find_element(By.ID, 'highlight-add-tags-2'),
         )
         await self.s_click_button('Save & Close')
 
         # Edit highlight 1 in document 1
-        hl, = self.driver.find_elements_by_class_name('highlight-1')
+        hl, = self.driver.find_elements(By.CLASS_NAME, 'highlight-1')
         await self.s_click(hl)
         self.assertEqual(
             self.get_highlight_add_tags(),
@@ -2659,11 +2867,11 @@ class TestSeleniumMultiuser(SeleniumTest):
 
         # Create tag 3 in project 1
         await self.s_click_button('Create a tag', tag='a')
-        elem = self.driver.find_element_by_id('tag-add-path')
+        elem = self.driver.find_element(By.ID, 'tag-add-path')
         elem.send_keys('interesting.places')
         await self.s_click_button(
             'Save & Close',
-            parent=self.driver.find_element_by_id('tag-add-form'),
+            parent=self.driver.find_element(By.ID, 'tag-add-form'),
         )
 
         # Finish editing highlight 1 in document 1
@@ -2673,7 +2881,7 @@ class TestSeleniumMultiuser(SeleniumTest):
             {1: True, 2: False, 3: True},
         )
         await self.s_click(
-            self.driver.find_element_by_id('highlight-add-tags-1')
+            self.driver.find_element(By.ID, 'highlight-add-tags-1')
         )
         self.assertEqual(
             self.get_highlight_add_tags(),
@@ -2682,10 +2890,10 @@ class TestSeleniumMultiuser(SeleniumTest):
         await self.s_click_button('Save & Close')
 
         # Check tags
-        await self.s_click(self.driver.find_element_by_id('tags-tab'))
+        await self.s_click(self.driver.find_element(By.ID, 'tags-tab'))
         tag_links = (
-            self.driver.find_element_by_id('tags-list')
-            .find_elements_by_class_name('tag-name')
+            self.driver.find_element(By.ID, 'tags-list')
+            .find_elements(By.CLASS_NAME, 'tag-name')
         )
         self.assertEqual(
             [link.text for link in tag_links],
@@ -2693,10 +2901,10 @@ class TestSeleniumMultiuser(SeleniumTest):
         )
 
         # Create highlight 3 in document 2
-        await self.s_click(self.driver.find_element_by_id('documents-tab'))
+        await self.s_click(self.driver.find_element(By.ID, 'documents-tab'))
         await self.s_click(
-            self.driver.find_element_by_id('document-link-2')
-            .find_element_by_class_name('document-link-a')
+            self.driver.find_element(By.ID, 'document-link-2')
+            .find_element(By.CLASS_NAME, 'document-link-a')
         )
         self.driver.execute_script('restoreSelection([0, 7]);')
         await self.s_click_button('new highlight\n(shortcut: n)', tag='a')
@@ -2705,16 +2913,16 @@ class TestSeleniumMultiuser(SeleniumTest):
             {1: False, 2: False, 3: False},
         )
         await self.s_click(
-            self.driver.find_element_by_id('highlight-add-tags-2'),
+            self.driver.find_element(By.ID, 'highlight-add-tags-2'),
         )
         await self.s_click_button('Save & Close')
 
         # List highlights in project 1 under 'people'
-        await self.s_click(self.driver.find_element_by_id('tags-tab'))
-        await self.s_click(self.driver.find_element_by_id('tag-link-2'))
+        await self.s_click(self.driver.find_element(By.ID, 'tags-tab'))
+        await self.s_click(self.driver.find_element(By.ID, 'tag-link-2'))
         self.assertEqual(self.s_path, '/project/1/highlights/people')
         self.assertEqual(
-            self.driver.find_element_by_id('document-contents').text,
+            self.driver.find_element(By.ID, 'document-contents').text,
             'tent\notherdoc interesting people\nOpinion\nthird people',
         )
 
@@ -2722,7 +2930,7 @@ class TestSeleniumMultiuser(SeleniumTest):
         await self.s_get('/project/1/highlights/interesting.places')
         await asyncio.sleep(1)  # Wait for XHR
         self.assertEqual(
-            self.driver.find_element_by_id('document-contents').text,
+            self.driver.find_element(By.ID, 'document-contents').text,
             'diff\notherdoc interesting.places',
         )
 
@@ -2730,18 +2938,18 @@ class TestSeleniumMultiuser(SeleniumTest):
         await self.s_get('/project/1/highlights/interesting')
         await asyncio.sleep(1)  # Wait for XHR
         self.assertEqual(
-            self.driver.find_element_by_id('document-contents').text,
+            self.driver.find_element(By.ID, 'document-contents').text,
             ('diff\notherdoc interesting.places\n'
              'tent\notherdoc interesting people'),
         )
 
         # List all highlights in project 1
-        await self.s_click(self.driver.find_element_by_id('tags-tab'))
+        await self.s_click(self.driver.find_element(By.ID, 'tags-tab'))
         await self.s_click_button('See all highlights', tag='a')
         await asyncio.sleep(1)  # Wait for XHR
         self.assertEqual(self.s_path, '/project/1/highlights/')
         self.assertEqual(
-            self.driver.find_element_by_id('document-contents').text,
+            self.driver.find_element(By.ID, 'document-contents').text,
             ('diff\notherdoc interesting.places\n'
              'tent\notherdoc interesting people\n'
              'Opinion\nthird people'),
@@ -2754,8 +2962,8 @@ class TestSeleniumMultiuser(SeleniumTest):
         links = [
             (link.text, self.extract_path(link.get_attribute('href')))
             for link in (
-                self.driver.find_element_by_id('export-button')
-                .find_elements_by_tag_name('a')
+                self.driver.find_element(By.ID, 'export-button')
+                .find_elements(By.TAG_NAME, 'a')
             )
             if link.text
         ]
@@ -2772,8 +2980,8 @@ class TestSeleniumMultiuser(SeleniumTest):
         links = [
             (link.text, self.extract_path(link.get_attribute('href')))
             for link in (
-                self.driver.find_element_by_id('export-button')
-                .find_elements_by_tag_name('a')
+                self.driver.find_element(By.ID, 'export-button')
+                .find_elements(By.TAG_NAME, 'a')
             )
             if link.text
         ]
@@ -2787,14 +2995,14 @@ class TestSeleniumMultiuser(SeleniumTest):
         ])
 
         # Check codebook export options of project 1
-        await self.s_click(self.driver.find_element_by_id('project-tab'))
+        await self.s_click(self.driver.find_element(By.ID, 'project-tab'))
         await self.s_click_button('Export codebook')
         links = [
             (link.text, self.extract_path(link.get_attribute('href')))
             for link in (
-                self.driver.find_element_by_id('dropdown-codebook')
-                .find_element_by_xpath('./..')
-                .find_elements_by_tag_name('a')
+                self.driver.find_element(By.ID, 'dropdown-codebook')
+                .find_element(By.XPATH, './..')
+                .find_elements(By.TAG_NAME, 'a')
             )
             if link.text
         ]
@@ -2808,19 +3016,19 @@ class TestSeleniumMultiuser(SeleniumTest):
         ])
 
         # Merge tag 2 into 1
-        await self.s_click(self.driver.find_element_by_id('tags-tab'))
+        await self.s_click(self.driver.find_element(By.ID, 'tags-tab'))
         edit_button, = [
             b
             for b in (
-                self.driver.find_element_by_id('tag-link-2')
-                .find_element_by_xpath('./../..')
-                .find_elements_by_tag_name('a')
+                self.driver.find_element(By.ID, 'tag-link-2')
+                .find_element(By.XPATH, './../..')
+                .find_elements(By.TAG_NAME, 'a')
             )
             if b.text == 'Edit'
         ]
         await self.s_click(edit_button)
         await self.s_click_button('Merge...')
-        select = Select(self.driver.find_element_by_id('tag-merge-dest'))
+        select = Select(self.driver.find_element(By.ID, 'tag-merge-dest'))
         select.select_by_value('1')
         await self.s_click_button('Merge tags')
 
@@ -2829,7 +3037,7 @@ class TestSeleniumMultiuser(SeleniumTest):
         await asyncio.sleep(1)  # Wait for XHR
         self.assertEqual(self.s_path, '/project/1/highlights/')
         self.assertEqual(
-            self.driver.find_element_by_id('document-contents').text,
+            self.driver.find_element(By.ID, 'document-contents').text,
             ('diff\notherdoc interesting.places\n'
              'tent\notherdoc interesting\n'
              'Opinion\nthird interesting'),
@@ -2837,4 +3045,8 @@ class TestSeleniumMultiuser(SeleniumTest):
 
 
 if __name__ == '__main__':
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s %(levelname)s: %(message)s",
+    )
     unittest.main()

@@ -2,7 +2,7 @@ import logging
 import opentelemetry.trace
 
 from .models import Project, Privileges, ProjectMember, TextDirection, \
-    Document, Command, Highlight, Tag, HighlightTag
+    Document, Command, Highlight, Tag, highlight_tags
 from .. import convert
 from ..utils import DefaultMap
 from .. import validate
@@ -18,19 +18,19 @@ def copy_project(
     project_id, user_login,
 ):
     def copy(
-        model, pkey, fkeys, size,
+        table, pkey, fkeys, size,
         *, condition=None, transform=None, validators=None
     ):
         return copy_table(
             src_db, dest_db,
-            model.__table__, pkey, fkeys,
+            table, pkey, fkeys,
             batch_size=size,
             condition=condition, transform=transform, validators=validators,
         )
 
-    def insert(model, values):
+    def insert(table, values):
         ins = dest_db.execute(
-            model.__table__.insert(),
+            table.insert(),
             values,
         )
         return ins
@@ -45,12 +45,12 @@ def copy_project(
     validate.description(project['description'])
     project = dict(project)
     project.pop('id')
-    new_project_id, = insert(Project, project).inserted_primary_key
+    new_project_id, = insert(Project.__table__, project).inserted_primary_key
     mapping_project = {project_id: new_project_id}
 
     # Add member
     insert(
-        ProjectMember,
+        ProjectMember.__table__,
         dict(
             project_id=new_project_id,
             user_login=user_login,
@@ -60,7 +60,7 @@ def copy_project(
 
     # Copy documents
     mapping_document = copy(
-        Document, 'id',
+        Document.__table__, 'id',
         dict(project_id=mapping_project),
         2,
         condition=Document.project_id == project_id,
@@ -74,7 +74,7 @@ def copy_project(
 
     # Copy tags
     mapping_tags = copy(
-        Tag, 'id',
+        Tag.__table__, 'id',
         dict(project_id=mapping_project),
         50,
         condition=Tag.project_id == project_id,
@@ -86,7 +86,7 @@ def copy_project(
 
     # Copy highlights
     mapping_highlights = copy(
-        Highlight, 'id',
+        Highlight.__table__, 'id',
         dict(document_id=mapping_document),
         50,
         condition=Highlight.document_id.in_(mapping_document.keys()),
@@ -99,10 +99,10 @@ def copy_project(
 
     # Copy highlight tags
     copy(
-        HighlightTag, None,
+        highlight_tags, None,
         dict(highlight_id=mapping_highlights, tag_id=mapping_tags),
         200,
-        condition=HighlightTag.tag_id.in_(mapping_tags.keys()),
+        condition=highlight_tags.c.tag_id.in_(mapping_tags.keys()),
     )
 
     def validate_text_direction(direction):
@@ -179,7 +179,7 @@ def copy_project(
         return dict(cmd.items(), payload=payload)
 
     copy(
-        Command, 'id',
+        Command.__table__, 'id',
         dict(
             # Map all users to the importing user
             user_login=DefaultMap(lambda key: user_login, {}),

@@ -6,6 +6,7 @@ import logging
 import math
 import os
 import prometheus_client
+from sqlalchemy import and_
 from sqlalchemy.exc import IntegrityError, DatabaseError, NoSuchTableError
 from sqlalchemy.orm import aliased, defer, joinedload
 import tempfile
@@ -67,7 +68,7 @@ class CheckUser(BaseHandler):
             pass
         else:
             user = self.db.query(database.User).get(login)
-            if user is not None:
+            if user is not None and not user.disabled:
                 return self.send_json({'exists': True})
         return self.send_json({'exists': False})
 
@@ -414,20 +415,23 @@ class TagMerge(BaseHandler):
 
         # Remove tag from tag_src if it's already in tag_dest
         highlights_in_dest = (
-            self.db.query(database.HighlightTag.highlight_id)
-            .filter(database.HighlightTag.tag_id == tag_dest.id)
+            self.db.query(database.highlight_tags.c.highlight_id)
+            .filter(database.highlight_tags.c.tag_id == tag_dest.id)
         )
-        (
-            self.db.query(database.HighlightTag)
-                .filter(database.HighlightTag.tag_id == tag_src.id)
-                .filter(database.HighlightTag.highlight_id.in_(
-                    highlights_in_dest
-                ))
-        ).delete(synchronize_session=False)
+        self.db.execute(
+            database.highlight_tags.delete(
+                and_(
+                    database.highlight_tags.c.tag_id == tag_src.id,
+                    database.highlight_tags.c.highlight_id.in_(
+                        highlights_in_dest
+                    ),
+                )
+            )
+        )
         # Update tags that are in tag_src to be in tag_dest
         self.db.execute(
-            database.HighlightTag.__table__.update()
-            .where(database.HighlightTag.tag_id == tag_src.id)
+            database.highlight_tags.update()
+            .where(database.highlight_tags.c.tag_id == tag_src.id)
             .values(tag_id=tag_dest.id)
         )
         # Delete tag_src
@@ -469,6 +473,9 @@ class HighlightAdd(BaseHandler):
             return self.send_error_json(400, self.gettext("No such tag"))
 
         snippet = extract.extract(document.contents, start, end)
+        if all(c in '\r\n\t' for c in snippet):
+            return self.send_error_json(400, self.gettext("Empty highlight"))
+
         hl = database.Highlight(document=document,
                                 start_offset=start,
                                 end_offset=end,
@@ -477,13 +484,17 @@ class HighlightAdd(BaseHandler):
         self.db.flush()  # Need to flush to get hl.id
 
         # Insert tags in database
-        self.db.bulk_insert_mappings(database.HighlightTag, [
-            dict(
-                highlight_id=hl.id,
-                tag_id=tag,
+        if new_tags:
+            self.db.execute(
+                database.highlight_tags.insert(),
+                [
+                    dict(
+                        highlight_id=hl.id,
+                        tag_id=tag,
+                    )
+                    for tag in sorted(new_tags)
+                ],
             )
-            for tag in sorted(new_tags)
-        ])
         cmd = database.Command.highlight_add(
             self.current_user,
             document,
@@ -517,12 +528,12 @@ class HighlightUpdate(BaseHandler):
                 hl.end_offset = obj['end_offset']
             if 'tags' in obj:
                 # Obtain old tags from database
-                old_tags = (
-                    self.db.query(database.HighlightTag)
-                    .filter(database.HighlightTag.highlight == hl)
+                old_tags = set(
+                    row[0]
+                    for row in self.db.query(database.highlight_tags.c.tag_id)
+                    .filter(database.highlight_tags.c.highlight_id == hl.id)
                     .all()
                 )
-                old_tags = set(hl_tag.tag_id for hl_tag in old_tags)
                 new_tags = set(obj['tags'])
 
                 # Check the tags exist and are in this project
@@ -539,17 +550,22 @@ class HighlightUpdate(BaseHandler):
                     )
 
                 # Update tags in database
-                (
-                    self.db.query(database.HighlightTag)
-                    .filter(database.HighlightTag.highlight == hl)
-                ).delete()
-                self.db.bulk_insert_mappings(database.HighlightTag, [
-                    dict(
-                        highlight_id=hl.id,
-                        tag_id=tag,
+                self.db.execute(
+                    database.highlight_tags.delete(
+                        database.highlight_tags.c.highlight_id == hl.id
                     )
-                    for tag in sorted(new_tags)
-                ])
+                )
+                if new_tags:
+                    self.db.execute(
+                        database.highlight_tags.insert(),
+                        [
+                            dict(
+                                highlight_id=hl.id,
+                                tag_id=tag,
+                            )
+                            for tag in sorted(new_tags)
+                        ],
+                    )
 
                 # Compute the change in tag counts
                 tag_count_changes = {}
@@ -558,8 +574,14 @@ class HighlightUpdate(BaseHandler):
                 for tag in new_tags - old_tags:
                     tag_count_changes[tag] = 1
             else:
-                new_tags = None
-                tag_count_changes = None
+                # Obtain old tags from database
+                new_tags = set(
+                    row[0]
+                    for row in self.db.query(database.highlight_tags.c.tag_id)
+                    .filter(database.highlight_tags.c.highlight_id == hl.id)
+                    .all()
+                )
+                tag_count_changes = {}
 
             cmd = database.Command.highlight_add(
                 self.current_user,
@@ -584,12 +606,12 @@ class HighlightUpdate(BaseHandler):
         hl = self.db.query(database.Highlight).get(int(highlight_id))
         if hl is None or hl.document_id != document.id:
             return self.send_error_json(404, self.gettext("No such highlight"))
-        old_tags = list(
-            self.db.query(database.HighlightTag)
-            .filter(database.HighlightTag.highlight == hl)
+        old_tags = [
+            row[0]
+            for row in self.db.query(database.highlight_tags.c.tag_id)
+            .filter(database.highlight_tags.c.highlight_id == hl.id)
             .all()
-        )
-        old_tags = [hl_tag.tag_id for hl_tag in old_tags]
+        ]
         self.db.delete(hl)
         cmd = database.Command.highlight_delete(
             self.current_user,
@@ -623,13 +645,13 @@ class Highlights(BaseHandler):
 
         if path:
             tag = aliased(database.Tag)
-            hltag = aliased(database.HighlightTag)
+            hltag = aliased(database.highlight_tags)
             document = aliased(database.Document)
             query = (
                 self.db.query(database.Highlight, document.text_direction)
                 .options(joinedload(database.Highlight.tags))
-                .join(hltag, hltag.highlight_id == database.Highlight.id)
-                .join(tag, hltag.tag_id == tag.id)
+                .join(hltag, hltag.c.highlight_id == database.Highlight.id)
+                .join(tag, hltag.c.tag_id == tag.id)
                 .join(document, document.id == database.Highlight.document_id)
                 .filter(tag.path.startswith(path))
                 .filter(tag.project == project)
@@ -869,12 +891,19 @@ class ProjectImport(BaseHandler):
         return await self.send_json({'project_id': new_project_id})
 
 
+class TooManyCommands(Exception):
+    """There are too many commands, have the client reload instead.
+    """
+
+
 class ProjectEvents(BaseHandler):
     response_cancelled = False
     polling_clients = set()
     PROM_POLLING_CLIENTS.set_function(
         lambda: len(ProjectEvents.polling_clients)
     )
+
+    wait_future = None
 
     @api_auth
     @PROM_REQUESTS.async_('events')
@@ -896,36 +925,12 @@ class ProjectEvents(BaseHandler):
         project, _ = self.get_project(project_id)
         self.project_id = int(project_id)
 
-        # Limit over which we won't send update but rather reload the frontend
-        LIMIT = 20
-
-        # Check for immediate update
-        cmds = (
-            self.db.query(database.Command)
-            .filter(database.Command.id > from_id)
-            .filter(database.Command.project_id == project.id)
-            .limit(LIMIT)
-        ).all()
-
-        if len(cmds) == LIMIT:
+        try:
+            cmds_json = await self._get_commands(project.id, from_id)
+        except TooManyCommands:
             return await self.send_json({'reload': True})
-
-        if cmds:
-            # Convert to JSON
-            cmds_json = [cmd.to_json() for cmd in cmds]
-        else:
-            # Wait for an event (which comes in JSON)
-            self.wait_future = Future()
-            self.application.observe_project(project.id, self.wait_future)
-            self.db.expire_all()
-
-            # Close DB connection to not overflow the connection pool
-            self.close_db_connection()
-
-            try:
-                cmds_json = [await self.wait_future]
-            except asyncio.CancelledError:
-                return
+        except asyncio.CancelledError:
+            return
 
         # Remove 'project_id' from each event
         def _change_cmd_json(old):
@@ -937,9 +942,62 @@ class ProjectEvents(BaseHandler):
 
         return await self.send_json({'events': cmds_json})
 
+    async def _get_commands(self, project_id, from_id):
+        # Limit over which we won't send update but rather reload the frontend
+        LIMIT = 20
+
+        # Check for immediate update
+        cmds = (
+            self.db.query(database.Command)
+            .filter(database.Command.id > from_id)
+            .filter(database.Command.project_id == project_id)
+            .limit(LIMIT)
+        ).all()
+
+        if len(cmds) >= LIMIT:
+            raise TooManyCommands
+
+        if cmds:
+            # Convert to JSON, return
+            return [cmd.to_json() for cmd in cmds]
+
+        # Subscribe for events (which come as JSON)
+        self.wait_future = Future()
+        recheck = await self.application.observe_project(
+            project_id,
+            self.wait_future,
+        )
+
+        # Check again, if necessary
+        if recheck:
+            cmds = (
+                self.db.query(database.Command)
+                .filter(database.Command.id > from_id)
+                .filter(database.Command.project_id == project_id)
+                .limit(LIMIT)
+            ).all()
+            if cmds:
+                # Events happened while we were subscribing:
+                # Cancel subscription, return them
+                self.wait_future.cancel()
+                self.application.unobserve_project(
+                    self.project_id,
+                    self.wait_future,
+                )
+                self.wait_future = None
+                return [cmd.to_json() for cmd in cmds]
+
+        self.db.expire_all()
+
+        # Close DB connection to not overflow the connection pool
+        self.close_db_connection()
+
+        return [await self.wait_future]
+
     def on_connection_close(self):
         self.response_cancelled = True
-        self.wait_future.cancel()
+        if self.wait_future:
+            self.wait_future.cancel()
         self.application.unobserve_project(self.project_id, self.wait_future)
 
     def on_finish(self):

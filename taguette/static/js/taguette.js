@@ -649,6 +649,10 @@ document.getElementById('document-add-form').addEventListener('submit', function
       $(document_add_modal).modal('hide');
       document.getElementById('document-add-form').reset();
       console.log("Document upload complete");
+      var doc_id = xhr.response.created;
+      var url = base_path + '/project/' + project_id + '/document/' + doc_id;
+      window.history.pushState({document_id: doc_id}, "Document " + doc_id, url);
+      loadDocument(doc_id);
     } else {
       console.error("Document upload failed: status", xhr.status);
       var error = null;
@@ -1159,13 +1163,17 @@ backlight_checkbox.addEventListener('change', function() {
 
 var highlight_add_modal = document.getElementById('highlight-add-modal');
 
+var _onlyWhitespace = new RegExp('^[\r\n\t]*$');
+
 // Updates current_selection and visibility of the controls
 function selectionChanged() {
   current_selection = describeSelection();
   var hlinfo = document.getElementById('hlinfo');
   if(current_selection !== null) {
     var current_range = window.getSelection().getRangeAt(0);
-    if(current_range.endOffset > 0) {
+    if(current_range.toString().match(_onlyWhitespace)) {
+      hlinfo.style.display = 'none';
+    } else if(current_range.endOffset > 0) {
       var last_char_range = document.createRange();
       last_char_range.setStart(current_range.endContainer, current_range.endOffset - 1);
       last_char_range.setEnd(current_range.endContainer, current_range.endOffset);

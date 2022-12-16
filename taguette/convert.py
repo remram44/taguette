@@ -77,11 +77,6 @@ template_env = jinja2.Environment(
 )
 
 
-def _render_string(template_name, **kwargs):
-    template = template_env.get_template(template_name)
-    return template.render(**kwargs)
-
-
 class ConversionError(ValueError):
     """Error converting document.
     """
@@ -216,10 +211,15 @@ def get_html_body(body):
     # Use bleach to sanitize the content
     body = bleach.clean(
         body,
-        tags=['p', 'br', 'a', 'img',
-              'h1', 'h2', 'h3', 'h4', 'h5',
-              'strong', 'em', 'b', 'u',
-              'ul', 'ol', 'li'],
+        tags=['p', 'br', 'code', 'blockquote', 'pre',  # formatting
+              'sub', 'sup', 'caption',
+              'a', 'img',  # non-text
+              'h1', 'h2', 'h3', 'h4', 'h5',  # headers
+              'strong', 'em', 'b', 'u', 'q', 'del',  # emphasis
+              'ul', 'ol', 'li', 'dl', 'dt', 'dd',  # lists
+              'table', 'thead', 'tbody', 'tr', 'th', 'td',  # tables
+              'colgroup', 'col',  # columns
+              ],
         attributes={'a': ['href', 'title'], 'img': ['src']},
         strip=True,
     )
@@ -255,10 +255,15 @@ def is_html_safe(text):
     # Use bleach to sanitize the content
     cleaned = bleach.clean(
         text,
-        tags=['p', 'br', 'a', 'img',
-              'h1', 'h2', 'h3', 'h4', 'h5',
-              'strong', 'em', 'b', 'u',
-              'ul', 'ol', 'li'],
+        tags=['p', 'br', 'code', 'blockquote', 'pre',  # formatting
+              'sub', 'sup', 'caption',
+              'a', 'img',  # non-text
+              'h1', 'h2', 'h3', 'h4', 'h5',  # headers
+              'strong', 'em', 'b', 'u', 'q', 'del',  # emphasis
+              'ul', 'ol', 'li', 'dl', 'dt', 'dd',  # lists
+              'table', 'thead', 'tbody', 'tr', 'th', 'td',  # tables
+              'colgroup', 'col',  # columns
+              ],
         attributes={'a': ['href', 'title'], 'img': ['src', 'width', 'height']},
         strip=True,
     )

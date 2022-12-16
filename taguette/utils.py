@@ -1,5 +1,12 @@
+import asyncio
+import logging
 import os
 import re
+import sentry_sdk
+import sys
+
+
+logger = logging.getLogger(__name__)
 
 
 def _f(message):
@@ -88,3 +95,29 @@ def sanitize_filename(name):
 
 
 sanitize_filename.windows = os.name == 'nt'
+
+
+_background_future_references = {}
+
+
+def background_task(task, *, should_never_exit=False):
+    future = asyncio.get_event_loop().create_task(task)
+    ident = id(future)
+
+    def callback(future):
+        _background_future_references.pop(ident, None)
+        try:
+            future.result()
+        except Exception as e:
+            sentry_sdk.capture_exception(e)
+            logger.exception("Exception in background task")
+        if should_never_exit:
+            logger.critical("Critical task died, exiting")
+            asyncio.get_event_loop().stop()
+            sys.exit(1)
+
+    future.add_done_callback(callback)
+
+    # Keep a strong reference to the future
+    # https://bugs.python.org/issue21163
+    _background_future_references[ident] = future
