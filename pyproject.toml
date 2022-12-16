@@ -76,14 +76,17 @@ psycopg2 = {version = ">=2.8,<3", optional = true}
 pymysql = {version = ">=1.0,<2", optional = true}
 cryptography = {version = "*", optional = true}
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 coverage = "*"
 flake8 = "*"
 readme_renderer = "*"
-babel = ">=2.6,<3" # Keep babel and pytz in sync with Dockerfile
+babel = ">=2.6,<3"
 bcrypt = ">=3.2.0,<4"
 aiohttp = ">=3.4,<4"
 selenium = ">=4.5,<4.6"
+
+[tool.poetry.group.i18n.dependencies]
+babel = ">=2.6,<3"
 
 [tool.poetry.extras]
 otel = [
