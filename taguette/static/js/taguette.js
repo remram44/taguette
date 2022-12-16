@@ -524,6 +524,7 @@ project_description_input.addEventListener('blur', projectMetadataChanged);
 
 var current_document = null;
 var current_tag = null;
+var last_added_tag = null;
 var documents_list = document.getElementById('documents-list');
 
 function linkDocument(elem, doc_id) {
@@ -770,6 +771,11 @@ function addTag(tag) {
   }
   tags[tag.id] = tag;
   updateTagsList();
+
+  // This is the last tag we created, check it
+  if(tag.id == last_added_tag){
+    document.getElementById('highlight-add-tags-' + tag.id).checked = true;
+  }
 }
 
 function removeTag(tag_id) {
@@ -976,8 +982,16 @@ document.getElementById('tag-add-form').addEventListener('submit', function(e) {
     );
   }
   showSpinner();
-  req.then(function() {
+  req.then(function(reply) {
     console.log("Tag posted");
+
+    // Check this tag in the list, or remember to check it once it appears
+    var tag_checkbox = document.getElementById('highlight-add-tags-' + reply.id);
+    if(tag_checkbox) {
+      tag_checkbox.checked = true;
+    }
+    last_added_tag = reply.id;
+
     $(tag_add_modal).modal('hide');
     document.getElementById('tag-add-form').reset();
   })
