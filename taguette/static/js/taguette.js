@@ -443,7 +443,9 @@ function highlightSelection(saved, id, clickedCallback, title) {
   var node = start;
   while(node != end) {
     var next = nextElement(node);
-    if(node.nodeType == 3 && node.textContent) { // TEXT_NODE
+    if(node.nodeType == 3 // TEXT_NODE
+     && node.textContent
+     && !node.textContent.match(onlyWhitespace)) {
       var span = document.createElement('a');
       span.className = 'highlight highlight-' + id;
       span.setAttribute('data-highlight-id', '' + id);
