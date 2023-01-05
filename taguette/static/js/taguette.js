@@ -80,6 +80,8 @@ function nextElement(node) {
   return node;
 }
 
+var onlyWhitespace = new RegExp('^[\r\n\t]*$');
+
 function getScrollPos() {
   var doc = document.scrollingElement || document.documentElement, body = document.body;
   var x = (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc.clientLeft || 0);
@@ -1163,15 +1165,13 @@ backlight_checkbox.addEventListener('change', function() {
 
 var highlight_add_modal = document.getElementById('highlight-add-modal');
 
-var _onlyWhitespace = new RegExp('^[\r\n\t]*$');
-
 // Updates current_selection and visibility of the controls
 function selectionChanged() {
   current_selection = describeSelection();
   var hlinfo = document.getElementById('hlinfo');
   if(current_selection !== null) {
     var current_range = window.getSelection().getRangeAt(0);
-    if(current_range.toString().match(_onlyWhitespace)) {
+    if(current_range.toString().match(onlyWhitespace)) {
       hlinfo.style.display = 'none';
     } else if(current_range.endOffset > 0) {
       var last_char_range = document.createRange();
