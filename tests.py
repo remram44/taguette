@@ -2407,7 +2407,17 @@ class SeleniumTest(MyHTTPTestCase):
             options.add_argument('--disable-gpu')
             options.add_argument('--disable-dev-shm-usage')
             options.add_argument('--no-sandbox')
-            self.driver = webdriver.Chrome(options=options)
+
+            from selenium.webdriver.common.desired_capabilities import \
+                DesiredCapabilities
+
+            caps = dict(DesiredCapabilities.CHROME)
+            caps['goog:loggingPrefs'] = {'browser': 'ALL'}
+
+            self.driver = webdriver.Chrome(
+                options=options,
+                desired_capabilities=caps,
+            )
         else:
             raise EnvironmentError
         self.driver.set_window_size(1024, 768)
