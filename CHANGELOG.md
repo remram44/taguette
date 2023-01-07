@@ -1,8 +1,8 @@
 Changelog
 =========
 
-1.4.0 (???)
------------
+1.4.0 (2022-12-16)
+------------------
 
 Bugfixes:
 * Fix some validation on project import, filename mangling on document import
