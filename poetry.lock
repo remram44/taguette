@@ -778,14 +778,14 @@ sqlcipher = ["sqlcipher3_binary"]
 
 [[package]]
 name = "subtitle-parser"
-version = "1.1.0"
+version = "1.2.0"
 description = "Parser for SRT and WebVTT subtitle files"
 category = "main"
 optional = false
 python-versions = ">=3.7,<4"
 
 [package.dependencies]
-chardet = ">=4,<5"
+chardet = ">=4,<6"
 
 [[package]]
 name = "tornado"
@@ -1686,8 +1686,8 @@ SQLAlchemy = [
     {file = "SQLAlchemy-1.4.45.tar.gz", hash = "sha256:fd69850860093a3f69fefe0ab56d041edfdfe18510b53d9a2eaecba2f15fa795"},
 ]
 subtitle-parser = [
-    {file = "subtitle-parser-1.1.0.tar.gz", hash = "sha256:8d44e212fb4992eeed3f5308f9b6e4d65b9ad2f59ebce93e383bfd3be6ca5857"},
-    {file = "subtitle_parser-1.1.0-py3-none-any.whl", hash = "sha256:1849ffedbbb8201119e21f5bcf58b5ae3092a301947476c857e733d85ec990ba"},
+    {file = "subtitle-parser-1.2.0.tar.gz", hash = "sha256:11a45333c0fffb981912185142ac655f5511cb88bbcd578f65111f4be3add5af"},
+    {file = "subtitle_parser-1.2.0-py3-none-any.whl", hash = "sha256:9293d0ae5f24f41249a39e23162f42f036bfd99543c506b4f3e9790a702a87a0"},
 ]
 tornado = [
     {file = "tornado-6.2-cp37-abi3-macosx_10_9_universal2.whl", hash = "sha256:20f638fd8cc85f3cbae3c732326e96addff0a15e22d80f049e00121651e82e72"},
