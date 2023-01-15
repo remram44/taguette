@@ -960,7 +960,7 @@ class ProjectEvents(BaseHandler):
 
         if cmds:
             # Convert to JSON, return
-            logger.info("NOTIFY: (db) %s", json.dumps(cmds))
+            logger.info("NOTIFY: (db) %s", json.dumps([cmd.to_json() for cmd in cmds]))
             return [cmd.to_json() for cmd in cmds]
 
         # Subscribe for events (which come as JSON)
@@ -987,7 +987,7 @@ class ProjectEvents(BaseHandler):
                     self.wait_future,
                 )
                 self.wait_future = None
-                logger.info("NOTIFY: (db2) %s", json.dumps(cmds))
+                logger.info("NOTIFY: (db2) %s", json.dumps([cmd.to_json() for cmd in cmds]))
                 return [cmd.to_json() for cmd in cmds]
 
         self.db.expire_all()
@@ -995,9 +995,9 @@ class ProjectEvents(BaseHandler):
         # Close DB connection to not overflow the connection pool
         self.close_db_connection()
 
-        cmds = await self.wait_future
-        logger.info("NOTIFY: (async) %s", json.dumps(cmds))
-        return [cmds]
+        cmd = await self.wait_future
+        logger.info("NOTIFY: (async) %s", json.dumps(cmd))
+        return [cmd]
 
     def on_connection_close(self):
         self.response_cancelled = True
