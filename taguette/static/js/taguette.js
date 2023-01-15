@@ -561,6 +561,9 @@ function updateDocumentsList() {
     var elem = document.createElement('li');
     elem.setAttribute('id', 'document-link-' + doc.id);
     elem.className = 'list-group-item document-link';
+    if(doc.id === current_document) {
+      elem.classList.add('document-link-current');
+    }
     elem.innerHTML =
       '<div class="d-flex justify-content-between align-items-center">' +
       '  <a class="document-link-a">' + escapeHtml(doc.name) + '</a>' +
@@ -1511,11 +1514,17 @@ function loadDocument(document_id) {
       document_contents.style.direction = 'ltr';
     }
     current_document = document_id;
+
+    // Update current document highlight in left panel
     var document_links = document.getElementsByClassName('document-link-current');
     for(var i = document_links.length - 1; i >= 0; --i) {
       document_links[i].classList.remove('document-link-current');
     }
-    document.getElementById('document-link-' + current_document).classList.add('document-link-current');
+    var document_link = document.getElementById('document-link-' + current_document);
+    if(document_link) {
+      document_link.classList.add('document-link-current');
+    }
+
     current_tag = null;
     var tag_links = document.getElementsByClassName('tag-current');
     for(var i = tag_links.length - 1; i >= 0; --i) {

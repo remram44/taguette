@@ -12,6 +12,7 @@ Bugfixes:
 * Fix the database warnings shown at startup
 * Fix language setting sometimes being out of sync between devices
 * Don't allow the creation of blank highlights (empty content, for example selecting a newline character)
+* Fix error adding documents in some situations due to a race condition (seems to only happen when using Redis)
 
 Enhancements:
 * Add Swedish translation
