@@ -955,10 +955,12 @@ class ProjectEvents(BaseHandler):
         ).all()
 
         if len(cmds) >= LIMIT:
+            logger.info("NOTIFY: too many commands")
             raise TooManyCommands
 
         if cmds:
             # Convert to JSON, return
+            logger.info("NOTIFY: (db) %s", json.dumps(cmds))
             return [cmd.to_json() for cmd in cmds]
 
         # Subscribe for events (which come as JSON)
@@ -985,6 +987,7 @@ class ProjectEvents(BaseHandler):
                     self.wait_future,
                 )
                 self.wait_future = None
+                logger.info("NOTIFY: (db2) %s", json.dumps(cmds))
                 return [cmd.to_json() for cmd in cmds]
 
         self.db.expire_all()
@@ -992,7 +995,9 @@ class ProjectEvents(BaseHandler):
         # Close DB connection to not overflow the connection pool
         self.close_db_connection()
 
-        return [await self.wait_future]
+        cmds = await self.wait_future
+        logger.info("NOTIFY: (async) %s", json.dumps(cmds))
+        return [cmds]
 
     def on_connection_close(self):
         self.response_cancelled = True

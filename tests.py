@@ -2418,7 +2418,7 @@ class SeleniumTest(MyHTTPTestCase):
     def tearDown(self):
         super(SeleniumTest, self).tearDown()
 
-        if self.logs:
+        if self.get_logs():
             raise ValueError("Error in browser console: %s"
                              % self.logs[0]['message'])
 
