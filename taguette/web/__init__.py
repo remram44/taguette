@@ -64,21 +64,28 @@ class Error404(BaseHandler):
 
 
 class Health(BaseHandler):
-    @views.PROM_REQUESTS.sync('health')
-    def get(self):
+    @views.PROM_REQUESTS.async_('health')
+    async def get(self):
         self.set_header('Content-Type', 'text/plain')
 
         if self.application.is_exiting:
             self.set_status(503, "Shutting down")
-            return self.finish("Shutting down")
+            return await self.finish("Shutting down")
 
         try:
             self.db.query(database.Project).first()
         except Exception:
             self.set_status(503)
-            return self.finish("Database unavailable")
+            return await self.finish("Database unavailable")
 
-        return self.finish("Ok")
+        if self.application.redis is not None:
+            try:
+                await self.application.redis.ping()
+            except Exception:
+                self.set_status(503)
+                return await self.finish("Redis unavailable")
+
+        return await self.finish("Ok")
 
 
 class UnbakedURLSpec(object):
