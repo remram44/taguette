@@ -406,7 +406,7 @@ class BaseHandler(HandleStreamClosed, RequestHandler):
         user = self.get_secure_cookie('user')
         if user is not None:
             user = self.db.query(database.User).get(user.decode('utf-8'))
-            if user.disabled:
+            if user is None or user.disabled:
                 return None
             self.language = user.language
             return user.login
