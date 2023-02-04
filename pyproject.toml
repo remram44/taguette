@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "taguette"
-version = "1.4.0"
+version = "1.4.1"
 description = "Free and open source qualitative research tool"
 
 license = "BSD-3-Clause"
@@ -46,8 +46,6 @@ include = [
 "Chat" = "https://app.element.io/#/room/#taguette:matrix.org"
 "User Mailing List" = "https://groups.io/g/taguette"
 "Open Collective" = "https://opencollective.com/taguette"
-
-# When updating dependencies: update 'translation' stage in Dockerfile
 
 [tool.poetry.dependencies]
 python = ">=3.7,<4"
