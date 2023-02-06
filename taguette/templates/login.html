@@ -47,7 +47,7 @@
 
   {% if register_enabled %}
   <div class="tab-pane fade{% if register %} show active{% endif %}" id="register" role="tabpanel" aria-labelledby="register-tab">
-    <form action="{{ reverse_url('register') }}" method="post">
+    <form id="register-form" action="{{ reverse_url('register') }}" method="post">
       {{ xsrf_form_html() }}
       {% if register_error %}
       <div class="alert alert-danger" role="alert">
@@ -101,6 +101,18 @@
   {% endif %}
 
 </div>
+
+<script type="text/javascript">
+var formElem = document.getElementById("register-form");
+var submitting = false;
+formElem.addEventListener('submit', function(evt) {
+  if(!submitting) {
+    submitting = true;
+  } else {
+    evt.preventDefault();
+  }
+});
+</script>
 
 <script type="text/javascript">
 // Adapted from https://stackoverflow.com/a/10787789

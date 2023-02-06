@@ -8,7 +8,7 @@
 {% if error %}
 <div class="alert alert-danger">{{ error }}</div>
 {% endif %}
-<form action="{{ reverse_url('account') }}" method="post">
+<form id="account-form" action="{{ reverse_url('account') }}" method="post">
   {{ xsrf_form_html() }}
   <div class="form-group row">
     <label for="login" class="col-sm-2 col-form-label">{% trans "form label for user name" %}Login{% endtrans %}</label>
@@ -52,4 +52,16 @@
     </div>
   </div>
 </form>
+
+<script type="text/javascript">
+var formElem = document.getElementById("account-form");
+var submitting = false;
+formElem.addEventListener('submit', function(evt) {
+  if(!submitting) {
+    submitting = true;
+  } else {
+    evt.preventDefault();
+  }
+});
+</script>
 {% endblock %}
