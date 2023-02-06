@@ -260,6 +260,15 @@ class Account(BaseHandler):
             if email is not None:
                 if email:
                     validate.user_email(email)
+                    if (
+                        self.db.query(database.User)
+                            .filter(database.User.email == email)
+                            .filter(database.User.login != user.login)
+                            .count() > 0
+                    ):
+                        raise validate.InvalidFormat(_f(
+                            "Email address is already used"
+                        ))
                 user.email = email or None
             if password1 or password2:
                 validate.user_password(password1)
