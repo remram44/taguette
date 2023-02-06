@@ -205,7 +205,14 @@ class Register(BaseHandler):
                     "Terms of Service must be accepted",
                 ))
             self.db.add(user)
-            self.db.commit()
+            try:
+                self.db.commit()
+            except IntegrityError:
+                # Shouldn't happen because of the checks above, but technically
+                # possible
+                raise validate.InvalidFormat(_f(
+                    "User name or email address is taken"
+                ))
             logger.info("User registered: %r", login)
             self.set_secure_cookie('user', login)
             return self.redirect(self.reverse_url('index'))
@@ -280,7 +287,13 @@ class Account(BaseHandler):
                             "Email address is already used"
                         ))
                 user.email = email or None
-            self.db.commit()
+            try:
+                self.db.commit()
+            except IntegrityError:
+                # Shouldn't happen because of the check above, but technically
+                # possible
+                raise validate.InvalidFormat(_f("Email address is already "
+                                                "used"))
             return self.redirect(self.reverse_url('account'))
         except validate.InvalidFormat as e:
             logger.info("Error validating Account: %r", e)
