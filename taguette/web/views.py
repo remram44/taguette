@@ -182,6 +182,9 @@ class Register(BaseHandler):
                 validate.user_email(email)
             if password1 != password2:
                 raise validate.InvalidFormat(_f("Passwords do not match"))
+            user = database.User(login=login)
+            await user.set_password(password1)
+            # Hashing password takes a while, do duplicate checks after
             if self.db.query(database.User).get(login) is not None:
                 raise validate.InvalidFormat(_f("User name is taken"))
             if (
@@ -192,8 +195,6 @@ class Register(BaseHandler):
             ):
                 raise validate.InvalidFormat(_f("Email address is already "
                                                 "used"))
-            user = database.User(login=login)
-            await user.set_password(password1)
             if email:
                 user.email = email
             if (
@@ -257,6 +258,15 @@ class Account(BaseHandler):
             language = self.get_body_argument('language', None)
             password1 = self.get_body_argument('password1', None)
             password2 = self.get_body_argument('password2', None)
+            if password1 or password2:
+                validate.user_password(password1)
+                if password1 != password2:
+                    raise validate.InvalidFormat(_f("Passwords do not match"))
+                await user.set_password(password1)
+            if language not in tornado.locale.get_supported_locales():
+                language = None
+            user.language = language
+            # Hashing password takes a while, do duplicate check after
             if email is not None:
                 if email:
                     validate.user_email(email)
@@ -270,14 +280,6 @@ class Account(BaseHandler):
                             "Email address is already used"
                         ))
                 user.email = email or None
-            if password1 or password2:
-                validate.user_password(password1)
-                if password1 != password2:
-                    raise validate.InvalidFormat(_f("Passwords do not match"))
-                await user.set_password(password1)
-            if language not in tornado.locale.get_supported_locales():
-                language = None
-            user.language = language
             self.db.commit()
             return self.redirect(self.reverse_url('account'))
         except validate.InvalidFormat as e:
