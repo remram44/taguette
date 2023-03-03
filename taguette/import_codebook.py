@@ -1,3 +1,4 @@
+import chardet
 import codecs
 import csv
 
@@ -14,7 +15,16 @@ class InvalidCodebook(ValueError):
 
 
 def list_tags_csv(reader):
-    reader = codecs.getreader('utf-8')(reader)
+    detector = chardet.UniversalDetector()
+    chunk = reader.read(4096)
+    while chunk and not detector.done:
+        detector.feed(chunk)
+        chunk = reader.read(4096)
+    detector.close()
+    charset = detector.result['encoding']
+    reader.seek(0, 0)
+
+    reader = codecs.getreader(charset)(reader)
     reader = csv.reader(reader)
 
     # Read header
