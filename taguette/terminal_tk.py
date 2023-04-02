@@ -2,6 +2,7 @@ import asyncio
 import asyncio.protocols
 import asyncio.subprocess
 import atexit
+import sys
 import threading
 import tkinter as tk
 from tkinter import ttk
@@ -106,3 +107,14 @@ class ProcessProtocol(asyncio.protocols.SubprocessProtocol):
     def process_exited(self):
         retcode = self.transport.get_returncode()
         self.add_text("Process exited with status %d" % retcode)
+
+
+def main():
+    script = (
+        'import sys\n'
+        + 'sys.argv = %r\n'
+        + 'from taguette.main import main\n'
+        + 'main()\n'
+    ) % (['taguette'] + sys.argv[1:],)
+    run_in_terminal([sys.executable, '-c', script])
+    exit(0)

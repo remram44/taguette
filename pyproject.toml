@@ -108,6 +108,7 @@ mysql = [
 
 [tool.poetry.scripts]
 taguette = "taguette.main:main"
+taguette-tk = "taguette.terminal_tk:main"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
