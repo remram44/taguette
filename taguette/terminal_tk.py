@@ -33,15 +33,25 @@ def run_in_terminal(cmd, *, actions=()):
         )
         button.grid(column=col + 1, row=1)
     ttk.Frame(root).grid(column=len(actions) + 1, row=1)
+    ttk.Frame(root).grid(column=len(actions) + 2, row=1)
 
     # The console
     console = tk.Text(mainframe)
     console.grid(
         column=1,
         row=2,
-        columnspan=len(actions) + 1,
+        columnspan=len(actions) + 2,
         sticky=(tk.N, tk.W, tk.E, tk.S),
     )
+
+    # Scrollbar
+    scrollbar = ttk.Scrollbar(
+        mainframe,
+        orient='vertical',
+        command=console.yview,
+    )
+    console['yscrollcommand'] = scrollbar.set
+    scrollbar.grid(column=len(actions) + 2, row=2, sticky=(tk.N, tk.S))
 
     def add_text(text):
         console.insert('end', text)
