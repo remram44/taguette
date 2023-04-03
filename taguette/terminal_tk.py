@@ -2,16 +2,19 @@ import asyncio
 import asyncio.protocols
 import asyncio.subprocess
 import atexit
+import os
+import socket
 import sys
 import threading
 import tkinter as tk
+import webbrowser
 from tkinter import ttk
 
 
 MAX_LINES = 1000
 
 
-def run_in_terminal(cmd, *, actions=()):
+def run_in_terminal(cmd):
     # Create window
     root = tk.Tk()
     root.title("Taguette")
@@ -21,26 +24,38 @@ def run_in_terminal(cmd, *, actions=()):
     mainframe.grid(column=0, row=0, sticky=(tk.N, tk.W, tk.E, tk.S))
     root.columnconfigure(0, weight=1)
     root.rowconfigure(0, weight=1)
-    mainframe.columnconfigure(len(actions) + 1, weight=1)
+    mainframe.columnconfigure(3, weight=1)
     mainframe.rowconfigure(2, weight=1)
 
+    def open_browser():
+        if open_browser.url:
+            webbrowser.open(open_browser.url)
+
+    open_browser.url = None
+
     # The buttons
-    for col, (label, callback) in enumerate(actions):
-        button = ttk.Button(
-            mainframe,
-            text=label,
-            command=callback,
-        )
-        button.grid(column=col + 1, row=1)
-    ttk.Frame(root).grid(column=len(actions) + 1, row=1)
-    ttk.Frame(root).grid(column=len(actions) + 2, row=1)
+    browser_button = ttk.Button(
+        mainframe,
+        text="Open browser",
+        command=open_browser,
+    )
+    browser_button.state(['disabled'])
+    browser_button.grid(column=1, row=1)
+    quit_button = ttk.Button(
+        mainframe,
+        text="Quit",
+        command=lambda: sys.exit(0),
+    )
+    quit_button.grid(column=2, row=1)
+    ttk.Frame(root).grid(column=3, row=1)
+    ttk.Frame(root).grid(column=4, row=1)
 
     # The console
     console = tk.Text(mainframe)
     console.grid(
         column=1,
         row=2,
-        columnspan=len(actions) + 2,
+        columnspan=4,
         sticky=(tk.N, tk.W, tk.E, tk.S),
     )
 
@@ -51,7 +66,7 @@ def run_in_terminal(cmd, *, actions=()):
         command=console.yview,
     )
     console['yscrollcommand'] = scrollbar.set
-    scrollbar.grid(column=len(actions) + 2, row=2, sticky=(tk.N, tk.S))
+    scrollbar.grid(column=4, row=2, sticky=(tk.N, tk.S))
 
     def add_text(text):
         console.insert('end', text)
@@ -76,11 +91,22 @@ def run_in_terminal(cmd, *, actions=()):
             add_text_queue.append(text)
         root.event_generate('<<AddLineToConsole>>', when='tail')
 
+    root.bind(
+        '<<EnableBrowserButton>>',
+        lambda *args: browser_button.state(['!disabled']),
+    )
+
+    def set_url_threadsafe(url):
+        with mutex:
+            open_browser.url = url
+        root.event_generate('<<EnableBrowserButton>>', when='tail')
+
     # Start an asyncio event loop in a thread and run the command
     thread = threading.Thread(
         target=lambda: _start_process(
             cmd,
             add_text_threadsafe,
+            set_url_threadsafe,
         ),
     )
     thread.daemon = True
@@ -89,16 +115,45 @@ def run_in_terminal(cmd, *, actions=()):
     root.mainloop()
 
 
-def _start_process(cmd, add_text):
+def _start_process(cmd, add_text, set_url):
     loop = asyncio.new_event_loop()
+
+    # Create a TCP server to receive the URL from Taguette
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.bind(('127.0.0.1', 0))
+    port = sock.getsockname()[1]
+    print(port)
+
+    def set_url_and_stop(url):
+        set_url(url)
+        url_server.close()
+
+    url_server, _ = loop.run_until_complete(loop.create_datagram_endpoint(
+        lambda: ReceiveOnceProtocol(set_url_and_stop),
+        sock=sock,
+    ))
+
+    # Run the process
     loop.run_until_complete(loop.subprocess_exec(
         lambda: ProcessProtocol(add_text),
         *cmd,
         stdin=asyncio.subprocess.DEVNULL,
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.STDOUT,
+        env=dict(os.environ, TAGUETTE_URL_PORT=str(port)),
     ))
+
     loop.run_forever()
+
+
+class ReceiveOnceProtocol(asyncio.protocols.Protocol):
+    def __init__(self, result):
+        self._result = result
+
+    def datagram_received(self, data, addr):
+        data = data.decode('ascii')
+        self._result(data)
+        return False
 
 
 class ProcessProtocol(asyncio.protocols.SubprocessProtocol):

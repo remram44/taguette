@@ -8,6 +8,7 @@ import os
 import pkg_resources
 import prometheus_client
 import re
+import socket
 import subprocess
 import sys
 import tornado.ioloop
@@ -413,6 +414,8 @@ def main():
         asyncio.get_event_loop().set_debug(True)
 
     url = get_join_url(app)
+    if 'TAGUETTE_URL_PORT' in os.environ:
+        send_msg(('127.0.0.1', int(os.environ['TAGUETTE_URL_PORT'], 10)), url)
     print(_("\n    Taguette %(version)s is now running. You can connect to it "
             "using this link:\n\n    %(url)s\n") %
           dict(url=url, version=exact_version()), flush=True)
@@ -421,6 +424,12 @@ def main():
         loop.call_later(0.01, webbrowser.open, url)
 
     loop.start()
+
+
+def send_msg(destination, msg):
+    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
+        sock.connect(destination)
+        sock.sendall(msg.encode('ascii'))
 
 
 if __name__ == '__main__':
