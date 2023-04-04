@@ -17,6 +17,7 @@ import webbrowser
 import taguette
 from . import exact_version
 from . import database
+from . import metrics
 from .web import make_app
 
 
@@ -366,29 +367,6 @@ def main():
             HTML_OUT_SIZE_LIMIT=5000000,  # 5 MB
         )
 
-    if 'PROMETHEUS_LISTEN' in config:
-        p_addr = None
-        p_port = config['PROMETHEUS_LISTEN']
-        if isinstance(p_port, str):
-            if ':' in p_port:
-                p_addr, p_port = p_port.split(':')
-                p_addr = p_addr or None
-            p_port = int(p_port)
-        logger.info("Starting Prometheus exporter on port %d", p_port)
-        prometheus_client.start_http_server(p_port, p_addr)
-
-    if 'SENTRY_DSN' in config:
-        import sentry_sdk
-        from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
-        from sentry_sdk.integrations.tornado import TornadoIntegration
-        logger.info("Initializing Sentry")
-        sentry_sdk.init(
-            dsn=config['SENTRY_DSN'],
-            integrations=[TornadoIntegration(), SqlalchemyIntegration()],
-            ignore_errors=[KeyboardInterrupt],
-            release='taguette@%s' % exact_version(),
-        )
-
     app = make_app(config, debug=args.debug)
     app.listen(config['PORT'], address=config['BIND_ADDRESS'],
                xheaders=config.get('X_HEADERS', False))
@@ -411,6 +389,30 @@ def main():
     if args.debug:
         logger.warning("Debug mode is ON")
         asyncio.get_event_loop().set_debug(True)
+
+    if 'PROMETHEUS_LISTEN' in config:
+        p_addr = None
+        p_port = config['PROMETHEUS_LISTEN']
+        if isinstance(p_port, str):
+            if ':' in p_port:
+                p_addr, p_port = p_port.split(':')
+                p_addr = p_addr or None
+            p_port = int(p_port)
+        logger.info("Starting Prometheus exporter on port %d", p_port)
+        metrics.init(app.DBSession)
+        prometheus_client.start_http_server(p_port, p_addr)
+
+    if 'SENTRY_DSN' in config:
+        import sentry_sdk
+        from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
+        from sentry_sdk.integrations.tornado import TornadoIntegration
+        logger.info("Initializing Sentry")
+        sentry_sdk.init(
+            dsn=config['SENTRY_DSN'],
+            integrations=[TornadoIntegration(), SqlalchemyIntegration()],
+            ignore_errors=[KeyboardInterrupt],
+            release='taguette@%s' % exact_version(),
+        )
 
     url = get_join_url(app)
     print(_("\n    Taguette %(version)s is now running. You can connect to it "
