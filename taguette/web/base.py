@@ -38,6 +38,14 @@ PROM_DB_CONNECTIONS = prometheus_client.Gauge(
     "Number of currently open database connections",
 )
 
+PROM_EMAILS = prometheus_client.Counter(
+    'emails_sent',
+    "Number of emails sent",
+    labelnames=['type'],
+)
+
+PROM_EMAILS.labels('password_reset').inc(0)
+
 
 class PseudoLocale(tornado.locale.Locale):
     def __init__(self):
@@ -294,6 +302,7 @@ class Application(GracefulExitApplication):
             if 'user' in config or 'password' in config:
                 smtp.login(config['user'], config['password'])
             smtp.send_message(msg)
+            PROM_EMAILS.labels('password_reset').inc()
 
     def log_request(self, handler):
         if handler.request.path == '/health' and handler.get_status() == 200:
