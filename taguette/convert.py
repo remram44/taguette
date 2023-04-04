@@ -1,5 +1,6 @@
 import asyncio
 import bleach
+import bleached
 import bs4
 import chardet
 import codecs
@@ -232,8 +233,8 @@ def get_html_body(body):
 def is_html_safe(text):
     """Check whether the given HTML is safe.
 
-    For situation where we cannot run `get_html_body()`, this will throw out
-    unsafe HTML.
+    This will accept HTML that has been bleached, and reject unsafe HTML. No
+    guarantee for unusual HTML, bleach it first.
     """
     if isinstance(text, bytes):
         try:
@@ -252,8 +253,7 @@ def is_html_safe(text):
         if e.attrs['src'] != '/static/missing.png':
             return False
 
-    # Use bleach to sanitize the content
-    cleaned = bleach.clean(
+    return bleached.is_html_bleached(
         text,
         tags=['p', 'br', 'code', 'blockquote', 'pre',  # formatting
               'sub', 'sup', 'caption',
@@ -265,15 +265,6 @@ def is_html_safe(text):
               'colgroup', 'col',  # columns
               ],
         attributes={'a': ['href', 'title'], 'img': ['src', 'width', 'height']},
-        strip=True,
-    )
-
-    # text.strip() == cleaned.strip()
-    # This doesn't work because bleach changed from outputting <br/> to <br>
-
-    return (
-        text.strip().replace('/>', '>')
-        == cleaned.strip().replace('/>', '>')
     )
 
 
