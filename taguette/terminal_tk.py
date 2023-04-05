@@ -175,11 +175,18 @@ class ProcessProtocol(asyncio.protocols.SubprocessProtocol):
 
 
 def main():
-    script = (
-        'import sys\n'
-        + 'sys.argv = %r\n'
-        + 'from taguette.main import main\n'
-        + 'main()\n'
-    ) % (['taguette'] + sys.argv[1:],)
-    run_in_terminal([sys.executable, '-c', script])
+    if os.path.basename(sys.executable) == 'taguette_tk_exe':
+        executable = os.path.join(
+            os.path.dirname(sys.executable),
+            "taguette_exe",
+        )
+        run_in_terminal([executable] + sys.argv[1:])
+    else:
+        script = (
+            'import sys\n'
+            + 'sys.argv = %r\n'
+            + 'from taguette.main import main\n'
+            + 'main()\n'
+        ) % (['taguette'] + sys.argv[1:],)
+        run_in_terminal([sys.executable, '-c', script])
     exit(0)

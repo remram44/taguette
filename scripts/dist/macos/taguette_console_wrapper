@@ -1,4 +1,0 @@
-#!/bin/sh
-
-# Open the main executable in a terminal
-open "$(dirname "$0")/taguette_exe"

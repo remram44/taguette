@@ -9,13 +9,12 @@ fi
 VERSION="$1"
 
 cd "$(dirname "$0")/../.."
-cp scripts/dist/pyinstaller_entrypoint.py scripts/dist/macos/macos.spec .
+cp scripts/dist/pyinstaller_entrypoint*.py scripts/dist/macos/macos.spec .
 poetry install
 scripts/update_translations.sh
 rm -rf build dist
 pyinstaller macos.spec
 rm -rf dist/taguette
-cp scripts/dist/macos/taguette_console_wrapper dist/Taguette.app/Contents/MacOS/
 cp -a /Applications/calibre.app dist/Taguette.app/Contents/Resources/
 (cd dist/Taguette.app/Contents && patch -p0 <../../../scripts/dist/macos/plist.patch && rm -f Info.plist.orig)
 codesign --deep --force -s Taguette dist/Taguette.app

@@ -1,9 +1,5 @@
 --- Info.plist	2018-10-22 00:04:06.000000000 +0000
 +++ Info.plist	2018-10-22 00:03:55.000000000 +0000
-@@ -7,2 +7,2 @@
- 	<key>CFBundleExecutable</key>
--	<string>MacOS/taguette_exe</string>
-+	<string>MacOS/taguette_console_wrapper</string>
 @@ -19,2 +19,2 @@
  	<key>CFBundleShortVersionString</key>
 -	<string>0.0.0</string>
