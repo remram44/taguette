@@ -86,6 +86,9 @@ selenium = ">=4.5,<4.6"
 [tool.poetry.group.i18n.dependencies]
 babel = ">=2.6,<3"
 
+[tool.poetry.group.pyinstaller.dependencies]
+pyinstaller = "*"
+
 [tool.poetry.extras]
 otel = [
     "opentelemetry-distro",
