@@ -61,7 +61,8 @@ def delete_left(node, indices):
     """Delete the left part of an HTML tree.
     """
     for idx in indices:
-        del node.contents[:idx]
+        for child in node.contents[:idx]:
+            child.extract()
         node = node.contents[0]
 
 
