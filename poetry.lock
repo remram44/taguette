@@ -1985,4 +1985,4 @@ postgres = ["psycopg2"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.7,<4"
-content-hash = "35ccf311eb710ee41f4dd6fa169f18799ef2715125cee531509fa21c7d28ed1b"
+content-hash = "99e40660022e341eee1a48c2a86762479955ef76b0bf5e22da38f0e9693c4438"
