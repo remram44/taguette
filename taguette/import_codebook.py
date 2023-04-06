@@ -21,7 +21,7 @@ def list_tags_csv(reader):
         detector.feed(chunk)
         chunk = reader.read(4096)
     detector.close()
-    charset = detector.result['encoding']
+    charset = detector.result['encoding'] or 'utf-8'
     reader.seek(0, 0)
 
     reader = codecs.getreader(charset)(reader)
