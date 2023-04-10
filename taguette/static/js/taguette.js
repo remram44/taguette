@@ -889,7 +889,20 @@ function updateTagsList() {
   }
 
   // The list in the highlight modal
+  refillModalTagsList('');
 
+
+  // Re-set all highlights, to update titles
+  var hl_entries = Object.entries(highlights);
+  for(var i = 0; i < hl_entries.length; ++i) {
+    setHighlight(hl_entries[i][1]);
+  }
+
+  console.log("Highlights updated");
+}
+
+function refillModalTagsList(searchFor){
+  var entries = Object.entries(tags);
   // Save previous checked statuses
   var checked_tags = [];
   for(var i = 0; i < entries.length; ++i) {
@@ -909,6 +922,19 @@ function updateTagsList() {
     }
     tags_modal_list.removeChild(first);
   }
+
+  if(searchFor.length > 0){
+    entries.forEach(function(e) {
+      if(e[1].path.indexOf(searchFor) > -1){
+        e[1].searchGroup = "0";
+      } else {
+        e[1].searchGroup = "1";
+      }
+    });
+  }
+
+  sortByKey(entries, function(e) { return e[1].searchGroup + e[1].path; });
+
   // Fill up the list again
   // TODO: Show this as a tree
   var tree = {};
@@ -916,10 +942,14 @@ function updateTagsList() {
   for(var i = 0; i < entries.length; ++i) {
     var tag = entries[i][1];
     var elem = document.createElement('li');
+    var searchHitClass = '';
+    if (tag.searchGroup == 0) {
+      searchHitClass = 'font-weight-bold';
+    }
     elem.className = 'tag-name form-check';
     elem.innerHTML =
       '<input type="checkbox" class="form-check-input" value="' + tag.id + '" name="highlight-add-tags" id="highlight-add-tags-' + tag.id + '" />' +
-      '<label for="highlight-add-tags-' + tag.id + '" class="form-check-label">' + escapeHtml(tag.path) + '</label>';
+      '<label for="highlight-add-tags-' + tag.id + '" class="form-check-label ' + searchHitClass + '">' + escapeHtml(tag.path) + '</label>';
     tags_modal_list.insertBefore(elem, before);
   }
   if(entries.length == 0) {
@@ -934,14 +964,18 @@ function updateTagsList() {
   }
 
   console.log("Tags list updated");
+}
 
-  // Re-set all highlights, to update titles
-  var hl_entries = Object.entries(highlights);
-  for(var i = 0; i < hl_entries.length; ++i) {
-    setHighlight(hl_entries[i][1]);
-  }
+document.getElementById('highlight-search').addEventListener('input', function(e){
+  refillModalTagsList(e.target.value);
+});
 
-  console.log("Highlights updated");
+function highlightModalReset(){
+  //resets form excluding search filter
+  var searchInput = document.getElementById('highlight-search');
+  var val = searchInput.value;
+  document.getElementById('highlight-add-form').reset();
+  searchInput.value = val;
 }
 
 updateTagsList();
@@ -1227,7 +1261,7 @@ function createHighlight(selection) {
   document.getElementById('highlight-add-id').value = '';
   document.getElementById('highlight-add-start').value = selection[0];
   document.getElementById('highlight-add-end').value = selection[1];
-  document.getElementById('highlight-add-form').reset();
+  highlightModalReset();
   $(highlight_add_modal).modal().drags({handle: '.modal-header'});
 }
 
@@ -1241,7 +1275,7 @@ document.addEventListener('keyup', function(e) {
 });
 
 function editHighlight() {
-  document.getElementById('highlight-add-form').reset();
+  highlightModalReset();
   var id = this.getAttribute('data-highlight-id');
   document.getElementById('highlight-add-id').value = id;
   document.getElementById('highlight-add-start').value = highlights[id].start_offset;
@@ -1291,7 +1325,7 @@ document.getElementById('highlight-add-form').addEventListener('submit', functio
   req.then(function() {
     console.log("Highlight posted");
     $(highlight_add_modal).modal('hide');
-    document.getElementById('highlight-add-form').reset();
+    highlightModalReset();
   })
   .catch(function(error) {
     console.error("Failed to create highlight:", error);
@@ -1311,7 +1345,7 @@ document.getElementById('highlight-delete').addEventListener('click', function()
     )
     .then(function() {
       $(highlight_add_modal).modal('hide');
-      document.getElementById('highlight-add-form').reset();
+      highlightModalReset();
     })
     .catch(function(error) {
       console.error("Failed to delete highlight:", error);
