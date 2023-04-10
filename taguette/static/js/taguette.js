@@ -966,8 +966,14 @@ function refillModalTagsList(searchFor){
   console.log("Tags list updated");
 }
 
-document.getElementById('highlight-search').addEventListener('input', function(e){
+var highlightSearch = document.getElementById('highlight-search');
+highlightSearch.addEventListener('input', function(e){
   refillModalTagsList(e.target.value);
+});
+highlightSearch.addEventListener('keypress', function(e){
+  if (e.key === 'Enter') {
+    e.preventDefault();
+  }
 });
 
 function highlightModalReset(){
