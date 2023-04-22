@@ -84,8 +84,17 @@
 
         <!-- List of tags -->
         <div class="tab-pane fade" id="tags" role="tabpanel" aria-labelledby="tags-tab">
-          <div class="row">
-            <div class="col-md-12 mb-3">
+          <div class="row"> 
+            <div class="col-md-4 mb-3">
+              Sort: 
+              <select id="tag-sortby">
+                <option value="path|asc">Text [a&rarr;z]</option>
+                <option value="path|desc">Text [z&rarr;a]</option>
+                <option value="count|asc">Count [0&rarr;9]</option>
+                <option value="count|desc">Count [9&rarr;0]</option>
+              </select>
+            </div>
+            <div class="col-md-8 mb-3">
               <a id="load-all-tags" class="btn btn-primary float-right ml-2" href="/project/{{ project.id }}/highlights/">{% trans %}See all highlights{% endtrans %}</a>
               <a class="btn btn-primary float-right" href="javascript:createTag()">{% trans %}Create a tag{% endtrans %}</a>
             </div>

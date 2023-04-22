@@ -32,12 +32,16 @@ if(!Object.entries) {
   };
 }
 
-function sortByKey(array, key) {
+function sortByKey(array, key, reverse) {
+  var orderByX = 1;
+  if(reverse){
+    orderByX = -1
+  }
   array.sort(function(a, b) {
     if(key(a) < key(b)) {
-      return -1;
+      return -1 * orderByX;
     } else if(key(a) > key(b)) {
-      return 1;
+      return 1 * orderByX;
     } else {
       return 0;
     }
@@ -755,8 +759,14 @@ document.getElementById('document-change-delete').addEventListener('click', func
  * Tags list
  */
 
+var tags_sorter = document.getElementById('tag-sortby');
 var tags_list = document.getElementById('tags-list');
 var tags_modal_list = document.getElementById('highlight-add-tags');
+
+tags_sorter.addEventListener('change', function(e){
+  e.preventDefault();
+  updateTagsList();
+})
 
 function linkTag(elem, tag_path) {
   var url = base_path + '/project/' + project_id + '/highlights/' + encodeURIComponent(tag_path);
@@ -818,7 +828,12 @@ function mergeTags(tag_src, tag_dest) {
 
 function updateTagsList() {
   var entries = Object.entries(tags);
-  sortByKey(entries, function(e) { return e[1].path; });
+  var sortBy = document.getElementById('tag-sortby').value.split('|');
+  var isReverse = false;
+  if(sortBy.length > 1 && sortBy[1] == 'desc'){
+    isReverse = true;
+  }
+  sortByKey(entries, function(e) { return e[1][sortBy[0]]; }, isReverse);
 
   // The list in the left panel
 
