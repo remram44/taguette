@@ -32,12 +32,16 @@ if(!Object.entries) {
   };
 }
 
-function sortByKey(array, key) {
+function sortByKey(array, key, reverse) {
+  var orderByX = 1;
+  if(reverse){
+    orderByX = -1
+  }
   array.sort(function(a, b) {
     if(key(a) < key(b)) {
-      return -1;
+      return -1 * orderByX;
     } else if(key(a) > key(b)) {
-      return 1;
+      return 1 * orderByX;
     } else {
       return 0;
     }
@@ -755,8 +759,29 @@ document.getElementById('document-change-delete').addEventListener('click', func
  * Tags list
  */
 
+var tags_sorter = document.getElementById('tag-sortby');
+var sortTags = ['path', 'asc'];
 var tags_list = document.getElementById('tags-list');
 var tags_modal_list = document.getElementById('highlight-add-tags');
+
+function sortTagsBy(field, dir) {
+  sortTags = [field, dir];
+  var options = document.getElementById('tag-sortby-menu').querySelectorAll('a.dropdown-item');
+  var optionSorts = [
+    ['path', 'asc'],
+    ['path', 'desc'],
+    ['count', 'asc'],
+    ['count', 'desc'],
+  ];
+  for(var i = 0; i < optionSorts.length; ++i) {
+    if(optionSorts[i][0] === field && optionSorts[i][1] === dir) {
+      options[i].classList.add('active');
+    } else {
+      options[i].classList.remove('active');
+    }
+  }
+  updateTagsList();
+}
 
 function linkTag(elem, tag_path) {
   var url = base_path + '/project/' + project_id + '/highlights/' + encodeURIComponent(tag_path);
@@ -818,7 +843,8 @@ function mergeTags(tag_src, tag_dest) {
 
 function updateTagsList() {
   var entries = Object.entries(tags);
-  sortByKey(entries, function(e) { return e[1].path; });
+  var isReverse = sortTags[1] == 'desc';
+  sortByKey(entries, function(e) { return e[1][sortTags[0]]; }, isReverse);
 
   // The list in the left panel
 

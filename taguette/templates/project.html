@@ -86,8 +86,19 @@
         <div class="tab-pane fade" id="tags" role="tabpanel" aria-labelledby="tags-tab">
           <div class="row">
             <div class="col-md-12 mb-3">
-              <a id="load-all-tags" class="btn btn-primary float-right ml-2" href="/project/{{ project.id }}/highlights/">{% trans %}See all highlights{% endtrans %}</a>
-              <a class="btn btn-primary float-right" href="javascript:createTag()">{% trans %}Create a tag{% endtrans %}</a>
+              <div class="dropdown float-right ml-2">
+                <button class="btn btn-sm btn-primary" type="button" id="tag-sortby-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="fa fa-sort"></i>
+                </button>
+                <div class="dropdown-menu" id="tag-sortby-menu" aria-labelledby="tag-sortby-button">
+                  <a class="dropdown-item active" href="javascript:sortTagsBy('path', 'asc')">{% trans %}Text [a&rarr;z]{% endtrans %}</a>
+                  <a class="dropdown-item" href="javascript:sortTagsBy('path', 'desc')">{% trans %}Text [z&rarr;a]{% endtrans %}</a>
+                  <a class="dropdown-item" href="javascript:sortTagsBy('count', 'asc')">{% trans %}Count [0&rarr;9]{% endtrans %}</a>
+                  <a class="dropdown-item" href="javascript:sortTagsBy('count', 'desc')">{% trans %}Count [9&rarr;0]{% endtrans %}</a>
+                </div>
+              </div>
+              <a id="load-all-tags" class="btn btn-sm btn-primary float-right ml-2" href="/project/{{ project.id }}/highlights/">{% trans %}See all highlights{% endtrans %}</a>
+              <a class="btn btn-sm btn-primary float-right" href="javascript:createTag()">{% trans %}Create a tag{% endtrans %}</a>
             </div>
           </div>
           <ul class="list-group list-group-flush" id="tags-list">

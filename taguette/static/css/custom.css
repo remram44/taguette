@@ -305,6 +305,10 @@ a.dropdown-item:hover {
   padding: 12px 20px;
 }
 
+.dropdown-item.active {
+  background-color: #e7f2ff !important;
+}
+
 .expand-marker {
   width: 7px;
 }
