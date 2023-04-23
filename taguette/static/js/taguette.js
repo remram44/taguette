@@ -764,7 +764,6 @@ var tags_list = document.getElementById('tags-list');
 var tags_modal_list = document.getElementById('highlight-add-tags');
 
 tags_sorter.addEventListener('change', function(e){
-  e.preventDefault();
   updateTagsList();
 })
 
