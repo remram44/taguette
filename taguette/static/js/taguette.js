@@ -955,10 +955,10 @@ function updateModalTagsList() {
         searchHitClass = 'text-muted';
       }
     }
-    elem.className = 'tag-name form-check';
+    elem.className = 'tag-name form-check ' + searchHitClass;
     elem.innerHTML =
       '<input type="checkbox" class="form-check-input" value="' + tag.id + '" name="highlight-add-tags" id="highlight-add-tags-' + tag.id + '" />' +
-      '<label for="highlight-add-tags-' + tag.id + '" class="form-check-label ' + searchHitClass + '">' + escapeHtml(tag.path) + '</label>';
+      '<label for="highlight-add-tags-' + tag.id + '" class="form-check-label ">' + escapeHtml(tag.path) + '</label>';
     tags_modal_list.insertBefore(elem, before);
   }
   if(entries.length == 0) {
@@ -981,7 +981,21 @@ highlightSearch.addEventListener('input', function(e) {
 });
 highlightSearch.addEventListener('keypress', function(e) {
   if(e.key === 'Enter') {
-    e.preventDefault();
+    // If search is empty, don't prevent form submission, otherwise...
+    if(highlightSearch.value.length > 0) {
+      // Prevent submission
+      e.preventDefault();
+
+      // Toggle the first match
+      var checkbox = document.getElementById('highlight-add-tags').querySelector('.form-check.font-weight-bold input');
+      if(checkbox) {
+        checkbox.checked = !checkbox.checked;
+
+        // Reset the search
+        highlightSearch.value = '';
+        updateModalTagsList();
+      }
+    }
   }
 });
 
