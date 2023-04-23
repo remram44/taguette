@@ -901,7 +901,7 @@ function updateTagsList() {
   console.log("Highlights updated");
 }
 
-function refillModalTagsList(searchFor){
+function refillModalTagsList(searchFor) {
   var entries = Object.entries(tags);
   // Save previous checked statuses
   var checked_tags = [];
@@ -923,12 +923,12 @@ function refillModalTagsList(searchFor){
     tags_modal_list.removeChild(first);
   }
 
-  if(searchFor.length > 0){
+  if(searchFor.length > 0) {
     entries.forEach(function(e) {
-      if(e[1].path.indexOf(searchFor) > -1){
-        e[1].searchGroup = "0";
+      if(e[1].path.indexOf(searchFor) > -1) {
+        e[1].searchGroup = '0';
       } else {
-        e[1].searchGroup = "1";
+        e[1].searchGroup = '1';
       }
     });
   }
@@ -943,7 +943,7 @@ function refillModalTagsList(searchFor){
     var tag = entries[i][1];
     var elem = document.createElement('li');
     var searchHitClass = '';
-    if (tag.searchGroup == 0) {
+    if(tag.searchGroup == '0') {
       searchHitClass = 'font-weight-bold';
     }
     elem.className = 'tag-name form-check';
@@ -967,17 +967,17 @@ function refillModalTagsList(searchFor){
 }
 
 var highlightSearch = document.getElementById('highlight-search');
-highlightSearch.addEventListener('input', function(e){
+highlightSearch.addEventListener('input', function(e) {
   refillModalTagsList(e.target.value);
 });
-highlightSearch.addEventListener('keypress', function(e){
-  if (e.key === 'Enter') {
+highlightSearch.addEventListener('keypress', function(e) {
+  if(e.key === 'Enter') {
     e.preventDefault();
   }
 });
 
-function highlightModalReset(){
-  //resets form excluding search filter
+function highlightModalReset() {
+  // Resets form excluding search filter
   var searchInput = document.getElementById('highlight-search');
   var val = searchInput.value;
   document.getElementById('highlight-add-form').reset();
