@@ -84,14 +84,14 @@
 
         <!-- List of tags -->
         <div class="tab-pane fade" id="tags" role="tabpanel" aria-labelledby="tags-tab">
-          <div class="row"> 
+          <div class="row">
             <div class="col-md-4 mb-3">
-              Sort: 
+              {# TRANSLATORS: Before list of sorting options #}{% trans %}Sort:{% endtrans %}
               <select id="tag-sortby">
-                <option value="path|asc">Text [a&rarr;z]</option>
-                <option value="path|desc">Text [z&rarr;a]</option>
-                <option value="count|asc">Count [0&rarr;9]</option>
-                <option value="count|desc">Count [9&rarr;0]</option>
+                <option value="path|asc">{% trans %}Text [a&rarr;z]{% endtrans %}</option>
+                <option value="path|desc">{% trans %}Text [z&rarr;a]{% endtrans %}</option>
+                <option value="count|asc">{% trans %}Count [0&rarr;9]{% endtrans %}</option>
+                <option value="count|desc">{% trans %}Count [9&rarr;0]{% endtrans %}</option>
               </select>
             </div>
             <div class="col-md-8 mb-3">
