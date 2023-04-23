@@ -760,12 +760,28 @@ document.getElementById('document-change-delete').addEventListener('click', func
  */
 
 var tags_sorter = document.getElementById('tag-sortby');
+var sortTags = ['path', 'asc'];
 var tags_list = document.getElementById('tags-list');
 var tags_modal_list = document.getElementById('highlight-add-tags');
 
-tags_sorter.addEventListener('change', function(e){
+function sortTagsBy(field, dir) {
+  sortTags = [field, dir];
+  var options = document.getElementById('tag-sortby-menu').querySelectorAll('a.dropdown-item');
+  var optionSorts = [
+    ['path', 'asc'],
+    ['path', 'desc'],
+    ['count', 'asc'],
+    ['count', 'desc'],
+  ];
+  for(var i = 0; i < optionSorts.length; ++i) {
+    if(optionSorts[i][0] === field && optionSorts[i][1] === dir) {
+      options[i].classList.add('active');
+    } else {
+      options[i].classList.remove('active');
+    }
+  }
   updateTagsList();
-})
+}
 
 function linkTag(elem, tag_path) {
   var url = base_path + '/project/' + project_id + '/highlights/' + encodeURIComponent(tag_path);
@@ -827,12 +843,8 @@ function mergeTags(tag_src, tag_dest) {
 
 function updateTagsList() {
   var entries = Object.entries(tags);
-  var sortBy = document.getElementById('tag-sortby').value.split('|');
-  var isReverse = false;
-  if(sortBy.length > 1 && sortBy[1] == 'desc'){
-    isReverse = true;
-  }
-  sortByKey(entries, function(e) { return e[1][sortBy[0]]; }, isReverse);
+  var isReverse = sortTags[1] == 'desc';
+  sortByKey(entries, function(e) { return e[1][sortTags[0]]; }, isReverse);
 
   // The list in the left panel
 
