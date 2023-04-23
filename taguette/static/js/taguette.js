@@ -889,8 +889,7 @@ function updateTagsList() {
   }
 
   // The list in the highlight modal
-  refillModalTagsList('');
-
+  updateModalTagsList();
 
   // Re-set all highlights, to update titles
   var hl_entries = Object.entries(highlights);
@@ -901,7 +900,7 @@ function updateTagsList() {
   console.log("Highlights updated");
 }
 
-function refillModalTagsList(searchFor) {
+function updateModalTagsList() {
   var entries = Object.entries(tags);
   // Save previous checked statuses
   var checked_tags = [];
@@ -923,6 +922,8 @@ function refillModalTagsList(searchFor) {
     tags_modal_list.removeChild(first);
   }
 
+  // Apply search
+  var searchFor = document.getElementById('highlight-search').value;
   if(searchFor.length > 0) {
     entries.forEach(function(e) {
       if(e[1].path.indexOf(searchFor) > -1) {
@@ -930,6 +931,10 @@ function refillModalTagsList(searchFor) {
       } else {
         e[1].searchGroup = '1';
       }
+    });
+  } else {
+    entries.forEach(function(e) {
+      delete e[1].searchGroup;
     });
   }
 
@@ -943,8 +948,12 @@ function refillModalTagsList(searchFor) {
     var tag = entries[i][1];
     var elem = document.createElement('li');
     var searchHitClass = '';
-    if(tag.searchGroup == '0') {
-      searchHitClass = 'font-weight-bold';
+    if(searchFor.length > 0) {
+      if(tag.searchGroup == '0') {
+        searchHitClass = 'font-weight-bold';
+      } else {
+        searchHitClass = 'text-muted';
+      }
     }
     elem.className = 'tag-name form-check';
     elem.innerHTML =
@@ -968,7 +977,7 @@ function refillModalTagsList(searchFor) {
 
 var highlightSearch = document.getElementById('highlight-search');
 highlightSearch.addEventListener('input', function(e) {
-  refillModalTagsList(e.target.value);
+  updateModalTagsList();
 });
 highlightSearch.addEventListener('keypress', function(e) {
   if(e.key === 'Enter') {
@@ -977,11 +986,8 @@ highlightSearch.addEventListener('keypress', function(e) {
 });
 
 function highlightModalReset() {
-  // Resets form excluding search filter
-  var searchInput = document.getElementById('highlight-search');
-  var val = searchInput.value;
   document.getElementById('highlight-add-form').reset();
-  searchInput.value = val;
+  updateModalTagsList();
 }
 
 updateTagsList();
