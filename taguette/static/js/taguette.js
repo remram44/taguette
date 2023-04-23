@@ -1269,6 +1269,7 @@ function createHighlight(selection) {
   document.getElementById('highlight-add-end').value = selection[1];
   highlightModalReset();
   $(highlight_add_modal).modal().drags({handle: '.modal-header'});
+  document.getElementById('highlight-search').focus();
 }
 
 // TRANSLATORS: Key used to create a new highlight
@@ -1291,6 +1292,7 @@ function editHighlight() {
     document.getElementById('highlight-add-tags-' + hl_tags[i]).checked = true;
   }
   $(highlight_add_modal).modal().drags({handle: '.modal-header'});
+  document.getElementById('highlight-search').focus();
 }
 
 // Save highlight button
