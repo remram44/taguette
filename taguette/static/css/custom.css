@@ -12,6 +12,13 @@
   src: url(../webfonts/Montserrat-Light.ttf);
 }
 
+div.sticky-top {
+  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 100vh;
+}
+
 /* Change link colors */
 .container-body a:not(.btn) {
   color: #3498DB;
