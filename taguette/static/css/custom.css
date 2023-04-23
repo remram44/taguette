@@ -43,7 +43,6 @@ body {
 
 /* Left pane scrolls on overflow */
 div.sticky-top {
-  overflow: scroll;
   overflow-x: hidden;
   overflow-y: auto;
   height: 100vh;
