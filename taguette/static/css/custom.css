@@ -41,6 +41,14 @@ body {
   padding: 0.4em;
 }
 
+/* Left pane scrolls on overflow */
+div.sticky-top {
+  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 100vh;
+}
+
 /* Footer */
 .footer {
   font-size: 0.82em;
