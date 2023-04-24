@@ -889,7 +889,19 @@ function updateTagsList() {
   }
 
   // The list in the highlight modal
+  updateModalTagsList();
 
+  // Re-set all highlights, to update titles
+  var hl_entries = Object.entries(highlights);
+  for(var i = 0; i < hl_entries.length; ++i) {
+    setHighlight(hl_entries[i][1]);
+  }
+
+  console.log("Highlights updated");
+}
+
+function updateModalTagsList() {
+  var entries = Object.entries(tags);
   // Save previous checked statuses
   var checked_tags = [];
   for(var i = 0; i < entries.length; ++i) {
@@ -909,6 +921,25 @@ function updateTagsList() {
     }
     tags_modal_list.removeChild(first);
   }
+
+  // Apply search
+  var searchFor = document.getElementById('highlight-search').value;
+  if(searchFor.length > 0) {
+    entries.forEach(function(e) {
+      if(e[1].path.indexOf(searchFor) > -1) {
+        e[1].searchGroup = '0';
+      } else {
+        e[1].searchGroup = '1';
+      }
+    });
+  } else {
+    entries.forEach(function(e) {
+      delete e[1].searchGroup;
+    });
+  }
+
+  sortByKey(entries, function(e) { return e[1].searchGroup + e[1].path; });
+
   // Fill up the list again
   // TODO: Show this as a tree
   var tree = {};
@@ -916,10 +947,18 @@ function updateTagsList() {
   for(var i = 0; i < entries.length; ++i) {
     var tag = entries[i][1];
     var elem = document.createElement('li');
-    elem.className = 'tag-name form-check';
+    var searchHitClass = '';
+    if(searchFor.length > 0) {
+      if(tag.searchGroup == '0') {
+        searchHitClass = 'font-weight-bold';
+      } else {
+        searchHitClass = 'text-muted';
+      }
+    }
+    elem.className = 'tag-name form-check ' + searchHitClass;
     elem.innerHTML =
       '<input type="checkbox" class="form-check-input" value="' + tag.id + '" name="highlight-add-tags" id="highlight-add-tags-' + tag.id + '" />' +
-      '<label for="highlight-add-tags-' + tag.id + '" class="form-check-label">' + escapeHtml(tag.path) + '</label>';
+      '<label for="highlight-add-tags-' + tag.id + '" class="form-check-label ">' + escapeHtml(tag.path) + '</label>';
     tags_modal_list.insertBefore(elem, before);
   }
   if(entries.length == 0) {
@@ -934,14 +973,35 @@ function updateTagsList() {
   }
 
   console.log("Tags list updated");
+}
 
-  // Re-set all highlights, to update titles
-  var hl_entries = Object.entries(highlights);
-  for(var i = 0; i < hl_entries.length; ++i) {
-    setHighlight(hl_entries[i][1]);
+var highlightSearch = document.getElementById('highlight-search');
+highlightSearch.addEventListener('input', function(e) {
+  updateModalTagsList();
+});
+highlightSearch.addEventListener('keypress', function(e) {
+  if(e.key === 'Enter') {
+    // If search is empty, don't prevent form submission, otherwise...
+    if(highlightSearch.value.length > 0) {
+      // Prevent submission
+      e.preventDefault();
+
+      // Toggle the first match
+      var checkbox = document.getElementById('highlight-add-tags').querySelector('.form-check.font-weight-bold input');
+      if(checkbox) {
+        checkbox.checked = !checkbox.checked;
+
+        // Reset the search
+        highlightSearch.value = '';
+        updateModalTagsList();
+      }
+    }
   }
+});
 
-  console.log("Highlights updated");
+function highlightModalReset() {
+  document.getElementById('highlight-add-form').reset();
+  updateModalTagsList();
 }
 
 updateTagsList();
@@ -1227,8 +1287,9 @@ function createHighlight(selection) {
   document.getElementById('highlight-add-id').value = '';
   document.getElementById('highlight-add-start').value = selection[0];
   document.getElementById('highlight-add-end').value = selection[1];
-  document.getElementById('highlight-add-form').reset();
+  highlightModalReset();
   $(highlight_add_modal).modal().drags({handle: '.modal-header'});
+  document.getElementById('highlight-search').focus();
 }
 
 // TRANSLATORS: Key used to create a new highlight
@@ -1241,7 +1302,7 @@ document.addEventListener('keyup', function(e) {
 });
 
 function editHighlight() {
-  document.getElementById('highlight-add-form').reset();
+  highlightModalReset();
   var id = this.getAttribute('data-highlight-id');
   document.getElementById('highlight-add-id').value = id;
   document.getElementById('highlight-add-start').value = highlights[id].start_offset;
@@ -1251,6 +1312,7 @@ function editHighlight() {
     document.getElementById('highlight-add-tags-' + hl_tags[i]).checked = true;
   }
   $(highlight_add_modal).modal().drags({handle: '.modal-header'});
+  document.getElementById('highlight-search').focus();
 }
 
 // Save highlight button
@@ -1291,7 +1353,7 @@ document.getElementById('highlight-add-form').addEventListener('submit', functio
   req.then(function() {
     console.log("Highlight posted");
     $(highlight_add_modal).modal('hide');
-    document.getElementById('highlight-add-form').reset();
+    highlightModalReset();
   })
   .catch(function(error) {
     console.error("Failed to create highlight:", error);
@@ -1311,7 +1373,7 @@ document.getElementById('highlight-delete').addEventListener('click', function()
     )
     .then(function() {
       $(highlight_add_modal).modal('hide');
-      document.getElementById('highlight-add-form').reset();
+      highlightModalReset();
     })
     .catch(function(error) {
       console.error("Failed to delete highlight:", error);
