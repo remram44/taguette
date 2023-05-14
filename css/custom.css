@@ -329,6 +329,10 @@ footer p {
   color: white !important;
 }
 
+.code-shell::before {
+  content: '$ ';
+}
+
 .list-group-item.disabled, .list-group-item:disabled {
   color: #6a1a1a;
   background-color: #ecf0f1;

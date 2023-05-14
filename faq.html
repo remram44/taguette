@@ -203,6 +203,24 @@
       </div>
     </div>
 
+    <div class="card">
+      <div class="card-header" id="calibre">
+        <h5 class="mb-0">
+          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#calibre-info" aria-expanded="false" aria-controls="calibre-info">{% trans %}I installed Calibre, but importing documents shows "Calibre is not available"{% endtrans %}</button>
+        </h5>
+      </div>
+      <div id="calibre-info" class="collapse" aria-labelledby="calibre" data-parent="#accordion">
+        <div class="card-body">
+          {% trans %}
+          <p>If you did not install Taguette from our Windows or MacOS installers, you need to install Calibre separately.</p>
+          <p>Then, you need to make sure Calibre's <code>ebook-convert</code> program is either in your <code>PATH</code>, or in a directory you set as the <code>CALIBRE</code> environment variable.</p>
+          <p>For example, you can run Taguette like this:</p>
+          <p class="ml-3"><code><span class="code-shell"></span>CALIBRE=/path/to/calibre/bin taguette</code></p>
+          {% endtrans %}
+        </div>
+      </div>
+    </div>
+
     <br>
 
     <h3>{% trans %}Self-hosting/multiuser mode Info{% endtrans %}</h3>
