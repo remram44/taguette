@@ -1,0 +1,1167 @@
+# Translations template for Taguette.
+# Copyright (C) 2018 Remi Rampin and Taguette contributors
+# This file is distributed under the same license as the Taguette project.
+# Remi Rampin <remi@rampin.org>, 2018.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Taguette\n"
+"Report-Msgid-Bugs-To: hi@taguette.org\n"
+"POT-Creation-Date: 2022-10-07 12:08-0400\n"
+"PO-Revision-Date: 2023-05-27 15:49+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: el_GR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.10.3\n"
+"X-Generator: Poedit 3.3.1\n"
+
+#: taguette/main.py:240
+msgid "Port number on which to listen"
+msgstr "Αριθμός θύρας για ακρόαση"
+
+#: taguette/main.py:242
+msgid "Address to bind on"
+msgstr "Διεύθυνση προς δέσμευση"
+
+#: taguette/main.py:244
+msgid "Open web browser to the application"
+msgstr "Ανοίξτε τον περιηγητή διαδικτύου στην εφαρμογή"
+
+#: taguette/main.py:246
+msgid "Don't open the web browser"
+msgstr "Μην ανοίγετε τον περιηγητή διαδικτύου"
+
+#: taguette/main.py:251
+#, python-format
+msgid ""
+"Database location or connection string, for example 'project.db' or "
+"'postgresql://me:pw@localhost/mydb' (default: %(default)r)"
+msgstr ""
+"Τοποθεσία βάσης δεδομένων ή συμβολοσειρά σύνδεσης, για παράδειγμα 'project."
+"db' ή 'postgresql://me:pw@localhost/mydb' (προεπιλογή: %(default)r)"
+
+#: taguette/main.py:258
+msgid "Set the file creation mask (umask) on systems that support it."
+msgstr ""
+"Ρυθμίστε τη μάσκα δημιουργίας αρχείων (umask) σε συστήματα που την "
+"υποστηρίζουν."
+
+#: taguette/main.py:262
+msgid "Don't change umask on startup"
+msgstr "Μην αλλάζετε την εντολή umask κατά την εκκίνηση"
+
+#: taguette/main.py:268
+msgid "additional commands"
+msgstr "πρόσθετες εντολές"
+
+#: taguette/main.py:272
+msgid "Manually trigger a database migration"
+msgstr "Μη αυτόματη ενεργοποίηση μιας μετεγκατάστασης βάσης δεδομένων"
+
+#: taguette/main.py:281
+msgid "Print the default server configuration"
+msgstr "Εκτύπωση της προεπιλεγμένης διαμόρφωσης διακομιστή"
+
+#: taguette/main.py:283
+msgid "Output to this file rather than stdout"
+msgstr "Έξοδος σε αυτό το αρχείο αντί για stdout"
+
+#: taguette/main.py:289
+msgid "Run in server mode, suitable for a multi-user deployment"
+msgstr ""
+"Εκτελείται σε λειτουργία διακομιστή, κατάλληλο για ανάπτυξη από πολλούς "
+"χρήστες"
+
+#: taguette/main.py:291
+msgid ""
+"Configuration file for the server. The default configuration can be "
+"generated using the `default-config` command"
+msgstr ""
+"Αρχείο διαμόρφωσης για τον διακομιστή. Η προεπιλεγμένη διαμόρφωση μπορεί να "
+"δημιουργηθεί χρησιμοποιώντας την εντολή 'default-config'."
+
+#: taguette/main.py:303
+#, python-format
+msgid "Invalid umask: %(arg)s"
+msgstr "Μη έγκυρη εντολή umask: %(arg)s"
+
+#: taguette/main.py:327
+#, python-format
+msgid "Missing required configuration variable %(var)s"
+msgstr "Λείπει η απαιτούμενη μεταβλητή διαμόρφωσης %(var)s"
+
+#: taguette/main.py:334
+msgid "Invalid BASE_PATH"
+msgstr "Μη έγκυρο BASE_PATH"
+
+#: taguette/main.py:394
+#, python-format
+msgid ""
+"\n"
+"    Taguette %(version)s is now running. You can connect to it using this "
+"link:\n"
+"\n"
+"    %(url)s\n"
+msgstr ""
+"\n"
+"    Η Taguette %(version)s εκτελείται τώρα. Μπορείτε να συνδεθείτε σε αυτό "
+"με τον σύνδεσμο:\n"
+"\n"
+"    %(url)s\n"
+
+#: taguette/validate.py:18
+msgid "Description is too long"
+msgstr "Η περιγραφή είναι πολύ μεγάλη"
+
+#: taguette/validate.py:24
+msgid "Project name cannot be empty"
+msgstr "Το όνομα του έργου δεν μπορεί να είναι κενό"
+
+#: taguette/validate.py:26
+msgid "Project name is too long"
+msgstr "Το όνομα του έργου είναι πολύ μεγάλο"
+
+#: taguette/validate.py:49
+msgid "User login cannot be empty"
+msgstr "Η σύνδεση χρήστη δεν μπορεί να είναι κενή"
+
+#: taguette/validate.py:51
+msgid "User login is too long"
+msgstr "Η σύνδεση χρήστη είναι πολύ μεγάλη"
+
+#: taguette/validate.py:53
+msgid "User login is not lowercase"
+msgstr "Η σύνδεση χρήστη δεν χρησιμοποιεί πεζά γράμματα"
+
+#: taguette/validate.py:56
+msgid "User login contains forbidden characters"
+msgstr "Η σύνδεση χρήστη περιέχει απαγορευμένους χαρακτήρες"
+
+#: taguette/validate.py:64
+msgid "Email cannot be empty"
+msgstr "Το email δεν μπορεί να είναι κενό"
+
+#: taguette/validate.py:66
+msgid "Invalid email address"
+msgstr "Μη έγκυρη διεύθυνση email"
+
+#: taguette/validate.py:68
+msgid "Email address is too long"
+msgstr "Το email είναι πολύ μεγάλο"
+
+#: taguette/validate.py:76
+msgid "Please use a longer password"
+msgstr "Παρακαλώ χρησιμοποιήστε μεγαλύτερο κωδικό πρόσβασης"
+
+#: taguette/validate.py:78
+msgid "Please use a shorter password"
+msgstr "Παρακαλώ χρησιμοποιήστε μικρότερο κωδικό πρόσβασης"
+
+#: taguette/validate.py:86
+msgid "Document name cannot be empty"
+msgstr "Το όνομα του εγγράφου δεν μπορεί να είναι κενό"
+
+#: taguette/validate.py:88
+msgid "Document name is too long"
+msgstr "Το όνομα του εγγράφου είναι πολύ μεγάλο"
+
+#: taguette/validate.py:96
+msgid "Tag path cannot be empty"
+msgstr "Η διαδρομή της ετικέτας δεν μπορεί να είναι κενή"
+
+#: taguette/validate.py:98
+msgid "Tag path is too long"
+msgstr "Η διαδρομή της ετικέτας είναι πολύ μεγάλη"
+
+#: taguette/validate.py:108
+msgid "File name is too long"
+msgstr "Το όνομα του αρχείου είναι πολύ μεγάλο"
+
+#: taguette/validate.py:110
+msgid "Invalid file name"
+msgstr "Μη έγκυρο όνομα αρχείου"
+
+#: taguette/import_codebook.py:24
+msgid "Invalid file: CSV expected"
+msgstr "Μη έγκυρο αρχείο: αναμενόταν CSV"
+
+#: taguette/import_codebook.py:31
+msgid "Not sure which column to use for tag name"
+msgstr ""
+"Αβεβαιότητα για το ποια στήλη να χρησιμοποιηθεί για το όνομα της ετικέτας"
+
+#: taguette/import_codebook.py:34
+msgid "No 'tag', 'name', or 'path' column"
+msgstr "Δεν υπάρχει στήλη 'ετικέτα', 'όνομα', ή 'διαδρομή'"
+
+#: taguette/import_codebook.py:60
+msgid "Not enough columns"
+msgstr "Δεν υπάρχουν αρκετές στήλες"
+
+#: taguette/import_codebook.py:65
+msgid "Empty tag name"
+msgstr "Κενό όνομα ετικέτας"
+
+#: taguette/import_codebook.py:72
+msgid "Invalid CSV file"
+msgstr "Μη έγκυρο αρχείο CSV"
+
+#: taguette/database/__init__.py:136
+msgid ""
+"\n"
+"    The database schema used by Taguette has changed! We will try to\n"
+"    update your workspace automatically.\n"
+msgstr ""
+"\n"
+"    Το σχήμα της βάσης δεδομένων που χρησιμοποιείται από την Taguette έχει "
+"αλλάξει! Θα προσπαθήσουμε να\n"
+"    ενημερώσουμε αυτόματα τον χώρο εργασίας σας.\n"
+
+#: taguette/database/__init__.py:148
+#, python-format
+msgid ""
+"\n"
+"    A backup copy of your database file has been created. If the update\n"
+"    goes horribly wrong, make sure to keep that file, and let us know:\n"
+"    %(backup)s\n"
+msgstr ""
+"\n"
+"    Δημιουργήθηκε ένα αντίγραφο ασφαλείας του αρχείου της βάσης δεδομένων "
+"σας. Εάν η ενημέρωση\n"
+"    δεν γίνει σωστά, φροντίστε να διατηρήσετε αυτό το αρχείο και ενημερώστε "
+"μας:\n"
+"    %(backup)s\n"
+
+#: taguette/database/__init__.py:160
+#, python-format
+msgid ""
+"\n"
+"    The database schema used by Taguette has changed! Because you are not "
+"using\n"
+"    SQLite, we will not attempt a migration automatically; back up your data "
+"and\n"
+"    use `taguette --database=%(url)s migrate` if you want to proceed."
+msgstr ""
+"\n"
+"    Το σχήμα της βάσης δεδομένων που χρησιμοποιείται από την Taguette έχει "
+"αλλάξει! Επειδή δεν χρησιμοποιείτε\n"
+"    το SQLite, δεν θα επιχειρήσουμε αυτόματη μετεγκατάσταση. Δημιουργήστε "
+"αντίγραφα ασφαλείας των δεδομένων σας\n"
+"    και χρησιμοποιήστε το `taguette --database=%(url)s migrate` αν θέλετε να "
+"συνεχίσετε."
+
+#: taguette/web/api.py:51
+msgid "Not logged in"
+msgstr "Δεν έχετε συνδεθεί"
+
+#: taguette/web/api.py:81 taguette/web/api.py:112 taguette/web/api.py:203
+#: taguette/web/api.py:242 taguette/web/api.py:307 taguette/web/api.py:342
+#: taguette/web/api.py:378 taguette/web/api.py:403 taguette/web/api.py:456
+#: taguette/web/api.py:508 taguette/web/api.py:583 taguette/web/api.py:689
+msgid "Unauthorized"
+msgstr "Μη εξουσιοδοτημένος"
+
+#: taguette/web/api.py:347 taguette/web/api.py:381 taguette/web/api.py:413
+#: taguette/web/api.py:469 taguette/web/api.py:538
+msgid "No such tag"
+msgstr "Δεν υπάρχει τέτοια ετικέτα"
+
+#: taguette/web/api.py:512 taguette/web/api.py:586
+msgid "No such highlight"
+msgstr "Δεν υπάρχει τέτοια επισήμανση"
+
+#: taguette/web/api.py:752
+msgid "There must be one admin"
+msgstr "Πρέπει να υπάρχει ένας διαχειριστής"
+
+#: taguette/web/api.py:807
+msgid ""
+"This database is an unknown version. It might have been written by a more "
+"recent version of Taguette, please check for updates"
+msgstr ""
+"Αυτή η βάση δεδομένων είναι από μια άγνωστη έκδοση της Taguette. Μπορεί να "
+"έχει δημιουργηθεί από μια πιο πρόσφατη έκδοση του Taguette. Ελέγξτε για "
+"ενημερώσεις."
+
+#: taguette/web/api.py:813
+msgid "This database could not be updated to the current version"
+msgstr ""
+"Αυτή η βάση δεδομένων δεν ήταν δυνατόν να ενημερωθεί στην τρέχουσα έκδοση"
+
+#: taguette/web/api.py:817 taguette/web/api.py:851
+msgid "This is not a Taguette project file"
+msgstr "Αυτό δεν είναι ένα αρχείο έργου της Taguette"
+
+#: taguette/web/__init__.py:60 taguette/web/base.py:572
+msgctxt "page title"
+msgid "Error 404"
+msgstr "Σφάλμα 404"
+
+#: taguette/web/__init__.py:61 taguette/web/base.py:573
+msgid "This page does not exist."
+msgstr "Αυτή η σελίδα δεν υπάρχει."
+
+#: taguette/web/views.py:138
+msgid "Invalid login or password"
+msgstr "Μη έγκυρη σύνδεση ή κωδικός πρόσβασης"
+
+#: taguette/web/views.py:185 taguette/web/views.py:275
+#: taguette/web/views.py:426
+msgid "Passwords do not match"
+msgstr "Οι κωδικοί πρόσβασης δεν ταιριάζουν"
+
+#: taguette/web/views.py:187
+msgid "User name is taken"
+msgstr "Το όνομα χρήστη χρησιμοποιείται ήδη"
+
+#: taguette/web/views.py:194
+msgid "Email address is already used"
+msgstr "Η διεύθυνση email χρησιμοποιείται ήδη"
+
+#: taguette/web/views.py:204
+msgid "Terms of Service must be accepted"
+msgstr "Οι Όροι Παροχής Υπηρεσιών πρέπει να γίνουν αποδεκτοί"
+
+#: taguette/web/views.py:312
+msgid "This email address is not associated with any user"
+msgstr ""
+"Αυτή η διεύθυνση ηλεκτρονικού ταχυδρομείου δεν σχετίζεται με κανέναν χρήστη"
+
+#: taguette/web/views.py:341
+msgid "Password reset for Taguette"
+msgstr "Επαναφορά κωδικού πρόσβασς για την Taguette"
+
+#: taguette/web/views.py:383
+msgid "Invalid token"
+msgstr "Μη έγκυρος κλειδάριθμος"
+
+#: taguette/web/views.py:387
+msgid "No user associated with that token"
+msgstr "Κανένας χρήστης δεν σχετίζεται με αυτόν τον κλειδάριθμο"
+
+#: taguette/web/views.py:390
+msgid "Password has already been changed"
+msgstr "Ο κωδικός πρόσβασης έχει ήδη αλλάξει"
+
+#. Default tag name
+#: taguette/web/views.py:466
+msgid "interesting"
+msgstr "ενδιαφέρον"
+
+#. Default tag description
+#: taguette/web/views.py:468
+msgid "Further review required"
+msgstr "Απαιτείται περαιτέρω ανασκόπηση"
+
+#: taguette/web/views.py:503
+msgid "You don't have permission to delete this project"
+msgstr "Δεν έχετε άδεια να διαγράψετε αυτό το έργο"
+
+#: taguette/web/views.py:537 taguette/web/views.py:564
+msgid "You don't have permission to import a codebook"
+msgstr "Δεν έχετε άδεια εισαγωγής βιβλίου ετικετών"
+
+#: taguette/web/views.py:583
+#, python-format
+msgid "Row %d: %s"
+msgstr "Γραμμή %d: %s"
+
+#: taguette/web/views.py:701
+msgid "Error importing tags, concurrent changes caused a conflict"
+msgstr ""
+"Σφάλμα κατά την εισαγωγή ετικετών, οι ταυτόχρονες αλλαγές προκάλεσαν διένεξη"
+
+#: taguette/web/views.py:716
+msgid "No file provided"
+msgstr "Δεν παρέχεται αρχείο"
+
+#: taguette/web/base.py:471
+msgid ""
+" | Please report issues via <a href=\"https://gitlab.com/remram44/"
+"taguette\">GitLab</a> or <a href=\"mailto:hi@taguette.org\">hi@taguette.org</"
+"a>!"
+msgstr ""
+" | Παρακαλώ αναφέρετε προβλήματα ή άλλα ζητήματα μέσω του <a href=\"https://"
+"gitlab.com/remram44/taguette\">GitLab</a> ή με μήνυμα στο <a href=\"mailto:"
+"hi@taguette.org\">hi@taguette.org</a>!"
+
+#: taguette/web/base.py:579
+#, python-format
+msgctxt "page title"
+msgid "Error %d"
+msgstr "Σφάλμα %d"
+
+#: taguette/templates/project_new.html:3
+msgctxt "page title"
+msgid "New project"
+msgstr "Νέο έργο"
+
+#: taguette/templates/project_new.html:6
+msgctxt "title"
+msgid "New project"
+msgstr "Νέο έργο"
+
+#: taguette/templates/project_new.html:13
+msgctxt "form label for new project name"
+msgid "Name"
+msgstr "Όνομα"
+
+#: taguette/templates/project_new.html:19
+msgctxt "form label for new project description"
+msgid "Description"
+msgstr "Περιγραφή"
+
+#: taguette/templates/project_new.html:26
+msgctxt "form submit button"
+msgid "Create"
+msgstr "Δημιουργία"
+
+#: taguette/templates/tos.html:4
+msgctxt "page title"
+msgid "Terms of Service"
+msgstr "Όροι Παροχής Υπηρεσιών"
+
+#: taguette/templates/project_import_codebook.html:3
+#: taguette/templates/project_import_codebook_confirm.html:3
+msgctxt "page title"
+msgid "Import codebook"
+msgstr "Εισαγωγή βιβλίου ετικετών"
+
+#: taguette/templates/project_import_codebook.html:6
+#: taguette/templates/project_import_codebook_confirm.html:6
+msgctxt "title"
+msgid "Import a codebook"
+msgstr "Εισαγωγή βιβλίου ετικετών"
+
+#: taguette/templates/project_import_codebook.html:7
+#: taguette/templates/project_import_codebook_confirm.html:7
+msgid ""
+"Use this form to import an existing codebook into your project. Existing "
+"tags will not be deleted, new tags will be added alongside them."
+msgstr ""
+"Χρησιμοποιήστε αυτή τη φόρμα για να εισαγάγετε ένα υπάρχον βιβλίο ετικετών "
+"στο έργο σας. Οι υπάρχουσες ετικέτες δεν θα διαγραφούν, ενώ νέες ετικέτες θα "
+"προστεθούν κοντά σε αυτές."
+
+#: taguette/templates/project_import_codebook.html:8
+msgid ""
+"The file should have a column for the tag names, called 'name' or 'tag' or "
+"'path'. It can also optionally have a column called 'description'. Other "
+"columns are ignored."
+msgstr ""
+"Το αρχείο θα πρέπει να έχει μια στήλη για τα ονόματα των ετικετών, που "
+"ονομάζεται 'όνομα' ή 'ετικέτα' ή 'διαδρομή'. Μπορεί επίσης να έχει "
+"προαιρετικά μια στήλη που να ονομάζεται 'περιγραφή'. Άλλες στήλες θα "
+"αγνοούνται."
+
+#: taguette/templates/project_import_codebook.html:15
+msgctxt "form label for project name (readonly)"
+msgid "Project:"
+msgstr "Έργο:"
+
+#: taguette/templates/project_import_codebook.html:21
+msgctxt "form label for codebook file"
+msgid "File:"
+msgstr "Αρχείο:"
+
+#: taguette/templates/project_import_codebook.html:24
+msgid "Accepted format: CSV"
+msgstr "Αποδεκτή μορφή: CSV"
+
+#: taguette/templates/project_import_codebook.html:29
+msgctxt "form submit button"
+msgid "Review"
+msgstr "Επιθεώρηση"
+
+#: taguette/templates/project_delete.html:14
+#: taguette/templates/project_import_codebook.html:30
+#: taguette/templates/project_import_codebook_confirm.html:37
+msgctxt "cancel button"
+msgid "Go back"
+msgstr "Πίσω"
+
+#: taguette/templates/index.html:10
+#, python-format
+msgid "Welcome %(user_login)s"
+msgstr "Καλωσορίσατε %(user_login)s"
+
+#: taguette/templates/index.html:12
+msgid "Welcome!"
+msgstr "Καλωσορίσατε"
+
+#: taguette/templates/index.html:14
+msgid "Here are your projects:"
+msgstr "Εδώ βρίσκονται τα έργα σας:"
+
+#: taguette/templates/index.html:19
+msgid "You have no projects yet."
+msgstr "Δεν έχετε δημιουργήσει ακόμη έργα."
+
+#: taguette/templates/index.html:21
+msgctxt "button in project list"
+msgid "Create a new project"
+msgstr "Δημιουργία νέου έργου"
+
+#: taguette/templates/index.html:23
+msgctxt "button in project list"
+msgid "Import a project file"
+msgstr "Εισαγωγή ενός αρχείου έργου"
+
+#: taguette/templates/token_needed.html:3
+msgctxt "page title"
+msgid "Error"
+msgstr "Σφάλμα"
+
+#: taguette/templates/token_needed.html:6
+msgid ""
+"Your browser did not supply a secret token to authenticate with the "
+"application. Please check the console for the correct URL to log in, or "
+"simply restart Taguette."
+msgstr ""
+"Το πρόγραμμα περιήγησής σας δεν παρείχε μυστικό κλειδάριθμο για "
+"εξουσιοδότηση με την εφαρμογή. Ελέγξτε την κονσόλα για να συνδεθείτε στη "
+"σωστή διεύθυνση URL, ή απλά επανεκκινήστε την Taguette."
+
+#: taguette/templates/welcome.html:4
+msgctxt "page title"
+msgid "Welcome"
+msgstr "Καλωσορίσατε"
+
+#: taguette/templates/welcome.html:8
+msgctxt "title"
+msgid "Welcome"
+msgstr "Καλωσορίσατε"
+
+#: taguette/templates/welcome.html:9
+msgid ""
+"<span style=\"font-family:BadScript;\"><a href=\"https://www.taguette.org/"
+"\">TAGUETTE</a></span> is an open-source web-based document tagging tool for "
+"qualitative data analysis."
+msgstr ""
+"<span style=\"font-family:BadScript;\"><a href=\"https://www.taguette.org/"
+"\">Η TAGUETTE</a></span> είναι μια ανοιχτού κώδικα web-based εφαρμογή "
+"προσθήκης ετικετών για ποιοτική ανάλυση δεδομένων."
+
+#: taguette/templates/welcome.html:10
+msgid ""
+"Using this tool, you can upload a collection of documents, create a "
+"hierarchy of tags, and annotate portions of documents with tags and notes "
+"that you can recall and organize later."
+msgstr ""
+"Χρησιμοποιώντας αυτό το εργαλείο, μπορείτε να ανεβάσετε μια συλλογή "
+"εγγράφων, να δημιουργήσετε μια ιεραρχία ετικετών και να σχολιάσετε τμήματα "
+"εγγράφων με ετικέτες και σημειώσεις, τις οποίες μπορείτε να ανακαλέσετε και "
+"να οργανώσετε αργότερα."
+
+#: taguette/templates/welcome.html:12
+#, python-format
+msgid "<a href=\"%(url)s\">Register now</a> for free and get started!"
+msgstr "<a href=\"%(url)s\">Εγγραφείτε τώρα</a> δωρεάν και ξεκινήστε!"
+
+#: taguette/templates/email_reset_password.html:1
+#, python-format
+msgid ""
+"Someone has requested to reset the password on the Taguette account "
+"associated with this email. If this was you, please follow this link: <a "
+"href=\"%(link)s\">%(link)s</a>"
+msgstr ""
+"Κάποιος ζήτησε να επαναφέρει τον κωδικό πρόσβασης ενός λογαριασμού της "
+"Taguette, ο οποίος σχετίζεται με αυτό το email. Εάν ήσασταν εσείς, "
+"ακολουθήστε αυτόν τον σύνδεσμο: <a href=\"%(link)s\">%(link)s</a>"
+
+#: taguette/templates/email_reset_password.html:3
+#, python-format
+msgid "Your user name is: <strong>%(login)s</strong>"
+msgstr "Το δικό σας όνομα χρήστη είναι: <strong>%(login)s</strong>"
+
+#: taguette/templates/email_reset_password.html:5
+msgid "This link will expire in 1 day."
+msgstr "Αυτός ο σύνδεσμος θα λήξει σε 1 ημέρα."
+
+#: taguette/templates/new_password.html:3
+#: taguette/templates/reset_password.html:3
+msgctxt "page title"
+msgid "Reset password"
+msgstr "Επαναφορά κωδικού πρόσβασης"
+
+#: taguette/templates/reset_password.html:13
+msgid ""
+"If you had set an email address in your profile, you can enter it below and "
+"a link to reset your password will be sent to you."
+msgstr ""
+"Εάν είχατε ορίσει μια διεύθυνση email στο προφίλ σας, μπορείτε να την "
+"εισαγάγετε παρακάτω και θα σας σταλεί ένας σύνδεσμος για να επαναφέρετε τον "
+"κωδικό πρόσβασής σας."
+
+#: taguette/templates/account.html:20 taguette/templates/login.html:77
+#: taguette/templates/reset_password.html:17
+msgctxt "form label for email address"
+msgid "Email"
+msgstr "Email"
+
+#: taguette/templates/reset_password.html:22
+msgctxt "password reset form submit button"
+msgid "Send"
+msgstr "Αποστολή"
+
+#: taguette/templates/reset_password.html:26
+msgid ""
+"If you didn't set an email address, you can try contacting your server "
+"administrator."
+msgstr ""
+"Εάν δεν έχετε ορίσει μια διεύθυνση email, μπορείτε να δοκιμάσετε να "
+"επικοινωνήσετε με τον διαχειριστή του διακομιστή σας."
+
+#. Left pane tab, keep short
+#: taguette/templates/project.html:16
+msgctxt "tab"
+msgid "Project info"
+msgstr "Πληροφορίες έργου"
+
+#. Left pane tab, keep short
+#: taguette/templates/project.html:19
+msgctxt "tab"
+msgid "Documents"
+msgstr "Έγγραφα"
+
+#. Left pane tab, keep short
+#: taguette/templates/project.html:22
+msgctxt "tab"
+msgid "Highlights"
+msgstr "Επισημάνσεις"
+
+#: taguette/templates/project.html:32
+msgctxt "project metadata form label"
+msgid "Name"
+msgstr "Όνομα"
+
+#: taguette/templates/project.html:36
+msgctxt "project metadata form label"
+msgid "Description"
+msgstr "Περιγραφή"
+
+#: taguette/templates/project.html:43
+msgid "Manage collaborators"
+msgstr "Διαχείριση συνεργατών"
+
+#: taguette/templates/project.html:47
+msgid "Export project"
+msgstr "Εξαγωγή έργου"
+
+#: taguette/templates/project.html:51
+msgid "Export codebook"
+msgstr "Εξαγωγή βιβλίου ετικετών"
+
+#: taguette/templates/project.html:54
+msgid "QDC (XML)"
+msgstr "QDC (XML)"
+
+#: taguette/templates/project.html:55 taguette/templates/project.html:114
+msgid "Excel"
+msgstr "Excel"
+
+#: taguette/templates/project.html:56 taguette/templates/project.html:115
+msgid "CSV"
+msgstr "CSV"
+
+#: taguette/templates/project.html:57 taguette/templates/project.html:111
+msgid "HTML"
+msgstr "HTML"
+
+#: taguette/templates/project.html:58 taguette/templates/project.html:112
+msgid "DOCX"
+msgstr "DOCX"
+
+#: taguette/templates/project.html:59 taguette/templates/project.html:113
+msgid "PDF"
+msgstr "PDF"
+
+#: taguette/templates/project.html:64
+msgid "Import codebook"
+msgstr "Εισαγωγή βιβλίου ετικετών"
+
+#: taguette/templates/project.html:68
+msgid "Delete project"
+msgstr "Διαγραφή έργου"
+
+#: taguette/templates/project.html:76
+msgid "Add a document"
+msgstr "Προσθήκη εγγράφου"
+
+#: taguette/templates/project.html:80 taguette/templates/project.html:94
+#: taguette/templates/project.html:271
+msgid "Loading..."
+msgstr "Φόρτωση..."
+
+#: taguette/templates/project.html:82
+msgid "Backlight"
+msgstr "Οπισθοφωτισμός"
+
+#: taguette/templates/project.html:89
+msgid "See all highlights"
+msgstr "Δείτε όλες τις επισημάνσεις"
+
+#: taguette/templates/project.html:90 taguette/templates/project.html:272
+msgid "Create a tag"
+msgstr "Δημιουργίας ετικέτας"
+
+#: taguette/templates/project.html:108
+msgid "Export this view"
+msgstr "Εξαγωγή αυτής της προβολής"
+
+#: taguette/templates/project.html:120
+msgid "Load a document on the left"
+msgstr "Τοποθετήστε ένα έγγραφο στα αριστερά"
+
+#: taguette/templates/project.html:132
+msgid "Manage Collaborators"
+msgstr "Διαχείριση συνεργατών"
+
+#: taguette/templates/project.html:139
+msgctxt "modal window title"
+msgid "Add Collaborators"
+msgstr "Προσθήκη συνεργατών"
+
+#: taguette/templates/project.html:144
+msgctxt "project members form placeholder"
+msgid "Username"
+msgstr "Όνομα χρήστη"
+
+#: taguette/templates/project.html:148
+msgctxt "permission level"
+msgid "Full permissions"
+msgstr "Πλήρεις άδειες"
+
+#: taguette/templates/project.html:149
+msgctxt "permission level"
+msgid "Can't change collaborators / delete project"
+msgstr "Δεν είναι δυνατή η αλλαγή συνεργατών / διαγραφή έργου"
+
+#: taguette/templates/project.html:150
+msgctxt "permission level"
+msgid "View & make changes"
+msgstr "Προβολή και πραγματοποίηση αλλαγών"
+
+#: taguette/templates/project.html:151
+msgctxt "permission level"
+msgid "View only"
+msgstr "Προβολή μόνο"
+
+#: taguette/templates/project.html:154
+msgctxt "form submit button"
+msgid "Add to project"
+msgstr "Προσθήκη στο έργο"
+
+#: taguette/templates/project.html:158
+msgid "Current Collaborators"
+msgstr "Τρέχοντες συνεργάτες"
+
+#: taguette/templates/project.html:164 taguette/templates/project.html:248
+#: taguette/templates/project.html:277 taguette/templates/project.html:304
+msgid "Save & Close"
+msgstr "Αποθήκευση και κλείσιμο"
+
+#: taguette/templates/project.html:165 taguette/templates/project.html:208
+#: taguette/templates/project.html:305
+msgid "Cancel"
+msgstr "Άκυρο"
+
+#: taguette/templates/project.html:176
+msgctxt "modal window title"
+msgid "Add a document"
+msgstr "Προσθήκη εγγράφου"
+
+#: taguette/templates/project.html:185
+msgctxt "form placeholder"
+msgid "Enter a document name"
+msgstr "Εισαγωγή ονόματος αρχείου"
+
+#: taguette/templates/project.html:195 taguette/templates/project.html:236
+msgid "Left to right"
+msgstr "Κείμενο από αριστερά προς τα δεξιά"
+
+#: taguette/templates/project.html:199 taguette/templates/project.html:240
+msgid "Right to left"
+msgstr "Κείμενο από δεξιά προς τα αριστερά"
+
+#: taguette/templates/project.html:203
+msgctxt "document add form placeholder"
+msgid "Description"
+msgstr "Περιγραφή"
+
+#: taguette/templates/project.html:207
+msgctxt "submit button"
+msgid "Import"
+msgstr "Εισαγωγή"
+
+#: taguette/templates/project.html:219
+msgctxt "modal window title"
+msgid "Edit document"
+msgstr "Επεξεργασία εγγράφου"
+
+#: taguette/templates/project.html:229
+msgctxt "document change form placeholder"
+msgid "Name"
+msgstr "Όνομα"
+
+#: taguette/templates/project.html:244
+msgctxt "document change form placeholder"
+msgid "Description"
+msgstr "Περιγραφή"
+
+#: taguette/templates/project.html:249
+msgid "Delete document"
+msgstr "Διαγραφή εγγράφου"
+
+#: taguette/templates/project.html:260
+msgctxt "modal window title"
+msgid "Highlight"
+msgstr "Επισήμανση"
+
+#: taguette/templates/project.html:278
+msgid "Delete highlight"
+msgstr "Διαγραφής επισήμανση"
+
+#: taguette/templates/project.html:289
+msgctxt "modal window title"
+msgid "New tag"
+msgstr "Νέα ετικέτα"
+
+#: taguette/templates/project.html:290
+msgctxt "modal window title"
+msgid "Change tag"
+msgstr "Αλλαγή ετικέτας"
+
+#: taguette/templates/project.html:298
+msgctxt "tag change form placeholder"
+msgid "Name"
+msgstr "Όνομα"
+
+#: taguette/templates/project.html:299
+msgctxt "tag change form placeholder"
+msgid "Description"
+msgstr "Περιγραφή"
+
+#: taguette/templates/project.html:303
+msgctxt "button in tag change modal window"
+msgid "Merge..."
+msgstr "Συγχώνευση..."
+
+#: taguette/templates/project.html:306
+msgid "Delete tag"
+msgstr "Διαγραφή ετικέτας"
+
+#: taguette/templates/project.html:371
+msgid "<em>n</em>ew highlight <span class=\"sr-only\">(shortcut: n)</span>"
+msgstr "<em>ν</em>έα επισήμανση <span class=\"sr-only\">(συντόμευση: n)</span>"
+
+#: taguette/templates/export_codebook.html:10
+#: taguette/templates/export_codebook.html:13
+msgctxt "exported codebook document title"
+msgid "Taguette Codebook"
+msgstr "Βιβλίο Ετικετών Taguette"
+
+#: taguette/templates/export_codebook.html:16
+#, python-format
+msgid "%(number)d highlight"
+msgid_plural "%(number)d highlights"
+msgstr[0] "%(number)d επισήμανση"
+msgstr[1] "%(number)d επισημάνσεις"
+
+#: taguette/templates/login.html:3
+msgctxt "page title"
+msgid "Log in"
+msgstr "Σύνδεση"
+
+#: taguette/templates/login.html:9
+msgctxt "tab"
+msgid "Log in"
+msgstr "Σύνδεση"
+
+#: taguette/templates/login.html:12
+msgctxt "tab"
+msgid "Register"
+msgstr "Εγγραφή"
+
+#: taguette/templates/account.html:14 taguette/templates/login.html:28
+#: taguette/templates/login.html:59
+msgctxt "form label for user name"
+msgid "Login"
+msgstr "Σύνδεση"
+
+#: taguette/templates/login.html:34 taguette/templates/login.html:65
+#: taguette/templates/new_password.html:15
+msgctxt "form label"
+msgid "Password"
+msgstr "Κωδικός πρόσβασης"
+
+#: taguette/templates/login.html:41
+msgctxt "form submit button"
+msgid "Log in"
+msgstr "Σύνδεση"
+
+#: taguette/templates/login.html:42
+msgctxt "form link"
+msgid "Forgot password"
+msgstr "Ξεχάσατε τον κωδικό πρόσβασης"
+
+#: taguette/templates/login.html:71 taguette/templates/new_password.html:21
+msgctxt "form label"
+msgid "Confirm password"
+msgstr "Επιβεβαίωση κωδικού πρόσβασης"
+
+#: taguette/templates/account.html:23 taguette/templates/login.html:80
+msgid ""
+"Optional. <em>We will not share your email with anyone. This is only used in "
+"case you forget your password.</em>"
+msgstr ""
+"Προαιρετικό. <em>Δεν θα μοιραστούμε το email σας με κανέναν. Αυτό "
+"χρησιμοποιείται μόνο σε περίπτωση που ξεχάσετε τον κωδικό πρόσβασής σας.</em>"
+
+#: taguette/templates/login.html:85
+msgctxt "link from registration form"
+msgid "Terms of service"
+msgstr "Όροι Παροχής Υπηρεσιών"
+
+#: taguette/templates/login.html:89
+#, python-format
+msgid "I accept the <a href=\"%(url)s\">terms of service</a>"
+msgstr "Αποδέχομαι τους <a href=\"%(url)s\">Όροι Παροχής Υπηρεσιών</a>"
+
+#: taguette/templates/login.html:96
+msgctxt "form submit button"
+msgid "Register"
+msgstr "Εγγραφή"
+
+#: taguette/templates/cookies_prompt.html:3
+msgctxt "page title"
+msgid "Cookie warning"
+msgstr "Cookike προειδοποίησης"
+
+#: taguette/templates/cookies_prompt.html:6
+msgctxt "title"
+msgid "Cookie warning"
+msgstr "Cookike προειδοποίησης"
+
+#: taguette/templates/cookies_prompt.html:7
+msgid ""
+"This website uses cookies to store your identity (if you choose to log in) "
+"and as a protection against <a href=\"https://en.wikipedia.org/wiki/Cross-"
+"site_request_forgery\">cross-site request forgery (CSRF)</a>. Before "
+"continuing, you must accept their use by clicking the button below. Those "
+"<strong>are not</strong> \"third-party\" or \"tracking\" cookies."
+msgstr ""
+"Αυτός ο ιστότοπος χρησιμοποιεί cookies για την αποθήκευση της ταυτότητάς σας "
+"(εάν επιλέξετε να συνδεθείτε) και ως προστασία έναντι της <a href=\"https://"
+"en.wikipedia.org/wiki/Cross-site_request_forgery\">πλαστογράφησης αιτημάτων "
+"μεταξύ ιστότοπων (CSRF )</a>. Πριν συνεχίσετε, πρέπει να αποδεχτείτε τη "
+"χρήση τους κάνοντας κλικ στο παρακάτω κουμπί. Αυτά <strong>δεν</strong> "
+"είναι cookie \"τρίτου μέρους\" ή \"παρακολούθησης\"."
+
+#: taguette/templates/cookies_prompt.html:12
+msgctxt "button on cookie warning page"
+msgid "Accept cookies"
+msgstr "Αποδοχή cookies"
+
+#: taguette/templates/project_import.html:3
+msgctxt "page title"
+msgid "Import project"
+msgstr "Εισαγωγή έργου"
+
+#: taguette/templates/project_import.html:6
+msgctxt "title"
+msgid "Import a project"
+msgstr "Εισαγωγή έργου"
+
+#: taguette/templates/project_import.html:11
+msgctxt "form label for project file"
+msgid "File:"
+msgstr "Αρχείο:"
+
+#: taguette/templates/project_import.html:17
+msgctxt "form label for project dropdown"
+msgid "Project:"
+msgstr "Έργο:"
+
+#: taguette/templates/project_import.html:20
+msgid "No file selected..."
+msgstr "Δεν επιλέχθηκε αρχείο..."
+
+#: taguette/templates/project_import.html:25
+msgctxt "form submit button"
+msgid "Import project"
+msgstr "Εισαγωγή έργου"
+
+#: taguette/templates/project_import_codebook_confirm.html:11
+msgid "You are about to create the following tags:"
+msgstr "Πρόκειται να δημιουργήσετε τις ακόλουθες ετικέτες:"
+
+#: taguette/templates/project_import_codebook_confirm.html:19
+msgctxt "codebook import tag option"
+msgid "Replace"
+msgstr "Αντικατάσταση"
+
+#: taguette/templates/project_import_codebook_confirm.html:22
+msgctxt "codebook import tag option"
+msgid "Import"
+msgstr "Εισαγωγή"
+
+#: taguette/templates/project_import_codebook_confirm.html:36
+msgctxt "form submit button"
+msgid "Create tags"
+msgstr "Δημιουργία ετικετών"
+
+#: taguette/templates/account.html:4
+msgctxt "page title"
+msgid "Account settings"
+msgstr "Ρυθμίσεις λογαριασμού"
+
+#: taguette/templates/account.html:7
+msgctxt "title"
+msgid "Account settings"
+msgstr "Ρυθμίσεις λογαριασμού"
+
+#: taguette/templates/account.html:27
+msgctxt "form label for language selection"
+msgid "Language"
+msgstr "Γλώσσα"
+
+#: taguette/templates/account.html:30
+msgctxt "language selection option"
+msgid "Auto-detect"
+msgstr "Αυτόματος εντοπισμός"
+
+#: taguette/templates/account.html:38
+msgid "New password"
+msgstr "Νέος κωδικός πρόσβασης"
+
+#: taguette/templates/account.html:44
+msgid "Repeat new password"
+msgstr "Επανάληψη νέου κωδικού πρόσβασης"
+
+#: taguette/templates/account.html:51
+msgctxt "form submit button"
+msgid "Update"
+msgstr "Ενημέρωση"
+
+#: taguette/templates/export_highlights.html:6
+#: taguette/templates/export_highlights.html:18
+#, python-format
+msgctxt "exported highlights document title"
+msgid "Taguette highlights: %(path)s"
+msgstr "Επισημάνσεις Taguette: %(path)s"
+
+#: taguette/templates/export_highlights.html:8
+#: taguette/templates/export_highlights.html:20
+msgctxt "exported highlights document title"
+msgid "Taguette highlights"
+msgstr "Επισημάνσεις Taguette"
+
+#: taguette/templates/export_highlights.html:25
+#, python-format
+msgctxt "exported highlight details"
+msgid "<strong>Document:</strong> %(doc)s"
+msgstr "<strong>Έγγραφο:</strong> %(doc)s"
+
+#: taguette/templates/export_highlights.html:26
+msgctxt "exported highlight details"
+msgid "Tags:"
+msgstr "Ετικέτες:"
+
+#: taguette/templates/base.html:26
+msgctxt "navigation item"
+msgid "Home"
+msgstr "Αρχική"
+
+#: taguette/templates/base.html:37
+#, python-format
+msgctxt "navigation item"
+msgid "Taguette Guide %(external_icon)s"
+msgstr "Οδηγός Taguette %(external_icon)s"
+
+#: taguette/templates/base.html:41
+msgid "Single-user mode"
+msgstr "Λειτουργία ενός χρήστη"
+
+#: taguette/templates/base.html:45
+msgctxt "navigation dropdown menu"
+msgid "Account"
+msgstr "Λογαριασμός"
+
+#: taguette/templates/base.html:47
+msgctxt "navigation item"
+msgid "Settings"
+msgstr "Ρυθμίσεις"
+
+#: taguette/templates/base.html:49
+msgctxt "navigation item"
+msgid "Terms of Service"
+msgstr "Όροι Παροχής Υπηρεσιών"
+
+#: taguette/templates/base.html:51
+msgctxt "navigation item"
+msgid "Log out"
+msgstr "Αποσύνδεση"
+
+#: taguette/templates/base.html:56
+msgctxt "navigation item"
+msgid "Log in"
+msgstr "Σύνδεση"
+
+#: taguette/templates/base.html:71
+#, python-format
+msgid ""
+"Taguette %(version)s is released under a <a href=\"https://gitlab.com/"
+"remram44/taguette/blob/master/LICENSE.txt\">BSD-3-Clause license</a>, &#169; "
+"Rémi Rampin and Taguette contributors | <a href=\"https://www.taguette.org/"
+"getting-started.html\">User Documentation</a>"
+msgstr ""
+"Η έκδοση Taguette %(version)s κυκλοφορεί με τους όρους της άδειας <a "
+"href=\"https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt\">BSD-3-"
+"Clause</a>, &#169; Rémi Rampin και συνεισφέροντες στη Taguette | <a "
+"href=\"https://www.taguette.org/getting-started.html\">Τεκμηρίωση χρήστη</a>"
+
+#: taguette/templates/project_delete.html:3
+msgctxt "page title"
+msgid "Delete project"
+msgstr "Διαγραφή έργου"
+
+#: taguette/templates/project_delete.html:6
+msgctxt "title"
+msgid "Delete project: confirm?"
+msgstr "Διαγραφή έργου: επιβεβαίωση;"
+
+#: taguette/templates/project_delete.html:8
+#, python-format
+msgctxt "project delete page"
+msgid "Name: %(project_name)s"
+msgstr "Όνομα: %(project_name)s"
+
+#: taguette/templates/project_delete.html:9
+#, python-format
+msgid ""
+"Are you sure you want to delete this project? It currently has "
+"<strong>%(documents)s documents and %(highlights)s highlights in %(tags)s "
+"tags</strong>. There is no way to undo."
+msgstr ""
+"Είστε βέβαιοι ότι θέλετε να διαγράψετε αυτό το έργο; Αυτή τη στιγμή έχει "
+"<strong>%(documents)s έγγραφα και %(highlights)s επισημάνσεις σε %(tags)s "
+"ετικέτες</strong>. Δεν υπάρχει τρόπος αναίρεσης."
+
+#: taguette/templates/project_delete.html:13
+msgctxt "submit button"
+msgid "Delete forever"
+msgstr "Διαγραφή για πάντα"
+
+#: taguette/templates/new_password.html:10
+msgid "Please enter a new password below:"
+msgstr "Εισαγάγετε έναν νέο κωδικό πρόσβασης παρακάτω:"
+
+#: taguette/templates/new_password.html:28
+msgctxt "form submit button"
+msgid "Set new password"
+msgstr "Ορίστε νέο κωδικό πρόσβασης"

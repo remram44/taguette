@@ -1,0 +1,146 @@
+# Translations template for Taguette.
+# Copyright (C) 2018 Remi Rampin and Taguette contributors
+# This file is distributed under the same license as the Taguette project.
+# Remi Rampin <remi@rampin.org>, 2018.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Taguette\n"
+"Report-Msgid-Bugs-To: hi@taguette.org\n"
+"POT-Creation-Date: 2022-10-07 12:08-0400\n"
+"PO-Revision-Date: 2023-05-27 12:13+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: el_GR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+"X-Generator: Poedit 3.3.1\n"
+
+#: taguette/static/js/taguette.js:506
+msgid "Couldn't update project metadata!"
+msgstr "Δεν ήταν δυνατή η ενημέρωση των μεταδεδομένων του έργου!"
+
+#: taguette/static/js/taguette.js:562 taguette/static/js/taguette.js:839
+msgid "Edit"
+msgstr "Επεξεργασία"
+
+#: taguette/static/js/taguette.js:571
+msgid "There are no documents in this project yet."
+msgstr "Δεν υπάρχουν ακόμη έγγραφα σε αυτό το έργο."
+
+#: taguette/static/js/taguette.js:665 taguette/static/js/taguette.js:671
+msgid "Error uploading file!"
+msgstr "Σφάλμα κατά τη μεταφόρτωση του αρχείου!"
+
+#: taguette/static/js/taguette.js:703
+msgid "Document name cannot be empty"
+msgstr "Το όνομα του εγγράφου δεν μπορεί να είναι κενό"
+
+#: taguette/static/js/taguette.js:720
+msgid "Couldn't update document!"
+msgstr "Δεν ήταν δυνατή η ενημέρωση του εγγράφου!"
+
+#: taguette/static/js/taguette.js:729
+#, python-format
+msgid "Are you sure you want to delete the document '%(doc)s'?"
+msgstr "Θέλετε σίγουρα να διαγράψετε το έγγραφο '%(doc)s';"
+
+#: taguette/static/js/taguette.js:741
+msgid "Couldn't delete document!"
+msgstr "Δεν ήταν δυνατή η διαγραφή του εγγράφου!"
+
+#: taguette/static/js/taguette.js:848
+msgid "There are no tags in this project yet."
+msgstr "Δεν υπάρχουν ακόμη ετικέτες σε αυτό το έργο."
+
+#: taguette/static/js/taguette.js:888
+msgid "no tags"
+msgstr "δεν υπάρχουν ετικέτες"
+
+#: taguette/static/js/taguette.js:959
+msgid "Invalid tag name"
+msgstr "Μη έγκυρο όνομα ετικέτας"
+
+#: taguette/static/js/taguette.js:986
+msgid "Couldn't create tag!"
+msgstr "Αδυναμία δημιουργίας ετικέτας!"
+
+#: taguette/static/js/taguette.js:995
+#, python-format
+msgid "Are you sure you want to delete the tag '%(tag)s'?"
+msgstr "Θέλετε σίγουρα να διαγράψετε την ετικέτα '%(tag)s';"
+
+#: taguette/static/js/taguette.js:1010
+msgid "Couldn't delete tag!"
+msgstr "Αδυναμία διαγραφής ετικέτας!"
+
+#: taguette/static/js/taguette.js:1079
+msgid "Couldn't merge tags!"
+msgstr "Αδυναμία συγχώνευσης ετικετών!"
+
+#. Key used to create a new highlight
+#: taguette/static/js/taguette.js:1186
+msgid "n"
+msgstr "n"
+
+#: taguette/static/js/taguette.js:1249
+msgid "Couldn't create highlight!"
+msgstr "Αδυναμία δημιουργίας επισήμανσης!"
+
+#: taguette/static/js/taguette.js:1269
+msgid "Couldn't delete highlight!"
+msgstr "Αδυναμία διαγραφής επισήμανσης!"
+
+#: taguette/static/js/taguette.js:1300
+msgid "Full permissions"
+msgstr "Πλήρεις άδειες"
+
+#: taguette/static/js/taguette.js:1301
+msgid "Can't change collaborators / delete project"
+msgstr "Δεν είναι δυνατή η αλλαγή συνεργατών / διαγραφή έργου"
+
+#: taguette/static/js/taguette.js:1302
+msgid "View & make changes"
+msgstr "Προβολή και πραγματοποίηση αλλαγών"
+
+#: taguette/static/js/taguette.js:1303
+msgid "View only"
+msgstr "Προβολή μόνο"
+
+#: taguette/static/js/taguette.js:1374
+msgid "Already a member!"
+msgstr "Ήδη μέλος!"
+
+#: taguette/static/js/taguette.js:1392
+msgid "This user doesn't exist!"
+msgstr "Αυτός ο χρήστης δεν υπάρχει!"
+
+#: taguette/static/js/taguette.js:1435
+msgid "Couldn't update collaborators!"
+msgstr "Δεν ήταν δυνατή η ενημέρωση των συνεργατών!"
+
+#: taguette/static/js/taguette.js:1463
+msgid "Load a document on the left"
+msgstr "Τοποθετήστε ένα έγγραφο στα αριστερά"
+
+#: taguette/static/js/taguette.js:1531
+msgid "Error loading document!"
+msgstr "Σφάλμα κατά τη φόρτωση του εγγράφου!"
+
+#: taguette/static/js/taguette.js:1594
+msgid "No highlights with this tag yet."
+msgstr "Δεν υπάρχουν ακόμα επισημάνσεις με αυτήν την ετικέτα."
+
+#: taguette/static/js/taguette.js:1682
+msgid "Error loading tag highlights!"
+msgstr "Σφάλμα κατά τη φόρτωση των επισημάνσεων της ετικέτας!"
+
+#: taguette/static/js/taguette.js:1835
+msgid "It appears that you have been logged out."
+msgstr "Φαίνεται ότι έχετε αποσυνδεθεί."
+
+#: taguette/static/js/taguette.js:1838
+msgid "You can no longer access this project."
+msgstr "Δεν έχετε πλέον πρόσβαση σε αυτό το έργο."
