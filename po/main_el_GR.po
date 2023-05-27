@@ -3,6 +3,9 @@
 # This file is distributed under the same license as the Taguette project.
 # Remi Rampin <remi@rampin.org>, 2018.
 #
+# Translators:
+# Yannis Kaskamanidis <kiolalis@gmail.com>, 2023
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Taguette\n"
@@ -857,7 +860,7 @@ msgstr "Διαγραφή ετικέτας"
 
 #: taguette/templates/project.html:371
 msgid "<em>n</em>ew highlight <span class=\"sr-only\">(shortcut: n)</span>"
-msgstr "<em>ν</em>έα επισήμανση <span class=\"sr-only\">(συντόμευση: n)</span>"
+msgstr "νέα επισήμανση (n)"
 
 #: taguette/templates/export_codebook.html:10
 #: taguette/templates/export_codebook.html:13
