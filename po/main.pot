@@ -8,87 +8,87 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Taguette\n"
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
-"POT-Creation-Date: 2022-10-07 12:08-0400\n"
+"POT-Creation-Date: 2023-05-27 11:38-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.11.0\n"
 
-#: taguette/main.py:240
+#: taguette/main.py:246
 msgid "Port number on which to listen"
 msgstr ""
 
-#: taguette/main.py:242
+#: taguette/main.py:248
 msgid "Address to bind on"
 msgstr ""
 
-#: taguette/main.py:244
+#: taguette/main.py:250
 msgid "Open web browser to the application"
 msgstr ""
 
-#: taguette/main.py:246
+#: taguette/main.py:252
 msgid "Don't open the web browser"
 msgstr ""
 
-#: taguette/main.py:251
+#: taguette/main.py:257
 #, python-format
 msgid ""
 "Database location or connection string, for example 'project.db' or "
 "'postgresql://me:pw@localhost/mydb' (default: %(default)r)"
 msgstr ""
 
-#: taguette/main.py:258
+#: taguette/main.py:264
 msgid "Set the file creation mask (umask) on systems that support it."
 msgstr ""
 
-#: taguette/main.py:262
+#: taguette/main.py:268
 msgid "Don't change umask on startup"
 msgstr ""
 
-#: taguette/main.py:268
+#: taguette/main.py:274
 msgid "additional commands"
 msgstr ""
 
-#: taguette/main.py:272
+#: taguette/main.py:278
 msgid "Manually trigger a database migration"
 msgstr ""
 
-#: taguette/main.py:281
+#: taguette/main.py:289
 msgid "Print the default server configuration"
 msgstr ""
 
-#: taguette/main.py:283
+#: taguette/main.py:291
 msgid "Output to this file rather than stdout"
 msgstr ""
 
-#: taguette/main.py:289
+#: taguette/main.py:297
 msgid "Run in server mode, suitable for a multi-user deployment"
 msgstr ""
 
-#: taguette/main.py:291
+#: taguette/main.py:299
 msgid ""
 "Configuration file for the server. The default configuration can be "
 "generated using the `default-config` command"
 msgstr ""
 
-#: taguette/main.py:303
+#: taguette/main.py:311
 #, python-format
 msgid "Invalid umask: %(arg)s"
 msgstr ""
 
-#: taguette/main.py:327
+#: taguette/main.py:335
 #, python-format
 msgid "Missing required configuration variable %(var)s"
 msgstr ""
 
-#: taguette/main.py:334
+#: taguette/main.py:342
 msgid "Invalid BASE_PATH"
 msgstr ""
 
-#: taguette/main.py:394
+#: taguette/main.py:416
 #, python-format
 msgid ""
 "\n"
@@ -170,27 +170,27 @@ msgstr ""
 msgid "Invalid file name"
 msgstr ""
 
-#: taguette/import_codebook.py:24
+#: taguette/import_codebook.py:34
 msgid "Invalid file: CSV expected"
 msgstr ""
 
-#: taguette/import_codebook.py:31
+#: taguette/import_codebook.py:41
 msgid "Not sure which column to use for tag name"
 msgstr ""
 
-#: taguette/import_codebook.py:34
+#: taguette/import_codebook.py:44
 msgid "No 'tag', 'name', or 'path' column"
 msgstr ""
 
-#: taguette/import_codebook.py:60
+#: taguette/import_codebook.py:70
 msgid "Not enough columns"
 msgstr ""
 
-#: taguette/import_codebook.py:65
+#: taguette/import_codebook.py:75
 msgid "Empty tag name"
 msgstr ""
 
-#: taguette/import_codebook.py:72
+#: taguette/import_codebook.py:82
 msgid "Invalid CSV file"
 msgstr ""
 
@@ -221,133 +221,137 @@ msgid ""
 "    use `taguette --database=%(url)s migrate` if you want to proceed."
 msgstr ""
 
-#: taguette/web/api.py:51
+#: taguette/web/api.py:52
 msgid "Not logged in"
 msgstr ""
 
-#: taguette/web/api.py:81 taguette/web/api.py:112 taguette/web/api.py:203
-#: taguette/web/api.py:242 taguette/web/api.py:307 taguette/web/api.py:342
-#: taguette/web/api.py:378 taguette/web/api.py:403 taguette/web/api.py:456
-#: taguette/web/api.py:508 taguette/web/api.py:583 taguette/web/api.py:689
+#: taguette/web/api.py:82 taguette/web/api.py:113 taguette/web/api.py:204
+#: taguette/web/api.py:243 taguette/web/api.py:308 taguette/web/api.py:343
+#: taguette/web/api.py:379 taguette/web/api.py:404 taguette/web/api.py:460
+#: taguette/web/api.py:519 taguette/web/api.py:605 taguette/web/api.py:711
 msgid "Unauthorized"
 msgstr ""
 
-#: taguette/web/api.py:347 taguette/web/api.py:381 taguette/web/api.py:413
-#: taguette/web/api.py:469 taguette/web/api.py:538
+#: taguette/web/api.py:348 taguette/web/api.py:382 taguette/web/api.py:414
+#: taguette/web/api.py:473 taguette/web/api.py:549
 msgid "No such tag"
 msgstr ""
 
-#: taguette/web/api.py:512 taguette/web/api.py:586
+#: taguette/web/api.py:477
+msgid "Empty highlight"
+msgstr ""
+
+#: taguette/web/api.py:523 taguette/web/api.py:608
 msgid "No such highlight"
 msgstr ""
 
-#: taguette/web/api.py:752
+#: taguette/web/api.py:774
 msgid "There must be one admin"
 msgstr ""
 
-#: taguette/web/api.py:807
+#: taguette/web/api.py:829
 msgid ""
 "This database is an unknown version. It might have been written by a more"
 " recent version of Taguette, please check for updates"
 msgstr ""
 
-#: taguette/web/api.py:813
+#: taguette/web/api.py:835
 msgid "This database could not be updated to the current version"
 msgstr ""
 
-#: taguette/web/api.py:817 taguette/web/api.py:851
+#: taguette/web/api.py:839 taguette/web/api.py:873
 msgid "This is not a Taguette project file"
 msgstr ""
 
-#: taguette/web/__init__.py:60 taguette/web/base.py:572
+#: taguette/web/__init__.py:60 taguette/web/base.py:575
 msgctxt "page title"
 msgid "Error 404"
 msgstr ""
 
-#: taguette/web/__init__.py:61 taguette/web/base.py:573
+#: taguette/web/__init__.py:61 taguette/web/base.py:576
 msgid "This page does not exist."
 msgstr ""
 
-#: taguette/web/views.py:138
+#: taguette/web/views.py:137
 msgid "Invalid login or password"
 msgstr ""
 
-#: taguette/web/views.py:185 taguette/web/views.py:275
-#: taguette/web/views.py:426
+#: taguette/web/views.py:184 taguette/web/views.py:267
+#: taguette/web/views.py:419
 msgid "Passwords do not match"
 msgstr ""
 
-#: taguette/web/views.py:187
+#: taguette/web/views.py:186
 msgid "User name is taken"
 msgstr ""
 
-#: taguette/web/views.py:194
+#: taguette/web/views.py:193
 msgid "Email address is already used"
 msgstr ""
 
-#: taguette/web/views.py:204
+#: taguette/web/views.py:203
 msgid "Terms of Service must be accepted"
 msgstr ""
 
-#: taguette/web/views.py:312
+#: taguette/web/views.py:305
 msgid "This email address is not associated with any user"
 msgstr ""
 
-#: taguette/web/views.py:341
+#: taguette/web/views.py:334
 msgid "Password reset for Taguette"
 msgstr ""
 
-#: taguette/web/views.py:383
+#: taguette/web/views.py:376
 msgid "Invalid token"
 msgstr ""
 
-#: taguette/web/views.py:387
+#: taguette/web/views.py:380
 msgid "No user associated with that token"
 msgstr ""
 
-#: taguette/web/views.py:390
+#: taguette/web/views.py:383
 msgid "Password has already been changed"
 msgstr ""
 
 #. Default tag name
-#: taguette/web/views.py:466
+#: taguette/web/views.py:462
 msgid "interesting"
 msgstr ""
 
 #. Default tag description
-#: taguette/web/views.py:468
+#: taguette/web/views.py:464
 msgid "Further review required"
 msgstr ""
 
-#: taguette/web/views.py:503
+#: taguette/web/views.py:499
 msgid "You don't have permission to delete this project"
 msgstr ""
 
-#: taguette/web/views.py:537 taguette/web/views.py:564
+#: taguette/web/views.py:533 taguette/web/views.py:560
 msgid "You don't have permission to import a codebook"
 msgstr ""
 
-#: taguette/web/views.py:583
+#: taguette/web/views.py:579
 #, python-format
 msgid "Row %d: %s"
 msgstr ""
 
-#: taguette/web/views.py:701
+#: taguette/web/views.py:697
 msgid "Error importing tags, concurrent changes caused a conflict"
 msgstr ""
 
-#: taguette/web/views.py:716
+#: taguette/web/views.py:712
 msgid "No file provided"
 msgstr ""
 
-#: taguette/web/base.py:471
+#: taguette/web/base.py:467
 msgid ""
 " | Please report issues via <a "
 "href=\"https://gitlab.com/remram44/taguette\">GitLab</a> or <a "
 "href=\"mailto:hi@taguette.org\">hi@taguette.org</a>!"
 msgstr ""
 
-#: taguette/web/base.py:579
+#: taguette/web/base.py:582
 #, python-format
 msgctxt "page title"
 msgid "Error %d"
@@ -532,7 +536,7 @@ msgid ""
 "and a link to reset your password will be sent to you."
 msgstr ""
 
-#: taguette/templates/account.html:20 taguette/templates/login.html:77
+#: taguette/templates/account.html:20 taguette/templates/login.html:78
 #: taguette/templates/reset_password.html:17
 msgctxt "form label for email address"
 msgid "Email"
@@ -593,23 +597,23 @@ msgstr ""
 msgid "QDC (XML)"
 msgstr ""
 
-#: taguette/templates/project.html:55 taguette/templates/project.html:114
+#: taguette/templates/project.html:55 taguette/templates/project.html:125
 msgid "Excel"
 msgstr ""
 
-#: taguette/templates/project.html:56 taguette/templates/project.html:115
+#: taguette/templates/project.html:56 taguette/templates/project.html:126
 msgid "CSV"
 msgstr ""
 
-#: taguette/templates/project.html:57 taguette/templates/project.html:111
+#: taguette/templates/project.html:57 taguette/templates/project.html:122
 msgid "HTML"
 msgstr ""
 
-#: taguette/templates/project.html:58 taguette/templates/project.html:112
+#: taguette/templates/project.html:58 taguette/templates/project.html:123
 msgid "DOCX"
 msgstr ""
 
-#: taguette/templates/project.html:59 taguette/templates/project.html:113
+#: taguette/templates/project.html:59 taguette/templates/project.html:124
 msgid "PDF"
 msgstr ""
 
@@ -625,8 +629,8 @@ msgstr ""
 msgid "Add a document"
 msgstr ""
 
-#: taguette/templates/project.html:80 taguette/templates/project.html:94
-#: taguette/templates/project.html:271
+#: taguette/templates/project.html:80 taguette/templates/project.html:105
+#: taguette/templates/project.html:285
 msgid "Loading..."
 msgstr ""
 
@@ -634,161 +638,177 @@ msgstr ""
 msgid "Backlight"
 msgstr ""
 
-#: taguette/templates/project.html:89
+#: taguette/templates/project.html:94
+msgid "Text [a&rarr;z]"
+msgstr ""
+
+#: taguette/templates/project.html:95
+msgid "Text [z&rarr;a]"
+msgstr ""
+
+#: taguette/templates/project.html:96
+msgid "Count [0&rarr;9]"
+msgstr ""
+
+#: taguette/templates/project.html:97
+msgid "Count [9&rarr;0]"
+msgstr ""
+
+#: taguette/templates/project.html:100
 msgid "See all highlights"
 msgstr ""
 
-#: taguette/templates/project.html:90 taguette/templates/project.html:272
+#: taguette/templates/project.html:101 taguette/templates/project.html:286
 msgid "Create a tag"
 msgstr ""
 
-#: taguette/templates/project.html:108
+#: taguette/templates/project.html:119
 msgid "Export this view"
 msgstr ""
 
-#: taguette/templates/project.html:120
+#: taguette/templates/project.html:131
 msgid "Load a document on the left"
 msgstr ""
 
-#: taguette/templates/project.html:132
+#: taguette/templates/project.html:143
 msgid "Manage Collaborators"
 msgstr ""
 
-#: taguette/templates/project.html:139
+#: taguette/templates/project.html:150
 msgctxt "modal window title"
 msgid "Add Collaborators"
 msgstr ""
 
-#: taguette/templates/project.html:144
+#: taguette/templates/project.html:155
 msgctxt "project members form placeholder"
 msgid "Username"
 msgstr ""
 
-#: taguette/templates/project.html:148
+#: taguette/templates/project.html:159
 msgctxt "permission level"
 msgid "Full permissions"
 msgstr ""
 
-#: taguette/templates/project.html:149
+#: taguette/templates/project.html:160
 msgctxt "permission level"
 msgid "Can't change collaborators / delete project"
 msgstr ""
 
-#: taguette/templates/project.html:150
+#: taguette/templates/project.html:161
 msgctxt "permission level"
 msgid "View & make changes"
 msgstr ""
 
-#: taguette/templates/project.html:151
+#: taguette/templates/project.html:162
 msgctxt "permission level"
 msgid "View only"
 msgstr ""
 
-#: taguette/templates/project.html:154
+#: taguette/templates/project.html:165
 msgctxt "form submit button"
 msgid "Add to project"
 msgstr ""
 
-#: taguette/templates/project.html:158
+#: taguette/templates/project.html:169
 msgid "Current Collaborators"
 msgstr ""
 
-#: taguette/templates/project.html:164 taguette/templates/project.html:248
-#: taguette/templates/project.html:277 taguette/templates/project.html:304
+#: taguette/templates/project.html:175 taguette/templates/project.html:259
+#: taguette/templates/project.html:291 taguette/templates/project.html:318
 msgid "Save & Close"
 msgstr ""
 
-#: taguette/templates/project.html:165 taguette/templates/project.html:208
-#: taguette/templates/project.html:305
+#: taguette/templates/project.html:176 taguette/templates/project.html:219
+#: taguette/templates/project.html:319
 msgid "Cancel"
 msgstr ""
 
-#: taguette/templates/project.html:176
+#: taguette/templates/project.html:187
 msgctxt "modal window title"
 msgid "Add a document"
 msgstr ""
 
-#: taguette/templates/project.html:185
+#: taguette/templates/project.html:196
 msgctxt "form placeholder"
 msgid "Enter a document name"
 msgstr ""
 
-#: taguette/templates/project.html:195 taguette/templates/project.html:236
+#: taguette/templates/project.html:206 taguette/templates/project.html:247
 msgid "Left to right"
 msgstr ""
 
-#: taguette/templates/project.html:199 taguette/templates/project.html:240
+#: taguette/templates/project.html:210 taguette/templates/project.html:251
 msgid "Right to left"
 msgstr ""
 
-#: taguette/templates/project.html:203
+#: taguette/templates/project.html:214
 msgctxt "document add form placeholder"
 msgid "Description"
 msgstr ""
 
-#: taguette/templates/project.html:207
+#: taguette/templates/project.html:218
 msgctxt "submit button"
 msgid "Import"
 msgstr ""
 
-#: taguette/templates/project.html:219
+#: taguette/templates/project.html:230
 msgctxt "modal window title"
 msgid "Edit document"
 msgstr ""
 
-#: taguette/templates/project.html:229
+#: taguette/templates/project.html:240
 msgctxt "document change form placeholder"
 msgid "Name"
 msgstr ""
 
-#: taguette/templates/project.html:244
+#: taguette/templates/project.html:255
 msgctxt "document change form placeholder"
 msgid "Description"
 msgstr ""
 
-#: taguette/templates/project.html:249
+#: taguette/templates/project.html:260
 msgid "Delete document"
 msgstr ""
 
-#: taguette/templates/project.html:260
+#: taguette/templates/project.html:271
 msgctxt "modal window title"
 msgid "Highlight"
 msgstr ""
 
-#: taguette/templates/project.html:278
+#: taguette/templates/project.html:292
 msgid "Delete highlight"
 msgstr ""
 
-#: taguette/templates/project.html:289
+#: taguette/templates/project.html:303
 msgctxt "modal window title"
 msgid "New tag"
 msgstr ""
 
-#: taguette/templates/project.html:290
+#: taguette/templates/project.html:304
 msgctxt "modal window title"
 msgid "Change tag"
 msgstr ""
 
-#: taguette/templates/project.html:298
+#: taguette/templates/project.html:312
 msgctxt "tag change form placeholder"
 msgid "Name"
 msgstr ""
 
-#: taguette/templates/project.html:299
+#: taguette/templates/project.html:313
 msgctxt "tag change form placeholder"
 msgid "Description"
 msgstr ""
 
-#: taguette/templates/project.html:303
+#: taguette/templates/project.html:317
 msgctxt "button in tag change modal window"
 msgid "Merge..."
 msgstr ""
 
-#: taguette/templates/project.html:306
+#: taguette/templates/project.html:320
 msgid "Delete tag"
 msgstr ""
 
-#: taguette/templates/project.html:371
+#: taguette/templates/project.html:385
 msgid "<em>n</em>ew highlight <span class=\"sr-only\">(shortcut: n)</span>"
 msgstr ""
 
@@ -826,7 +846,7 @@ msgctxt "form label for user name"
 msgid "Login"
 msgstr ""
 
-#: taguette/templates/login.html:34 taguette/templates/login.html:65
+#: taguette/templates/login.html:34 taguette/templates/login.html:66
 #: taguette/templates/new_password.html:15
 msgctxt "form label"
 msgid "Password"
@@ -842,28 +862,32 @@ msgctxt "form link"
 msgid "Forgot password"
 msgstr ""
 
-#: taguette/templates/login.html:71 taguette/templates/new_password.html:21
+#: taguette/templates/login.html:62
+msgid "Please use only letters, numbers, dot, underscore, and dashes (._-)"
+msgstr ""
+
+#: taguette/templates/login.html:72 taguette/templates/new_password.html:21
 msgctxt "form label"
 msgid "Confirm password"
 msgstr ""
 
-#: taguette/templates/account.html:23 taguette/templates/login.html:80
+#: taguette/templates/account.html:23 taguette/templates/login.html:81
 msgid ""
 "Optional. <em>We will not share your email with anyone. This is only used"
 " in case you forget your password.</em>"
 msgstr ""
 
-#: taguette/templates/login.html:85
+#: taguette/templates/login.html:86
 msgctxt "link from registration form"
 msgid "Terms of service"
 msgstr ""
 
-#: taguette/templates/login.html:89
+#: taguette/templates/login.html:90
 #, python-format
 msgid "I accept the <a href=\"%(url)s\">terms of service</a>"
 msgstr ""
 
-#: taguette/templates/login.html:96
+#: taguette/templates/login.html:97
 msgctxt "form submit button"
 msgid "Register"
 msgstr ""
