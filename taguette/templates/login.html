@@ -58,7 +58,7 @@
       <div class="form-group row">
         <label for="register-login" class="col-sm-2 col-form-label">{% trans "form label for user name" %}Login{% endtrans %}</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" id="register-login" name="login" required maxlength="20" pattern="[A-Za-z0-9._-]{1,20}" title="letters, numbers, dot, underscore, and dashes" autocomplete="username" />
+          <input type="text" class="form-control" id="register-login" name="login" required maxlength="20" pattern="[A-Za-z0-9._\-]{1,20}" title="letters, numbers, dot, underscore, and dashes" autocomplete="username" />
           <small>{% trans %}Please use only letters, numbers, dot, underscore, and dashes (._-){% endtrans %}</small>
         </div>
       </div>
