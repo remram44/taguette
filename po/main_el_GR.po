@@ -2,84 +2,83 @@
 # Copyright (C) 2018 Remi Rampin and Taguette contributors
 # This file is distributed under the same license as the Taguette project.
 # Remi Rampin <remi@rampin.org>, 2018.
-#
+# 
 # Translators:
 # Yannis Kaskamanidis <kiolalis@gmail.com>, 2023
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: Taguette\n"
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
 "POT-Creation-Date: 2022-10-07 12:08-0400\n"
-"PO-Revision-Date: 2023-05-27 15:49+0300\n"
+"PO-Revision-Date: 2019-05-08 16:49+0000\n"
 "Last-Translator: \n"
-"Language-Team: \n"
-"Language: el_GR\n"
+"Language-Team: Greek (Greece) (https://app.transifex.com/remram44/teams/98824/el_GR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.11.0\n"
+"Language: el_GR\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Generated-By: Babel 2.10.3\n"
-"X-Generator: Poedit 3.3.1\n"
 
-#: taguette/main.py:240
+#: taguette/main.py:246
 msgid "Port number on which to listen"
 msgstr "Αριθμός θύρας για ακρόαση"
 
-#: taguette/main.py:242
+#: taguette/main.py:248
 msgid "Address to bind on"
 msgstr "Διεύθυνση προς δέσμευση"
 
-#: taguette/main.py:244
+#: taguette/main.py:250
 msgid "Open web browser to the application"
 msgstr "Ανοίξτε τον περιηγητή διαδικτύου στην εφαρμογή"
 
-#: taguette/main.py:246
+#: taguette/main.py:252
 msgid "Don't open the web browser"
 msgstr "Μην ανοίγετε τον περιηγητή διαδικτύου"
 
-#: taguette/main.py:251
+#: taguette/main.py:257
 #, python-format
 msgid ""
 "Database location or connection string, for example 'project.db' or "
 "'postgresql://me:pw@localhost/mydb' (default: %(default)r)"
 msgstr ""
-"Τοποθεσία βάσης δεδομένων ή συμβολοσειρά σύνδεσης, για παράδειγμα 'project."
-"db' ή 'postgresql://me:pw@localhost/mydb' (προεπιλογή: %(default)r)"
+"Τοποθεσία βάσης δεδομένων ή συμβολοσειρά σύνδεσης, για παράδειγμα "
+"'project.db' ή 'postgresql://me:pw@localhost/mydb' (προεπιλογή: %(default)r)"
 
-#: taguette/main.py:258
+#: taguette/main.py:264
 msgid "Set the file creation mask (umask) on systems that support it."
 msgstr ""
 "Ρυθμίστε τη μάσκα δημιουργίας αρχείων (umask) σε συστήματα που την "
 "υποστηρίζουν."
 
-#: taguette/main.py:262
+#: taguette/main.py:268
 msgid "Don't change umask on startup"
 msgstr "Μην αλλάζετε την εντολή umask κατά την εκκίνηση"
 
-#: taguette/main.py:268
+#: taguette/main.py:274
 msgid "additional commands"
 msgstr "πρόσθετες εντολές"
 
-#: taguette/main.py:272
+#: taguette/main.py:278
 msgid "Manually trigger a database migration"
 msgstr "Μη αυτόματη ενεργοποίηση μιας μετεγκατάστασης βάσης δεδομένων"
 
-#: taguette/main.py:281
+#: taguette/main.py:289
 msgid "Print the default server configuration"
 msgstr "Εκτύπωση της προεπιλεγμένης διαμόρφωσης διακομιστή"
 
-#: taguette/main.py:283
+#: taguette/main.py:291
 msgid "Output to this file rather than stdout"
 msgstr "Έξοδος σε αυτό το αρχείο αντί για stdout"
 
-#: taguette/main.py:289
+#: taguette/main.py:297
 msgid "Run in server mode, suitable for a multi-user deployment"
 msgstr ""
 "Εκτελείται σε λειτουργία διακομιστή, κατάλληλο για ανάπτυξη από πολλούς "
 "χρήστες"
 
-#: taguette/main.py:291
+#: taguette/main.py:299
 msgid ""
 "Configuration file for the server. The default configuration can be "
 "generated using the `default-config` command"
@@ -87,32 +86,30 @@ msgstr ""
 "Αρχείο διαμόρφωσης για τον διακομιστή. Η προεπιλεγμένη διαμόρφωση μπορεί να "
 "δημιουργηθεί χρησιμοποιώντας την εντολή 'default-config'."
 
-#: taguette/main.py:303
+#: taguette/main.py:311
 #, python-format
 msgid "Invalid umask: %(arg)s"
 msgstr "Μη έγκυρη εντολή umask: %(arg)s"
 
-#: taguette/main.py:327
+#: taguette/main.py:335
 #, python-format
 msgid "Missing required configuration variable %(var)s"
 msgstr "Λείπει η απαιτούμενη μεταβλητή διαμόρφωσης %(var)s"
 
-#: taguette/main.py:334
+#: taguette/main.py:342
 msgid "Invalid BASE_PATH"
 msgstr "Μη έγκυρο BASE_PATH"
 
-#: taguette/main.py:394
+#: taguette/main.py:416
 #, python-format
 msgid ""
 "\n"
-"    Taguette %(version)s is now running. You can connect to it using this "
-"link:\n"
+"    Taguette %(version)s is now running. You can connect to it using this link:\n"
 "\n"
 "    %(url)s\n"
 msgstr ""
 "\n"
-"    Η Taguette %(version)s εκτελείται τώρα. Μπορείτε να συνδεθείτε σε αυτό "
-"με τον σύνδεσμο:\n"
+"    Η Taguette %(version)s εκτελείται τώρα. Μπορείτε να συνδεθείτε σε αυτό με τον σύνδεσμο:\n"
 "\n"
 "    %(url)s\n"
 
@@ -220,8 +217,7 @@ msgid ""
 "    update your workspace automatically.\n"
 msgstr ""
 "\n"
-"    Το σχήμα της βάσης δεδομένων που χρησιμοποιείται από την Taguette έχει "
-"αλλάξει! Θα προσπαθήσουμε να\n"
+"    Το σχήμα της βάσης δεδομένων που χρησιμοποιείται από την Taguette έχει αλλάξει! Θα προσπαθήσουμε να\n"
 "    ενημερώσουμε αυτόματα τον χώρο εργασίας σας.\n"
 
 #: taguette/database/__init__.py:148
@@ -233,55 +229,52 @@ msgid ""
 "    %(backup)s\n"
 msgstr ""
 "\n"
-"    Δημιουργήθηκε ένα αντίγραφο ασφαλείας του αρχείου της βάσης δεδομένων "
-"σας. Εάν η ενημέρωση\n"
-"    δεν γίνει σωστά, φροντίστε να διατηρήσετε αυτό το αρχείο και ενημερώστε "
-"μας:\n"
+"    Δημιουργήθηκε ένα αντίγραφο ασφαλείας του αρχείου της βάσης δεδομένων σας. Εάν η ενημέρωση\n"
+"    δεν γίνει σωστά, φροντίστε να διατηρήσετε αυτό το αρχείο και ενημερώστε μας:\n"
 "    %(backup)s\n"
 
 #: taguette/database/__init__.py:160
 #, python-format
 msgid ""
 "\n"
-"    The database schema used by Taguette has changed! Because you are not "
-"using\n"
-"    SQLite, we will not attempt a migration automatically; back up your data "
-"and\n"
+"    The database schema used by Taguette has changed! Because you are not using\n"
+"    SQLite, we will not attempt a migration automatically; back up your data and\n"
 "    use `taguette --database=%(url)s migrate` if you want to proceed."
 msgstr ""
 "\n"
-"    Το σχήμα της βάσης δεδομένων που χρησιμοποιείται από την Taguette έχει "
-"αλλάξει! Επειδή δεν χρησιμοποιείτε\n"
-"    το SQLite, δεν θα επιχειρήσουμε αυτόματη μετεγκατάσταση. Δημιουργήστε "
-"αντίγραφα ασφαλείας των δεδομένων σας\n"
-"    και χρησιμοποιήστε το `taguette --database=%(url)s migrate` αν θέλετε να "
-"συνεχίσετε."
+"    Το σχήμα της βάσης δεδομένων που χρησιμοποιείται από την Taguette έχει αλλάξει! Επειδή δεν χρησιμοποιείτε\n"
+"    το SQLite, δεν θα επιχειρήσουμε αυτόματη μετεγκατάσταση. Δημιουργήστε αντίγραφα ασφαλείας των δεδομένων σας\n"
+"    και χρησιμοποιήστε το `taguette --database=%(url)s migrate` αν θέλετε να συνεχίσετε."
 
-#: taguette/web/api.py:51
+#: taguette/web/api.py:52
 msgid "Not logged in"
 msgstr "Δεν έχετε συνδεθεί"
 
-#: taguette/web/api.py:81 taguette/web/api.py:112 taguette/web/api.py:203
-#: taguette/web/api.py:242 taguette/web/api.py:307 taguette/web/api.py:342
-#: taguette/web/api.py:378 taguette/web/api.py:403 taguette/web/api.py:456
-#: taguette/web/api.py:508 taguette/web/api.py:583 taguette/web/api.py:689
+#: taguette/web/api.py:82 taguette/web/api.py:113 taguette/web/api.py:204
+#: taguette/web/api.py:243 taguette/web/api.py:308 taguette/web/api.py:343
+#: taguette/web/api.py:379 taguette/web/api.py:404 taguette/web/api.py:460
+#: taguette/web/api.py:519 taguette/web/api.py:605 taguette/web/api.py:711
 msgid "Unauthorized"
 msgstr "Μη εξουσιοδοτημένος"
 
-#: taguette/web/api.py:347 taguette/web/api.py:381 taguette/web/api.py:413
-#: taguette/web/api.py:469 taguette/web/api.py:538
+#: taguette/web/api.py:348 taguette/web/api.py:382 taguette/web/api.py:414
+#: taguette/web/api.py:473 taguette/web/api.py:549
 msgid "No such tag"
 msgstr "Δεν υπάρχει τέτοια ετικέτα"
 
-#: taguette/web/api.py:512 taguette/web/api.py:586
+#: taguette/web/api.py:477
+msgid "Empty highlight"
+msgstr ""
+
+#: taguette/web/api.py:523 taguette/web/api.py:608
 msgid "No such highlight"
 msgstr "Δεν υπάρχει τέτοια επισήμανση"
 
-#: taguette/web/api.py:752
+#: taguette/web/api.py:774
 msgid "There must be one admin"
 msgstr "Πρέπει να υπάρχει ένας διαχειριστής"
 
-#: taguette/web/api.py:807
+#: taguette/web/api.py:829
 msgid ""
 "This database is an unknown version. It might have been written by a more "
 "recent version of Taguette, please check for updates"
@@ -290,38 +283,39 @@ msgstr ""
 "έχει δημιουργηθεί από μια πιο πρόσφατη έκδοση του Taguette. Ελέγξτε για "
 "ενημερώσεις."
 
-#: taguette/web/api.py:813
+#: taguette/web/api.py:835
 msgid "This database could not be updated to the current version"
 msgstr ""
 "Αυτή η βάση δεδομένων δεν ήταν δυνατόν να ενημερωθεί στην τρέχουσα έκδοση"
 
-#: taguette/web/api.py:817 taguette/web/api.py:851
+#: taguette/web/api.py:839 taguette/web/api.py:873
 msgid "This is not a Taguette project file"
 msgstr "Αυτό δεν είναι ένα αρχείο έργου της Taguette"
 
-#: taguette/web/__init__.py:60 taguette/web/base.py:572
+#: taguette/web/__init__.py:60 taguette/web/base.py:566
 msgctxt "page title"
 msgid "Error 404"
 msgstr "Σφάλμα 404"
 
-#: taguette/web/__init__.py:61 taguette/web/base.py:573
+#: taguette/web/__init__.py:61 taguette/web/base.py:567
 msgid "This page does not exist."
 msgstr "Αυτή η σελίδα δεν υπάρχει."
 
-#: taguette/web/views.py:138
+#: taguette/web/views.py:137
 msgid "Invalid login or password"
 msgstr "Μη έγκυρη σύνδεση ή κωδικός πρόσβασης"
 
-#: taguette/web/views.py:185 taguette/web/views.py:275
-#: taguette/web/views.py:426
+#: taguette/web/views.py:184 taguette/web/views.py:271
+#: taguette/web/views.py:443
 msgid "Passwords do not match"
 msgstr "Οι κωδικοί πρόσβασης δεν ταιριάζουν"
 
-#: taguette/web/views.py:187
+#: taguette/web/views.py:189
 msgid "User name is taken"
 msgstr "Το όνομα χρήστη χρησιμοποιείται ήδη"
 
-#: taguette/web/views.py:194
+#: taguette/web/views.py:196 taguette/web/views.py:286
+#: taguette/web/views.py:295
 msgid "Email address is already used"
 msgstr "Η διεύθυνση email χρησιμοποιείται ήδη"
 
@@ -329,70 +323,74 @@ msgstr "Η διεύθυνση email χρησιμοποιείται ήδη"
 msgid "Terms of Service must be accepted"
 msgstr "Οι Όροι Παροχής Υπηρεσιών πρέπει να γίνουν αποδεκτοί"
 
-#: taguette/web/views.py:312
+#: taguette/web/views.py:213
+msgid "User name or email address is taken"
+msgstr ""
+
+#: taguette/web/views.py:329
 msgid "This email address is not associated with any user"
 msgstr ""
 "Αυτή η διεύθυνση ηλεκτρονικού ταχυδρομείου δεν σχετίζεται με κανέναν χρήστη"
 
-#: taguette/web/views.py:341
+#: taguette/web/views.py:358
 msgid "Password reset for Taguette"
 msgstr "Επαναφορά κωδικού πρόσβασς για την Taguette"
 
-#: taguette/web/views.py:383
+#: taguette/web/views.py:400
 msgid "Invalid token"
 msgstr "Μη έγκυρος κλειδάριθμος"
 
-#: taguette/web/views.py:387
+#: taguette/web/views.py:404
 msgid "No user associated with that token"
 msgstr "Κανένας χρήστης δεν σχετίζεται με αυτόν τον κλειδάριθμο"
 
-#: taguette/web/views.py:390
+#: taguette/web/views.py:407
 msgid "Password has already been changed"
 msgstr "Ο κωδικός πρόσβασης έχει ήδη αλλάξει"
 
 #. Default tag name
-#: taguette/web/views.py:466
+#: taguette/web/views.py:486
 msgid "interesting"
 msgstr "ενδιαφέρον"
 
 #. Default tag description
-#: taguette/web/views.py:468
+#: taguette/web/views.py:488
 msgid "Further review required"
 msgstr "Απαιτείται περαιτέρω ανασκόπηση"
 
-#: taguette/web/views.py:503
+#: taguette/web/views.py:523
 msgid "You don't have permission to delete this project"
 msgstr "Δεν έχετε άδεια να διαγράψετε αυτό το έργο"
 
-#: taguette/web/views.py:537 taguette/web/views.py:564
+#: taguette/web/views.py:557 taguette/web/views.py:584
 msgid "You don't have permission to import a codebook"
 msgstr "Δεν έχετε άδεια εισαγωγής βιβλίου ετικετών"
 
-#: taguette/web/views.py:583
+#: taguette/web/views.py:603
 #, python-format
 msgid "Row %d: %s"
 msgstr "Γραμμή %d: %s"
 
-#: taguette/web/views.py:701
+#: taguette/web/views.py:721
 msgid "Error importing tags, concurrent changes caused a conflict"
 msgstr ""
 "Σφάλμα κατά την εισαγωγή ετικετών, οι ταυτόχρονες αλλαγές προκάλεσαν διένεξη"
 
-#: taguette/web/views.py:716
+#: taguette/web/views.py:736
 msgid "No file provided"
 msgstr "Δεν παρέχεται αρχείο"
 
-#: taguette/web/base.py:471
+#: taguette/web/base.py:458
 msgid ""
-" | Please report issues via <a href=\"https://gitlab.com/remram44/"
-"taguette\">GitLab</a> or <a href=\"mailto:hi@taguette.org\">hi@taguette.org</"
-"a>!"
+" | Please report issues via <a "
+"href=\"https://gitlab.com/remram44/taguette\">GitLab</a> or <a "
+"href=\"mailto:hi@taguette.org\">hi@taguette.org</a>!"
 msgstr ""
-" | Παρακαλώ αναφέρετε προβλήματα ή άλλα ζητήματα μέσω του <a href=\"https://"
-"gitlab.com/remram44/taguette\">GitLab</a> ή με μήνυμα στο <a href=\"mailto:"
-"hi@taguette.org\">hi@taguette.org</a>!"
+" | Παρακαλώ αναφέρετε προβλήματα ή άλλα ζητήματα μέσω του <a "
+"href=\"https://gitlab.com/remram44/taguette\">GitLab</a> ή με μήνυμα στο <a "
+"href=\"mailto:hi@taguette.org\">hi@taguette.org</a>!"
 
-#: taguette/web/base.py:579
+#: taguette/web/base.py:573
 #, python-format
 msgctxt "page title"
 msgid "Error %d"
@@ -447,8 +445,8 @@ msgid ""
 "tags will not be deleted, new tags will be added alongside them."
 msgstr ""
 "Χρησιμοποιήστε αυτή τη φόρμα για να εισαγάγετε ένα υπάρχον βιβλίο ετικετών "
-"στο έργο σας. Οι υπάρχουσες ετικέτες δεν θα διαγραφούν, ενώ νέες ετικέτες θα "
-"προστεθούν κοντά σε αυτές."
+"στο έργο σας. Οι υπάρχουσες ετικέτες δεν θα διαγραφούν, ενώ νέες ετικέτες θα"
+" προστεθούν κοντά σε αυτές."
 
 #: taguette/templates/project_import_codebook.html:8
 msgid ""
@@ -541,13 +539,13 @@ msgstr "Καλωσορίσατε"
 
 #: taguette/templates/welcome.html:9
 msgid ""
-"<span style=\"font-family:BadScript;\"><a href=\"https://www.taguette.org/"
-"\">TAGUETTE</a></span> is an open-source web-based document tagging tool for "
-"qualitative data analysis."
+"<span style=\"font-family:BadScript;\"><a "
+"href=\"https://www.taguette.org/\">TAGUETTE</a></span> is an open-source "
+"web-based document tagging tool for qualitative data analysis."
 msgstr ""
-"<span style=\"font-family:BadScript;\"><a href=\"https://www.taguette.org/"
-"\">Η TAGUETTE</a></span> είναι μια ανοιχτού κώδικα web-based εφαρμογή "
-"προσθήκης ετικετών για ποιοτική ανάλυση δεδομένων."
+"<span style=\"font-family:BadScript;\"><a "
+"href=\"https://www.taguette.org/\">Η TAGUETTE</a></span> είναι μια ανοιχτού "
+"κώδικα web-based εφαρμογή προσθήκης ετικετών για ποιοτική ανάλυση δεδομένων."
 
 #: taguette/templates/welcome.html:10
 msgid ""
@@ -919,11 +917,12 @@ msgstr "Επιβεβαίωση κωδικού πρόσβασης"
 
 #: taguette/templates/account.html:23 taguette/templates/login.html:80
 msgid ""
-"Optional. <em>We will not share your email with anyone. This is only used in "
-"case you forget your password.</em>"
+"Optional. <em>We will not share your email with anyone. This is only used in"
+" case you forget your password.</em>"
 msgstr ""
 "Προαιρετικό. <em>Δεν θα μοιραστούμε το email σας με κανέναν. Αυτό "
-"χρησιμοποιείται μόνο σε περίπτωση που ξεχάσετε τον κωδικό πρόσβασής σας.</em>"
+"χρησιμοποιείται μόνο σε περίπτωση που ξεχάσετε τον κωδικό πρόσβασής "
+"σας.</em>"
 
 #: taguette/templates/login.html:85
 msgctxt "link from registration form"
@@ -958,12 +957,13 @@ msgid ""
 "continuing, you must accept their use by clicking the button below. Those "
 "<strong>are not</strong> \"third-party\" or \"tracking\" cookies."
 msgstr ""
-"Αυτός ο ιστότοπος χρησιμοποιεί cookies για την αποθήκευση της ταυτότητάς σας "
-"(εάν επιλέξετε να συνδεθείτε) και ως προστασία έναντι της <a href=\"https://"
-"en.wikipedia.org/wiki/Cross-site_request_forgery\">πλαστογράφησης αιτημάτων "
-"μεταξύ ιστότοπων (CSRF )</a>. Πριν συνεχίσετε, πρέπει να αποδεχτείτε τη "
-"χρήση τους κάνοντας κλικ στο παρακάτω κουμπί. Αυτά <strong>δεν</strong> "
-"είναι cookie \"τρίτου μέρους\" ή \"παρακολούθησης\"."
+"Αυτός ο ιστότοπος χρησιμοποιεί cookies για την αποθήκευση της ταυτότητάς σας"
+" (εάν επιλέξετε να συνδεθείτε) και ως προστασία έναντι της <a "
+"href=\"https://en.wikipedia.org/wiki/Cross-"
+"site_request_forgery\">πλαστογράφησης αιτημάτων μεταξύ ιστότοπων (CSRF "
+")</a>. Πριν συνεχίσετε, πρέπει να αποδεχτείτε τη χρήση τους κάνοντας κλικ "
+"στο παρακάτω κουμπί. Αυτά <strong>δεν</strong> είναι cookie \"τρίτου "
+"μέρους\" ή \"παρακολούθησης\"."
 
 #: taguette/templates/cookies_prompt.html:12
 msgctxt "button on cookie warning page"
@@ -1118,14 +1118,15 @@ msgstr "Σύνδεση"
 #: taguette/templates/base.html:71
 #, python-format
 msgid ""
-"Taguette %(version)s is released under a <a href=\"https://gitlab.com/"
-"remram44/taguette/blob/master/LICENSE.txt\">BSD-3-Clause license</a>, &#169; "
-"Rémi Rampin and Taguette contributors | <a href=\"https://www.taguette.org/"
-"getting-started.html\">User Documentation</a>"
+"Taguette %(version)s is released under a <a "
+"href=\"https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt\">BSD-3-Clause"
+" license</a>, &#169; Rémi Rampin and Taguette contributors | <a "
+"href=\"https://www.taguette.org/getting-started.html\">User "
+"Documentation</a>"
 msgstr ""
 "Η έκδοση Taguette %(version)s κυκλοφορεί με τους όρους της άδειας <a "
-"href=\"https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt\">BSD-3-"
-"Clause</a>, &#169; Rémi Rampin και συνεισφέροντες στη Taguette | <a "
+"href=\"https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt\">BSD-3-Clause</a>,"
+" &#169; Rémi Rampin και συνεισφέροντες στη Taguette | <a "
 "href=\"https://www.taguette.org/getting-started.html\">Τεκμηρίωση χρήστη</a>"
 
 #: taguette/templates/project_delete.html:3
