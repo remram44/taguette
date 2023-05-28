@@ -445,8 +445,8 @@ msgid ""
 "tags will not be deleted, new tags will be added alongside them."
 msgstr ""
 "Χρησιμοποιήστε αυτή τη φόρμα για να εισαγάγετε ένα υπάρχον βιβλίο ετικετών "
-"στο έργο σας. Οι υπάρχουσες ετικέτες δεν θα διαγραφούν, ενώ νέες ετικέτες θα"
-" προστεθούν κοντά σε αυτές."
+"στο έργο σας. Οι υπάρχουσες ετικέτες δεν θα διαγραφούν, καθώς οι νέες "
+"ετικέτες θα προστεθούν κοντά σε αυτές."
 
 #: taguette/templates/project_import_codebook.html:8
 msgid ""
@@ -455,9 +455,8 @@ msgid ""
 "columns are ignored."
 msgstr ""
 "Το αρχείο θα πρέπει να έχει μια στήλη για τα ονόματα των ετικετών, που "
-"ονομάζεται 'όνομα' ή 'ετικέτα' ή 'διαδρομή'. Μπορεί επίσης να έχει "
-"προαιρετικά μια στήλη που να ονομάζεται 'περιγραφή'. Άλλες στήλες θα "
-"αγνοούνται."
+"ονομάζεται 'name' ή 'tag' ή 'path'. Μπορεί επίσης να έχει προαιρετικά μια "
+"στήλη που να ονομάζεται 'description'. Άλλες στήλες θα αγνοούνται."
 
 #: taguette/templates/project_import_codebook.html:15
 msgctxt "form label for project name (readonly)"
@@ -476,7 +475,7 @@ msgstr "Αποδεκτή μορφή: CSV"
 #: taguette/templates/project_import_codebook.html:29
 msgctxt "form submit button"
 msgid "Review"
-msgstr "Επιθεώρηση"
+msgstr "Ανασκόπηση"
 
 #: taguette/templates/project_delete.html:14
 #: taguette/templates/project_import_codebook.html:30
@@ -496,7 +495,7 @@ msgstr "Καλωσορίσατε"
 
 #: taguette/templates/index.html:14
 msgid "Here are your projects:"
-msgstr "Εδώ βρίσκονται τα έργα σας:"
+msgstr "Εδώ βρίσκονται τα έργα σας"
 
 #: taguette/templates/index.html:19
 msgid "You have no projects yet."
@@ -553,10 +552,10 @@ msgid ""
 "hierarchy of tags, and annotate portions of documents with tags and notes "
 "that you can recall and organize later."
 msgstr ""
-"Χρησιμοποιώντας αυτό το εργαλείο, μπορείτε να ανεβάσετε μια συλλογή "
+"Χρησιμοποιώντας αυτή την εφαρμογή, μπορείτε να ανεβάσετε μια συλλογή "
 "εγγράφων, να δημιουργήσετε μια ιεραρχία ετικετών και να σχολιάσετε τμήματα "
-"εγγράφων με ετικέτες και σημειώσεις, τις οποίες μπορείτε να ανακαλέσετε και "
-"να οργανώσετε αργότερα."
+"εγγράφων με ετικέτες και σημειώσεις, τις οποίες μπορείτε αργότερα να "
+"ανακαλέσετε και να οργανώσετε."
 
 #: taguette/templates/welcome.html:12
 #, python-format
@@ -735,7 +734,7 @@ msgstr "Όνομα χρήστη"
 #: taguette/templates/project.html:148
 msgctxt "permission level"
 msgid "Full permissions"
-msgstr "Πλήρεις άδειες"
+msgstr "Πλήρη δικαιώματα"
 
 #: taguette/templates/project.html:149
 msgctxt "permission level"
@@ -892,7 +891,7 @@ msgstr "Εγγραφή"
 #: taguette/templates/login.html:59
 msgctxt "form label for user name"
 msgid "Login"
-msgstr "Σύνδεση"
+msgstr "Όνομα χρήστη"
 
 #: taguette/templates/login.html:34 taguette/templates/login.html:65
 #: taguette/templates/new_password.html:15
@@ -903,12 +902,12 @@ msgstr "Κωδικός πρόσβασης"
 #: taguette/templates/login.html:41
 msgctxt "form submit button"
 msgid "Log in"
-msgstr "Σύνδεση"
+msgstr "Όνομα χρήστη"
 
 #: taguette/templates/login.html:42
 msgctxt "form link"
 msgid "Forgot password"
-msgstr "Ξεχάσατε τον κωδικό πρόσβασης"
+msgstr "Ξεχάσατε τον κωδικό πρόσβασης;"
 
 #: taguette/templates/login.html:71 taguette/templates/new_password.html:21
 msgctxt "form label"
@@ -932,7 +931,7 @@ msgstr "Όροι Παροχής Υπηρεσιών"
 #: taguette/templates/login.html:89
 #, python-format
 msgid "I accept the <a href=\"%(url)s\">terms of service</a>"
-msgstr "Αποδέχομαι τους <a href=\"%(url)s\">Όροι Παροχής Υπηρεσιών</a>"
+msgstr "Αποδέχομαι τους <a href=\"%(url)s\">Όρους Παροχής Υπηρεσιών</a>"
 
 #: taguette/templates/login.html:96
 msgctxt "form submit button"
