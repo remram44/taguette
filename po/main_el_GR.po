@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Taguette\n"
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
 "POT-Creation-Date: 2022-10-07 12:08-0400\n"
-"PO-Revision-Date: 2023-05-27 15:49+0300\n"
+"PO-Revision-Date: 2023-06-05 08:59+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: el_GR\n"
@@ -901,7 +901,7 @@ msgstr "Κωδικός πρόσβασης"
 #: taguette/templates/login.html:41
 msgctxt "form submit button"
 msgid "Log in"
-msgstr "Όνομα χρήστη"
+msgstr "Σύνδεση"
 
 #: taguette/templates/login.html:42
 msgctxt "form link"
