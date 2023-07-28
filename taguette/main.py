@@ -8,6 +8,8 @@ import os
 import pkg_resources
 import prometheus_client
 import re
+import secrets
+import string
 import subprocess
 import sys
 import tornado.ioloop
@@ -168,7 +170,19 @@ REQUIRED_CONFIG = ['NAME', 'PORT', 'SECRET_KEY', 'DATABASE', 'TOS_FILE',
 
 async def _set_password(user):
     import getpass
-    passwd = getpass.getpass("Enter password for user %r: " % user.login)
+    try:
+        passwd = getpass.getpass("Enter password for user %r: " % user.login)
+    except (OSError, EOFError):
+        character_set = (
+            string.ascii_lowercase
+            + string.ascii_uppercase
+            + string.digits
+        )
+        passwd = ''.join(secrets.choice(character_set) for _ in range(16))
+        logger.warning(
+            "Can't prompt for a password, setting admin password to: %s",
+            passwd,
+        )
     await user.set_password(passwd)
 
 
