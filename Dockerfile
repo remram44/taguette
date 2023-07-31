@@ -22,6 +22,10 @@ RUN /root/.local/bin/poetry export -o requirements.txt --without=dev -E postgres
 
 FROM python:3.10
 
+ENV TINI_VERSION v0.19.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+RUN chmod +x /tini
+
 # Install Calibre from Ubuntu distro
 RUN apt-get update && \
     apt-get install -y --no-install-recommends calibre wv && \
@@ -45,5 +49,5 @@ COPY --from=build /usr/src/app/taguette/l10n taguette/l10n
 VOLUME /data
 ENV HOME=/data
 EXPOSE 7465
-ENTRYPOINT ["taguette", "--no-browser", "--bind=0.0.0.0"]
+ENTRYPOINT ["/tini", "--", "taguette", "--no-browser", "--bind=0.0.0.0"]
 CMD []
