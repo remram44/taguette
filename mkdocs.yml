@@ -1,0 +1,36 @@
+site_name: Taguette
+site_author: Vicky and Remi Rampin
+copyright: Creative Commons 4.0 BY
+site_url: https://taguette.org
+repo_url: https://gitlab.com/remram44/taguette
+repo_name: remram44/taguette
+edit_uri: edit/website
+markdown_extensions:
+  - attr_list
+  - md_in_html
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+nav:
+  - Home: index.md
+  - About: about.md
+  - Install: install.md
+  - FAQ: faq.md
+  - Getting Started: getting-started.md
+  - Self-hosting: self-host.md
+theme:
+  name: material
+  language: en
+  logo: img/taguette.png
+  favicon: img/favicon.ico
+  features:
+    - navigation.instant
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - toc.follow
+    - toc.integrate
+  palette:
+    primary: deep purple
+  font:
+    text: Didact Gothic
+    code: Free Mono
