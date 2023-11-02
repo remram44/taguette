@@ -1,18 +1,21 @@
+# Site info
 site_name: Taguette
-site_author: Vicky and Remi Rampin
+site_author: Vicky Rampin and Remi Rampin
 site_dir: public
-site_url: https://taguette.org
+site_url: https://taguette.org/
+site_description: >-
+  Write your documentation in Markdown and create a professional static site in
+  minutes – searchable, customizable, in 60+ languages, for all devices
+
+# Repository
 repo_url: https://gitlab.com/remram44/taguette
 repo_name: remram44/taguette
 edit_uri: edit/website
+
+# Copyright
 copyright: Website content CC BY 4.0
-markdown_extensions:
-  - attr_list
-  - md_in_html
-  - tables
-  - pymdownx.emoji:
-      emoji_index: !!python/name:material.extensions.emoji.twemoji
-      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+# Navigation
 nav:
   - Home: index.md
   - About: about.md
@@ -21,6 +24,8 @@ nav:
   - User Guide: help-guide.md
   - Self-hosting: self-host.md
   - Community resources: community.md
+
+# Configuration
 theme:
   name: material
   language: en
@@ -30,12 +35,61 @@ theme:
     - navigation.instant
     - navigation.tabs
     - navigation.tabs.sticky
+    - navigation.tracking
+    - search.highlight
+    - search.share
     - toc.follow
     - toc.integrate
   palette:
-    primary: deep purple
+    primary: teal
+    accent: red
   font:
     text: Didact Gothic
     code: Free Mono
+
+# Extensions
+markdown_extensions:
+  - attr_list
+  - md_in_html
+  - tables
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+# Extra matter (footer)
 extra:
+  # footer
   generator: false
+  social:
+    - icon: material/email-fast-outline
+      link: mailto:hi@taguette.org
+      name: Taguette email
+    - icon: material/account-group
+      link: https://groups.io/g/taguette
+      name: Taguette users' mailing list
+    - icon: material/bullhorn-variant-outline
+      link: https://groups.io/g/taguette-announce
+      name: Taguette announcement mailing list
+    - icon: simple/twitter
+      link: https://twitter.com/TaguetteProject
+      name: Taguette on Twitter
+    - icon: material/gitlab
+      link: https://gitlab.com/remram44/taguette
+      name: Taguette on GitLab
+    - icon: simple/opencollective
+      link: https://opencollective.com/taguette
+      name: donate to Taguette on OpenCollective
+  # internationalization
+  alternate:
+    - name: English
+      link: /en/
+      lang: en
+    - name: French
+      link: /fr/
+      lang: fr
+    - name: Swedish
+      link: /sv/
+      lang: sv
+    - name: Vietnamese
+      link: /vi/
+      lang: vi
