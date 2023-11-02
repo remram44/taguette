@@ -1,27 +1,26 @@
+# https://gitlab.com/pages/mkdocs/-/blob/master/.gitlab-ci.yml?ref_type=heads
+
+image: python:3.10
+
 before_script:
-  - curl -sSL https://install.python-poetry.org | python3 - && /root/.local/bin/poetry config virtualenvs.create false
-  - $HOME/.local/bin/poetry install --no-interaction
+  - pip install -r requirements.txt
+
+test:
+  stage: test
+  script:
+  - mkdocs build --strict --verbose --site-dir test
+  artifacts:
+    paths:
+    - test
+  rules:
+    - if: $CI_COMMIT_REF_NAME != $CI_DEFAULT_BRANCH
 
 pages:
   stage: deploy
-  image: python:3.10
   script:
-    - mkdir public
-    - $HOME/.local/bin/poetry run python scripts/generate.py public/
+  - mkdocs build --strict --verbose
   artifacts:
     paths:
-      - public
-  only:
-    - website
-
-pages_test:
-  stage: deploy
-  image: python:3.10
-  script:
-    - mkdir pages
-    - TAGUETTE_TEST_LOCALE=y $HOME/.local/bin/poetry run python scripts/generate.py pages/
-  artifacts:
-    paths:
-      - pages
-  except:
-    - website
+    - public
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH

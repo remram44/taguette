@@ -1,13 +1,15 @@
 site_name: Taguette
 site_author: Vicky and Remi Rampin
-copyright: Creative Commons 4.0 BY
+site_dir: public
 site_url: https://taguette.org
 repo_url: https://gitlab.com/remram44/taguette
 repo_name: remram44/taguette
 edit_uri: edit/website
+copyright: Website content CC BY 4.0
 markdown_extensions:
   - attr_list
   - md_in_html
+  - tables
   - pymdownx.emoji:
       emoji_index: !!python/name:material.extensions.emoji.twemoji
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
@@ -34,3 +36,5 @@ theme:
   font:
     text: Didact Gothic
     code: Free Mono
+extra:
+  generator: false
