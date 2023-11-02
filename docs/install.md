@@ -13,7 +13,7 @@ computer and/or server (if you'd like to self-host!). Using Taguette on our serv
 
 Taguette works on macOS, Windows, and Linux. The installers for macOS and Windows include Python, Taguette, and Calibre, so you don't need to install anything else. For Linux, the easiest way to install Taguette is to use `pip`, and those instructions are below.
 
-## macOS
+## :material-apple: macOS
 
 1) Download the DMG file from our [latest release page](https://gitlab.com/remram44/taguette/-/releases/v1.4.1).
 
@@ -32,7 +32,7 @@ Taguette works on macOS, Windows, and Linux. The installers for macOS and Window
 
 Once you start the application, you will see a terminal window appear. This is normal! You can ignore it completely and use Taguette from your web browser ([`localhost:7465`](http://localhost:7465/) should open automatically). Simply leave the terminal window open until you are done using Taguette, after which you can close that terminal window to stop Taguette.
 
-## Windows
+## :material-microsoft-windows: Windows
 
 1) Download the EXE file from our [latest release page](https://gitlab.com/remram44/taguette/-/releases/v1.4.1).
 
@@ -44,7 +44,7 @@ Once you start the application, you will see a terminal window appear. This is n
 
 Once you start the application, you will see a terminal window appear. This is normal! You can ignore it completely and use Taguette from your web browser ([`localhost:7465`](http://localhost:7465/) should open automatically). Simply leave the terminal window open until you are done using Taguette, after which you can close that terminal window to stop Taguette.
 
-## Linux
+## :material-linux: Linux
 
 You first need to install the dependenices of Taguette: [Python 3](https://www.python.org/downloads/) and [Calibre](https://calibre-ebook.com/).
 

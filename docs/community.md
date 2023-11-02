@@ -7,7 +7,7 @@ hide:
 
 A collection of materials created by the Taguette community. If you would like something to be listed on this page, please email us at [hi@taguette.org](mailto:hi@taguette.org) or submit a [merge request on GitLab](https://gitlab.com/remram44/taguette).
 
-## Videos
+## :material-video-outline: Videos
 
 + [Word Clouds with Excel & WordArt.com](https://www.youtube.com/watch?v=k4P-VNo7ozUTaguette) -  Rich McCue [English]
 + [Basic Data analysis with Excel](https://vimeo.com/479809321Taguette) - Rich McCue [English]
@@ -19,11 +19,11 @@ A collection of materials created by the Taguette community. If you would like s
 + [A free software to analyse your qualitative data. Wowww!!!](https://www.youtube.com/watch?v=K-GveHWQHNsTaguette-) - N Kushairi  [Indonesian]
 + [Analysis and Coding with Taguette](https://vimeo.com/479809321Thematic) - Alexis B [Greek]
 
-## Blog posts
+## :material-file-document-alert-outline: Blog posts
 
 + [A review of Taguette](https://blog.kathyreid.id.au/2021/11/16/taguette-review) - Kathy Reid
 
-## LibGuides
+## :material-television-guide: LibGuides
 
 + [Harvard](https://guides.library.harvard.edu/qualitative/taguette)
 + [NYU](https://guides.nyu.edu/QDA/Taguette)
@@ -31,13 +31,13 @@ A collection of materials created by the Taguette community. If you would like s
 + [University of Illinois](https://guides.library.illinois.edu/qualitative/taguette)
 + [Wheaton](https://guides.library.wheaton.edu/QualResearch/Taguette)
 
-## Workshops
+## :material-account-search-outline: Workshops
 
 + [Coding Qualitative Data (for free!) with Taguette](https://docs.google.com/presentation/d/e/2PACX-1vTYz3FekhF861CRcPUiS5fB9C-LoJ9mqO_8G-SM82M0ee9OGedoN506Xc53irS-It_59v8PCJED5anU/pub?start=false&loop=false&delayms=3000#slide=id.p)  - Jessica Hagman, University of Illinois 
 + [Taguette: Qualitative Coding & Analysis Workshop](https://uviclibraries.github.io/taguette/)  - University of Victoria Libraries Digital Scholarship Commons
 + [Taguette Tutorial](https://github.com/BrockDSL/Taguette_Tutorial) - Brock University Digital Scholarship Lab
 
-## Articles
+## :material-file-document-multiple-outline: Articles
 
 This is exported from the [Taguette Zotero group library](https://www.zotero.org/groups/4373578/taguette/library), which is accessible publicly.
 

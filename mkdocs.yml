@@ -20,6 +20,7 @@ nav:
   - FAQ: faq.md
   - User Guide: help-guide.md
   - Self-hosting: self-host.md
+  - Community resources: community.md
 theme:
   name: material
   language: en
