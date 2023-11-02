@@ -25,7 +25,7 @@ You can install Taguette on your own personal computer running macOS, Windows, o
 
 ### How do I learn to use Taguette?
 
-You could begin over at our [getting started guide](getting-started.md), which walks through all the current functionality of Taguette with screenshots. We also have a few presentations walkthroughs of Taguette's full capabilities that are hosted on the Open Science Framework here: [osf.io/xdszm/files](https://osf.io/xdszm/files/). Please make sure to look at the date for each presentation and pick the most recent one!
+You could begin over at our [help guide](help-guide.md), which walks through all the current functionality of Taguette with screenshots. We also have a few presentations walkthroughs of Taguette's full capabilities that are hosted on the Open Science Framework here: [osf.io/xdszm/files](https://osf.io/xdszm/files/). Please make sure to look at the date for each presentation and pick the most recent one!
 
 ### Where can I get support for Taguette?
 

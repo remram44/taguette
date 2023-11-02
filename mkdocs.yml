@@ -18,7 +18,7 @@ nav:
   - About: about.md
   - Install: install.md
   - FAQ: faq.md
-  - Getting Started: getting-started.md
+  - User Guide: help-guide.md
   - Self-hosting: self-host.md
 theme:
   name: material
