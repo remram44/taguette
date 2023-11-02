@@ -62,7 +62,7 @@ After this, use this command to start Taguette: `taguette.virtualenv/bin/taguett
 
 You'll see the command line will still be running. This is ok! Don't worry about the terminal, but do leave it open. A browser window should appear, pointing you to ([`localhost:7465`](http://localhost:7465/), and you can begin working on your projects!
 
-## Development setup
+## :material-cog-play: Development setup
 
 You can also install from a local clone of this repository, which will allow you to easily change the sources to suit your needs:
 
