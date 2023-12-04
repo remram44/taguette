@@ -28,7 +28,7 @@ RUN chmod +x /tini
 
 # Install Calibre from Ubuntu distro
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends calibre wv && \
+    apt-get install -y --no-install-recommends calibre wv libpq-dev && \
     rm -rf /var/lib/apt/lists/*
 
 # Install dependencies
