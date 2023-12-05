@@ -208,6 +208,11 @@ textarea.form-control {
   resize: none;
 }
 
+/* To match bs4 css, may be removed in a future release */
+.form-group {
+  margin-bottom: 1rem;
+}
+
 /* Wrap long tag names and long doc names */
 .tag-name {
   word-break: break-all;

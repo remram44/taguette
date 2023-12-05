@@ -13,13 +13,13 @@
       <!-- Tab selector -->
       <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
-          <a class="nav-link" id="project-tab" data-toggle="tab" href="#project" role="tab" aria-controls="project" aria-selected="true">{# TRANSLATORS: Left pane tab, keep short #}{% trans "tab" %}Project info{% endtrans %}</a>
+          <a class="nav-link" id="project-tab" data-bs-toggle="tab" href="#project" role="tab" aria-controls="project" aria-selected="true">{# TRANSLATORS: Left pane tab, keep short #}{% trans "tab" %}Project info{% endtrans %}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" id="documents-tab" data-toggle="tab" href="#documents" role="tab" aria-controls="documents" aria-selected="false">{# TRANSLATORS: Left pane tab, keep short #}{% trans "tab" %}Documents{% endtrans %}</a>
+          <a class="nav-link active" id="documents-tab" data-bs-toggle="tab" href="#documents" role="tab" aria-controls="documents" aria-selected="false">{# TRANSLATORS: Left pane tab, keep short #}{% trans "tab" %}Documents{% endtrans %}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="tags-tab" data-toggle="tab" href="#tags" role="tab" aria-controls="tags" aria-selected="false">{# TRANSLATORS: Left pane tab, keep short #}{% trans "tab" %}Highlights{% endtrans %}</a>
+          <a class="nav-link" id="tags-tab" data-bs-toggle="tab" href="#tags" role="tab" aria-controls="tags" aria-selected="false">{# TRANSLATORS: Left pane tab, keep short #}{% trans "tab" %}Highlights{% endtrans %}</a>
         </li>
       </ul>
 
@@ -47,17 +47,17 @@
           <p><a href="{{ reverse_url('export_project_sqlite', project.id) }}" class="w-100 btn btn-outline-primary" role="button">{% trans %}Export project{% endtrans %}</a></p>
 
           <div class="dropdown mb-3">
-            <button class="w-100 btn btn-outline-primary dropdown-toggle" type="button" id="dropdown-codebook" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button class="w-100 btn btn-outline-primary dropdown-toggle" type="button" id="dropdown-codebook" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               {% trans %}Export codebook{% endtrans %}
             </button>
-            <div class="dropdown-menu" aria-labelledby="dropdown-codebook">
+            <ul class="dropdown-menu" aria-labelledby="dropdown-codebook">
               <a href="{{ reverse_url('export_codebook_qdc', project.id) }}" class="dropdown-item">{% trans %}QDC (XML){% endtrans %}</a>
               <a href="{{ reverse_url('export_codebook_xlsx', project.id) }}" class="dropdown-item">{% trans %}Excel{% endtrans %}</a>
               <a href="{{ reverse_url('export_codebook_csv', project.id) }}" class="dropdown-item">{% trans %}CSV{% endtrans %}</a>
               <a href="{{ reverse_url('export_codebook_doc', project.id, 'html') }}" class="dropdown-item">{% trans %}HTML{% endtrans %}</a>
               <a href="{{ reverse_url('export_codebook_doc', project.id, 'docx') }}" class="dropdown-item">{% trans %}DOCX{% endtrans %}</a>
               <a href="{{ reverse_url('export_codebook_doc', project.id, 'pdf') }}" class="dropdown-item">{% trans %}PDF{% endtrans %}</a>
-            </div>
+            </ul>
           </div>
 
           {% if can_import_codebook %}
@@ -73,7 +73,7 @@
         <div class="tab-pane fade show active" id="documents" role="tabpanel" aria-labelledby="documents-tab">
           <div class="row">
             <div class="col-md-12">
-              <a class="btn btn-sm btn-primary float-right mb-3" href="javascript:createDocument()">{% trans %}Add a document{% endtrans %}</a>
+              <a class="btn btn-sm btn-primary float-end mb-3" href="javascript:createDocument()">{% trans %}Add a document{% endtrans %}</a>
             </div>
           </div>
           <ul class="list-group list-group-flush" id="documents-list">
@@ -86,8 +86,8 @@
         <div class="tab-pane fade" id="tags" role="tabpanel" aria-labelledby="tags-tab">
           <div class="row">
             <div class="col-md-12 mb-3">
-              <div class="dropdown float-right ml-2">
-                <button class="btn btn-sm btn-primary" type="button" id="tag-sortby-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <div class="dropdown float-end ml-2">
+                <button class="btn btn-sm btn-primary" type="button" id="tag-sortby-button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <i class="fa fa-sort"></i>
                 </button>
                 <div class="dropdown-menu" id="tag-sortby-menu" aria-labelledby="tag-sortby-button">
@@ -97,8 +97,8 @@
                   <a class="dropdown-item" href="javascript:sortTagsBy('count', 'desc')">{% trans %}Count [9&rarr;0]{% endtrans %}</a>
                 </div>
               </div>
-              <a id="load-all-tags" class="btn btn-sm btn-primary float-right ml-2" href="/project/{{ project.id }}/highlights/">{% trans %}See all highlights{% endtrans %}</a>
-              <a class="btn btn-sm btn-primary float-right" href="javascript:createTag()">{% trans %}Create a tag{% endtrans %}</a>
+              <a id="load-all-tags" class="btn btn-sm btn-primary float-end ml-2" href="/project/{{ project.id }}/highlights/">{% trans %}See all highlights{% endtrans %}</a>
+              <a class="btn btn-sm btn-primary float-end" href="javascript:createTag()">{% trans %}Create a tag{% endtrans %}</a>
             </div>
           </div>
           <ul class="list-group list-group-flush" id="tags-list">
@@ -115,7 +115,7 @@
 
     <div id="document-view" class="document-view">
       <div id="export-button" class="dropdown" style="display: none;">
-        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdown-export" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdown-export" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           {% trans %}Export this view{% endtrans %}
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdown-export">
