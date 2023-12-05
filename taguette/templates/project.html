@@ -141,9 +141,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">{% trans %}Manage Collaborators{% endtrans %}</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="container">
@@ -173,7 +171,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" id="members-submit" class="btn btn-primary">{% trans %}Save & Close{% endtrans %}</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans %}Cancel{% endtrans %}</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans %}Cancel{% endtrans %}</button>
       </div>
     </div>
   </div>
@@ -185,9 +183,7 @@
     <form id="document-add-form" class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">{% trans "modal window title" %}Add a document{% endtrans %}</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="container">
@@ -228,9 +224,7 @@
     <form id="document-change-form" class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">{% trans "modal window title" %}Edit document{% endtrans %}</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <input type="hidden" id="document-change-id" />
@@ -269,9 +263,7 @@
     <form id="highlight-add-form" class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">{% trans "modal window title" %}Highlight{% endtrans %}</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <input type="hidden" id="highlight-add-id" />
@@ -302,9 +294,7 @@
       <div class="modal-header">
         <h5 id="tag-add-label-new" class="modal-title">{% trans "modal window title" %}New tag{% endtrans %}</h5>
         <h5 id="tag-add-label-change" class="modal-title" style="display: none;">{% trans "modal window title" %}Change tag{% endtrans %}</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <input type="hidden" id="tag-add-id" />
@@ -314,10 +304,10 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-info" data-dismiss="modal" id="tag-add-merge">{% trans "button in tag change modal window" %}Merge...{% endtrans %}</button>
+        <button type="button" class="btn btn-info" data-bs-dismiss="modal" id="tag-add-merge">{% trans "button in tag change modal window" %}Merge...{% endtrans %}</button>
         <button type="submit" class="btn btn-primary">{% trans %}Save & Close{% endtrans %}</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="tag-add-cancel">{% trans %}Cancel{% endtrans %}</button>
-        <button type="button" class="btn btn-danger" data-dismiss="modal" id="tag-add-delete">{% trans %}Delete tag{% endtrans %}</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="tag-add-cancel">{% trans %}Cancel{% endtrans %}</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="tag-add-delete">{% trans %}Delete tag{% endtrans %}</button>
       </div>
     </form>
   </div>
@@ -329,9 +319,7 @@
     <form id="tag-merge-form" class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Merge tags</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="container">
