@@ -314,7 +314,10 @@ window.addEventListener('load', function() {
 });
 
 function showSpinner() {
-  $('#spinner-modal').modal('show');
+  let $spinner_modal = $('#spinner-modal')
+  if(typeof $spinner_modal.modal !== 'undefined') {
+    $spinner_modal.modal('show');
+  }
 }
 
 function hideSpinner() {
@@ -619,7 +622,7 @@ var document_add_modal = document.getElementById('document-add-modal');
 
 function createDocument() {
   document.getElementById('document-add-form').reset();
-  $(document_add_modal).modal();
+  $(document_add_modal).modal('show');
 }
 
 function basename(filename) {
@@ -699,7 +702,7 @@ function editDocument(doc_id) {
   document.getElementById('document-change-name').value = '' + documents['' + doc_id].name;
   document.getElementById('document-change-description').value = '' + documents['' + doc_id].description;
   document.getElementById('document-change-form').elements['document-change-direction'].value = documents['' + doc_id].text_direction;
-  $(document_change_modal).modal();
+  $(document_change_modal).modal('show');
 }
 
 document.getElementById('document-change-form').addEventListener('submit', function(e) {
@@ -1027,7 +1030,7 @@ function createTag() {
   document.getElementById('tag-add-cancel').style.display = '';
   document.getElementById('tag-add-delete').style.display = 'none';
   document.getElementById('tag-add-merge').style.display = 'none';
-  $(tag_add_modal).modal();
+  $(tag_add_modal).modal('show');
 }
 
 function editTag(tag_id) {
@@ -1040,7 +1043,7 @@ function editTag(tag_id) {
   document.getElementById('tag-add-cancel').style.display = 'none';
   document.getElementById('tag-add-delete').style.display = '';
   document.getElementById('tag-add-merge').style.display = '';
-  $(tag_add_modal).modal();
+  $(tag_add_modal).modal('show');
 }
 
 // Save tag button
@@ -1152,7 +1155,7 @@ document.getElementById('tag-add-merge').addEventListener('click', function(e) {
     target.appendChild(option);
   }
 
-  $(document.getElementById('tag-merge-modal')).modal();
+  $(document.getElementById('tag-merge-modal')).modal('show');
 });
 
 // Merge modal submit button
@@ -1288,7 +1291,7 @@ function createHighlight(selection) {
   document.getElementById('highlight-add-start').value = selection[0];
   document.getElementById('highlight-add-end').value = selection[1];
   highlightModalReset();
-  $(highlight_add_modal).modal().drags({handle: '.modal-header'});
+  $(highlight_add_modal).modal('show').drags({handle: '.modal-header'});
   document.getElementById('highlight-search').focus();
 }
 
@@ -1311,7 +1314,7 @@ function editHighlight() {
   for(var i = 0; i < hl_tags.length; ++i) {
     document.getElementById('highlight-add-tags-' + hl_tags[i]).checked = true;
   }
-  $(highlight_add_modal).modal().drags({handle: '.modal-header'});
+  $(highlight_add_modal).modal('show').drags({handle: '.modal-header'});
   document.getElementById('highlight-search').focus();
 }
 
@@ -1470,7 +1473,7 @@ function showMembers() {
   members_initial = Object.assign({}, members);
   members_displayed = Object.assign({}, members);
 
-  $(members_modal).modal();
+  $(members_modal).modal('show');
 }
 
 document.getElementById('members-add').addEventListener('submit', function(e) {

@@ -1611,7 +1611,7 @@ class TestMultiuser(MyHTTPTestCase):
         ])
 
     @with_tempdir
-    @gen_test
+    @gen_test(timeout=60)
     async def test_import(self, tmp):
         # Populate database
         db1 = self.application.DBSession()
@@ -1797,7 +1797,7 @@ class TestMultiuser(MyHTTPTestCase):
         )
 
     @with_tempdir
-    @gen_test
+    @gen_test(timeout=60)
     async def test_export(self, tmp):
         # Populate database
         db1 = self.application.DBSession()

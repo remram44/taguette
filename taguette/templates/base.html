@@ -17,7 +17,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
       <div class="container">
         <a class="navbar-brand special-brand" href="{{ reverse_url('index') }}"><span style="font-family:BadScript;">TAGUETTE</span></a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbar">
@@ -42,14 +42,14 @@
             </li>
             {% elif current_user %}
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle {{ 'active' if active_page == 'account' else '' }}" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{% trans "navigation dropdown menu" %}Account{% endtrans %}</a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="nav-link dropdown-toggle {{ 'active' if active_page == 'account' else '' }}" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{% trans "navigation dropdown menu" %}Account{% endtrans %}</a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <a class="dropdown-item {{ 'active' if active_page == 'account' else '' }}" href="{{ reverse_url('account') }}">{% trans "navigation item" %}Settings{% endtrans %}</a>
                 {% if tos %}
                 <a class="dropdown-item {{ 'active' if active_page == 'tos' else '' }}" href="{{ reverse_url('tos') }}">{% trans "navigation item" %}Terms of Service{% endtrans %}</a>
                 {% endif %}
                 <a class="dropdown-item" href="{{ reverse_url('logout') }}">{% trans "navigation item" %}Log out{% endtrans %}</a>
-              </div>
+              </ul>
             </li>
             {% else %}
             <li class="nav-item {{ 'active' if active_page == 'login' else '' }}">
@@ -75,7 +75,7 @@
       </footer>
     </div>
 
-    <script src="{{ static_url('js/jquery-3.3.1.min.js') }}"></script>
+    <script src="{{ static_url('js/jquery-3.7.1.js') }}"></script>
     <script src="{{ static_url('js/bootstrap.bundle.min.js') }}"></script>
 
     {% block morejs %}
