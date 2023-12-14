@@ -314,7 +314,10 @@ window.addEventListener('load', function() {
 });
 
 function showSpinner() {
-  $('#spinner-modal').modal('show');
+  let $spinner_modal = $('#spinner-modal')
+  if(typeof $spinner_modal.modal !== 'undefined') {
+    $spinner_modal.modal('show');
+  }
 }
 
 function hideSpinner() {
