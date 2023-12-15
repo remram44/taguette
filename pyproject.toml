@@ -9,7 +9,7 @@ authors = [
     "Remi Rampin <remi@rampin.org>",
 ]
 
-readme = "README.rst"
+readme = "README.md"
 
 repository = "https://gitlab.com/remram44/taguette"
 homepage = "https://www.taguette.org/"
@@ -31,7 +31,7 @@ classifiers = [
 ]
 
 include = [
-    "CHANGELOG.md", "tests.py", "CITATION.txt", # LICENSE.txt README.rst
+    "CHANGELOG.md", "tests.py", "CITATION.txt", # LICENSE.txt README.md
     "taguette/static/missing.png", "taguette/static/favicon.png",
     "taguette/static/css/*.css", "taguette/static/*.css.map",
     "taguette/static/js/*.js", "taguette/static/js/*.js.map",

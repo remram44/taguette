@@ -2,7 +2,7 @@
 
 Taguette is a web-based Python application. It is meant to run both stand-alone on an end-user machine, where it must run automatically without having to configure databases or accounts; and as a service over the internet.
 
-To learn more about Taguette, see the [Taguette Website](https://www.taguette.org/) and the [README](https://gitlab.com/remram44/taguette/blob/master/README.rst) in this repository. You can find general contributing instructions in [CONTRIBUTING.md](https://gitlab.com/remram44/taguette/blob/master/CONTRIBUTING.md).
+To learn more about Taguette, see the [Taguette Website](https://www.taguette.org/) and the [README](https://gitlab.com/remram44/taguette/blob/master/README.md) in this repository. You can find general contributing instructions in [CONTRIBUTING.md](https://gitlab.com/remram44/taguette/blob/master/CONTRIBUTING.md).
 
 # Architecture
 

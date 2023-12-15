@@ -10,7 +10,7 @@ sqlite3:
     - $HOME/.local/bin/poetry config virtualenvs.create false
     - $HOME/.local/bin/poetry install --no-interaction
     - scripts/update_translations.sh
-    - python -m readme_renderer README.rst >/dev/null
+    - python -m readme_renderer README.md >/dev/null
     - python -Wd -m coverage run --branch --source=taguette tests.py -v
     - coverage html
     - coverage report | tail -n 1 | grep -o '\([0-9]\+\(\.[0-9]\+\)\?%\)$'
