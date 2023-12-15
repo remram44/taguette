@@ -7,7 +7,7 @@
 
 # Notes
 
-Any contributions received are assumed to be covered by the [BSD 3-Clause license](https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt). We might ask you to sign a Contributor License Agreement before accepting a large contribution. To learn more about Taguette, see the [Taguette Website](https://www.taguette.org/) and the [README](https://gitlab.com/remram44/taguette/blob/master/README.rst) in this repository. You can find an introduction to the codebase in [ARCHITECTURE.md](https://gitlab.com/remram44/taguette/blob/master/ARCHITECTURE.md).
+Any contributions received are assumed to be covered by the [BSD 3-Clause license](https://gitlab.com/remram44/taguette/blob/master/LICENSE.txt). We might ask you to sign a Contributor License Agreement before accepting a large contribution. To learn more about Taguette, see the [Taguette Website](https://www.taguette.org/) and the [README](https://gitlab.com/remram44/taguette/blob/master/README.md) in this repository. You can find an introduction to the codebase in [ARCHITECTURE.md](https://gitlab.com/remram44/taguette/blob/master/ARCHITECTURE.md).
 
 # Contributing
 

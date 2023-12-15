@@ -39,6 +39,11 @@ You can install from a local clone of this repository, which will allow you to e
 6. You can start taguette in development mode using ``taguette --debug`` (or ``taguette --debug server <config_file>``). This will start Tornado in debug mode, which means in particular that it will auto-restart every time you make changes.
 7. Navigate to `localhost:7465 <http://localhost:7465/>`__ to use Taguette!
 
+Production setup from the repository
+------------------------------------
+
+1.
+
 License
 -------
 
