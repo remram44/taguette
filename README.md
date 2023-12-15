@@ -37,7 +37,7 @@ You can install from a local clone of this repository, which will allow you to e
 4. Install Taguette and its dependencies by running `poetry install`. Poetry will create a virtual environment for you by default, activate it by running `poetry shell`.
 5. Build translation files using `scripts/update_translations.sh`.
 6. You can start taguette in development mode using `taguette --debug` (or `taguette --debug server <config_file>`). This will start Tornado in debug mode, which means in particular that it will auto-restart every time you make changes. 
-   i. A config file can be created by running `taguette default-config > taguette.conf`
+   1. A config file can be created by running `taguette default-config > taguette.conf`
 7. Navigate to [localhost:7465](http://localhost:7465/) to use Taguette!
 
 License
