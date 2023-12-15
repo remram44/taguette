@@ -1,13 +1,36 @@
 stages:
+  - prepare_image
   - pre_tests
   - test
   - deploy
 
 build_image:
-  stage: pre_tests
-  image: python:3.10
+  stage: prepare_image
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  # Default branch leaves tag empty (= latest tag)
+  # All other branches are tagged with the escaped branch name (commit ref slug)
   script:
-    - apt update && apt install -y rsync
+    - |
+      echo '
+      FROM python:3.10
+      RUN apt-get update 
+      ENV DEBIAN_FRONTEND=noninteractive 
+      RUN apt-get install -yy xvfb firefox-esr chromium-driver rsync 
+      RUN curl -Lo /tmp/geckodriver.tar.gz https://github.com/mozilla/geckodriver/releases/download/v0.30.0/geckodriver-v0.30.0-linux64.tar.gz
+      RUN tar -zxf /tmp/geckodriver.tar.gz -C /usr/local/bin geckodriver
+      RUN chmod +x /usr/local/bin/geckodriver
+      ' > Dockerfile
+    - docker build --pull -t "$CI_REGISTRY_IMAGE:latest" .
+    - docker push "$CI_REGISTRY_IMAGE:latest"
+
+prepare_poetry:
+  stage: pre_tests
+  image: $CI_REGISTRY_IMAGE:latest
+  script:
     - curl -sSL https://install.python-poetry.org | python3 -
     - $HOME/.local/bin/poetry config virtualenvs.create false
     - $HOME/.local/bin/poetry install --no-interaction
@@ -40,7 +63,7 @@ sqlite3:
     paths:
       - htmlcov
   dependencies:
-    - build_image
+    - prepare_poetry
 
 sqlite3_redis:
   stage: test
