@@ -451,7 +451,8 @@ class BaseHandler(HandleStreamClosed, RequestHandler):
             # Note that reading current_user first is important, it will
             # call get_current_user() which sets self.language
             if self.current_user is not None:
-                return tornado.locale.get(self.language)
+                if self.language is not None:
+                    return tornado.locale.get(self.language)
 
     def login(self, username):
         logger.info("Logged in as %r", username)
