@@ -144,6 +144,15 @@ CONVERT_FROM_HTML_TIMEOUT = 3 * 60  # 3min for exporting from Taguette
 
 # If you want to report errors to Sentry, set your DSN here
 #SENTRY_DSN = "https://<key>@sentry.io/<project>"
+
+# If you want to enable multi-user app
+# MULTIUSER = True
+
+# Output manifest max size
+# OPF_OUT_SIZE_LIMIT = 5000000
+
+# Max size of output file
+# HTML_OUT_SIZE_LIMIT = 5000000
 '''.format(secret=base64.b64encode(os.urandom(30)).decode('ascii')))
     if output is not None:
         out.close()
