@@ -7,6 +7,7 @@ build_image:
   stage: pre_tests
   image: python:3.10
   script:
+    - apt update && apt install -y rsync
     - curl -sSL https://install.python-poetry.org | python3 -
     - $HOME/.local/bin/poetry config virtualenvs.create false
     - $HOME/.local/bin/poetry install --no-interaction
