@@ -1,14 +1,29 @@
 stages:
+  - pre_tests
   - test
   - deploy
 
-sqlite3:
-  stage: test
+build_image:
+  stage: pre_tests
   image: python:3.10
   script:
     - curl -sSL https://install.python-poetry.org | python3 -
     - $HOME/.local/bin/poetry config virtualenvs.create false
     - $HOME/.local/bin/poetry install --no-interaction
+    # - scripts/update_translations.sh
+  artifacts:
+    paths:
+      - $HOME/.local/bin/
+
+sqlite3:
+  stage: test
+  image: python:3.10
+  script:
+    - ls $HOME/.local/
+    - ls $HOME/.local/bin/
+#    - curl -sSL https://install.python-poetry.org | python3 -
+#    - $HOME/.local/bin/poetry config virtualenvs.create false
+#    - $HOME/.local/bin/poetry install --no-interaction
     - scripts/update_translations.sh
     - python -m readme_renderer README.md >/dev/null
     - python -Wd -m coverage run --branch --source=taguette tests.py -v
@@ -19,6 +34,8 @@ sqlite3:
   artifacts:
     paths:
       - htmlcov
+  dependencies:
+    - build_image
 
 sqlite3_redis:
   stage: test
