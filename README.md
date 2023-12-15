@@ -1,14 +1,14 @@
 Taguette
 ========
 
-A spin on the phrase "tag it!", `Taguette <https://www.taguette.org/>`__ is a free and open source qualitative research tool that allows users to:
+A spin on the phrase "tag it!", [Taguette](https://www.taguette.org/) is a free and open source qualitative research tool that allows users to:
 
-+ Import PDFs, Word Docs (``.docx``), Text files (``.txt``), HTML, EPUB, MOBI, Open Documents (``.odt``), and Rich Text Files (``.rtf``).
-+ Highlight words, sentences, or paragraphs and tag them with the codes *you* create.
++ Import PDFs, Word Docs (`.docx`), Text files (`.txt`), HTML, EPUB, MOBI, Open Documents (`.odt`), and Rich Text Files (`.rtf`).
++ Highlight words, sentences, or paragraphs and tag them with the codes **you** create.
 + (not yet) Group imported documents together (e.g. as 'Interview' or 'Lit Review').
 + Export tagged documents, highlights for a specific tag, a list of tags with descriptions and colors, and whole projects.
 
-`Check out our website to learn more about how to install and get started. <https://www.taguette.org/>`__
+[Check out our website to learn more about how to install and get started.](https://www.taguette.org/)
 
 Motivation and goal
 -------------------
@@ -24,25 +24,25 @@ So, to bolster a fair and equitable entry into qualitative methods, we've made T
 Installation
 ------------
 
-You can find complete installation instructions on `our website <https://www.taguette.org/install.html>`__, including installers for Windows and MacOS.
+You can find complete installation instructions on [our website](https://www.taguette.org/install.html), including installers for Windows and MacOS.
 
 Development setup from the repository
 -------------------------------------
 
 You can install from a local clone of this repository, which will allow you to easily change the sources to suit your needs:
 
-1. Clone this git repository from the terminal: ``git clone https://gitlab.com/remram44/taguette.git``
-2. Navigate on the command line to the repository you've just cloned locally, using the ``cd`` command. To get help using ``cd``, use `this tutorial <https://swcarpentry.github.io/shell-novice/02-filedir/index.html>`__.
-3. Taguette uses `Poetry <https://python-poetry.org/>`__ for its packaging and dependency management. You will need to `install Poetry <https://python-poetry.org/docs/#installation>`__.
-4. Install Taguette and its dependencies by running ``poetry install``. Poetry will create a virtual environment for you by default, activate it by running ``poetry shell``.
-5. Build translation files using ``scripts/update_translations.sh``.
-6. You can start taguette in development mode using ``taguette --debug`` (or ``taguette --debug server <config_file>``). This will start Tornado in debug mode, which means in particular that it will auto-restart every time you make changes. 
-   1. A config file can be created by running `taguette default-config > taguette.conf`
-7. Navigate to `localhost:7465 <http://localhost:7465/>`__ to use Taguette!
+1. Clone this git repository from the terminal: `git clone https://gitlab.com/remram44/taguette.git`
+2. Navigate on the command line to the repository you've just cloned locally, using the `cd` command. To get help using `cd`, use [this tutorial](https://swcarpentry.github.io/shell-novice/02-filedir/index.html).
+3. Taguette uses [Poetry](https://python-poetry.org/) for its packaging and dependency management. You will need to [install Poetry](https://python-poetry.org/docs/#installation).
+4. Install Taguette and its dependencies by running `poetry install`. Poetry will create a virtual environment for you by default, activate it by running `poetry shell`.
+5. Build translation files using `scripts/update_translations.sh`.
+6. You can start taguette in development mode using `taguette --debug` (or `taguette --debug server <config_file>`). This will start Tornado in debug mode, which means in particular that it will auto-restart every time you make changes. 
+   i. A config file can be created by running `taguette default-config > taguette.conf`
+7. Navigate to [localhost:7465](http://localhost:7465/) to use Taguette!
 
 License
 -------
 
 * Copyright (C) 2018, Rémi Rampin and Taguette contributors
 
-Licensed under a **BSD 3-clause "New" or "Revised" License**. See the ``LICENSE.txt`` file for details.
+Licensed under a **BSD 3-clause "New" or "Revised" License**. See the `LICENSE.txt` file for details.
