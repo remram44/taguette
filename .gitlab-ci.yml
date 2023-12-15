@@ -10,15 +10,19 @@ build_image:
     - curl -sSL https://install.python-poetry.org | python3 -
     - $HOME/.local/bin/poetry config virtualenvs.create false
     - $HOME/.local/bin/poetry install --no-interaction
+    - mkdir -p ./poetry_bin
+    - rsync -rvah $HOME/.local/bin/* ./poetry_bin
     # - scripts/update_translations.sh
   artifacts:
     paths:
-      - $HOME/.local/bin/
+      - ./poetry_bin
 
 sqlite3:
   stage: test
   image: python:3.10
   script:
+    - mkdir -p $HOME/.local/bin/
+    - rsync -rvah ./poetry_bin/* $HOME/.local/bin/
     - ls $HOME/.local/
     - ls $HOME/.local/bin/
 #    - curl -sSL https://install.python-poetry.org | python3 -
