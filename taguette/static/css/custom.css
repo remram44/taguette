@@ -366,6 +366,11 @@ a.dropdown-item:hover {
   overflow-y: auto;
 }
 
+.modal-body.no-scroll {
+  max-height: calc(100vh - 210px);
+  overflow-y: unset;
+}
+
 /* --------------------RESPONSIVE DISPLAY HEADINGS--------------------------*/
 @media (max-width: 575.98px) {
   .display-1 {
