@@ -13,6 +13,7 @@ import time
 import tornado.locale
 from tornado.web import authenticated, HTTPError
 from urllib.parse import urlunparse
+from collections import defaultdict
 
 from .. import database
 from .. import import_codebook
@@ -718,6 +719,36 @@ class Project(BaseHandler):
     @PROM_REQUESTS.sync('project')
     def get(self, project_id):
         project, privileges = self.get_project(project_id)
+
+        # Group tags by their parent IDs
+        grouped_tags = defaultdict(list)
+
+        for tag in project.tags:
+            tag_parent_id = tag.parent.id if tag.parent else None
+            grouped_tags[tag_parent_id].append(tag)
+
+        # Function to build the tree structure
+        def build_tree(parent_id):
+            children = []
+            for child_tag in grouped_tags[parent_id]:
+                child_id = child_tag.id
+                child_info = {
+                    "id": child_tag.id,
+                    "path": child_tag.path,
+                    "description": child_tag.description,
+                    "parent": child_tag.parent.path if child_tag.parent else None,
+                    "count": child_tag.highlights_count,
+                    "children": build_tree(child_id)
+                }
+                children.append(child_info)
+            return children
+
+        # Build the tree for tags with parent_id=None (root level)
+        result_tree = build_tree(None)
+
+        # Convert the result to JSON
+        tags_json = Markup(json.dumps(result_tree, sort_keys=True))
+
         documents_json = Markup(json.dumps(
             {
                 str(doc.id): {'id': doc.id, 'name': doc.name,
@@ -727,16 +758,7 @@ class Project(BaseHandler):
             },
             sort_keys=True,
         ))
-        tags_json = Markup(json.dumps(
-            {
-                str(tag.id): {'id': tag.id,
-                              'path': tag.path,
-                              'description': tag.description,
-                              'count': tag.highlights_count}
-                for tag in project.tags
-            },
-            sort_keys=True,
-        ))
+
         members = (
             self.db.query(database.ProjectMember)
             .filter(database.ProjectMember.project_id == project_id)
