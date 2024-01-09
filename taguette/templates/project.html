@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% set active_page = "project" %}
 
+{% block styles %}
+  <link rel="stylesheet" href="{{ static_url('css/hierarchy-select.min.css') }}">
+{% endblock %}
+
 {% block title %}{{ project.name }} | Taguette{% endblock %}
 
 {% block containerclass %}container-fluid{% endblock %}
@@ -288,30 +292,7 @@
 </div>
 
 <!-- Add/change tag modal -->
-<div class="modal" id="tag-add-modal" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <form id="tag-add-form" class="modal-content">
-      <div class="modal-header">
-        <h5 id="tag-add-label-new" class="modal-title">{% trans "modal window title" %}New tag{% endtrans %}</h5>
-        <h5 id="tag-add-label-change" class="modal-title" style="display: none;">{% trans "modal window title" %}Change tag{% endtrans %}</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" id="tag-add-id" />
-        <div class="container">
-          <input type="text" class="form-group" id="tag-add-path" name="tag-add-path" placeholder="{% trans "tag change form placeholder" %}Name{% endtrans %}" required />
-          <textarea class="form-control" id="tag-add-description" name="tag-add-description" placeholder="{% trans "tag change form placeholder" %}Description{% endtrans %}"></textarea>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-info" data-bs-dismiss="modal" id="tag-add-merge">{% trans "button in tag change modal window" %}Merge...{% endtrans %}</button>
-        <button type="submit" class="btn btn-primary">{% trans %}Save & Close{% endtrans %}</button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="tag-add-cancel">{% trans %}Cancel{% endtrans %}</button>
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="tag-add-delete">{% trans %}Delete tag{% endtrans %}</button>
-      </div>
-    </form>
-  </div>
-</div>
+{% include 'modal/create_tag.html' %}
 
 <!-- Merge tags modal -->
 <div class="modal" id="tag-merge-modal" tabindex="-1" role="dialog">
@@ -378,5 +359,7 @@
 
 <!-- Should minify this but I hate NPM -->
 <script type="text/javascript" src="{{ static_url('js/taguette.js') }}"></script>
+<script src="{{ static_url('js/hierarchy-select.min.js') }}"></script>
+<script src="{{ static_url('js/tag-hierarchy.js') }}"></script>
 
 {% endblock %}
