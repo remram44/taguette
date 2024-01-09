@@ -619,6 +619,9 @@ class Tag(Base):
     path = Column(String(200), nullable=False, index=True)
     description = Column(Text, nullable=False)
 
+    parent_id = Column(Integer, ForeignKey('tags.id', ondelete='CASCADE'), nullable=True, index=True)
+    parent = relationship('Tag', remote_side=[id])
+
     __table_args__ = (
         UniqueConstraint('project_id', 'path'),
     ) + __table_args__
