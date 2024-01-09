@@ -1061,20 +1061,26 @@ document.getElementById('tag-add-form').addEventListener('submit', function(e) {
     alert(gettext("Invalid tag name"));
     return;
   }
+  var tag_parent_id = document.getElementById('tag-add-parent-id').value;
+  if(tag_parent_id !== '') {
+    tag_parent_id = parseInt(tag_parent_id);
+  } else {
+    tag_parent_id = null;
+  }
   var req;
   if(tag_id !== null) {
     console.log("Posting update for tag " + tag_id);
     req = postJSON(
       '/api/project/' + project_id + '/tag/' + tag_id,
       {path: tag_path,
-       description: document.getElementById('tag-add-description').value}
+       description: document.getElementById('tag-add-description').value, parent_id: tag_parent_id}
     );
   } else {
     console.log("Posting new tag");
     req = postJSON(
       '/api/project/' + project_id + '/tag/new',
       {path: tag_path,
-       description: document.getElementById('tag-add-description').value}
+       description: document.getElementById('tag-add-description').value, parent_id: tag_parent_id}
     );
   }
   showSpinner();
@@ -1090,6 +1096,8 @@ document.getElementById('tag-add-form').addEventListener('submit', function(e) {
 
     $(tag_add_modal).modal('hide');
     document.getElementById('tag-add-form').reset();
+    document.getElementById('dropdownMenuButtonTag').innerText = 'None';
+
   })
   .catch(function(error) {
     console.error("Failed to create tag:", error);
