@@ -3,6 +3,7 @@
 
 {% block styles %}
   <link rel="stylesheet" href="{{ static_url('css/hierarchy-select.min.css') }}">
+  <link rel="stylesheet" href="{{ static_url('css/bootstrap-treeview.min.css') }}">
 {% endblock %}
 
 {% block title %}{{ project.name }} | Taguette{% endblock %}
@@ -105,9 +106,9 @@
               <a class="btn btn-sm btn-primary float-end" href="javascript:createTag()">{% trans %}Create a tag{% endtrans %}</a>
             </div>
           </div>
-          <ul class="list-group list-group-flush" id="tags-list">
-            <li class="list-group-item disabled">{% trans %}Loading...{% endtrans %}</li>
-          </ul>
+            <div class="container mb-3">
+                <div id="treeview-tags"></div>
+            </div>
         </div>
 
       </div>
@@ -262,34 +263,7 @@
 </div>
 
 <!-- Add/change highlight modal -->
-<div class="modal" id="highlight-add-modal" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <form id="highlight-add-form" class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">{% trans "modal window title" %}Highlight{% endtrans %}</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" id="highlight-add-id" />
-        <input type="hidden" id="highlight-add-start" />
-        <input type="hidden" id="highlight-add-end" />
-        <div>
-          Find tags: <input id="highlight-search" />
-        </div>
-        <div class="container">
-          <ul class="list-unstyled" id="highlight-add-tags">
-            <li>{% trans %}Loading...{% endtrans %}</li>
-            <li class="special-item-button"><a href="javascript:createTag()">{% trans %}Create a tag{% endtrans %}</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">{% trans %}Save & Close{% endtrans %}</button>
-        <button type="button" class="btn btn-danger" data-dismiss="modal" id="highlight-delete">{% trans %}Delete highlight{% endtrans %}</button>
-      </div>
-    </form>
-  </div>
-</div>
+{% include 'modal/create_highlight.html' %}
 
 <!-- Add/change tag modal -->
 {% include 'modal/create_tag.html' %}
@@ -338,14 +312,14 @@
 
 <!-- Initial state -->
 <script type="text/javascript">
-  var user_login = {{ user_login }};
-  var project_id = {{ project.id }};
-  var last_event = {{ last_event }};
-  var documents = {{ documents }};
-  var highlights = {};
-  var tags = {{ tags }};
-  var members = {{ members }};
-  var version = '{{ version }}';
+  const user_login = {{ user_login }};
+  const project_id = {{ project.id }};
+  const version = '{{ version }}';
+  let documents = {{ documents }};
+  let tags = {{ tags }};
+  let members = {{ members }};
+  let highlights = {};
+  let last_event = {{ last_event }};
 </script>
 
 <script type="text/javascript" src="{{ reverse_url('trans.js') }}"></script>
@@ -358,8 +332,19 @@
 {% block morejs %}
 
 <!-- Should minify this but I hate NPM -->
+<script type="text/javascript" src="{{ static_url('js/hierarchy-select.min.js') }}"></script>
+<script type="text/javascript" src="{{ static_url('js/bootstrap-treeview.min.js') }}"></script>
+<script type="text/javascript" src="{{ static_url('js/tag-hierarchy.js') }}"></script>
+<script type="text/javascript" src="{{ static_url('js/tag-treeview.js') }}"></script>
 <script type="text/javascript" src="{{ static_url('js/taguette.js') }}"></script>
-<script src="{{ static_url('js/hierarchy-select.min.js') }}"></script>
-<script src="{{ static_url('js/tag-hierarchy.js') }}"></script>
 
+<script>
+    $(document).ready(function(){
+
+        initTagsTreeview();
+
+        initTagsHighlightTreeview();
+
+    });
+</script>
 {% endblock %}

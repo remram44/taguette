@@ -466,7 +466,7 @@ class Command(Base):
     @classmethod
     @command_fields(
         columns=['project_id'],
-        payload_fields=['tag_id', 'tag_path', 'description'],
+        payload_fields=['tag_id', 'tag_path', 'tag_parent', 'description'],
     )
     def tag_add(cls, user_login, tag):
         assert isinstance(tag, Tag)
@@ -477,6 +477,7 @@ class Command(Base):
             payload={'type': 'tag_add',  # keep in sync above
                      'tag_id': tag.id,
                      'tag_path': tag.path,
+                     'tag_parent': tag.parent_id,
                      'description': tag.description},
         )
 

@@ -736,7 +736,7 @@ class Project(BaseHandler):
                     "id": child_tag.id,
                     "path": child_tag.path,
                     "description": child_tag.description,
-                    "parent": child_tag.parent.path if child_tag.parent else None,
+                    "parent": child_tag.parent.id if child_tag.parent else None,
                     "count": child_tag.highlights_count,
                     "children": build_tree(child_id)
                 }
