@@ -7,19 +7,18 @@ from .. import convert
 from ..utils import DefaultMap
 from .. import validate
 
-
 logger = logging.getLogger(__name__)
 tracer = opentelemetry.trace.get_tracer(__name__)
 
 
 @tracer.start_as_current_span('taguette/copy_project')
 def copy_project(
-    src_db, dest_db,
-    project_id, user_login,
+        src_db, dest_db,
+        project_id, user_login,
 ):
     def copy(
-        table, pkey, fkeys, size,
-        *, condition=None, transform=None, validators=None
+            table, pkey, fkeys, size,
+            *, condition=None, transform=None, validators=None
     ):
         return copy_table(
             src_db, dest_db,
@@ -124,6 +123,7 @@ def copy_project(
             set(method.columns)
             | {'date', 'user_login', 'payload'}
         )
+
         expected_payload_fields = set(method.payload_fields) | {'type'}
 
         # Check that the right columns are set
@@ -150,6 +150,9 @@ def copy_project(
             tags=lambda v: (
                 isinstance(v, list)
                 and all(isinstance(e, int) for e in v)
+            ),
+            tag_parent=lambda v: (
+                v is None or isinstance(v, int)
             ),
             tag_id=lambda v: isinstance(v, int),
             tag_path=validate.tag_path,
@@ -201,9 +204,9 @@ def copy_project(
 
 
 def copy_table(
-    src_db, dest_db, table,
-    pkey, fkeys,
-    *, batch_size=50, condition=None, transform=None, validators=None
+        src_db, dest_db, table,
+        pkey, fkeys,
+        *, batch_size=50, condition=None, transform=None, validators=None
 ):
     """Copy all data in a table across database connections.
 

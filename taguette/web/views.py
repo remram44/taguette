@@ -673,10 +673,11 @@ class ImportCodebook(BaseHandler):
                         project_id=project.id,
                         path=tag_insert['path'],
                         description=tag_insert['description'],
+                        parent_id=None,
                     )
                     self.db.add(tag)
                     changed_tags.append(tag)
-
+                print()
                 self.db.flush()
                 commands = []
                 for tag in changed_tags:
@@ -732,11 +733,12 @@ class Project(BaseHandler):
             children = []
             for child_tag in grouped_tags[parent_id]:
                 child_id = child_tag.id
+                parent_id = child_tag.parent.id if child_tag.parent else None
                 child_info = {
                     "id": child_tag.id,
                     "path": child_tag.path,
                     "description": child_tag.description,
-                    "parent": child_tag.parent.id if child_tag.parent else None,
+                    "parent": parent_id,
                     "count": child_tag.highlights_count,
                     "children": build_tree(child_id)
                 }
