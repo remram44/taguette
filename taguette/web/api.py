@@ -143,6 +143,10 @@ class DocumentAdd(BaseHandler):
                     self.application.config,
                 )
             except convert.ConversionError as err:
+                logger.warning(
+                    "Error converting document %r %s: %s",
+                    filename, content_type, err,
+                )
                 return await self.send_error_json(400, str(err))
             else:
                 doc = database.Document(
