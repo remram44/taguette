@@ -43,11 +43,9 @@ async def log_and_wait_proc(logger, proc):
         logger.info("%d: %s", proc.pid, line)
 
     ret = await proc.wait()
-    line = await proc.stdout.read()
-    if line:
+    lines = await proc.stdout.read()
+    for line in lines.splitlines():
         line = line.decode('utf-8', 'replace')
-        if line[-1] == '\n':
-            line = line[:-1]
         logger.info("%d: %s", proc.pid, line)
     return ret
 
