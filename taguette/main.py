@@ -9,6 +9,7 @@ import pkg_resources
 import prometheus_client
 import re
 import secrets
+import shutil
 import string
 import subprocess
 import sys
@@ -242,6 +243,19 @@ def main():
         default_db = os.path.join(buf.value, 'Taguette', 'taguette.sqlite3')
         default_db_show = os.path.join(os.path.basename(buf.value),
                                        'Taguette', 'taguette.sqlite3')
+    elif sys.platform == 'darwin':
+        data = os.path.join(
+            os.environ['HOME'],
+            'Library',
+            'Application Support',
+            'Taguette',
+        )
+        default_db = os.path.join(data, 'taguette.sqlite3')
+        default_db_show = (
+            '$HOME/Library/Application Support/Taguette/taguette.sqlite3'
+        )
+
+        # Data will be moved from ~/.local/share/taguette further down
     else:
         data = os.environ.get('XDG_DATA_HOME')
         if not data:
@@ -267,7 +281,6 @@ def main():
     parser.add_argument('--debug', action='store_true', default=False,
                         help=argparse.SUPPRESS)
     parser.add_argument('--database', action='store',
-                        default=default_db,
                         help=_("Database location or connection string, for "
                                "example 'project.db' or "
                                "'postgresql://me:pw@localhost/mydb' "
@@ -294,7 +307,7 @@ def main():
     parser_migrate.add_argument('revision', action='store', default='head',
                                 nargs=argparse.OPTIONAL)
     parser_migrate.set_defaults(func=lambda args: database.migrate(
-        prepare_db(args.database),
+        prepare_db(args.database or default_db),
         args.revision,
     ))
 
@@ -327,6 +340,34 @@ def main():
             sys.exit(2)
         logger.info("Setting umask to %s", args.umask)
         os.umask(int(args.umask, 8))
+
+    # On MacOS, migrate data directory from old location
+    if sys.platform == 'darwin' and args.database is None:
+        data = os.path.join(
+            os.environ['HOME'],
+            'Library',
+            'Application Support',
+            'Taguette',
+        )
+
+        prev_data = os.environ.get('XDG_DATA_HOME')
+        if not prev_data:
+            prev_data = os.path.join(os.environ['HOME'], '.local', 'share')
+        prev_data = os.path.join(prev_data, 'taguette')
+
+        # Migrate from previous location to new one
+        if (
+            not os.path.exists(data)
+            and os.path.isdir(prev_data)
+            and os.path.isfile(os.path.join(prev_data, 'taguette.sqlite3'))
+        ):
+            logger.warning(
+                "Moving data directory from old location to the usual "
+                + "location for MacOS: %s -> %s",
+                prev_data,
+                data,
+            )
+            shutil.move(prev_data, data)
 
     if args.func:
         args.func(args)
@@ -373,7 +414,7 @@ def main():
             X_HEADERS=False,
             SQLITE3_IMPORT_ENABLED=True,
             PORT=int(args.port),
-            DATABASE=prepare_db(args.database),
+            DATABASE=prepare_db(args.database or default_db),
             TOS_FILE=None,
             SECRET_KEY=secret,
             COOKIES_PROMPT=False,
