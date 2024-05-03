@@ -1,8 +1,8 @@
 import asyncio
 import contextlib
 import csv
+import importlib_resources
 import jinja2
-import pkg_resources
 import sqlalchemy
 from markupsafe import Markup
 import opentelemetry.trace
@@ -23,7 +23,7 @@ tracer = opentelemetry.trace.get_tracer(__name__)
 
 template_env = jinja2.Environment(
     loader=jinja2.FileSystemLoader(
-        [pkg_resources.resource_filename('taguette', 'templates')]
+        [importlib_resources.files('taguette').joinpath('templates')],
     ),
     autoescape=jinja2.select_autoescape(['html']),
     extensions=['jinja2.ext.i18n'],

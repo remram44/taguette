@@ -6,11 +6,11 @@ import hashlib
 import hmac
 import json
 import logging
+import importlib_resources
 import jinja2
 from markupsafe import Markup
 import opentelemetry.trace
 import os
-import pkg_resources
 from prometheus_async.aio import time as prom_async_time
 import prometheus_client
 import redis.asyncio as aioredis
@@ -159,8 +159,8 @@ class Application(GracefulExitApplication):
                                           cookie_secret=cookie_secret,
                                           **kwargs)
 
-        d = pkg_resources.resource_filename('taguette', 'l10n')
-        tornado.locale.load_gettext_translations(d, 'taguette_main')
+        d = importlib_resources.files('taguette').joinpath('l10n')
+        tornado.locale.load_gettext_translations(str(d), 'taguette_main')
         tornado.locale.set_default_locale(self.config['DEFAULT_LANGUAGE'])
 
         self.DBSession = database.connect(config['DATABASE'])
@@ -349,7 +349,7 @@ class BaseHandler(HandleStreamClosed, RequestHandler):
 
     template_env = jinja2.Environment(
         loader=jinja2.FileSystemLoader(
-            [pkg_resources.resource_filename('taguette', 'templates')]
+            [importlib_resources.files('taguette').joinpath('templates')],
         ),
         autoescape=jinja2.select_autoescape(['html']),
         extensions=['jinja2.ext.i18n'],

@@ -3,12 +3,12 @@ import bleach
 import bs4
 import chardet
 import codecs
+import importlib_resources
 import io
 import jinja2
 import logging
 import opentelemetry.trace
 import os
-import pkg_resources
 import prometheus_client
 from prometheus_async.aio import time as prom_async_time
 import shutil
@@ -71,7 +71,7 @@ HTML_EXTENSIONS = ('.htm', '.html', '.xhtml')
 
 template_env = jinja2.Environment(
     loader=jinja2.FileSystemLoader(
-        [pkg_resources.resource_filename('taguette', 'templates')],
+        [importlib_resources.files('taguette').joinpath('templates')],
     ),
     autoescape=jinja2.select_autoescape(['html']),
 )
