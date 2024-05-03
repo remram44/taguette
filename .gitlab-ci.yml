@@ -72,7 +72,7 @@ frontend_chromium_subdir:
 
 sqlite3_latest:
   stage: test
-  image: python:3.11
+  image: python:3.12
   script:
     - curl -sSL https://install.python-poetry.org | python3 -
     - $HOME/.local/bin/poetry config virtualenvs.create false
