@@ -793,7 +793,7 @@ class ProjectImport(BaseHandler):
             raise HTTPError(403)
 
     @api_auth
-    @PROM_REQUESTS.sync('project_import')
+    @PROM_REQUESTS.async_('project_import')
     async def post(self):
         try:
             file = self.request.files['file'][0]
