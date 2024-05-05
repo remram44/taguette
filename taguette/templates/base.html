@@ -21,7 +21,7 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbar">
-          <ul class="navbar-nav mr-auto">
+          <ul class="navbar-nav t-me-auto">
             <li class="nav-item">
               <a class="nav-link {{ 'active' if active_page == 'index' else '' }}" href="{{ reverse_url('index') }}">{% trans "navigation item" %}Home{% endtrans %}</a>
             </li>
@@ -31,7 +31,7 @@
             </li>
             {% endif %}
           </ul>
-          <ul class="navbar-nav ml-auto">
+          <ul class="navbar-nav t-ms-auto">
             <li class="nav-item">
               {% set external_icon %}<i class="fas fa-external-link-alt"></i>{% endset %}
               <a class="nav-link" href="https://www.taguette.org/getting-started.html" target="_blank" rel="noopener">{% trans "navigation item" %}Taguette Guide {{ external_icon }}{% endtrans %}</a>
