@@ -57,6 +57,12 @@ def user_login(login, *, new=False):
     return True
 
 
+def fix_user_email(email):
+    email = email.lower()
+    user_email(email)
+    return email
+
+
 def user_email(email):
     if not isinstance(email, str):
         raise ValueError("Email is not a string")

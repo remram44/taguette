@@ -46,8 +46,7 @@ async def main():
     # Validate input
     login = validate.fix_user_login(args.login, new=True)
     if args.email:
-        email = args.email
-        validate.user_email(email)
+        email = validate.fix_user_email(args.email)
     else:
         email = None
     print("email: %r" % email)

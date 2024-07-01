@@ -179,7 +179,7 @@ class Register(BaseHandler):
             validate.user_password(password1)
             email = self.get_body_argument('email', '')
             if email:
-                validate.user_email(email)
+                email = validate.fix_user_email(email)
             if password1 != password2:
                 raise validate.InvalidFormat(_f("Passwords do not match"))
             if self.db.query(database.User).get(login) is not None:
@@ -259,7 +259,7 @@ class Account(BaseHandler):
             password2 = self.get_body_argument('password2', None)
             if email is not None:
                 if email:
-                    validate.user_email(email)
+                    email = validate.fix_user_email(email)
                 user.email = email or None
             if password1 or password2:
                 validate.user_password(password1)
@@ -294,6 +294,7 @@ class AskResetPassword(BaseHandler):
         if not self.application.config['MULTIUSER']:
             raise HTTPError(404)
         email = self.get_body_argument('email')
+        email = email.lower()
         user = (
             self.db.query(database.User)
             .filter(database.User.email == email)
