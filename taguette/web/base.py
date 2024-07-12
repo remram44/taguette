@@ -166,8 +166,8 @@ class Application(GracefulExitApplication):
         self.DBSession = database.connect(config['DATABASE'])
         self.event_waiters = {}
 
-        if config['REDIS_SERVER'] is not None:
-            self.valkey = aiovalkey.Valkey.from_url(config['REDIS_SERVER'])
+        if config['VALKEY_SERVER'] is not None:
+            self.valkey = aiovalkey.Valkey.from_url(config['VALKEY_SERVER'])
             self.valkey_pubsub = self.valkey.pubsub()
             background_task(self._valkey_reader(), should_never_exit=True)
         else:

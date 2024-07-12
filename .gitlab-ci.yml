@@ -31,7 +31,7 @@ sqlite3_valkey:
     - $HOME/.local/bin/poetry config virtualenvs.create false
     - $HOME/.local/bin/poetry install --no-interaction
     - scripts/update_translations.sh
-    - TAGUETTE_TEST_REDIS=redis://valkey:6379 python -Wd tests.py -v
+    - TAGUETTE_TEST_VALKEY=valkey://valkey:6379 python -Wd tests.py -v
 
 frontend_firefox:
   stage: test
@@ -59,7 +59,7 @@ frontend_chromium_valkey:
     - $HOME/.local/bin/poetry config virtualenvs.create false
     - $HOME/.local/bin/poetry install --no-interaction
     - scripts/update_translations.sh
-    - TAGUETTE_TEST_WEBDRIVER=chromium TAGUETTE_TEST_REDIS=redis://valkey:6379 xvfb-run python tests.py -v TestSeleniumMultiuser
+    - TAGUETTE_TEST_WEBDRIVER=chromium TAGUETTE_TEST_VALKEY=valkey://valkey:6379 xvfb-run python tests.py -v TestSeleniumMultiuser
 
 frontend_chromium_subdir:
   stage: test

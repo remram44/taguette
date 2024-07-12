@@ -80,7 +80,7 @@ class Health(BaseHandler):
             try:
                 await self.application.valkey.ping()
             except Exception:
-                errors.append("Redis unavailable")
+                errors.append("Valkey unavailable")
 
         self.set_header('Content-Type', 'text/plain')
         if errors:
