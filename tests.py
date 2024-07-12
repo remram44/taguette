@@ -33,9 +33,9 @@ if 'TAGUETTE_TEST_DB' in os.environ:
 else:
     DATABASE_URI = 'sqlite://'
 if 'TAGUETTE_TEST_REDIS' in os.environ:
-    REDIS = os.environ['TAGUETTE_TEST_REDIS']
+    VALKEY = os.environ['TAGUETTE_TEST_REDIS']
 else:
-    REDIS = None
+    VALKEY = None
 
 
 def _compare_xml(e1, e2):
@@ -550,7 +550,7 @@ class TestMultiuser(MyHTTPTestCase):
             main.DEFAULT_CONFIG,
             NAME="Test Taguette instance", PORT=7465,
             DATABASE=DATABASE_URI,
-            REDIS_SERVER=REDIS,
+            REDIS_SERVER=VALKEY,
             TOS_FILE=None,
             EMAIL='test@example.com',
             MAIL_SERVER={'host': 'localhost', 'port': 25},
@@ -2273,7 +2273,7 @@ class TestSingleuser(MyHTTPTestCase):
                 main.DEFAULT_CONFIG,
                 NAME="Test Taguette instance", PORT=7465,
                 DATABASE=DATABASE_URI,
-                REDIS_SERVER=REDIS,
+                REDIS_SERVER=VALKEY,
                 TOS_FILE=None,
                 EMAIL='test@example.com',
                 MAIL_SERVER={'host': 'localhost', 'port': 25},
@@ -2523,7 +2523,7 @@ class TestSeleniumMultiuser(SeleniumTest):
             NAME="Test Taguette instance", PORT=7465,
             DATABASE=DATABASE_URI,
             BASE_PATH=self.base_path,
-            REDIS_SERVER=REDIS,
+            REDIS_SERVER=VALKEY,
             TOS_FILE=None,
             EMAIL='test@example.com',
             MAIL_SERVER={'host': 'localhost', 'port': 25},

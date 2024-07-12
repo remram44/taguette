@@ -13,7 +13,7 @@ import opentelemetry.trace
 import os
 from prometheus_async.aio import time as prom_async_time
 import prometheus_client
-import redis.asyncio as aioredis
+import valkey.asyncio as aiovalkey
 import signal
 import smtplib
 from sqlalchemy.orm import joinedload, undefer
@@ -167,11 +167,11 @@ class Application(GracefulExitApplication):
         self.event_waiters = {}
 
         if config['REDIS_SERVER'] is not None:
-            self.redis = aioredis.Redis.from_url(config['REDIS_SERVER'])
-            self.redis_pubsub = self.redis.pubsub()
-            background_task(self._redis_reader(), should_never_exit=True)
+            self.valkey = aiovalkey.Valkey.from_url(config['REDIS_SERVER'])
+            self.valkey_pubsub = self.valkey.pubsub()
+            background_task(self._valkey_reader(), should_never_exit=True)
         else:
-            self.redis = self.redis_pubsub = None
+            self.valkey = self.valkey_pubsub = None
 
         if config['TOS_FILE']:
             with open(config['TOS_FILE']) as fp:
@@ -230,11 +230,11 @@ class Application(GracefulExitApplication):
         self.io_loop.call_later(86400,  # 24 hours
                                 self.check_messages)
 
-    async def _redis_reader(self):
+    async def _valkey_reader(self):
         # FIXME: Can't call listen() with no subscription
-        await self.redis_pubsub.subscribe('_fixme')
+        await self.valkey_pubsub.subscribe('_fixme')
 
-        async for message in self.redis_pubsub.listen():
+        async for message in self.valkey_pubsub.listen():
             if message['type'] == 'message':
                 data = message['data'].decode('utf-8')
                 cmd_json = json.loads(data)
@@ -243,7 +243,7 @@ class Application(GracefulExitApplication):
                 for future in self.event_waiters.pop(project_id, []):
                     future.set_result(cmd_json)
                 # Unsubscribe
-                await self.redis_pubsub.unsubscribe('project:%d' % project_id)
+                await self.valkey_pubsub.unsubscribe('project:%d' % project_id)
 
     async def observe_project(self, project_id, future):
         assert isinstance(project_id, int)
@@ -255,12 +255,12 @@ class Application(GracefulExitApplication):
         else:
             # Start watching
             self.event_waiters[project_id] = set((future,))
-            if self.redis is None:
+            if self.valkey is None:
                 # We can't have missed an event, this is the only thread
                 return False
             else:
-                # Listen for Redis messages
-                await self.redis_pubsub.subscribe('project:%d' % project_id)
+                # Listen for Valkey messages
+                await self.valkey_pubsub.subscribe('project:%d' % project_id)
                 # We may have missed events before subscription completed
                 return True
 
@@ -271,22 +271,22 @@ class Application(GracefulExitApplication):
             # If there are no more watchers, remove dict entry and unsubscribe
             if not self.event_waiters[project_id]:
                 del self.event_waiters[project_id]
-                if self.redis is not None:
-                    background_task(self.redis_pubsub.unsubscribe(
+                if self.valkey is not None:
+                    background_task(self.valkey_pubsub.unsubscribe(
                         'project:%d' % project_id,
                     ))
 
     def notify_project(self, project_id, cmd):
         assert isinstance(project_id, int)
         cmd_json = cmd.to_json()
-        if self.redis is None:
+        if self.valkey is None:
             # Local delivery to waiting handlers
             for future in self.event_waiters.pop(project_id, []):
                 future.set_result(cmd_json)
         else:
-            # Push to Redis
+            # Push to Valkey
             data = json.dumps(cmd_json, sort_keys=True, separators=(',', ':'))
-            background_task(self.redis.publish(
+            background_task(self.valkey.publish(
                 'project:%d' % project_id,
                 data.encode('utf-8)'),
             ))
