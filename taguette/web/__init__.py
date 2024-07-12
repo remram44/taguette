@@ -76,11 +76,11 @@ class Health(BaseHandler):
         except Exception:
             errors.append("Database unavailable")
 
-        if self.application.redis is not None:
+        if self.application.valkey is not None:
             try:
-                await self.application.redis.ping()
+                await self.application.valkey.ping()
             except Exception:
-                errors.append("Redis unavailable")
+                errors.append("Valkey unavailable")
 
         self.set_header('Content-Type', 'text/plain')
         if errors:

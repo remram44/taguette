@@ -93,9 +93,9 @@ SECRET_KEY = "{secret}"
 # (keep 3 before a relative path)
 DATABASE = "sqlite:////non/existent/taguette/database.sqlite3"
 
-# Redis instance for live collaboration
+# Valkey instance for live collaboration
 # This is not required if using a single server, collaboration will still work
-#REDIS_SERVER = 'redis://localhost:6379'
+#VALKEY_SERVER = 'valkey://localhost:6379'
 
 # Address to send system emails from
 EMAIL = "Misconfigured Taguette Server <taguette@example.com>"
@@ -155,7 +155,7 @@ DEFAULT_CONFIG = {
     'BASE_PATH': '',
     'EXTRA_FOOTER': None,
     'REGISTRATION_ENABLED': True,
-    'REDIS_SERVER': None,
+    'VALKEY_SERVER': None,
     'SQLITE3_IMPORT_ENABLED': True,
     'DEFAULT_LANGUAGE': 'en_US',
     'CONVERT_FROM_HTML_TIMEOUT': 3 * 60,

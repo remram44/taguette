@@ -44,9 +44,9 @@ data:
         pwd=os.environ['POSTGRES_PASSWORD'],
     )
 
-    # Redis instance for live collaboration
+    # Valkey instance for live collaboration
     # This is not required if using a single server, collaboration will still work
-    #REDIS_SERVER = 'redis://localhost:6379'
+    #VALKEY_SERVER = 'valkey://localhost:6379'
 
     # Address to send system emails from
     EMAIL = "Misconfigured Taguette Server <taguette@example.com>"
