@@ -63,7 +63,7 @@ prometheus-client = "*"
 redis = ">=3,<5"
 sentry-sdk = "*"
 SQLAlchemy = ">=1.4,<1.5"
-subtitle-parser = ">=1,<2"
+subtitle-parser = ">=1,<3"
 tornado = ">=6.1"
 XlsxWriter = ">=1.4,<4"
 
