@@ -76,6 +76,7 @@ sqlite3_latest:
   stage: test
   image: python:3.12
   script:
+    - pip --disable-pip-version-check --no-cache-dir install --upgrade setuptools
     - curl -sSL https://install.python-poetry.org | python3 -
     - $HOME/.local/bin/poetry config virtualenvs.create false
     - rm poetry.lock
