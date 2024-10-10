@@ -333,7 +333,11 @@ class AskResetPassword(BaseHandler):
             msg = EmailMessage()
             msg['Subject'] = self.gettext("Password reset for Taguette")
             msg['From'] = self.application.config['EMAIL']
-            msg['To'] = "{} <{}>".format(user.login, user.email)
+            if user.login.startswith('.') or user.login.endswith('.'):
+                # Work around https://github.com/python/cpython/issues/75171
+                msg['To'] = "Taguette User <{}>".format(user.email)
+            else:
+                msg['To'] = "{} <{}>".format(user.login, user.email)
             msg.set_content(self.render_string(
                 'email_reset_password.txt',
                 link=reset_link,
