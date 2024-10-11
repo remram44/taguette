@@ -48,6 +48,30 @@ function sortByKey(array, key, reverse) {
     });
 }
 
+function sortTagsByKey(array, key, reverse) {
+    const orderByX = reverse ? -1 : 1;
+
+    array.sort((a, b) => {
+        const keyA = typeof key === 'function' ? key(a) : a[key];
+        const keyB = typeof key === 'function' ? key(b) : b[key];
+
+        if (keyA < keyB) {
+            return -1 * orderByX;
+        } else if (keyA > keyB) {
+            return 1 * orderByX;
+        } else {
+            return 0;
+        }
+    });
+
+    // sort each level of "children"
+    array.forEach(item => {
+        if (item.children && item.children.length > 0) {
+            sortTagsByKey(item.children, key, reverse);
+        }
+    });
+}
+
 function encodeGetParams(params) {
     return Object.entries(params)
         .filter(function (kv) {
@@ -809,30 +833,16 @@ function linkTag(elem, tag_path) {
 
 linkTag(document.getElementById('load-all-tags'), '');
 
-function addTag(tag) {
-    if (tag.parent) {
-        // If the parent tag is found, add the new tag to its children
-        const parentTag = tags.find(item => item.id === tag.parent);
-        parentTag.children = parentTag.children || [];
-        parentTag.children.push(Object.assign({'count': 0, 'children': []}, tag));
-
-    } else {
-        // If the tag has no parent, add it directly to the tags
-        tag = Object.assign({'count': 0, 'children': []}, tag);
-        tags.push(tag);
-    }
-    updateTagsList();
-}
-
 function removeTag(tag_id) {
     // Remove from list of tags
-    delete tags['' + tag_id];
+    findTagAndDelete(tag_id);
+
     // Remove from all highlights
     var hl_entries = Object.entries(highlights);
     for (var i = 0; i < hl_entries.length; ++i) {
         var hl = hl_entries[i][1];
         hl.tags = hl.tags.filter(function (v) {
-            return v != tag_id;
+            return v !== tag_id;
         });
     }
     updateTagsList();
@@ -853,20 +863,26 @@ function mergeTags(tag_src, tag_dest) {
             }
         }
     }
-    delete tags['' + tag_src];
+    // update tag count value
+    const tagToRemove = findTag(tag_src);
+    const tagToUpdate = findTag(tag_dest);
+    tagToUpdate.count = parseInt(tagToUpdate.count) + parseInt(tagToRemove.count);
+
+    // Remove tag_src of list of tags
+    findTagAndDelete(tag_src);
     updateTagsList();
 }
 
 function updateTagsList() {
-    var entries = Object.entries(tags);
-    var isReverse = sortTags[1] == 'desc';
-    sortByKey(entries, function (e) {
-        return e[1][sortTags[0]];
-    }, isReverse);
 
-    // update all tags treeview
+    const isReverse = sortTags[1] === 'desc';
+    sortTagsByKey(tags, sortTags[0], isReverse);
+
+    // update all tags treeview and hierarchies select
     initTagsTreeview(false);
     initTagsHighlightTreeview(false);
+    initTagHierarchySelect();
+    initMergeTagHierarchySelect();
 
     // Re-set all highlights, to update titles
     var hl_entries = Object.entries(highlights);
@@ -883,11 +899,22 @@ function highlightModalReset() {
     initTagsHighlightTreeview(true);
 }
 
-function updateTagCount(id, delta) {
-    var tag = tags['' + id];
-    tag.count += delta;
-    var elem = document.getElementById('tag-' + id + '-count');
-    elem.textContent = tag.count;
+/*
+ updateTagCount
+ */
+function updateTagCount(tagsId) {
+
+    for (const key in tagsId) {
+        const tagId = parseInt(key);
+        const value = parseInt(tagsId[key]);
+        const tagToUpdate = findTag(tagId);
+
+        if (tagToUpdate) {
+            tagToUpdate.count = parseInt(tagToUpdate.count) + value;
+        }
+    }
+
+    initTagsTreeview(false);
 }
 
 var tag_add_modal = document.getElementById('tag-add-modal');
@@ -908,9 +935,13 @@ function createTag() {
 }
 
 function editTag(tag_id) {
-    const tag = tags.find((tag) => tag.id === tag_id)
+    const tag = findTag(tag_id);
     document.getElementById('tag-add-form').reset();
     document.getElementById('tag-add-id').value = '' + tag_id;
+    if (tag.parent) {
+        document.getElementById('tag-add-parent-id').value = tag.parent;
+        document.getElementById('dropdownMenuButtonTag').innerText = findTag(tag.parent).path;
+    }
     document.getElementById('tag-add-path').value = tag.path;
     document.getElementById('tag-add-description').value = tag.description;
     document.getElementById('tag-add-label-new').style.display = 'none';
@@ -984,7 +1015,8 @@ document.getElementById('tag-add-form').addEventListener('submit', function (e) 
 document.getElementById('tag-add-delete').addEventListener('click', function (e) {
     var tag_id = document.getElementById('tag-add-id').value;
     if (tag_id) {
-        if (!window.confirm(gettext("Are you sure you want to delete the tag '%(tag)s'?", {tag: tags[tag_id].path}))) {
+        const tag = findTag(tag_id);
+        if (!window.confirm(gettext("Are you sure you want to delete the tag '%(tag)s'?", {tag: tag.path}))) {
             e.preventDefault();
             return;
         }
@@ -1012,33 +1044,12 @@ document.getElementById('tag-add-merge').addEventListener('click', function (e) 
     if (!tag_id)
         return;
     tag_id = parseInt(tag_id);
+    const tag = findTag(tag_id);
 
     document.getElementById('tag-merge-form').reset();
-
     // Set source tag
     document.getElementById('tag-merge-src-id').value = '' + tag_id;
-    document.getElementById('tag-merge-src-name').value = tags['' + tag_id].path;
-
-    // Empty target tag <select>
-    var target = document.getElementById('tag-merge-dest');
-    target.innerHTML = '';
-
-    // Fill target tag <select>
-    var entries = Object.entries(tags);
-    sortByKey(entries, function (e) {
-        return e[1].path;
-    });
-    for (var i = 0; i < entries.length; ++i) {
-        if (entries[i][0] == '' + tag_id) {
-            // Can't merge into itself
-            continue;
-        }
-        var option = document.createElement('option');
-        option.setAttribute('value', entries[i][0]);
-        option.innerText = entries[i][1].path;
-        target.appendChild(option);
-    }
-
+    document.getElementById('tag-merge-src-name').value = tag.path;
     $(document.getElementById('tag-merge-modal')).modal('show');
 });
 
@@ -1056,9 +1067,9 @@ document.getElementById('tag-merge-form').addEventListener('submit', function (e
         return;
     tag_dest = parseInt(tag_dest);
 
-    console.log(
-        "Merging tag " + tag_src + " (" + tags['' + tag_src].path +
-        ") into tag " + tag_dest + " (" + tags['' + tag_dest].path + ")");
+    // console.log(
+    //     "Merging tag " + tag_src + " (" + tags['' + tag_src].path +
+    //     ") into tag " + tag_dest + " (" + tags['' + tag_dest].path + ")");
     showSpinner();
     postJSON(
         '/api/project/' + project_id + '/tag/merge',
@@ -1587,7 +1598,7 @@ function loadTag(tag_path, page) {
                 elem.appendChild(document.createTextNode(' '));
 
                 var doclink = document.createElement('a');
-                doclink.className = 'badge badge-light';
+                doclink.className = 'badge bg-light';
                 doclink.textContent = documents['' + hl.document_id].name;
                 linkDocument(doclink, hl.document_id);
                 elem.appendChild(doclink);
@@ -1602,7 +1613,7 @@ function loadTag(tag_path, page) {
                         elem.appendChild(document.createTextNode(' '));
                     }
                     var taglink = document.createElement('a');
-                    taglink.className = 'badge badge-dark';
+                    taglink.className = 'badge bg-dark text-white';
                     taglink.textContent = tag_names[j];
                     linkTag(taglink, taglink.textContent);
                     elem.appendChild(taglink);
@@ -1843,9 +1854,8 @@ function longPollForEvents() {
                 }
 
                 if ('tag_count_changes' in event) {
-                    var entries = Object.entries(event.tag_count_changes);
-                    for (var i = 0; i < entries.length; ++i) {
-                        updateTagCount(entries[i][0], entries[i][1]);
+                    if ('tag_count_changes' in event) {
+                        updateTagCount(event.tag_count_changes)
                     }
                 }
                 last_event = event.id;

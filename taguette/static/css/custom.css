@@ -156,6 +156,10 @@ div.sticky-top {
   border-color: #125368 !important;
 }
 
+.dropdown-toggle {
+    width: 100%;
+}
+
 /* Colors for button info */
 .btn.btn-info {
   background-color: #1d87a9 !important;

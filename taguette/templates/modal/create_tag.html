@@ -12,10 +12,8 @@
             <div class="modal-body.no-scroll">
                 <input type="hidden" id="tag-add-id"/>
                 <div class="container mb-3 mt-3 row">
-                    <div class="col-auto">
-                        <label for="tag-hierarchy-select" class="form-label">Tag parent</label>
-                    </div>
-                    <div class="col-auto">
+                    <div class="form-group">
+                        <label for="tag-hierarchy-select" class="form-label">{% trans "tag change form placeholder" %}Tag parent{% endtrans %}</label>
                         <div class='dropdown hierarchy-select' id='tag-hierarchy-select'>
                             <button class="btn btn-secondary dropdown-toggle" type="button"
                                     id="dropdownMenuButtonTag" data-bs-toggle="dropdown"
@@ -25,21 +23,24 @@
                                     <input type="text" class="form-control" autocomplete="off">
                                 </div>
                                 <div class='hs-menu-inner'>
-                                    <li><a class="dropdown-item" data-value="" data-level="1"
-                                           data-default-selected="" href="#">{% trans %}None{% endtrans %}</a></li>
                                 </div>
                             </ul>
                             <input class="d-none" id="tag-add-parent-id" name="tag-add-parent-id" readonly="readonly" aria-hidden="true"
                                    type="text"/>
                         </div>
                     </div>
-                </div>
-                <div class="container mb-3">
-                    <input type="text" class="form-group" id="tag-add-path" name="tag-add-path" placeholder="{% trans "
-                           tag change form placeholder" %}Name{% endtrans %}" required />
-                    <textarea class="form-control" id="tag-add-description" name="tag-add-description"
-                              placeholder="{% trans " tag change form placeholder" %}Description{% endtrans
-                    %}"></textarea>
+                    <div class="form-group">
+                        <label for="tag-add-path" class="form-label">{% trans "tag change form placeholder" %}Name{% endtrans %}</label>
+                        <input type="text"  class="form-control" id="tag-add-path" name="tag-add-path"
+                               placeholder="{% trans "tag change form placeholder" %}Name{% endtrans %}" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="tag-add-description" class="form-label">{% trans " tag change form placeholder" %}Description{% endtrans
+                            %}</label>
+                        <textarea class="form-control" id="tag-add-description" name="tag-add-description"
+                                  placeholder="{% trans " tag change form placeholder" %}Description{% endtrans
+                        %}"></textarea>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
