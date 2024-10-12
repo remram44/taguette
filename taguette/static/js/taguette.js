@@ -1099,7 +1099,7 @@ function setHighlight(highlight) {
     }
     highlights[id] = highlight;
     var tag_names = highlight.tags.map(function (id) {
-        return tags.find((tag) => tag.id === id).path;
+        return findTag(id).path;
     });
     sortByKey(tag_names, function (path) {
         return path;
@@ -1605,7 +1605,7 @@ function loadTag(tag_path, page) {
                 elem.appendChild(document.createTextNode(' '));
 
                 var tag_names = hl.tags.map(function (tag) {
-                    return tags.find((item) => item.id === tag).path;
+                    return findTag(tag).path;
                 });
                 tag_names.sort();
                 for (var j = 0; j < tag_names.length; ++j) {

@@ -4,38 +4,53 @@
 
 {% block contents %}
 <h1>{% trans "title" %}Import a codebook{% endtrans %}</h1>
-<p>{% trans %}Use this form to import an existing codebook into your project. Existing tags will not be deleted, new tags will be added alongside them.{% endtrans %}</p>
+<p>{% trans %}Use this form to import an existing codebook into your project. Existing tags will not be deleted, new
+    tags will be added alongside them.{% endtrans %}</p>
 {% for error in errors %}
 <div class="alert alert-danger">{{ error }}</div>
 {% endfor %}
 <p>{% trans %}You are about to create the following tags:{% endtrans %}</p>
 <form action="{{ reverse_url('import_codebook', project.id) }}" method="post">
-  {{ xsrf_form_html() }}
-  {% for tag in tags %}
-  <div class="form-group row">
-    <div class="col-sm-2 form-check">
-      {% if tag.exists %}
-      <input type="checkbox" class="form-check-input" name="tag{{ loop.index0 }}-replace" id="tag{{ loop.index0 }}-replace" aria-label="Replace this tag"{% if tag.enabled %} checked{% endif %} />
-      <label for="tag{{ loop.index0 }}-replace">{% trans "codebook import tag option" %}Replace{% endtrans %}</label>
-      {% else %}
-      <input type="checkbox" class="form-check-input" name="tag{{ loop.index0 }}-import" id="tag{{ loop.index0 }}-import" aria-label="Replace this tag"{% if tag.enabled %} checked{% endif %} />
-      <label for="tag{{ loop.index0 }}-import">{% trans "codebook import tag option" %}Import{% endtrans %}</label>
-      {% endif %}
+    {{ xsrf_form_html() }}
+    {% for tag in tags %}
+    <div class="form-group row">
+        <div class="col-sm-2 form-check">
+            {% if tag.exists %}
+            <input type="checkbox" class="form-check-input" name="tag{{ loop.index0 }}-replace"
+                   id="tag{{ loop.index0 }}-replace" aria-label="Replace this tag" {% if tag.enabled %} checked{% endif
+                   %}/>
+            <label for="tag{{ loop.index0 }}-replace">{% trans "codebook import tag option" %}Replace{% endtrans
+                %}</label>
+            {% else %}
+            <input type="checkbox" class="form-check-input" name="tag{{ loop.index0 }}-import"
+                   id="tag{{ loop.index0 }}-import" aria-label="Replace this tag" {% if tag.enabled %} checked{% endif
+                   %}/>
+            <label for="tag{{ loop.index0 }}-import">{% trans "codebook import tag option" %}Import{% endtrans
+                %}</label>
+            {% endif %}
+        </div>
+        <div class="col-sm-3">
+            {% if tag.parent == '' %}
+            <input type="text" class="form-control" value="{{ tag.path }}" disabled/>
+            {% else %}
+            <input type="text" class="form-control" value="{{ tag.path }} -> {{ tag.parent }}" disabled/>
+            {% endif %}
+            <input type="hidden" name="tag{{ loop.index0 }}-path" value="{{ tag.path }}"/>
+            <input type="hidden" name="tag{{ loop.index0 }}-parent" value="{{ tag.parent }}"/>
+        </div>
+        <div class="col-sm-7">
+            <input type="text" class="form-control" name="tag{{ loop.index0 }}-description"
+                   value="{{ tag.description }}"/>
+        </div>
     </div>
-    <div class="col-sm-3">
-      <input type="text" class="form-control" value="{{ tag.path }}" disabled />
-      <input type="hidden" name="tag{{ loop.index0 }}-path" value="{{ tag.path }}" />
+    {% endfor %}
+    <div class="form-group row">
+        <div class="col-sm-10 offset-sm-2">
+            <input type="submit" class="btn btn-primary" value="{% trans " form submit button" %}Create tags{% endtrans
+            %}" />
+            <a href="{{ reverse_url('project', project.id) }}" class="btn btn-secondary">{% trans "cancel button" %}Go
+                back{% endtrans %}</a>
+        </div>
     </div>
-    <div class="col-sm-7">
-      <input type="text" class="form-control" name="tag{{ loop.index0 }}-description" value="{{ tag.description }}" />
-    </div>
-  </div>
-  {% endfor %}
-  <div class="form-group row">
-    <div class="col-sm-10 offset-sm-2">
-      <input type="submit" class="btn btn-primary" value="{% trans "form submit button" %}Create tags{% endtrans %}" />
-      <a href="{{ reverse_url('project', project.id) }}" class="btn btn-secondary">{% trans "cancel button" %}Go back{% endtrans %}</a>
-    </div>
-  </div>
 </form>
 {% endblock %}

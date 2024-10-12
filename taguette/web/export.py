@@ -261,13 +261,33 @@ class ExportCodebookDoc(BaseHandler):
         ext = ext.lower()
         PROM_EXPORT.labels('codebook', ext).inc()
         project, _ = self.get_project(project_id)
-        tags = list(project.tags)
+        
+        from sqlalchemy.orm import joinedload
+    
+        # Load explicitly tags and their parents
+        tags = self.db.query(database.Tag).filter(
+            database.Tag.project_id == project_id
+        ).options(
+            joinedload(database.Tag.parent)
+        ).order_by(
+            database.Tag.id
+        ).all()
+        
+        tag_data = [
+            {
+                'path': tag.path,
+                'parent_path': tag.parent.path if tag.parent else None,
+                'highlights_count': tag.highlights_count,
+                'description': tag.description
+            }
+            for tag in tags
+        ]
 
         # Close DB connection to not overflow the connection pool
         self.close_db_connection()
 
         mimetype, contents = await export.codebook_document(
-            tags,
+            tag_data,
             ext,
             config=self.application.config,
             locale=self.locale,

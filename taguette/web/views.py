@@ -606,6 +606,7 @@ class ImportCodebook(BaseHandler):
 
             for i in itertools.count():
                 path = self.get_body_argument('tag%d-path' % i, None)
+                parent = self.get_body_argument('tag%d-parent' % i, None)
                 description = self.get_body_argument(
                     'tag%d-description' % i,
                     '',
@@ -630,6 +631,7 @@ class ImportCodebook(BaseHandler):
 
                 tags.append({
                     'path': path,
+                    'parent': parent,
                     'description': description,
                     'enabled': enabled,
                 })
@@ -637,10 +639,12 @@ class ImportCodebook(BaseHandler):
                     continue
 
                 if replace:
-                    replace_tags[path] = {'description': description}
+                    replace_tags[path] = {'description': description,
+                                          'parent': parent}
                 else:  # Insert
                     insert_tags.append({
                         'path': path,
+                        'parent': parent,
                         'description': description,
                     })
 
@@ -663,21 +667,29 @@ class ImportCodebook(BaseHandler):
                         pass
                     else:
                         tag.description = tag_update['description']
+                        tag_parent = (self.db.query(database.Tag)
+                                      .filter_by(path=tag_update['parent'],
+                                                 project_id=project.id)
+                                      .first())
+                        tag.parent_id = tag_parent.id if tag_parent else None
                         changed_tags.append(tag)
                 if replace_tags:
                     raise KeyError
 
                 # Do inserts
                 for tag_insert in insert_tags:
+                    tag_parent = (self.db.query(database.Tag)
+                                  .filter_by(path=tag_insert['parent'],
+                                             project_id=project.id)
+                                  .first())
                     tag = database.Tag(
                         project_id=project.id,
                         path=tag_insert['path'],
                         description=tag_insert['description'],
-                        parent_id=None,
+                        parent_id=tag_parent.id if tag_parent else None,
                     )
                     self.db.add(tag)
                     changed_tags.append(tag)
-                print()
                 self.db.flush()
                 commands = []
                 for tag in changed_tags:

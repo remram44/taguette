@@ -352,9 +352,11 @@ def codebook_csv(tags, file):
             file = stack.enter_context(open(file, 'w'))
 
         writer = csv.writer(file)
-        writer.writerow(['tag', 'description', 'number of highlights'])
+        writer.writerow(['tag', 'parent','description', 'number of highlights'])
         for tag in tags:
-            writer.writerow([tag.path, tag.description, tag.highlights_count])
+            writer.writerow([tag.path, tag.parent.path if tag.parent else '',
+                             tag.description,
+                             tag.highlights_count])
 
 
 @tracer.start_as_current_span('taguette/export/codebook_xlsx')
@@ -367,14 +369,19 @@ def codebook_xlsx(tags, filename):
     header = workbook.add_format({'bold': True})
 
     sheet.write(0, 0, 'tag', header)
-    sheet.write(0, 1, 'description', header)
-    sheet.write(0, 2, 'number of highlights', header)
-    sheet.set_column(0, 0, 30.0)
-    sheet.set_column(1, 1, 80.0)
+    sheet.write(0, 1, 'parent', header)
+    sheet.write(0, 2, 'description', header)
+    sheet.write(0, 3, 'number of highlights', header)
+    # Set column widths
+    sheet.set_column(0, 0, 30)
+    sheet.set_column(1, 1, 30)
+    sheet.set_column(2, 2, 80)
+    sheet.set_column(3, 3, 20)
     for row, tag in enumerate(tags, start=1):
         sheet.write(row, 0, tag.path)
-        sheet.write(row, 1, tag.description)
-        sheet.write(row, 2, tag.highlights_count)
+        sheet.write(row, 1, tag.parent.path if tag.parent else '')
+        sheet.write(row, 2, tag.description)
+        sheet.write(row, 3, tag.highlights_count)
     workbook.close()
 
 
