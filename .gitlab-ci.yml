@@ -133,6 +133,22 @@ mariadb:
     - scripts/update_translations.sh
     - python -Wd tests.py -v
 
+yugabyte:
+  stage: test
+  image: python:3.10
+  services:
+    - name: yugabytedb/yugabyte:2.23.0.0-b710
+      alias: yugabyte
+      command: ["bin/yugabyted", "start", "--background=false"]
+  variables:
+    TAGUETTE_TEST_DB: postgresql://postgres@172.17.0.3:5433/postgres
+  script:
+    - curl -sSL https://install.python-poetry.org | python3 -
+    - $HOME/.local/bin/poetry config virtualenvs.create false
+    - $HOME/.local/bin/poetry install --no-interaction -E postgres
+    - scripts/update_translations.sh
+    - python -Wd tests.py -v
+
 sqlite3_pypy:
   stage: test
   image: pypy:latest
