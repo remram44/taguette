@@ -31,13 +31,25 @@ classifiers = [
 ]
 
 include = [
-    "CHANGELOG.md", "tests.py", "CITATION.txt", # LICENSE.txt README.rst
-    "taguette/static/missing.png", "taguette/static/favicon.png",
-    "taguette/static/css/*.css", "taguette/static/*.css.map",
-    "taguette/static/js/*.js", "taguette/static/js/*.js.map",
-    "taguette/static/webfonts/*", "taguette/templates/*.html",
-    "taguette/migrations/env.py", "taguette/migrations/script.py.mako",
-    "taguette/migrations/versions/*.py", "taguette/l10n/*/*/*.mo",
+    # Explicit 'format=' required because of https://github.com/python-poetry/poetry/issues/9691
+
+    { path = "CHANGELOG.md", format = "sdist" },
+    { path = "tests.py", format = "sdist" },
+    { path = "CITATION.txt", format = "sdist" },
+    # automatically included: LICENSE.txt README.rst
+
+    { path = "taguette/static/missing.png", format = ["sdist", "wheel"] },
+    { path = "taguette/static/favicon.png", format = ["sdist", "wheel"] },
+    { path = "taguette/static/css/*.css", format = ["sdist", "wheel"] },
+    { path = "taguette/static/*.css.map", format = ["sdist", "wheel"] },
+    { path = "taguette/static/js/*.js", format = ["sdist", "wheel"] },
+    { path = "taguette/static/js/*.js.map", format = ["sdist", "wheel"] },
+    { path = "taguette/static/webfonts/*", format = ["sdist", "wheel"] },
+    { path = "taguette/templates/*.html", format = ["sdist", "wheel"] },
+    { path = "taguette/migrations/env.py", format = ["sdist", "wheel"] },
+    { path = "taguette/migrations/script.py.mako", format = ["sdist", "wheel"] },
+    { path = "taguette/migrations/versions/*.py", format = ["sdist", "wheel"] },
+    { path = "taguette/l10n/*/*/*.mo", format = ["sdist", "wheel"] },
 ]
 
 [tool.poetry.urls]
