@@ -352,7 +352,8 @@ def codebook_csv(tags, file):
             file = stack.enter_context(open(file, 'w'))
 
         writer = csv.writer(file)
-        writer.writerow(['tag', 'parent','description', 'number of highlights'])
+        writer.writerow(
+            ['tag', 'parent', 'description', 'number of highlights'])
         for tag in tags:
             writer.writerow([tag.path, tag.parent.path if tag.parent else '',
                              tag.description,

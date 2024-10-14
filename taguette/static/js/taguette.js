@@ -877,12 +877,33 @@ function updateTagsList() {
 
     const isReverse = sortTags[1] === 'desc';
     sortTagsByKey(tags, sortTags[0], isReverse);
+    let selectedHighLightTags = [];
+
+    if(createTagFromHighlight) {
+        selectedHighLightTags = treeview_tags_highlight.treeview('getSelected');
+    }
 
     // update all tags treeview and hierarchies select
     initTagsTreeview(false);
     initTagsHighlightTreeview(false);
     initTagHierarchySelect();
     initMergeTagHierarchySelect();
+
+    //check if create from highlight modal
+
+    if(treeview_tags_highlight.length > 0) {
+        selectedHighLightTags.forEach(node => {
+            treeview_tags_highlight.treeview('selectNode', [node.nodeId, {silent: false}]);
+        });
+    }
+
+    if(createTagFromHighlight) {
+        const allNodes = treeview_tags_highlight.treeview('getEnabled');
+        const node = allNodes.find((node) => node.id === parseInt(last_added_tag));
+        if (!node.state.selected) {
+            treeview_tags_highlight.treeview('selectNode', [node.nodeId, {silent: false}]);
+        }
+    }
 
     // Re-set all highlights, to update titles
     var hl_entries = Object.entries(highlights);
@@ -923,7 +944,8 @@ $(tag_add_modal).on('shown.bs.modal', function () {
     document.getElementById('tag-add-path').focus();
 });
 
-function createTag() {
+let createTagFromHighlight;
+function createTag(fromHighlight = false) {
     document.getElementById('tag-add-form').reset();
     document.getElementById('tag-add-id').value = '';
     document.getElementById('tag-add-label-new').style.display = '';
@@ -932,6 +954,7 @@ function createTag() {
     document.getElementById('tag-add-delete').style.display = 'none';
     document.getElementById('tag-add-merge').style.display = 'none';
     $(tag_add_modal).modal('show');
+    createTagFromHighlight = fromHighlight;
 }
 
 function editTag(tag_id) {

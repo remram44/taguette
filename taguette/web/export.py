@@ -261,9 +261,9 @@ class ExportCodebookDoc(BaseHandler):
         ext = ext.lower()
         PROM_EXPORT.labels('codebook', ext).inc()
         project, _ = self.get_project(project_id)
-        
+
         from sqlalchemy.orm import joinedload
-    
+
         # Load explicitly tags and their parents
         tags = self.db.query(database.Tag).filter(
             database.Tag.project_id == project_id
@@ -272,7 +272,7 @@ class ExportCodebookDoc(BaseHandler):
         ).order_by(
             database.Tag.id
         ).all()
-        
+
         tag_data = [
             {
                 'path': tag.path,

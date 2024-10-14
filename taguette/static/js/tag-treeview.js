@@ -181,7 +181,7 @@ function initTagsTreeview(collapse = true) {
             style: 'text-decoration: none;'
         },
         customizeNode: function(element, node, tree) {
-            element.attr('id', `${node.nodeId}`);
+            element.attr('id', `tag-node-${node.id}`);
         },
         customizeBadges: function(container, node, tree) {
             container.addClass('d-flex align-items-center');
@@ -234,7 +234,7 @@ function initTagsHighlightTreeview(collapse = true) {
             style: 'text-decoration: none;'
         },
         customizeNode: function(element, node, tree) {
-            element.attr('id', `${node.nodeId}`);
+            element.attr('id', `tag-node-highlight-${node.id}`);
         },
         multiSelect: true,
     };

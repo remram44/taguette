@@ -132,7 +132,7 @@ mariadb:
 
 sqlite3_pypy:
   stage: test
-  image: pypy:3.8
+  image: pypy:3.10
   script:
     - curl -sSL https://install.python-poetry.org | python3 -
     - $HOME/.local/bin/poetry config virtualenvs.create false

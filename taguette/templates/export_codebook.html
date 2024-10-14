@@ -1,27 +1,23 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="UTF-8">
     <style>
-      .highlight {
-        background-color: #ff0;
-      }
-      .parent {
-          font-style: italic;
-          color: #666;
-      }
+        .highlight {
+            background-color: #ff0;
+        }
     </style>
     <title>{% trans "exported codebook document title" %}Taguette Codebook{% endtrans %}</title>
-  </head>
-  <body>
-    <h1>{% trans "exported codebook document title" %}Taguette Codebook{% endtrans %}</h1>
+</head>
+<body>
+<h1>{% trans "exported codebook document title" %}Taguette Codebook{% endtrans %}</h1>
 {% for tag in tags %}
-       <h2>{{ tag.path }}</h2>
-        {% if tag.parent_path %}
-        <p class="parent">{% trans %}Parent{% endtrans %}: {{ tag.parent_path }}</p>
-        {% endif %}
-      <p class="number">{{ ngettext("%(number)d highlight", "%(number)d highlights", tag.highlights_count, number=tag.highlights_count) }}</p>
-      <p>{{ tag.description }}</p>
+<h2>{{ tag.path }}</h2>
+{% if tag.parent_path %}
+<p>{% trans %}Parent{% endtrans %}: {{ tag.parent_path }}</p>
+{% endif %}
+<p class="number">{{ ngettext("%(number)d highlight", "%(number)d highlights", tag.highlights_count, number=tag.highlights_count) }}</p>
+<p>{{ tag.description }}</p>
 {% endfor %}
-  </body>
+</body>
 </html>

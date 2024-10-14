@@ -27,14 +27,14 @@ def copy_project(
             batch_size=size,
             condition=condition, transform=transform, validators=validators,
         )
-    
+
     def insert(table, values):
         ins = dest_db.execute(
             table.insert(),
             values,
         )
         return ins
-    
+
     # Copy project
     project = src_db.execute(
         Project.__table__.select().where(Project.id == project_id)
@@ -47,7 +47,7 @@ def copy_project(
     project.pop('id')
     new_project_id, = insert(Project.__table__, project).inserted_primary_key
     mapping_project = {project_id: new_project_id}
-    
+
     # Add member
     insert(
         ProjectMember.__table__,
@@ -57,7 +57,7 @@ def copy_project(
             privileges=Privileges.ADMIN,
         ),
     )
-    
+
     # Copy documents
     mapping_document = copy(
         Document.__table__, 'id',
@@ -71,13 +71,13 @@ def copy_project(
             contents=convert.is_html_safe,
         ),
     )
-    
+
     # Update parent_id with new pk
     def transform_tag(row, mapping):
         if 'parent_id' in row and row['parent_id'] in mapping:
             row['parent_id'] = mapping[row['parent_id']]
         return row
-    
+
     # Copy tags
     mapping_tags = copy(
         Tag.__table__, 'id',
@@ -90,7 +90,7 @@ def copy_project(
         ),
         transform=transform_tag
     )
-    
+
     # Copy highlights
     mapping_highlights = copy(
         Highlight.__table__, 'id',
@@ -103,7 +103,7 @@ def copy_project(
             snippet=convert.is_html_safe,
         ),
     )
-    
+
     # Copy highlight tags
     copy(
         highlight_tags, None,
@@ -111,38 +111,38 @@ def copy_project(
         200,
         condition=highlight_tags.c.tag_id.in_(mapping_tags.keys()),
     )
-    
+
     def validate_text_direction(direction):
         try:
             TextDirection[direction]
         except KeyError:
             raise ValueError("Invalid text direction")
         return True
-    
+
     # Copy commands
     def transform_command(cmd, mapping):
         payload = cmd['payload']
         if payload['type'] not in Command.TYPES:
             raise ValueError("Unknown command %r" % payload['type'])
-        
+
         method = getattr(Command, payload['type'])
         expected_columns = (
             set(method.columns)
             | {'date', 'user_login', 'payload'}
         )
-        
+
         # Keep expected_payload_fields = set(method.payload_fields) | {'type'}
         # Check that the right columns are set
         if {k for k, v in cmd.items() if v is not None} != expected_columns:
             raise ValueError("Command doesn't have expected columns")
-        
+
         # Remove check that the right JSON fields are set to allow importation
         # if payload.keys() != expected_payload_fields:
         #     raise ValueError("Command doesn't have expected fields")
         # Map an ID, using negative ID if it's unknown
         def mv(mapping, value):
             return mapping.get(value, -abs(value))
-        
+
         field_validators = dict(
             type=lambda v: True,  # Already checked above
             description=validate.description,
@@ -169,14 +169,14 @@ def copy_project(
             member=validate.user_login,
             privileges=lambda v: v in Privileges.__members__,
         )
-        
+
         field_transformers = dict(
             highlight_id=lambda v: mv(mapping_highlights, v),
             tag_id=lambda v: mv(mapping_tags, v),
             src_tag_id=lambda v: mv(mapping_tags, v),
             tags=lambda tags: [mv(mapping_tags, t) for t in tags],
         )
-        
+
         # Map JSON fields
         for field, value in list(payload.items()):
             try:
@@ -186,9 +186,9 @@ def copy_project(
                 raise ValueError("Invalid field %r in command" % field)
             if field in field_transformers:
                 payload[field] = field_transformers[field](value)
-        
+
         return dict(cmd.items(), payload=payload)
-    
+
     copy(
         Command.__table__, 'id',
         dict(
@@ -205,9 +205,9 @@ def copy_project(
         condition=Command.project_id == project_id,
         transform=transform_command,
     )
-    
+
     dest_db.commit()
-    
+
     return new_project_id
 
 
@@ -229,7 +229,7 @@ def copy_table(
         foreign keys to a dictionary mapping the keys.
     :param transform: Function to apply on each row.
     """
-    
+
     from .models import Tag
     from sqlalchemy import func
     query = table.select()
@@ -237,7 +237,7 @@ def copy_table(
         query = query.order_by(pkey)
     if condition is not None:
         query = query.where(condition)
-    
+
     if table == Tag.__table__:
         count_query = src_db.execute(
             func.count().select().select_from(query.alias()))
@@ -252,9 +252,9 @@ def copy_table(
         batch = query.fetchmany(batch_size)
         if not batch:
             break
-        
+
         rows = [dict(row) for row in batch]
-        
+
         if table == Tag.__table__:
             roots, hierarchy = build_tag_hierarchy(rows)
             insert_tags_recursively(
@@ -271,7 +271,7 @@ def copy_table(
         else:
             insert_rows(dest_db, rows, table, pkey, fkeys,
                         transform, validators, mapping)
-    
+
     return mapping
 
 

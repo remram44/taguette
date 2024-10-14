@@ -8,6 +8,7 @@ from .utils import _f
 class InvalidCodebook(ValueError):
     """File can't be read as a codebook.
     """
+
     def __init__(self, message, row=None):
         super(InvalidCodebook, self).__init__(message)
         self.message = message
@@ -55,13 +56,13 @@ def list_tags_csv(reader):
         col_description = header.index('description')
     except ValueError:
         col_description = None
-        
+
     # Is there a parent?
     try:
         col_parent = header.index('parent')
     except ValueError:
         col_parent = None
-    
+
     needed_rows = max(
         num + 1
         for num in (col_path, col_parent, col_description)
@@ -87,7 +88,8 @@ def list_tags_csv(reader):
                 parent = row[col_parent].strip()
             else:
                 parent = ''
-            tags.append({'path': path, 'parent': parent, 'description': description})
+            tags.append({'path': path, 'parent': parent,
+                        'description': description})
     except (csv.Error, UnicodeDecodeError):
         raise InvalidCodebook(_f("Invalid CSV file"))
 
