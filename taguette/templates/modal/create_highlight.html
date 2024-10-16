@@ -9,11 +9,15 @@
                 <input type="hidden" id="highlight-add-id"/>
                 <input type="hidden" id="highlight-add-start"/>
                 <input type="hidden" id="highlight-add-end"/>
-                <div class="container mb-3 mt-3">
-                    Search tags: <input id="highlight-search"/>
+                <div class="container mb-1 mt-1">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="input-search-tags-highlight" placeholder="{% trans "tag change form placeholder" %}Search tags{% endtrans %}">
+                    </div>
                 </div>
                 <div class="container mb-3 mt-3">
                     <div id="treeview-tags-highlight"></div>
+                </div>
+                <div class="alert alert-info mt-2 d-none" role="alert" id="alert-tag-highlight-treeview">
                 </div>
                 <div class="container mb-3 mt-3">
                     <a href="javascript:createTag(true)">{% trans %}Create a tag{% endtrans

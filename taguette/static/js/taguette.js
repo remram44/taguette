@@ -917,6 +917,8 @@ function updateTagsList() {
 
 function highlightModalReset() {
     document.getElementById('highlight-add-form').reset();
+    hideSearchErrorMessage();
+    savedSelections = [];
     initTagsHighlightTreeview(true);
 }
 
@@ -1215,7 +1217,8 @@ function createHighlight(selection) {
     document.getElementById('highlight-add-end').value = selection[1];
     highlightModalReset();
     $(highlight_add_modal).modal('show').drags({handle: '.modal-header'});
-    document.getElementById('highlight-search').focus();
+    document.getElementById('input-search-tags-highlight').value = '';
+    document.getElementById('input-search-tags-highlight').focus();
 }
 
 // TRANSLATORS: Key used to create a new highlight
@@ -1233,14 +1236,15 @@ function editHighlight() {
     document.getElementById('highlight-add-id').value = id;
     document.getElementById('highlight-add-start').value = highlights[id].start_offset;
     document.getElementById('highlight-add-end').value = highlights[id].end_offset;
-    var hl_tags = highlights['' + id].tags;
-    var allNodes = $('#treeview-tags-highlight').treeview('getEnabled');
-    for (var i = 0; i < hl_tags.length; ++i) {
+    const hl_tags = highlights['' + id].tags;
+    const allNodes = $('#treeview-tags-highlight').treeview('getEnabled');
+    for (let i = 0; i < hl_tags.length; ++i) {
         const node = allNodes.find((node) => node.id === hl_tags[i]);
         $('#treeview-tags-highlight').treeview('selectNode', node.nodeId);
     }
     $(highlight_add_modal).modal('show').drags({handle: '.modal-header'});
-    document.getElementById('highlight-search').focus();
+    document.getElementById('input-search-tags-highlight').value = '';
+    document.getElementById('input-search-tags-highlight').focus();
 }
 
 // Save highlight button
@@ -1904,3 +1908,108 @@ function longPollForEvents() {
 }
 
 longPollForEvents();
+
+/*
+ * Attach input change for tag search event
+ */
+const TAG_NOT_FOUND_MESSAGE = gettext("No tag found");
+
+function handleSearch(filterText) {
+    function searchInChildren(item) {
+        const filteredChildren = [];
+
+        item.children.forEach(child => {
+            const childMatches = child.path.toLowerCase().includes(filterText);
+            const matchingChildren = searchInChildren(child);
+
+            if (childMatches || matchingChildren.length > 0) {
+                filteredChildren.push({
+                    ...child,
+                    children: matchingChildren
+                });
+            }
+        });
+
+        return filteredChildren;
+    }
+
+    return tags
+        .map(item => {
+            const matches = item.path.toLowerCase().includes(filterText);
+            const filteredChildren = searchInChildren(item);
+
+            if (matches || filteredChildren.length > 0) {
+                return {
+                    ...item,
+                    children: filteredChildren
+                };
+            }
+
+            return null;
+        })
+        .filter(item => item !== null);
+}
+
+document.getElementById('input-search-tags').addEventListener('input', function () {
+    const alert_tag_treeview = $('#alert-tag-treeview');
+    const filterText = $('#input-search-tags').val().toLowerCase();
+    alert_tag_treeview.addClass('d-none')
+    const filteredTags = handleSearch(filterText);
+    initTagsTreeview(false, filteredTags);
+    if (filteredTags.length === 0) {
+        alert_tag_treeview.removeClass('d-none')
+        alert_tag_treeview.html(`<strong>${TAG_NOT_FOUND_MESSAGE}</strong>`)
+    }
+});
+
+const alert_tag_highlight_treeview = $('#alert-tag-highlight-treeview');
+
+function saveSelectedNodes(treeview) {
+    const selectedNodes = treeview.treeview('getSelected');
+    return selectedNodes.map(node => node.id);
+}
+
+function restoreSelectedNodes(treeview, savedNodeIds) {
+    savedNodeIds.forEach(id => {
+        const allNodes = treeview.treeview('getEnabled');
+        const node = allNodes.find((node) => node.id === id);
+        if(node) {
+            treeview.treeview('selectNode', [node.nodeId, {silent: false}]);
+        }
+    });
+}
+
+let savedSelections = [];
+
+document.getElementById('input-search-tags-highlight').addEventListener('input', function () {
+
+    const filterText = $('#input-search-tags-highlight').val().toLowerCase();
+    hideSearchErrorMessage();
+
+    // save selected tags
+    const tempSavedSelections = saveSelectedNodes(treeview_tags_highlight);
+
+    tempSavedSelections.forEach(id => {
+        if (!savedSelections.includes(id)) {
+            savedSelections.push(id);
+        }
+    });
+
+    const filteredTags = handleSearch(filterText);
+    initTagsHighlightTreeview(false, filteredTags);
+    if (filteredTags.length === 0) {
+        showSearchErrorMessage();
+        alert_tag_highlight_treeview.html(`<strong>${TAG_NOT_FOUND_MESSAGE}</strong>`)
+    }
+
+    // Restore tags selections
+    restoreSelectedNodes(treeview_tags_highlight, savedSelections);
+});
+
+function showSearchErrorMessage() {
+    alert_tag_highlight_treeview.removeClass('d-none');
+}
+
+function hideSearchErrorMessage() {
+    alert_tag_highlight_treeview.addClass('d-none');
+}

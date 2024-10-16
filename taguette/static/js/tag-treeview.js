@@ -165,9 +165,13 @@ function convertToTreeNode(data, includeTags) {
     });
 }
 
-function initTagsTreeview(collapse = true) {
+function initTagsTreeview(collapse = true,  filterTags = null) {
 
-    const treeData = convertToTreeNode(tags, true);
+    if (filterTags == null) {
+        filterTags = tags
+    }
+
+    const treeData = convertToTreeNode(filterTags, true);
 
     const options = {
         customContent: true,
@@ -220,8 +224,13 @@ function initTagsTreeview(collapse = true) {
     });
 }
 
-function initTagsHighlightTreeview(collapse = true) {
-    const treeData = convertToTreeNode(tags, false);
+function initTagsHighlightTreeview(collapse = true, filterTags = null) {
+
+    if (filterTags == null) {
+        filterTags = tags
+    }
+
+    const treeData = convertToTreeNode(filterTags, false);
 
     const options = {
         customContent: true,
