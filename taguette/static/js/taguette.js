@@ -800,7 +800,6 @@ document.getElementById('document-change-delete').addEventListener('click', func
 
 var tags_sorter = document.getElementById('tag-sortby');
 var sortTags = ['path', 'asc'];
-var tags_list = document.getElementById('tags-list');
 
 function sortTagsBy(field, dir) {
     sortTags = [field, dir];
@@ -835,6 +834,7 @@ linkTag(document.getElementById('load-all-tags'), '');
 
 function removeTag(tag_id) {
     // Remove from list of tags
+    const tagToDelete = findTag(tag_id);
     findTagAndDelete(tag_id);
 
     // Remove from all highlights
@@ -846,6 +846,11 @@ function removeTag(tag_id) {
         });
     }
     updateTagsList();
+    if(!tagToDelete.parent) {
+        return;
+    }
+    const rootParentId = findRootParent(tagToDelete.parent);
+    expandNode(treeview_tags, rootParentId);
 }
 
 function mergeTags(tag_src, tag_dest) {
@@ -871,6 +876,11 @@ function mergeTags(tag_src, tag_dest) {
     // Remove tag_src of list of tags
     findTagAndDelete(tag_src);
     updateTagsList();
+    if(!tagToUpdate.parent) {
+        return;
+    }
+    const rootParentId = findRootParent(tagToUpdate.parent);
+    expandNode(treeview_tags, rootParentId);
 }
 
 function updateTagsList() {
@@ -884,12 +894,12 @@ function updateTagsList() {
     }
 
     // update all tags treeview and hierarchies select
-    initTagsTreeview(false);
-    initTagsHighlightTreeview(false);
+    initTagsTreeview();
+    initTagsHighlightTreeview();
     initTagHierarchySelect();
     initMergeTagHierarchySelect();
 
-    //check if create from highlight modal
+    //check if tag is create from highlight modal and select the select
 
     if(treeview_tags_highlight.length > 0) {
         selectedHighLightTags.forEach(node => {
@@ -919,7 +929,7 @@ function highlightModalReset() {
     document.getElementById('highlight-add-form').reset();
     hideSearchErrorMessage();
     savedSelections = [];
-    initTagsHighlightTreeview(true);
+    initTagsHighlightTreeview();
 }
 
 /*
@@ -937,7 +947,7 @@ function updateTagCount(tagsId) {
         }
     }
 
-    initTagsTreeview(false);
+    initTagsTreeview();
 }
 
 var tag_add_modal = document.getElementById('tag-add-modal');
@@ -1176,7 +1186,6 @@ backlight_checkbox.addEventListener('change', function () {
     }
 });
 
-
 /*
  * Add highlight
  */
@@ -1237,10 +1246,10 @@ function editHighlight() {
     document.getElementById('highlight-add-start').value = highlights[id].start_offset;
     document.getElementById('highlight-add-end').value = highlights[id].end_offset;
     const hl_tags = highlights['' + id].tags;
-    const allNodes = $('#treeview-tags-highlight').treeview('getEnabled');
+    const allNodes = treeview_tags_highlight.treeview('getEnabled');
     for (let i = 0; i < hl_tags.length; ++i) {
         const node = allNodes.find((node) => node.id === hl_tags[i]);
-        $('#treeview-tags-highlight').treeview('selectNode', node.nodeId);
+        treeview_tags_highlight.treeview('selectNode', node.nodeId);
     }
     $(highlight_add_modal).modal('show').drags({handle: '.modal-header'});
     document.getElementById('input-search-tags-highlight').value = '';
@@ -1256,7 +1265,7 @@ document.getElementById('highlight-add-form').addEventListener('submit', functio
         parseInt(document.getElementById('highlight-add-end').value)
     ];
     var hl_tags = [];
-    var selectedTags = $('#treeview-tags-highlight').treeview('getSelected');
+    var selectedTags = treeview_tags_highlight.treeview('getSelected');
     hl_tags = selectedTags.map((tag) => tag.id);
     var req;
     if (highlight_id) {
@@ -1910,59 +1919,28 @@ function longPollForEvents() {
 longPollForEvents();
 
 /*
- * Attach input change for tag search event
+ * Search tags handle
  */
 const TAG_NOT_FOUND_MESSAGE = gettext("No tag found");
-
-function handleSearch(filterText) {
-    function searchInChildren(item) {
-        const filteredChildren = [];
-
-        item.children.forEach(child => {
-            const childMatches = child.path.toLowerCase().includes(filterText);
-            const matchingChildren = searchInChildren(child);
-
-            if (childMatches || matchingChildren.length > 0) {
-                filteredChildren.push({
-                    ...child,
-                    children: matchingChildren
-                });
-            }
-        });
-
-        return filteredChildren;
-    }
-
-    return tags
-        .map(item => {
-            const matches = item.path.toLowerCase().includes(filterText);
-            const filteredChildren = searchInChildren(item);
-
-            if (matches || filteredChildren.length > 0) {
-                return {
-                    ...item,
-                    children: filteredChildren
-                };
-            }
-
-            return null;
-        })
-        .filter(item => item !== null);
-}
+const alert_tag_highlight_treeview = $('#alert-tag-highlight-treeview');
+const alert_tag_treeview = $('#alert-tag-treeview');
 
 document.getElementById('input-search-tags').addEventListener('input', function () {
-    const alert_tag_treeview = $('#alert-tag-treeview');
-    const filterText = $('#input-search-tags').val().toLowerCase();
-    alert_tag_treeview.addClass('d-none')
+    const filterText = $(this).val().toLowerCase();
+    alert_tag_treeview.addClass('d-none');
+    if(filterText === '') {
+        initTagsTreeview(tags);
+        collapseAllNodes(treeview_tags);
+        return;
+    }
     const filteredTags = handleSearch(filterText);
-    initTagsTreeview(false, filteredTags);
+    initTagsTreeview(filteredTags);
+    expandAllNodes(treeview_tags);
     if (filteredTags.length === 0) {
         alert_tag_treeview.removeClass('d-none')
         alert_tag_treeview.html(`<strong>${TAG_NOT_FOUND_MESSAGE}</strong>`)
     }
 });
-
-const alert_tag_highlight_treeview = $('#alert-tag-highlight-treeview');
 
 function saveSelectedNodes(treeview) {
     const selectedNodes = treeview.treeview('getSelected');
@@ -1983,9 +1961,8 @@ let savedSelections = [];
 
 document.getElementById('input-search-tags-highlight').addEventListener('input', function () {
 
-    const filterText = $('#input-search-tags-highlight').val().toLowerCase();
+    const filterText = $(this).val().toLowerCase();
     hideSearchErrorMessage();
-
     // save selected tags
     const tempSavedSelections = saveSelectedNodes(treeview_tags_highlight);
 
@@ -1996,7 +1973,7 @@ document.getElementById('input-search-tags-highlight').addEventListener('input',
     });
 
     const filteredTags = handleSearch(filterText);
-    initTagsHighlightTreeview(false, filteredTags);
+    initTagsHighlightTreeview(filteredTags);
     if (filteredTags.length === 0) {
         showSearchErrorMessage();
         alert_tag_highlight_treeview.html(`<strong>${TAG_NOT_FOUND_MESSAGE}</strong>`)
