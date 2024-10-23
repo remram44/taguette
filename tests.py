@@ -2996,6 +2996,9 @@ class TestSeleniumMultiuser(SeleniumTest):
         )
         # List all highlights in project 1
         await self.s_click(self.driver.find_element(By.ID, 'tags-tab'))
+        await self.s_click(
+            self.driver.find_element(By.ID, 'tag-more-action-button')
+        )
         await self.s_click_button('See all highlights', tag='a')
         await asyncio.sleep(1)  # Wait for XHR
         self.assertEqual(self.s_path, '/project/1/highlights/')
@@ -3087,12 +3090,13 @@ class TestSeleniumMultiuser(SeleniumTest):
         )
         await self.s_click(target_option)
         await asyncio.sleep(1)
-        selected_value = self.driver.find_element(
-            By.ID, "dropdownMenuButtonTagMerge").text
-        print(f"Selected value: {selected_value}")
         await self.s_click_button('Merge tags')
 
         # List all highlights in project 1
+        await self.s_click(
+            self.driver.find_element(By.ID, 'tag-more-action-button')
+        )
+        await asyncio.sleep(0.5)
         await self.s_click_button('See all highlights', tag='a')
         await asyncio.sleep(1)  # Wait for XHR
         self.assertEqual(self.s_path, '/project/1/highlights/')
