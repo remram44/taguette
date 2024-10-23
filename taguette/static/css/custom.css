@@ -289,12 +289,12 @@ a.dropdown-item:hover {
   color: black;
 }
 
-.highlight-new-tag {
+.highlight-tag {
     background-color: #E7F2FF !important;
     transition: background-color 1s ease;
 }
 
-.highlight-new-tag.fade-out {
+.highlight-tag.fade-out {
     background-color: transparent !important;
 }
 

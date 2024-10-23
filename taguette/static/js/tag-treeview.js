@@ -7,6 +7,25 @@ const CUSTOM_LEVEL_OPTION = 3;
 const SPLICE_DEFAULT_INDEX = 1;
 const DEFAULT_COUNT = 0;
 
+// highlight new tag after creation, edit, merge, etc.
+function highlightNewTag(tagId) {
+    const nodeElement = $(`#tag-node-${tagId}`);
+    nodeElement.addClass('highlight-tag');
+    setTimeout(() => {
+        nodeElement.addClass('fade-out');
+    }, 3000);
+}
+
+// highlight all tags by changing color
+function selectAllTag() {
+    const allNodes = treeview_tags.treeview('getEnabled');
+    for (const node of allNodes) {
+        const nodeId = node.nodeId;
+        const nodeElement = $('li[data-nodeid="' + nodeId + '"]');
+        nodeElement.addClass("highlight-tag");
+    }
+}
+
 // Search tags and children that match filterText
 function handleSearch(filterText) {
 
@@ -110,14 +129,6 @@ function addTag(tag) {
     const rootParentId = findRootParent(tag.parent);
     expandNode(treeview_tags, rootParentId);
     highlightNewTag(tag.id);
-}
-
-function highlightNewTag(tagId) {
-    const nodeElement = $(`#tag-node-${tagId}`);
-    nodeElement.addClass('highlight-new-tag');
-    setTimeout(() => {
-        nodeElement.addClass('fade-out');
-    }, 3000);
 }
 
 // Function to add a new tag to the tag tree

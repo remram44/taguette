@@ -90,22 +90,31 @@
         <!-- List of tags -->
         <div class="tab-pane fade" id="tags" role="tabpanel" aria-labelledby="tags-tab">
           <div class="row">
-            <div class="col-md-12 mb-3">
-              <div class="dropdown float-end ms-2">
-                <button class="btn btn-sm btn-primary" type="button" id="tag-sortby-button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <i class="fa fa-sort"></i>
-                </button>
-                <div class="dropdown-menu" id="tag-sortby-menu" aria-labelledby="tag-sortby-button">
-                  <a class="dropdown-item active" href="javascript:sortTagsBy('path', 'asc')">{% trans %}Text [a&rarr;z]{% endtrans %}</a>
-                  <a class="dropdown-item" href="javascript:sortTagsBy('path', 'desc')">{% trans %}Text [z&rarr;a]{% endtrans %}</a>
-                  <a class="dropdown-item" href="javascript:sortTagsBy('count', 'asc')">{% trans %}Count [0&rarr;9]{% endtrans %}</a>
-                  <a class="dropdown-item" href="javascript:sortTagsBy('count', 'desc')">{% trans %}Count [9&rarr;0]{% endtrans %}</a>
+                <div class="col-md-12 mb-3 mt-3 ml-4 d-flex justify-content-end">
+                    <a class="btn btn-sm btn-primary rounded-4 ms-2" href="javascript:createTag()"> <i class="fas fa-plus"></i> {% trans %}Create a tag{% endtrans %}</a>
+                    <div class="dropdown ms-2">
+                        <button class="btn btn-sm rounded-4 btn-primary" type="button" id="tag-more-action-button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-bars"></i> {% trans %}More actions{% endtrans %}
+                        </button>
+                        <div class="dropdown-menu" id="tag-menu-more-actions" aria-labelledby="tag-more-action-button">
+                            <a id="load-all-tags" class="dropdown-item" href="/project/{{ project.id }}/highlights/">{% trans %}See all highlights{% endtrans %}</a>
+                            <a class="dropdown-item" href="javascript:expandAllNodes(treeview_tags)">{% trans %}Expand all{% endtrans %}</a>
+                            <a class="dropdown-item" href="javascript:collapseAllNodes(treeview_tags)">{% trans %}Collapse all{% endtrans %}</a>
+                        </div>
+                    </div>
+                    <div class="dropdown ms-2 mx-3">
+                        <button class="btn btn-sm rounded-4 btn-primary" type="button" id="tag-sortby-button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-sort"></i>
+                        </button>
+                        <div class="dropdown-menu" id="tag-sortby-menu" aria-labelledby="tag-sortby-button">
+                            <a class="dropdown-item active" href="javascript:sortTagsBy('path', 'asc')">{% trans %}Text [a&rarr;z]{% endtrans %}</a>
+                            <a class="dropdown-item" href="javascript:sortTagsBy('path', 'desc')">{% trans %}Text [z&rarr;a]{% endtrans %}</a>
+                            <a class="dropdown-item" href="javascript:sortTagsBy('count', 'asc')">{% trans %}Count [0&rarr;9]{% endtrans %}</a>
+                            <a class="dropdown-item" href="javascript:sortTagsBy('count', 'desc')">{% trans %}Count [9&rarr;0]{% endtrans %}</a>
+                        </div>
+                    </div>
                 </div>
-              </div>
-              <a id="load-all-tags" class="btn btn-sm btn-primary float-end ms-2" href="/project/{{ project.id }}/highlights/">{% trans %}See all highlights{% endtrans %}</a>
-              <a class="btn btn-sm btn-primary float-end" href="javascript:createTag()">{% trans %}Create a tag{% endtrans %}</a>
-            </div>
-          </div>
+             </div>
             <div class="container mb-3">
                 <div class="form-group">
                     <input type="text" class="form-control" id="input-search-tags" placeholder="{% trans "tag change form placeholder" %}Search tags{% endtrans %}">

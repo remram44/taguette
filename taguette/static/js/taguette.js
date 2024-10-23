@@ -827,6 +827,7 @@ function linkTag(elem, tag_path) {
         e.preventDefault();
         window.history.pushState({tag_path: tag_path}, "Tag " + tag_path, url);
         loadTag(tag_path);
+        selectAllTag();
     });
 }
 
@@ -899,8 +900,7 @@ function updateTagsList() {
     initTagHierarchySelect();
     initMergeTagHierarchySelect();
 
-    //check if tag is create from highlight modal and select the select
-
+    //check if tag is create from highlight modal and select the tag
     if(treeview_tags_highlight.length > 0) {
         selectedHighLightTags.forEach(node => {
             treeview_tags_highlight.treeview('selectNode', [node.nodeId, {silent: false}]);
