@@ -159,9 +159,6 @@ def copy_project(
             tag_parent=lambda v: (
                 v is None or isinstance(v, int)
             ),
-            favorite=lambda v: (
-                v is None or isinstance(v, bool)
-            ),
             tag_id=lambda v: isinstance(v, int),
             tag_path=validate.tag_path,
             src_tag_id=lambda v: isinstance(v, int),
@@ -232,6 +229,7 @@ def copy_table(
 
     from .models import Tag
     from sqlalchemy import func
+
     query = table.select()
     if pkey is not None:
         query = query.order_by(pkey)
@@ -243,7 +241,6 @@ def copy_table(
             func.count().select().select_from(query.alias()))
         total_rows = count_query.scalar()
         batch_size = total_rows + 1
-        print(f"Total rows tags to process: {total_rows}")
     query = src_db.execute(query)
     assert pkey is None or pkey in query.keys()
     assert all(field in query.keys() for field in fkeys)
@@ -256,11 +253,11 @@ def copy_table(
         rows = [dict(row) for row in batch]
 
         if table == Tag.__table__:
-            roots, hierarchy = build_tag_hierarchy(rows)
+            roots, hierarchies = build_tag_hierarchies(rows)
             insert_tags_recursively(
                 dest_db,
                 roots,
-                hierarchy,
+                hierarchies,
                 mapping,
                 table,
                 pkey,
@@ -275,43 +272,49 @@ def copy_table(
     return mapping
 
 
-def build_tag_hierarchy(tags):
+def build_tag_hierarchies(tags):
     """Build a hierarchy for tags to manage parent-child relationships."""
-    hierarchy = defaultdict(list)
+    hierarchies = defaultdict(list)
     roots = []
     for tag in tags:
         if tag['parent_id'] is None:
             roots.append(tag)
         else:
-            hierarchy[tag['parent_id']].append(tag)
-    return roots, hierarchy
+            hierarchies[tag['parent_id']].append(tag)
+    return roots, hierarchies
 
 
-def insert_tags_recursively(dest_db, roots, hierarchy, mapping,
+def insert_tags_recursively(dest_db, roots, hierarchies, mapping,
                             table, pkey, fkeys, transform, validators):
     """Insert tags recursively to respect parent-child relationships."""
     for tag in roots:
         tag_id = tag[pkey]
+        # Get primary key, remove it
         if pkey is not None:
             tag.pop(pkey)
+        # Map foreign keys
         for field, fkey_map in fkeys.items():
             tag[field] = fkey_map[tag[field]]
+        # Generic transform
         if transform is not None:
             tag = transform(tag, mapping)
+        # Validate
         if validators:
             for key, value in tag.items():
                 if key in validators:
                     if not validators[key](value):
                         raise ValueError(
                             f"Data failed validation (column {key})")
+        # Have to insert one-by-one for inserted_primary_key
         ins = dest_db.execute(table.insert(), tag)
+        # Store new primary key
         if pkey is not None:
             mapping[tag_id], = ins.inserted_primary_key
-        if tag_id in hierarchy:
+        if tag_id in hierarchies:
             insert_tags_recursively(
                 dest_db,
-                hierarchy[tag_id],
-                hierarchy,
+                hierarchies[tag_id],
+                hierarchies,
                 mapping,
                 table,
                 pkey,
@@ -331,19 +334,25 @@ def insert_rows(dest_db,
     """Insert rows into the destination database."""
     for row in rows:
         orig_pkey = 0
+        # Get primary key, remove it
         if pkey is not None:
             orig_pkey = row[pkey]
             row.pop(pkey)
+        # Map foreign keys
         for field, fkey_map in fkeys.items():
             row[field] = fkey_map[row[field]]
+        # Generic transform
         if transform is not None:
             row = transform(row, mapping)
+        # Validate
         if validators:
             for key, value in row.items():
                 if key in validators:
                     if not validators[key](value):
                         raise ValueError(
                             f"Data failed validation (column {key})")
+        # Have to insert one-by-one for inserted_primary_key
         ins = dest_db.execute(table.insert(), row)
+        # Store new primary key
         if pkey is not None:
             mapping[orig_pkey], = ins.inserted_primary_key

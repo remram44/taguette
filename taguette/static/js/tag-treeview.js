@@ -7,7 +7,7 @@ const CUSTOM_LEVEL_OPTION = 3;
 const SPLICE_DEFAULT_INDEX = 1;
 const DEFAULT_COUNT = 0;
 
-// highlight new tag after creation, edit, merge, etc.
+// Highlight new tag after creation, edit, merge, etc.
 function highlightNewTag(tagId) {
     const nodeElement = $(`#tag-node-${tagId}`);
     nodeElement.addClass('highlight-tag');
@@ -16,7 +16,7 @@ function highlightNewTag(tagId) {
     }, 3000);
 }
 
-// highlight all tags by changing color
+// Highlight all tags by changing color
 function selectAllTag() {
     const allNodes = treeview_tags.treeview('getEnabled');
     for (const node of allNodes) {
@@ -125,13 +125,13 @@ function addTag(tag) {
         return;
     }
 
-    // expand node if necessary
+    // Expand node if necessary
     const rootParentId = findRootParent(tag.parent);
     expandNode(treeview_tags, rootParentId);
     highlightNewTag(tag.id);
 }
 
-// Function to add a new tag to the tag tree
+// Add a new tag to the tag tree
 function addNewTag(tag) {
     const newTag = {
         ...tag,
@@ -152,7 +152,7 @@ function addNewTag(tag) {
     }
 }
 
-// Function to update an existing tag
+// Update an existing tag
 function updateExistingTag(existingTag, newTag) {
     if (newTag.parent) {
         handleExistingTagWithParent(existingTag, newTag);
@@ -210,6 +210,7 @@ function removeTagFromParent(tag, parent) {
     }
 }
 
+// Find and delete tag
 const findTagAndDelete = (id) => {
 
     const tag = findTag(parseInt(id));
@@ -242,6 +243,7 @@ function convertToTreeNode(data, includeTags) {
     });
 }
 
+// Init main tag tree
 function initTagsTreeview(filterTags = null) {
 
     if (filterTags == null) {
@@ -250,6 +252,7 @@ function initTagsTreeview(filterTags = null) {
 
     const treeData = convertToTreeNode(filterTags, true);
 
+    // Custom treeview design and behavior
     const options = {
         customContent: true,
         data: treeData,
@@ -298,6 +301,7 @@ function initTagsTreeview(filterTags = null) {
     });
 }
 
+// Init tag tree in create highlight form
 function initTagsHighlightTreeview(filterTags = null) {
 
     if (filterTags == null) {
@@ -306,6 +310,7 @@ function initTagsHighlightTreeview(filterTags = null) {
 
     const treeData = convertToTreeNode(filterTags, false);
 
+    // Custom treeview design and behavior
     const options = {
         customContent: true,
         data: treeData,
@@ -326,6 +331,7 @@ function initTagsHighlightTreeview(filterTags = null) {
     treeview_tags_highlight.treeview(options);
 }
 
+// Expand node by tag id
 function expandNode(treeview, tagId) {
     const allNodes = treeview.treeview('getEnabled');
     const node = allNodes.find((node) => node.id === tagId);
@@ -335,10 +341,12 @@ function expandNode(treeview, tagId) {
     }
 }
 
+// Expand all node
 function expandAllNodes(treeview) {
     treeview.treeview('expandAll', {levels: DEFAULT_LEVEL_OPTION, silent: false});
 }
 
+// Collapse all node
 function collapseAllNodes(treeview) {
     treeview.treeview('collapseAll', {silent: false});
 }

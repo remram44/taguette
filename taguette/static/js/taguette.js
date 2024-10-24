@@ -900,13 +900,14 @@ function updateTagsList() {
     initTagHierarchySelect();
     initMergeTagHierarchySelect();
 
-    //check if tag is create from highlight modal and select the tag
+
     if(treeview_tags_highlight.length > 0) {
         selectedHighLightTags.forEach(node => {
             treeview_tags_highlight.treeview('selectNode', [node.nodeId, {silent: false}]);
         });
     }
 
+    //check if tag is create from highlight modal and select the tag
     if(createTagFromHighlight) {
         const allNodes = treeview_tags_highlight.treeview('getEnabled');
         const node = allNodes.find((node) => node.id === parseInt(last_added_tag));
