@@ -1,8 +1,8 @@
 import gettext
+import importlib_resources
 import json
 import logging
 from markupsafe import Markup
-import pkg_resources
 from tornado.routing import URLSpec
 from tornado.web import HTTPError
 
@@ -25,7 +25,7 @@ class TranslationJs(BaseHandler):
     def get(self):
         catalog = {}
 
-        d = pkg_resources.resource_filename('taguette', 'l10n')
+        d = importlib_resources.files('taguette').joinpath('l10n')
         gettext_trans = gettext.translation('taguette_javascript', d,
                                             [self.locale.code], fallback=True)
         if gettext_trans is not None:
@@ -204,7 +204,9 @@ def make_app(config, debug=False, xsrf_cookies=True):
 
     return Application(
         routes,
-        static_path=pkg_resources.resource_filename('taguette', 'static'),
+        static_path=str(
+            importlib_resources.files('taguette').joinpath('static')
+        ),
         login_url=base_path + '/login',
         xsrf_cookies=xsrf_cookies,
         debug=debug,

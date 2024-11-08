@@ -20,17 +20,18 @@ sqlite3:
     paths:
       - htmlcov
 
-sqlite3_redis:
+sqlite3_valkey:
   stage: test
   image: python:3.10
   services:
-    - redis:latest
+    - name: valkey/valkey:latest
+      alias: valkey
   script:
     - curl -sSL https://install.python-poetry.org | python3 -
     - $HOME/.local/bin/poetry config virtualenvs.create false
     - $HOME/.local/bin/poetry install --no-interaction
     - scripts/update_translations.sh
-    - TAGUETTE_TEST_REDIS=redis://redis:6379 python -Wd tests.py -v
+    - TAGUETTE_TEST_REDIS=redis://valkey:6379 python -Wd tests.py -v
 
 frontend_firefox:
   stage: test
@@ -46,18 +47,19 @@ frontend_firefox:
     - scripts/update_translations.sh
     - TAGUETTE_TEST_WEBDRIVER=firefox xvfb-run python tests.py -v TestSeleniumMultiuser
 
-frontend_chromium_redis:
+frontend_chromium_valkey:
   stage: test
   image: python:3.10
   services:
-    - redis:latest
+    - name: valkey/valkey:latest
+      alias: valkey
   script:
     - apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -yy xvfb chromium-driver
     - curl -sSL https://install.python-poetry.org | python3 -
     - $HOME/.local/bin/poetry config virtualenvs.create false
     - $HOME/.local/bin/poetry install --no-interaction
     - scripts/update_translations.sh
-    - TAGUETTE_TEST_WEBDRIVER=chromium TAGUETTE_TEST_REDIS=redis://redis:6379 xvfb-run python tests.py -v TestSeleniumMultiuser
+    - TAGUETTE_TEST_WEBDRIVER=chromium TAGUETTE_TEST_REDIS=redis://valkey:6379 xvfb-run python tests.py -v TestSeleniumMultiuser
 
 frontend_chromium_subdir:
   stage: test
@@ -72,8 +74,9 @@ frontend_chromium_subdir:
 
 sqlite3_latest:
   stage: test
-  image: python:3.11
+  image: python:3.12
   script:
+    - pip --disable-pip-version-check --no-cache-dir install --upgrade setuptools
     - curl -sSL https://install.python-poetry.org | python3 -
     - $HOME/.local/bin/poetry config virtualenvs.create false
     - rm poetry.lock

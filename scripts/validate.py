@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 import argparse
+import importlib_resources
 import logging
 import os
-import pkg_resources
 from sqlalchemy.orm.exc import ObjectDeletedError
 import sys
 import tornado.locale
@@ -47,8 +47,8 @@ def main():
             return False
 
     if args.users:
-        d = pkg_resources.resource_filename('taguette', 'l10n')
-        tornado.locale.load_gettext_translations(d, 'taguette_main')
+        d = importlib_resources.files('taguette').joinpath('l10n')
+        tornado.locale.load_gettext_translations(str(d), 'taguette_main')
 
         for user in db.query(database.User):
             if not check(validate.user_login, user.login):

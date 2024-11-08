@@ -2,10 +2,10 @@ import argparse
 import asyncio
 import base64
 import gettext
+import importlib_resources
 import locale
 import logging
 import os
-import pkg_resources
 import prometheus_client
 import re
 import secrets
@@ -202,7 +202,7 @@ def main():
     locale.setlocale(locale.LC_ALL, '')
     lang = locale.getlocale()[0]
     lang = [lang] if lang else []
-    d = pkg_resources.resource_filename('taguette', 'l10n')
+    d = importlib_resources.files('taguette').joinpath('l10n')
     trans = gettext.translation('taguette_main', d, lang, fallback=True)
     taguette._trans = trans
     _ = trans.gettext

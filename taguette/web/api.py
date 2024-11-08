@@ -143,6 +143,10 @@ class DocumentAdd(BaseHandler):
                     self.application.config,
                 )
             except convert.ConversionError as err:
+                logger.warning(
+                    "Error converting document %r %s: %s",
+                    filename, content_type, err,
+                )
                 return await self.send_error_json(400, str(err))
             else:
                 doc = database.Document(
@@ -793,7 +797,7 @@ class ProjectImport(BaseHandler):
             raise HTTPError(403)
 
     @api_auth
-    @PROM_REQUESTS.sync('project_import')
+    @PROM_REQUESTS.async_('project_import')
     async def post(self):
         try:
             file = self.request.files['file'][0]

@@ -90,6 +90,23 @@ div.sticky-top {
   opacity: 0.7;
 }
 
+/* Fix margins in RTL */
+html[dir="rtl"] .navbar-nav.t-ms-auto {
+  margin-right: auto !important;
+}
+
+html:not([dir="rtl"]) .navbar-nav.t-ms-auto {
+  margin-left: auto !important;
+}
+
+html[dir="rtl"] .navbar-nav.t-me-auto {
+  margin-left: auto !important;
+}
+
+html:not([dir="rtl"]) .navbar-nav.t-me-auto {
+  margin-right: auto !important;
+}
+
 /* Tab navs for project*/
 
 .nav-link {
