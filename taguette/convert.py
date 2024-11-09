@@ -249,7 +249,7 @@ def is_html_safe(text):
     soup = bs4.BeautifulSoup(text, 'html5lib')
     # Check 'src' URLs
     for e in soup.find_all('img'):
-        if e.attrs['src'] != '/static/missing.png':
+        if e.attrs.get('src') != '/static/missing.png':
             return False
 
     # Use bleach to sanitize the content
