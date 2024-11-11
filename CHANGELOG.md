@@ -8,6 +8,8 @@ Bugfixes:
 * Use another region of the requested language if it exists instead of falling back to English
 * Fix `project_import` metric
 * Don't use heuristics when importing .txt files
+* Fix sending emails to names starting or ending with a dot
+* Fix highlights appearing when created in another document
 
 Enhancements:
 * Automatically detect the character encoding of codebooks
