@@ -1911,12 +1911,14 @@ function longPollForEvents() {
       } else if(event.type === 'document_delete') {
         removeDocument(event.document_id);
       } else if(event.type === 'highlight_add') {
-        setHighlight({
-          id: event.highlight_id,
-          start_offset: event.start_offset,
-          end_offset: event.end_offset,
-          tags: event.tags
-        });
+        if(event.document_id === current_document) {
+          setHighlight({
+            id: event.highlight_id,
+            start_offset: event.start_offset,
+            end_offset: event.end_offset,
+            tags: event.tags
+          });
+        }
       } else if(event.type === 'highlight_delete') {
         removeHighlight(event.highlight_id);
       } else if(event.type === 'tag_add') {
