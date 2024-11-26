@@ -343,6 +343,8 @@ def main():
             DEFAULT_CONFIG,
             **config
         )
+        if 'REDIS_SERVER' in config and 'VALKEY_SERVER' not in config:
+            config['VALKEY_SERVER'] = config.pop('REDIS_SERVER')
         missing = False
         for key in REQUIRED_CONFIG:
             if key not in config:
