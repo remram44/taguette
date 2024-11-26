@@ -60,7 +60,7 @@ include = [
 "Open Collective" = "https://opencollective.com/taguette"
 
 [tool.poetry.dependencies]
-python = ">=3.7,<4"
+python = ">=3.8,<4"
 
 alembic = ">=1.6,<1.9"
 beautifulsoup4 = "*"
