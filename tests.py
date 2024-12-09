@@ -1542,11 +1542,13 @@ class TestMultiuser(MyHTTPTestCase):
         user = database.User(login='db%duser' % db_num)
         await user.set_password('hackme')
         db.add(user)
-        cls.make_basic_project(db, db_num, 1)
-        cls.make_basic_project(db, db_num, 2)
+        mapping = {}
+        cls.make_basic_project(db, db_num, 1, mapping)
+        cls.make_basic_project(db, db_num, 2, mapping)
+        return mapping
 
     @staticmethod
-    def make_basic_project(db, db_num, project_num):
+    def make_basic_project(db, db_num, project_num, mapping):
         # Creates 1 project, 2 (+1 deleted) documents, 2 (+1 deleted) tags,
         # 2 (+1 deleted) highlights, 13 commands total
         def doc(project, number, dir=database.TextDirection.LEFT_TO_RIGHT):
@@ -1561,29 +1563,34 @@ class TestMultiuser(MyHTTPTestCase):
             )
 
         user = 'db%duser' % db_num
-        project1 = database.Project(
+        project = database.Project(
             name='db%dproject%d' % (db_num, project_num),
             description='',
         )
-        db.add(project1)
+        db.add(project)
         db.flush()
-        document1 = doc(project1, 1)
+        mapping[f'proj{project_num}'] = project.id
+        document1 = doc(project, 1)
         db.add(document1)
-        document2 = doc(project1, 2, database.TextDirection.RIGHT_TO_LEFT)
+        document2 = doc(project, 2, database.TextDirection.RIGHT_TO_LEFT)
         db.add(document2)
         tag1 = database.Tag(
-            project=project1,
+            project=project,
             path='db%dtag%d1' % (db_num, project_num),
             description='',
         )
         db.add(tag1)
         tag2 = database.Tag(
-            project=project1,
+            project=project,
             path='db%dtag%d2' % (db_num, project_num),
             description='',
         )
         db.add(tag2)
         db.flush()
+        mapping[f'doc{project_num}1'] = document1.id
+        mapping[f'doc{project_num}2'] = document2.id
+        mapping[f'tag{project_num}1'] = tag1.id
+        mapping[f'tag{project_num}2'] = tag2.id
         hl1 = database.Highlight(
             document_id=document1.id,
             start_offset=3, end_offset=6, snippet='doc',
@@ -1595,29 +1602,33 @@ class TestMultiuser(MyHTTPTestCase):
         db.add(hl1)
         db.add(hl2)
         db.flush()
+        mapping[f'hl{project_num}1'] = hl1.id
+        mapping[f'hl{project_num}2'] = hl2.id
         hl1.tags.append(tag2)
         hl2.tags.append(tag1)
-        db.add(database.ProjectMember(user_login='admin', project=project1,
+        db.add(database.ProjectMember(user_login='admin', project=project,
                                       privileges=database.Privileges.ADMIN))
         db.add(database.ProjectMember(user_login=user,
-                                      project=project1,
+                                      project=project,
                                       privileges=database.Privileges.ADMIN))
         db.add(database.Command.document_add(user, document1))
-        document_fake = doc(project1, 100)
+        document_fake = doc(project, 100)
         db.add(document_fake)
         db.flush()
+        mapping[f'doc{project_num}F'] = document_fake.id
         db.add(database.Command.document_add(user, document_fake))
         db.add(database.Command.document_add(user, document2))
         db.add(database.Command.document_delete(user, document_fake))
         db.delete(document_fake)
-        tag_fake = database.Tag(project=project1, path='db%dtagF' % db_num,
+        tag_fake = database.Tag(project=project, path='db%dtagF' % db_num,
                                 description='')
         db.add(tag_fake)
         db.flush()
+        mapping[f'tag{project_num}F'] = tag_fake.id
         db.add(database.Command.tag_add(user, tag1))
         db.add(database.Command.tag_add(user, tag_fake))
         db.add(database.Command.tag_add(user, tag2))
-        db.add(database.Command.tag_delete(user, project1.id, tag_fake.id))
+        db.add(database.Command.tag_delete(user, project.id, tag_fake.id))
         db.delete(tag_fake)
         hl_fake = database.Highlight(
             document_id=document1.id,
@@ -1625,6 +1636,7 @@ class TestMultiuser(MyHTTPTestCase):
         )
         db.add(hl_fake)
         db.flush()
+        mapping[f'hl{project_num}F'] = hl_fake.id
         db.add(database.Command.highlight_add(user, document1, hl1, []))
         db.add(database.Command.highlight_add(user, document1, hl1, [tag2.id]))
         db.add(database.Command.highlight_add(user, document1, hl_fake,
@@ -1646,7 +1658,7 @@ class TestMultiuser(MyHTTPTestCase):
     async def test_import(self, tmp):
         # Populate database
         db1 = self.application.DBSession()
-        await self.make_basic_db(db1, 1)
+        m1 = await self.make_basic_db(db1, 1)
         db1.commit()
 
         # Log in
@@ -1666,7 +1678,7 @@ class TestMultiuser(MyHTTPTestCase):
         db2_path = os.path.join(tmp, 'db.sqlite3')
         db2 = database.connect('sqlite:///' + db2_path)()
         db2.add(database.User(login='admin'))
-        await self.make_basic_db(db2, 2)
+        m = await self.make_basic_db(db2, 2)
         db2.commit()
 
         # List projects in database
@@ -1679,22 +1691,20 @@ class TestMultiuser(MyHTTPTestCase):
             ) as response:
                 self.assertEqual(response.status, 200)
                 self.assertEqual(await response.json(), {
-                    'projects': [{'id': 1, 'name': 'db2project1'},
-                                 {'id': 2, 'name': 'db2project2'}],
+                    'projects': [{'id': m['proj1'], 'name': 'db2project1'},
+                                 {'id': m['proj2'], 'name': 'db2project2'}],
                 })
 
         # Import project
         with open(db2_path, 'rb') as fp:
             async with self.apost(
                 '/api/import',
-                data={'project_id': '1'},
+                data={'project_id': str(m['proj1'])},
                 files=dict(file=('db2.sqlite3', 'application/octet-stream',
                                  fp.read())),
             ) as response:
                 self.assertEqual(response.status, 200)
-                self.assertEqual(await response.json(), {
-                    'project_id': 3,
-                })
+                proj1i = (await response.json())['project_id']
 
         # Check imported project
         self.assertEqual(
@@ -1709,9 +1719,9 @@ class TestMultiuser(MyHTTPTestCase):
                 .order_by(database.Project.__table__.c.id)
             ),
             [
-                (1, 'db1project1', '', datetime.utcnow()),
-                (2, 'db1project2', '', datetime.utcnow()),
-                (3, 'db2project1', '', datetime.utcnow()),
+                (m1['proj1'], 'db1project1', '', datetime.utcnow()),
+                (m1['proj2'], 'db1project2', '', datetime.utcnow()),
+                (proj1i, 'db2project1', '', datetime.utcnow()),
             ],
         )
         self.assertRowsEqualsExceptDates(
@@ -1721,13 +1731,20 @@ class TestMultiuser(MyHTTPTestCase):
                 .order_by(database.ProjectMember.__table__.c.user_login)
             ),
             [
-                (1, 'admin', database.Privileges.ADMIN),
-                (1, 'db1user', database.Privileges.ADMIN),
-                (2, 'admin', database.Privileges.ADMIN),
-                (2, 'db1user', database.Privileges.ADMIN),
-                (3, 'db1user', database.Privileges.ADMIN),
+                (m1['proj1'], 'admin', database.Privileges.ADMIN),
+                (m1['proj1'], 'db1user', database.Privileges.ADMIN),
+                (m1['proj2'], 'admin', database.Privileges.ADMIN),
+                (m1['proj2'], 'db1user', database.Privileges.ADMIN),
+                (proj1i, 'db1user', database.Privileges.ADMIN),
             ],
         )
+        imported_docs = {}
+        for row in db1.execute(
+            database.Document.__table__.select()
+            .filter(database.Document.__table__.c.project_id == proj1i)
+        ):
+            self.assertNotIn(row['name'], imported_docs)
+            imported_docs[row['name']] = row['id']
         self.assertEqual(
             [
                 (row['id'], row['name'])
@@ -1737,65 +1754,75 @@ class TestMultiuser(MyHTTPTestCase):
                 )
             ],
             [
-                (1, 'db1doc11.txt'),
-                (2, 'db1doc12.txt'),
-                (4, 'db1doc21.txt'),
-                (5, 'db1doc22.txt'),
-                (7, 'db2doc11.txt'),
-                (8, 'db2doc12.txt'),
+                (m1['doc11'], 'db1doc11.txt'),
+                (m1['doc12'], 'db1doc12.txt'),
+                (m1['doc21'], 'db1doc21.txt'),
+                (m1['doc22'], 'db1doc22.txt'),
+                (imported_docs['db2doc11.txt'], 'db2doc11.txt'),
+                (imported_docs['db2doc12.txt'], 'db2doc12.txt'),
             ],
         )
-        self.assertRowsEqualsExceptDates(
-            db1.execute(
-                database.Command.__table__.select()
-                .where(database.Command.__table__.c.project_id == 3)
-                .order_by(database.Command.__table__.c.id)
-            ),
+        imported_tags = {}
+        for row in db1.execute(
+            database.Tag.__table__.select()
+            .filter(database.Tag.__table__.c.project_id == proj1i)
+        ):
+            self.assertNotIn(row['path'], imported_tags)
+            imported_tags[row['path']] = row['id']
+        commands = db1.execute(
+            database.Command.__table__.select()
+            .where(database.Command.__table__.c.project_id == proj1i)
+            .order_by(database.Command.__table__.c.date)
+        )
+        commands = [(row[2],) + row[4:] for row in commands]
+        imported_hls = []
+        for row in commands:
+            if row[2]['type'].startswith('highlight_'):
+                hl_id = row[2]['highlight_id']
+                if hl_id >= 0 and hl_id not in imported_hls:
+                    imported_hls.append(row[2]['highlight_id'])
+        self.assertEqual(
+            commands,
             [
-                # id, user_login, project_id, document_id, {payload}
-                # project 1 imported as 3
-                # documents 1, 2, 3 imported as 7, 8, 9
-                # tags 1, 2, 3 imported as 7, 8, -3
-                # highlights 1, 2, 3 imported as 7, 8, -3
-                # commands 1-13 exported as 27-39
-                (27, 'db1user', 3, 7,
+                # user_login, document_id, {payload}
+                ('db1user', imported_docs['db2doc11.txt'],
                  {'type': 'document_add', 'description': '',
                   'text_direction': 'LEFT_TO_RIGHT',
                   'document_name': 'db2doc11.txt'}),
-                (28, 'db1user', 3, -3,
+                ('db1user', -m['doc1F'],
                  {'type': 'document_add', 'description': '',
                   'text_direction': 'LEFT_TO_RIGHT',
                   'document_name': 'db2doc1100.txt'}),
-                (29, 'db1user', 3, 8,
+                ('db1user', imported_docs['db2doc12.txt'],
                  {'type': 'document_add', 'description': '',
                   'text_direction': 'RIGHT_TO_LEFT',
                   'document_name': 'db2doc12.txt'}),
-                (30, 'db1user', 3, -3, {'type': 'document_delete'}),
-                (31, 'db1user', 3, None,
-                 {'type': 'tag_add', 'description': '', 'tag_id': 7,
+                ('db1user', -m['doc1F'], {'type': 'document_delete'}),
+                ('db1user', None,
+                 {'type': 'tag_add', 'description': '', 'tag_id': imported_tags['db2tag11'],
                   'tag_path': 'db2tag11'}),
-                (32, 'db1user', 3, None,
-                 {'type': 'tag_add', 'description': '', 'tag_id': -3,
+                ('db1user', None,
+                 {'type': 'tag_add', 'description': '', 'tag_id': -m['tag1F'],
                   'tag_path': 'db2tagF'}),
-                (33, 'db1user', 3, None,
-                 {'type': 'tag_add', 'description': '', 'tag_id': 8,
+                ('db1user', None,
+                 {'type': 'tag_add', 'description': '', 'tag_id': imported_tags['db2tag12'],
                   'tag_path': 'db2tag12'}),
-                (34, 'db1user', 3, None, {'type': 'tag_delete', 'tag_id': -3}),
-                (35, 'db1user', 3, 7,
-                 {'type': 'highlight_add', 'highlight_id': 7,
+                ('db1user', None, {'type': 'tag_delete', 'tag_id': -m['tag1F']}),
+                ('db1user', imported_docs['db2doc11.txt'],
+                 {'type': 'highlight_add', 'highlight_id': imported_tags['db2tag11'],
                   'start_offset': 3, 'end_offset': 6, 'tags': []}),
-                (36, 'db1user', 3, 7,
-                 {'type': 'highlight_add', 'highlight_id': 7,
-                  'start_offset': 3, 'end_offset': 6, 'tags': [8]}),
-                (37, 'db1user', 3, 7,
-                 {'type': 'highlight_add', 'highlight_id': -3,
-                  'start_offset': 3, 'end_offset': 6, 'tags': [7]}),
-                (38, 'db1user', 3, 7,
-                 {'type': 'highlight_add', 'highlight_id': 8,
-                  'start_offset': 3, 'end_offset': 6, 'tags': [7]}),
-                (39, 'db1user', 3, 7,
-                 {'type': 'highlight_delete', 'highlight_id': -3}),
-                (40, 'db1user', 3, None, {'type': 'project_import'}),
+                ('db1user', imported_docs['db2doc11.txt'],
+                 {'type': 'highlight_add', 'highlight_id': imported_hls[0],
+                  'start_offset': 3, 'end_offset': 6, 'tags': [imported_tags['db2tag12']]}),
+                ('db1user', imported_docs['db2doc11.txt'],
+                 {'type': 'highlight_add', 'highlight_id': -m['hl1F'],
+                  'start_offset': 3, 'end_offset': 6, 'tags': [imported_tags['db2tag11']]}),
+                ('db1user', imported_docs['db2doc11.txt'],
+                 {'type': 'highlight_add', 'highlight_id': imported_hls[1],
+                  'start_offset': 3, 'end_offset': 6, 'tags': [imported_tags['db2tag11']]}),
+                ('db1user', imported_docs['db2doc11.txt'],
+                 {'type': 'highlight_delete', 'highlight_id': -m['hl1F']}),
+                ('db1user', None, {'type': 'project_import'}),
             ],
         )
         self.assertEqual(
@@ -1806,25 +1833,39 @@ class TestMultiuser(MyHTTPTestCase):
                     .order_by(database.Highlight.__table__.c.id)
                 )
             ],
-            [(1, 1), (2, 2), (4, 4), (5, 5), (7, 7), (8, 8)],
+            [
+                (m1['hl11'], m1['doc11']),
+                (m1['hl12'], m1['doc12']),
+                (m1['hl21'], m1['doc21']),
+                (m1['hl22'], m1['doc22']),
+                (imported_hls[0], imported_docs['db2doc11.txt']),
+                (imported_hls[1], imported_docs['db2doc12.txt']),
+            ],
         )
         self.assertRowsEqualsExceptDates(
-            db1.execute(database.Tag.__table__.select()),
-            [
-                (1, 1, 'db1tag11', ''),
-                (2, 1, 'db1tag12', ''),
-                (4, 2, 'db1tag21', ''),
-                (5, 2, 'db1tag22', ''),
-                (7, 3, 'db2tag11', ''),
-                (8, 3, 'db2tag12', ''),
-            ],
+            sorted([row[1:] for row in db1.execute(database.Tag.__table__.select())]),
+            sorted([
+                (m1['proj1'], 'db1tag11', ''),
+                (m1['proj1'], 'db1tag12', ''),
+                (m1['proj2'], 'db1tag21', ''),
+                (m1['proj2'], 'db1tag22', ''),
+                (proj1i, 'db2tag11', ''),
+                (proj1i, 'db2tag12', ''),
+            ]),
         )
         self.assertRowsEqualsExceptDates(
             db1.execute(
                 database.highlight_tags.select()
                 .order_by(database.highlight_tags.c.highlight_id)
             ),
-            [(1, 2), (2, 1), (4, 5), (5, 4), (7, 8), (8, 7)],
+            [
+                (m1['hl11'], m1['tag12']),
+                (m1['hl12'], m1['tag11']),
+                (m1['hl21'], m1['tag22']),
+                (m1['hl22'], m1['tag21']),
+                (imported_hls[0], imported_tags['db2tag12']),
+                (imported_hls[1], imported_tags['db2tag11']),
+            ],
         )
 
     @with_tempdir
