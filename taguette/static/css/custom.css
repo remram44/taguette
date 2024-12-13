@@ -14,7 +14,7 @@
 
 /* Change link colors */
 .container-body a:not(.btn) {
-  color: #3498DB;
+  color: #205F8A;
 }
 
 /* Disabled links */
@@ -69,7 +69,7 @@ div.sticky-top {
 }
 
 .navbar-dark .navbar-nav .nav-link.active {
-  color: #85c1e9 !important;
+  color: #8bc4ea !important;
 }
 
 .navbar-dark .navbar-nav .nav-link.disabled:hover, .navbar-dark .navbar-nav .nav-link.disabled:focus {
@@ -77,7 +77,7 @@ div.sticky-top {
 }
 
 .navbar-dark .navbar-nav .nav-link:hover, .navbar-dark .navbar-nav .nav-link:focus {
-  color: #85c1e9 !important;
+  color: #8bc4ea !important;
 }
 
 .navbar-dark .navbar-nav .dropdown-item.active {
