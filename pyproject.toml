@@ -1,4 +1,4 @@
-[tool.poetry]
+[project]
 name = "taguette"
 version = "1.4.1"
 description = "Free and open source qualitative research tool"
@@ -6,7 +6,7 @@ description = "Free and open source qualitative research tool"
 license = "BSD-3-Clause"
 
 authors = [
-    "Remi Rampin <remi@rampin.org>",
+    { name = "Remi Rampin", email = "remi@rampin.org" },
 ]
 
 readme = "README.rst"
@@ -30,100 +30,119 @@ classifiers = [
     "Topic :: Text Processing",
 ]
 
-include = [
-    # Explicit 'format=' required because of https://github.com/python-poetry/poetry/issues/9691
+requires-python = ">=3.10,<4"
 
-    { path = "CHANGELOG.md", format = "sdist" },
-    { path = "tests.py", format = "sdist" },
-    { path = "CITATION.txt", format = "sdist" },
-    # automatically included: LICENSE.txt README.rst
-
-    { path = "taguette/static/missing.png", format = ["sdist", "wheel"] },
-    { path = "taguette/static/favicon.png", format = ["sdist", "wheel"] },
-    { path = "taguette/static/css/*.css", format = ["sdist", "wheel"] },
-    { path = "taguette/static/*.css.map", format = ["sdist", "wheel"] },
-    { path = "taguette/static/js/*.js", format = ["sdist", "wheel"] },
-    { path = "taguette/static/js/*.js.map", format = ["sdist", "wheel"] },
-    { path = "taguette/static/webfonts/*", format = ["sdist", "wheel"] },
-    { path = "taguette/templates/*.html", format = ["sdist", "wheel"] },
-    { path = "taguette/templates/*.txt", format = ["sdist", "wheel"] },
-    { path = "taguette/templates/*.js", format = ["sdist", "wheel"] },
-    { path = "taguette/migrations/env.py", format = ["sdist", "wheel"] },
-    { path = "taguette/migrations/script.py.mako", format = ["sdist", "wheel"] },
-    { path = "taguette/migrations/versions/*.py", format = ["sdist", "wheel"] },
-    { path = "taguette/l10n/*/*/*.mo", format = ["sdist", "wheel"] },
+dependencies = [
+    "alembic >=1.6,<1.9",
+    "beautifulsoup4",
+    "bleach >=3,<6",
+    "chardet >=4,<6",
+    "html5lib >=1,<2",
+    "importlib-resources",
+    "jinja2 >=3.1,<3.2",
+    "opentelemetry-api >=1.5,<1.11",
+    "prometheus-async",
+    "prometheus-client",
+    "redis >=3,<5",
+    "sentry-sdk",
+    "setuptools", # opentelemetry-api requires pkg_resources
+    "SQLAlchemy >=1.4,<1.5",
+    "subtitle-parser >=1,<3",
+    "tornado >=6.1",
+    "XlsxWriter >=1.4,<4",
 ]
 
-[tool.poetry.urls]
+[project.urls]
 "Bug Tracker" = "https://gitlab.com/remram44/taguette/-/issues"
 "Documentation" = "https://www.taguette.org/getting-started.html"
 "Chat" = "https://app.element.io/#/room/#taguette:matrix.org"
 "User Mailing List" = "https://groups.io/g/taguette"
 "Open Collective" = "https://opencollective.com/taguette"
 
-[tool.poetry.dependencies]
-python = ">=3.7,<4"
-
-alembic = ">=1.6,<1.9"
-beautifulsoup4 = "*"
-bleach = ">=3,<6"
-chardet = ">=4,<6"
-html5lib = ">=1,<2"
-importlib-resources = "*"
-jinja2 = ">=3.1,<3.2"
-opentelemetry-api = ">=1.5,<1.11"
-prometheus-async = "*"
-prometheus-client = "*"
-redis = ">=3,<5"
-sentry-sdk = "*"
-SQLAlchemy = ">=1.4,<1.5"
-subtitle-parser = ">=1,<3"
-tornado = ">=6.1"
-XlsxWriter = ">=1.4,<4"
-
-opentelemetry-distro = {version = "*", optional = true, allow-prereleases = true}
-opentelemetry-instrumentation-sqlalchemy = {version = ">=0.24b0,<0.26", optional = true, allow-prereleases = true}
-opentelemetry-instrumentation-tornado = {version = ">=0.24b0,<0.26", optional = true, allow-prereleases = true}
-
-psycopg2 = {version = ">=2.8,<3", optional = true}
-pymysql = {version = ">=1.0,<2", optional = true}
-cryptography = {version = "*", optional = true}
-
-[tool.poetry.group.dev.dependencies]
-coverage = "*"
-flake8 = "*"
-readme_renderer = "*"
-babel = ">=2.6,<3"
-bcrypt = ">=3.2.0,<4"
-aiohttp = ">=3.4,<4"
-selenium = ">=4.5,<4.6"
-
-[tool.poetry.group.i18n.dependencies]
-babel = ">=2.6,<3"
-
-[tool.poetry.group.pyinstaller]
-optional = true
-
-[tool.poetry.group.pyinstaller.dependencies]
-pyinstaller = "*"
-
-[tool.poetry.extras]
+[project.optional-dependencies]
 otel = [
     "opentelemetry-distro",
-    "opentelemetry-instrumentation-sqlalchemy",
-    "opentelemetry-instrumentation-tornado",
+    "opentelemetry-instrumentation-sqlalchemy >=0.24b0,<0.26",
+    "opentelemetry-instrumentation-tornado >=0.24b0,<0.26",
 ]
 postgres = [
-    "psycopg2",
+    "psycopg2 >=2.8,<3",
 ]
 mysql = [
-    "pymysql",
+    "pymysql >=1.0,<2",
     "cryptography",
 ]
 
-[tool.poetry.scripts]
+[dependency-groups]
+dev = [
+    "coverage",
+    "flake8",
+    "readme_renderer",
+    "babel >=2.6,<3",
+    "bcrypt >=3.2.0,<4",
+    "aiohttp >=3.4,<4",
+    "selenium >=4.5,<4.6",
+]
+i18n = [
+    "babel >=2.6,<3",
+]
+pyinstaller = [
+    "pyinstaller",
+]
+
+[tool.uv]
+default-groups = ["dev", "i18n"]
+
+[project.scripts]
 taguette = "taguette.main:main"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "taguette/**/*.py",
+
+    "CHANGELOG.md",
+    "tests.py",
+    "CITATION.txt",
+    # automatically included: LICENSE.txt README.rst
+
+    # Following is common with wheel build
+    "taguette/static/missing.png",
+    "taguette/static/favicon.png",
+    "taguette/static/css/*.css",
+    "taguette/static/*.css.map",
+    "taguette/static/js/*.js",
+    "taguette/static/js/*.js.map",
+    "taguette/static/webfonts/*",
+    "taguette/templates/*.html",
+    "taguette/templates/*.txt",
+    "taguette/templates/*.js",
+    "taguette/migrations/env.py",
+    "taguette/migrations/script.py.mako",
+    "taguette/migrations/versions/*.py",
+    "taguette/l10n/*/*/*.mo",
+]
+
+[tool.hatch.build.targets.wheel]
+include = [
+    "taguette/**/*.py",
+
+    # Following is common with sdist build
+    "taguette/static/missing.png",
+    "taguette/static/favicon.png",
+    "taguette/static/css/*.css",
+    "taguette/static/*.css.map",
+    "taguette/static/js/*.js",
+    "taguette/static/js/*.js.map",
+    "taguette/static/webfonts/*",
+    "taguette/templates/*.html",
+    "taguette/templates/*.txt",
+    "taguette/templates/*.js",
+    "taguette/migrations/env.py",
+    "taguette/migrations/script.py.mako",
+    "taguette/migrations/versions/*.py",
+    "taguette/l10n/*/*/*.mo",
+]
