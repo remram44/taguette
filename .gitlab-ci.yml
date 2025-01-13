@@ -80,7 +80,7 @@ sqlite3_latest:
     - curl -sSL https://install.python-poetry.org | python3 -
     - $HOME/.local/bin/poetry config virtualenvs.create false
     - rm poetry.lock
-    - sed -i 's/^python = ".*$/python = "^3.11"/' pyproject.toml
+    - sed -i 's/^python = ".*$/python = "^3.12"/' pyproject.toml
     - cat pyproject.toml
     - $HOME/.local/bin/poetry install --no-interaction
     - scripts/update_translations.sh
