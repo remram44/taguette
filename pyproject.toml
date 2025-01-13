@@ -46,6 +46,8 @@ include = [
     { path = "taguette/static/js/*.js.map", format = ["sdist", "wheel"] },
     { path = "taguette/static/webfonts/*", format = ["sdist", "wheel"] },
     { path = "taguette/templates/*.html", format = ["sdist", "wheel"] },
+    { path = "taguette/templates/*.txt", format = ["sdist", "wheel"] },
+    { path = "taguette/templates/*.js", format = ["sdist", "wheel"] },
     { path = "taguette/migrations/env.py", format = ["sdist", "wheel"] },
     { path = "taguette/migrations/script.py.mako", format = ["sdist", "wheel"] },
     { path = "taguette/migrations/versions/*.py", format = ["sdist", "wheel"] },
