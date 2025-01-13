@@ -4,17 +4,15 @@ stages:
 
 sqlite3:
   stage: test
-  image: python:3.10
+  image: ghcr.io/astral-sh/uv:0.5.18-python3.10-bookworm
   script:
-    - curl -sSL https://install.python-poetry.org | python3 -
-    - $HOME/.local/bin/poetry config virtualenvs.create false
-    - $HOME/.local/bin/poetry install --no-interaction
-    - scripts/update_translations.sh
-    - python -m readme_renderer README.rst >/dev/null
-    - python -Wd -m coverage run --branch --source=taguette tests.py -v
-    - coverage html
-    - coverage report | tail -n 1 | grep -o '\([0-9]\+\(\.[0-9]\+\)\?%\)$'
-    - flake8 --ignore=W503,W504 tests.py taguette
+    - uv sync --locked
+    - uv run scripts/update_translations.sh
+    - uv run python -m readme_renderer README.rst >/dev/null
+    - uv run python -Wd -m coverage run --branch --source=taguette tests.py -v
+    - uv run coverage html
+    - uv run coverage report | tail -n 1 | grep -o '\([0-9]\+\(\.[0-9]\+\)\?%\)$'
+    - uv run flake8 --ignore=W503,W504 tests.py taguette
     - "! find taguette -name '*.py' -exec grep --color 'raise \\(validate\\.\\)\\?InvalidFormat([^_]' {} +"
   artifacts:
     paths:
@@ -22,86 +20,75 @@ sqlite3:
 
 sqlite3_valkey:
   stage: test
-  image: python:3.10
+  image: ghcr.io/astral-sh/uv:0.5.18-python3.10-bookworm
   services:
     - name: valkey/valkey:latest
       alias: valkey
   script:
-    - curl -sSL https://install.python-poetry.org | python3 -
-    - $HOME/.local/bin/poetry config virtualenvs.create false
-    - $HOME/.local/bin/poetry install --no-interaction
-    - scripts/update_translations.sh
-    - TAGUETTE_TEST_REDIS=redis://valkey:6379 python -Wd tests.py -v
+    - uv sync --locked
+    - uv run scripts/update_translations.sh
+    - TAGUETTE_TEST_REDIS=redis://valkey:6379 uv run python -Wd tests.py -v
 
 frontend_firefox:
   stage: test
-  image: python:3.10
+  image: ghcr.io/astral-sh/uv:0.5.18-python3.10-bookworm
   script:
     - apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -yy xvfb firefox-esr
     - curl -Lo /tmp/geckodriver.tar.gz https://github.com/mozilla/geckodriver/releases/download/v0.30.0/geckodriver-v0.30.0-linux64.tar.gz
     - tar -zxf /tmp/geckodriver.tar.gz -C /usr/local/bin geckodriver
     - chmod +x /usr/local/bin/geckodriver
-    - curl -sSL https://install.python-poetry.org | python3 -
-    - $HOME/.local/bin/poetry config virtualenvs.create false
-    - $HOME/.local/bin/poetry install --no-interaction
-    - scripts/update_translations.sh
-    - TAGUETTE_TEST_WEBDRIVER=firefox xvfb-run python tests.py -v TestSeleniumMultiuser
+    - uv sync --locked
+    - uv run scripts/update_translations.sh
+    - TAGUETTE_TEST_WEBDRIVER=firefox xvfb-run uv run python tests.py -v TestSeleniumMultiuser
 
 frontend_chromium_valkey:
   stage: test
-  image: python:3.10
+  image: ghcr.io/astral-sh/uv:0.5.18-python3.10-bookworm
   services:
     - name: valkey/valkey:latest
       alias: valkey
   script:
     - apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -yy xvfb chromium-driver
-    - curl -sSL https://install.python-poetry.org | python3 -
-    - $HOME/.local/bin/poetry config virtualenvs.create false
-    - $HOME/.local/bin/poetry install --no-interaction
-    - scripts/update_translations.sh
-    - TAGUETTE_TEST_WEBDRIVER=chromium TAGUETTE_TEST_REDIS=redis://valkey:6379 xvfb-run python tests.py -v TestSeleniumMultiuser
+    - uv sync --locked
+    - uv run scripts/update_translations.sh
+    - TAGUETTE_TEST_WEBDRIVER=chromium TAGUETTE_TEST_REDIS=redis://valkey:6379 xvfb-run uv run python tests.py -v TestSeleniumMultiuser
 
 frontend_chromium_subdir:
   stage: test
-  image: python:3.10
+  image: ghcr.io/astral-sh/uv:0.5.18-python3.10-bookworm
   script:
     - apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -yy xvfb chromium-driver
-    - curl -sSL https://install.python-poetry.org | python3 -
-    - $HOME/.local/bin/poetry config virtualenvs.create false
-    - $HOME/.local/bin/poetry install --no-interaction
-    - scripts/update_translations.sh
-    - TAGUETTE_TEST_WEBDRIVER=chromium TAGUETTE_TEST_BASE_PATH=/base/path xvfb-run python tests.py -v TestSeleniumMultiuser
+    - uv sync --locked
+    - uv run scripts/update_translations.sh
+    - TAGUETTE_TEST_WEBDRIVER=chromium TAGUETTE_TEST_BASE_PATH=/base/path xvfb-run uv run python tests.py -v TestSeleniumMultiuser
 
 sqlite3_latest:
   stage: test
-  image: python:3.12
+  image: ghcr.io/astral-sh/uv:0.5.18-python3.12-bookworm
   script:
     - pip --disable-pip-version-check --no-cache-dir install --upgrade setuptools
-    - curl -sSL https://install.python-poetry.org | python3 -
-    - $HOME/.local/bin/poetry config virtualenvs.create false
-    - rm poetry.lock
+    - rm uv.lock
     - sed -i 's/^python = ".*$/python = "^3.12"/' pyproject.toml
     - cat pyproject.toml
-    - $HOME/.local/bin/poetry install --no-interaction
-    - scripts/update_translations.sh
-    - python -Wd tests.py -v
+    - uv sync
+    - uv run scripts/update_translations.sh
+    - uv run python -Wd tests.py -v
 
 sqlite3_latest_pip:
   stage: test
-  image: python:3.10
+  image: ghcr.io/astral-sh/uv:0.5.18-python3.10-bookworm
   script:
-    - curl -sSL https://install.python-poetry.org | python3 -
     - pip --disable-pip-version-check --no-cache-dir install --upgrade pip
     - pip --disable-pip-version-check --no-cache-dir install "babel<3"
-    - scripts/update_translations.sh
-    - $HOME/.local/bin/poetry build
+    - uv run scripts/update_translations.sh
+    - uv build
     - rm -rf taguette
     - pip --disable-pip-version-check --no-cache-dir install --upgrade dist/taguette-*.whl bcrypt "aiohttp>=3.4,<4"
     - python -Wd tests.py -v
 
 postgres:
   stage: test
-  image: python:3.10
+  image: ghcr.io/astral-sh/uv:0.5.18-python3.10-bookworm
   services:
     - postgres:latest
   variables:
@@ -109,15 +96,13 @@ postgres:
     POSTGRES_PASSWORD: taguette
     TAGUETTE_TEST_DB: postgresql://taguette:taguette@postgres/taguette
   script:
-    - curl -sSL https://install.python-poetry.org | python3 -
-    - $HOME/.local/bin/poetry config virtualenvs.create false
-    - $HOME/.local/bin/poetry install --no-interaction -E postgres
-    - scripts/update_translations.sh
-    - python -Wd tests.py -v
+    - uv sync --locked --extra postgres
+    - uv run scripts/update_translations.sh
+    - uv run python -Wd tests.py -v
 
 mariadb:
   stage: test
-  image: python:3.10
+  image: ghcr.io/astral-sh/uv:0.5.18-python3.10-bookworm
   services:
     - mariadb:latest
   variables:
@@ -127,21 +112,17 @@ mariadb:
     MYSQL_PASSWORD: taguette
     TAGUETTE_TEST_DB: mysql+pymysql://taguette:taguette@mariadb/taguette
   script:
-    - curl -sSL https://install.python-poetry.org | python3 -
-    - $HOME/.local/bin/poetry config virtualenvs.create false
-    - $HOME/.local/bin/poetry install --no-interaction -E mysql
-    - scripts/update_translations.sh
-    - python -Wd tests.py -v
+    - uv sync --locked --extra mysql
+    - uv run scripts/update_translations.sh
+    - uv run python -Wd tests.py -v
 
 sqlite3_pypy:
   stage: test
   image: pypy:latest
   script:
-    - curl -sSL https://install.python-poetry.org | python3 -
-    - $HOME/.local/bin/poetry config virtualenvs.create false
+    - curl -LsSf https://astral.sh/uv/install.sh | UV_NO_MODIFY_PATH=1 sh
     - pypy3 -m venv /tmp/venv
     - . /tmp/venv/bin/activate
-    - pip --disable-pip-version-check --no-cache-dir install --upgrade pip
-    - $HOME/.local/bin/poetry install --no-interaction
-    - scripts/update_translations.sh
-    - python -Wd tests.py -v
+    - $HOME/.local/bin/uv sync --locked
+    - $HOME/.local/bin/uv run scripts/update_translations.sh
+    - $HOME/.local/bin/uv run python -Wd tests.py -v
