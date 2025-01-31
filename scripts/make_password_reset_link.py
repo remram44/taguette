@@ -5,6 +5,7 @@ import os
 import sys
 import time
 from tornado.web import create_signed_value
+from urllib.parse import urlencode
 
 from taguette import database
 
@@ -47,7 +48,7 @@ def main():
         reset_token,
     )
     reset_token = reset_token.decode('utf-8')
-    reset_link = '/new_password?reset_token=' + reset_token
+    reset_link = '/new_password?' + urlencode({'reset_token': reset_token})
 
     print(reset_link)
 
