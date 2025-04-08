@@ -2,22 +2,23 @@
 # Copyright (C) 2018 Remi Rampin and Taguette contributors
 # This file is distributed under the same license as the Taguette project.
 # Remi Rampin <remi@rampin.org>, 2018.
-#
+# 
 # Translators:
 # Mohammad Rizki <mohammadrizki.md@gmail.com>, 2022
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: Taguette\n"
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
-"POT-Creation-Date: 2023-05-27 11:38-0400\n"
-"PO-Revision-Date: 2023-06-25 20:08+0800\n"
-"Last-Translator: Mohammad Rizki <mohammadrizki@unram.ac.id>\n"
-"Language-Team: Bahasa Indonesia <LL@li.org>\n"
+"POT-Creation-Date: 2022-10-07 12:08-0400\n"
+"PO-Revision-Date: 2019-05-08 16:49+0000\n"
+"Last-Translator: Rémi Rampin <remirampin@gmail.com>, 2025\n"
+"Language-Team: Indonesian (Indonesia) (https://app.transifex.com/remram44/teams/98824/id_ID/)\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.11.0\n"
-"Language: id_ID\n"
+"Language: id\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: taguette/main.py:246
@@ -78,8 +79,8 @@ msgid ""
 "Configuration file for the server. The default configuration can be "
 "generated using the `default-config` command"
 msgstr ""
-"Konfigurasi berkas untuk server. Konfigurasi default dapat "
-"dibuat dengan menggunakan perintah `default-config`"
+"Konfigurasi berkas untuk server. Konfigurasi default dapat dibuat dengan "
+"menggunakan perintah `default-config`"
 
 #: taguette/main.py:311
 #, python-format
@@ -99,14 +100,12 @@ msgstr "BASE_PATH invalid"
 #, python-format
 msgid ""
 "\n"
-"    Taguette %(version)s is now running. You can connect to it using this"
-" link:\n"
+"    Taguette %(version)s is now running. You can connect to it using this link:\n"
 "\n"
 "    %(url)s\n"
 msgstr ""
 "\n"
-"    Taguette %(version)s sedang berjalan. Anda dapat menggunakannya di tautan"
-" ini:\n"
+"    Taguette %(version)s sedang berjalan. Anda dapat menggunakannya di tautan ini:\n"
 "\n"
 "    %(url)s\n"
 
@@ -182,27 +181,27 @@ msgstr "Nama berkas terlalu panjang"
 msgid "Invalid file name"
 msgstr "Nama berkas tidak valid"
 
-#: taguette/import_codebook.py:34
+#: taguette/import_codebook.py:24
 msgid "Invalid file: CSV expected"
 msgstr "Berkas tidak valid: seharusnya CSV"
 
-#: taguette/import_codebook.py:41
+#: taguette/import_codebook.py:31
 msgid "Not sure which column to use for tag name"
 msgstr "Tidak tahu kolom mana yang digunakan sebagai nama tag"
 
-#: taguette/import_codebook.py:44
+#: taguette/import_codebook.py:34
 msgid "No 'tag', 'name', or 'path' column"
 msgstr "Tidak ada kolom 'tag', 'name', atau 'path'"
 
-#: taguette/import_codebook.py:70
+#: taguette/import_codebook.py:60
 msgid "Not enough columns"
 msgstr "Kolom kurang"
 
-#: taguette/import_codebook.py:75
+#: taguette/import_codebook.py:65
 msgid "Empty tag name"
 msgstr "Nama tag kosong"
 
-#: taguette/import_codebook.py:82
+#: taguette/import_codebook.py:72
 msgid "Invalid CSV file"
 msgstr "Berkas CSV tidak valid"
 
@@ -233,17 +232,13 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"    The database schema used by Taguette has changed! Because you are not"
-" using\n"
-"    SQLite, we will not attempt a migration automatically; back up your "
-"data and\n"
+"    The database schema used by Taguette has changed! Because you are not using\n"
+"    SQLite, we will not attempt a migration automatically; back up your data and\n"
 "    use `taguette --database=%(url)s migrate` if you want to proceed."
 msgstr ""
 "\n"
-"    Skema database yang digunakan Taguette telah berubah! Karena Anda tidak"
-" menggunakan\n"
-"    SQLite, kami tidak akan melakukan migrasi otomatis; buat cadangan data "
-"Anda dan\n"
+"    Skema database yang digunakan Taguette telah berubah! Karena Anda tidak menggunakan\n"
+"    SQLite, kami tidak akan melakukan migrasi otomatis; buat cadangan data Anda dan\n"
 "    gunakan `taguette --database=%(url)s migrate` jika Anda hendak melanjutkan."
 
 #: taguette/web/api.py:52
@@ -276,8 +271,8 @@ msgstr "Harus ada satu admin"
 
 #: taguette/web/api.py:829
 msgid ""
-"This database is an unknown version. It might have been written by a more"
-" recent version of Taguette, please check for updates"
+"This database is an unknown version. It might have been written by a more "
+"recent version of Taguette, please check for updates"
 msgstr ""
 "Database ini tidak diketahui versinya. Kemungkinan telah diisi dengan versi "
 "Taguette yang lebih baru, mohon periksa perbaruan database."
@@ -290,12 +285,12 @@ msgstr "Database ini tidak dapat diperbarui ke versi terkini"
 msgid "This is not a Taguette project file"
 msgstr "Ini bukan berkas proyek Taguette"
 
-#: taguette/web/__init__.py:60 taguette/web/base.py:575
+#: taguette/web/__init__.py:60 taguette/web/base.py:566
 msgctxt "page title"
 msgid "Error 404"
 msgstr "Error 404"
 
-#: taguette/web/__init__.py:61 taguette/web/base.py:576
+#: taguette/web/__init__.py:61 taguette/web/base.py:567
 msgid "This page does not exist."
 msgstr "Halaman ini tidak ada"
 
@@ -303,75 +298,80 @@ msgstr "Halaman ini tidak ada"
 msgid "Invalid login or password"
 msgstr "Nama pengguna atau kata sandi keliru"
 
-#: taguette/web/views.py:184 taguette/web/views.py:267
-#: taguette/web/views.py:419
+#: taguette/web/views.py:184 taguette/web/views.py:271
+#: taguette/web/views.py:443
 msgid "Passwords do not match"
 msgstr "Kata sandi tidak cocok"
 
-#: taguette/web/views.py:186
+#: taguette/web/views.py:189
 msgid "User name is taken"
 msgstr "Nama pengguna telah dipakai"
 
-#: taguette/web/views.py:193
+#: taguette/web/views.py:196 taguette/web/views.py:286
+#: taguette/web/views.py:295
 msgid "Email address is already used"
 msgstr "Alamat email telah dipakai"
 
-#: taguette/web/views.py:203
+#: taguette/web/views.py:204
 msgid "Terms of Service must be accepted"
 msgstr "Syarat Layanan harus diterima"
 
-#: taguette/web/views.py:305
+#: taguette/web/views.py:213
+msgid "User name or email address is taken"
+msgstr ""
+
+#: taguette/web/views.py:329
 msgid "This email address is not associated with any user"
 msgstr "Tidak ada pengguna yang sesuai dengan alamat email ini"
 
-#: taguette/web/views.py:334
+#: taguette/web/views.py:358
 msgid "Password reset for Taguette"
 msgstr "Reset kata sandi Taguette"
 
-#: taguette/web/views.py:376
+#: taguette/web/views.py:400
 msgid "Invalid token"
 msgstr "Token invalid"
 
-#: taguette/web/views.py:380
+#: taguette/web/views.py:404
 msgid "No user associated with that token"
 msgstr "Tidak ada pengguna yang sesuai dengan token ini"
 
-#: taguette/web/views.py:383
+#: taguette/web/views.py:407
 msgid "Password has already been changed"
 msgstr "Kata sandi telah diubah"
 
 #. Default tag name
-#: taguette/web/views.py:462
+#: taguette/web/views.py:486
 msgid "interesting"
 msgstr "menarik"
 
 #. Default tag description
-#: taguette/web/views.py:464
+#: taguette/web/views.py:488
 msgid "Further review required"
 msgstr "Perlu telaah lebih lanjut"
 
-#: taguette/web/views.py:499
+#: taguette/web/views.py:523
 msgid "You don't have permission to delete this project"
 msgstr "Anda tidak berhak menghapus proyek ini"
 
-#: taguette/web/views.py:533 taguette/web/views.py:560
+#: taguette/web/views.py:557 taguette/web/views.py:584
 msgid "You don't have permission to import a codebook"
 msgstr "Anda tidak berhak mengimpor kode buku"
 
-#: taguette/web/views.py:579
+#: taguette/web/views.py:603
 #, python-format
 msgid "Row %d: %s"
 msgstr "Baris %d: %s"
 
-#: taguette/web/views.py:697
+#: taguette/web/views.py:721
 msgid "Error importing tags, concurrent changes caused a conflict"
 msgstr "Gagal mengimpor tag, perubahan yang ada menyebabkan konflik"
 
-#: taguette/web/views.py:712
+#: taguette/web/views.py:736
 msgid "No file provided"
 msgstr "Tidak ada berkas yang diberikan"
 
-#: taguette/web/base.py:467
+#: taguette/web/base.py:458
 msgid ""
 " | Please report issues via <a "
 "href=\"https://gitlab.com/remram44/taguette\">GitLab</a> or <a "
@@ -381,7 +381,7 @@ msgstr ""
 "href=\"https://gitlab.com/remram44/taguette\">GitLab</a> atau <a "
 "href=\"mailto:hi@taguette.org\">hi@taguette.org</a>!"
 
-#: taguette/web/base.py:582
+#: taguette/web/base.py:573
 #, python-format
 msgctxt "page title"
 msgid "Error %d"
@@ -440,13 +440,13 @@ msgstr ""
 
 #: taguette/templates/project_import_codebook.html:8
 msgid ""
-"The file should have a column for the tag names, called 'name' or 'tag' "
-"or 'path'. It can also optionally have a column called 'description'. "
-"Other columns are ignored."
+"The file should have a column for the tag names, called 'name' or 'tag' or "
+"'path'. It can also optionally have a column called 'description'. Other "
+"columns are ignored."
 msgstr ""
-"Berkas harus memiliki kolom untuk nama tag, bernama 'name' atau 'tag' "
-"atau 'path'. Berkas dapat juga memiliki kolom bernama 'description'. "
-"Kolom lainnya akan diabaikan."
+"Berkas harus memiliki kolom untuk nama tag, bernama 'name' atau 'tag' atau "
+"'path'. Berkas dapat juga memiliki kolom bernama 'description'. Kolom "
+"lainnya akan diabaikan."
 
 #: taguette/templates/project_import_codebook.html:15
 msgctxt "form label for project name (readonly)"
@@ -512,9 +512,9 @@ msgid ""
 "application. Please check the console for the correct URL to log in, or "
 "simply restart Taguette."
 msgstr ""
-"Browser Anda tidak mendukung token rahasia untuk otentikasi ke "
-"aplikasi. Silakan periksa konsol untuk URL yang benar untuk masuk, atau "
-"restart Taguette."
+"Browser Anda tidak mendukung token rahasia untuk otentikasi ke aplikasi. "
+"Silakan periksa konsol untuk URL yang benar untuk masuk, atau restart "
+"Taguette."
 
 #: taguette/templates/welcome.html:4
 msgctxt "page title"
@@ -533,18 +533,18 @@ msgid ""
 "web-based document tagging tool for qualitative data analysis."
 msgstr ""
 "<span style=\"font-family:BadScript;\"><a "
-"href=\"https://www.taguette.org/\">TAGUETTE</a></span> adalah piranti penandaan "
-"dokumen open-source berbasis web untuk analisis data kualitatif."
+"href=\"https://www.taguette.org/\">TAGUETTE</a></span> adalah piranti "
+"penandaan dokumen open-source berbasis web untuk analisis data kualitatif."
 
 #: taguette/templates/welcome.html:10
 msgid ""
 "Using this tool, you can upload a collection of documents, create a "
-"hierarchy of tags, and annotate portions of documents with tags and notes"
-" that you can recall and organize later."
+"hierarchy of tags, and annotate portions of documents with tags and notes "
+"that you can recall and organize later."
 msgstr ""
 "Dengan alat ini, Anda dapat mengunggah kumpulan dokumen, membuat sebuah "
-"hirarki tag, dan menandai bagian dari dokumen dengan tag dan catatan "
-"yang dapat Anda buka dan atur kembali."
+"hirarki tag, dan menandai bagian dari dokumen dengan tag dan catatan yang "
+"dapat Anda buka dan atur kembali."
 
 #: taguette/templates/welcome.html:12
 #, python-format
@@ -558,9 +558,9 @@ msgid ""
 "associated with this email. If this was you, please follow this link: <a "
 "href=\"%(link)s\">%(link)s</a>"
 msgstr ""
-"Seseorang telah meminta reset kata sandi untuk akun Taguette "
-"yang menggunakan email ini.  Jika Anda yang melakukannya, mohon klik tautan ini: <a "
-"href=\"%(link)s\">%(link)s</a>"
+"Seseorang telah meminta reset kata sandi untuk akun Taguette yang "
+"menggunakan email ini.  Jika Anda yang melakukannya, mohon klik tautan ini: "
+"<a href=\"%(link)s\">%(link)s</a>"
 
 #: taguette/templates/email_reset_password.html:3
 #, python-format
@@ -571,7 +571,6 @@ msgstr "Nama pengguna Anda: <strong>%(login)s</strong>"
 msgid "This link will expire in 1 day."
 msgstr "Tautan ini hanya berlaku 1 hari"
 
-
 #: taguette/templates/new_password.html:3
 #: taguette/templates/reset_password.html:3
 msgctxt "page title"
@@ -580,13 +579,14 @@ msgstr "Reset kata sandi"
 
 #: taguette/templates/reset_password.html:13
 msgid ""
-"If you had set an email address in your profile, you can enter it below "
-"and a link to reset your password will be sent to you."
+"If you had set an email address in your profile, you can enter it below and "
+"a link to reset your password will be sent to you."
 msgstr ""
-"Jika Anda telah mengisi alamat email di profil Anda, Anda dapat memasukkannya di bawah ini "
-"dan tautan untuk mereset kata sandi Anda akan dikirim ke email Anda."
+"Jika Anda telah mengisi alamat email di profil Anda, Anda dapat "
+"memasukkannya di bawah ini dan tautan untuk mereset kata sandi Anda akan "
+"dikirim ke email Anda."
 
-#: taguette/templates/account.html:20 taguette/templates/login.html:78
+#: taguette/templates/account.html:20 taguette/templates/login.html:77
 #: taguette/templates/reset_password.html:17
 msgctxt "form label for email address"
 msgid "Email"
@@ -649,23 +649,23 @@ msgstr "Ekspor buku kode"
 msgid "QDC (XML)"
 msgstr "QDC (XML)"
 
-#: taguette/templates/project.html:55 taguette/templates/project.html:125
+#: taguette/templates/project.html:55 taguette/templates/project.html:114
 msgid "Excel"
 msgstr "Excel"
 
-#: taguette/templates/project.html:56 taguette/templates/project.html:126
+#: taguette/templates/project.html:56 taguette/templates/project.html:115
 msgid "CSV"
 msgstr "CSV"
 
-#: taguette/templates/project.html:57 taguette/templates/project.html:122
+#: taguette/templates/project.html:57 taguette/templates/project.html:111
 msgid "HTML"
 msgstr "HTML"
 
-#: taguette/templates/project.html:58 taguette/templates/project.html:123
+#: taguette/templates/project.html:58 taguette/templates/project.html:112
 msgid "DOCX"
 msgstr "DOCX"
 
-#: taguette/templates/project.html:59 taguette/templates/project.html:124
+#: taguette/templates/project.html:59 taguette/templates/project.html:113
 msgid "PDF"
 msgstr "PDF"
 
@@ -681,8 +681,8 @@ msgstr "Hapus proyek"
 msgid "Add a document"
 msgstr "Tambah dokumen"
 
-#: taguette/templates/project.html:80 taguette/templates/project.html:105
-#: taguette/templates/project.html:285
+#: taguette/templates/project.html:80 taguette/templates/project.html:94
+#: taguette/templates/project.html:271
 msgid "Loading..."
 msgstr "Memuat..."
 
@@ -690,177 +690,161 @@ msgstr "Memuat..."
 msgid "Backlight"
 msgstr "Backlight"
 
-#: taguette/templates/project.html:94
-msgid "Text [a&rarr;z]"
-msgstr "Teks [a&rarr;z]"
-
-#: taguette/templates/project.html:95
-msgid "Text [z&rarr;a]"
-msgstr "Teks [a&rarr;z]"
-
-#: taguette/templates/project.html:96
-msgid "Count [0&rarr;9]"
-msgstr "Jumlah [0&rarr;9]"
-
-#: taguette/templates/project.html:97
-msgid "Count [9&rarr;0]"
-msgstr "Jumlah [0&rarr;9]"
-
-#: taguette/templates/project.html:100
+#: taguette/templates/project.html:89
 msgid "See all highlights"
 msgstr "Lihat semua sorotan"
 
-#: taguette/templates/project.html:101 taguette/templates/project.html:286
+#: taguette/templates/project.html:90 taguette/templates/project.html:272
 msgid "Create a tag"
 msgstr "Buat tag"
 
-#: taguette/templates/project.html:119
+#: taguette/templates/project.html:108
 msgid "Export this view"
 msgstr "Ekspor tampilan ini"
 
-#: taguette/templates/project.html:131
+#: taguette/templates/project.html:120
 msgid "Load a document on the left"
 msgstr "Muat dokumen di sebelah kiri"
 
-#: taguette/templates/project.html:143
+#: taguette/templates/project.html:132
 msgid "Manage Collaborators"
 msgstr "Kelola Kolaborator"
 
-#: taguette/templates/project.html:150
+#: taguette/templates/project.html:139
 msgctxt "modal window title"
 msgid "Add Collaborators"
 msgstr "Tambah Kolaborator"
 
-#: taguette/templates/project.html:155
+#: taguette/templates/project.html:144
 msgctxt "project members form placeholder"
 msgid "Username"
 msgstr "Nama pengguna"
 
-#: taguette/templates/project.html:159
+#: taguette/templates/project.html:148
 msgctxt "permission level"
 msgid "Full permissions"
 msgstr "Wewenang penuh"
 
-#: taguette/templates/project.html:160
+#: taguette/templates/project.html:149
 msgctxt "permission level"
 msgid "Can't change collaborators / delete project"
 msgstr "Tidak dapat mengubah kolaborator/menghapus proyek"
 
-#: taguette/templates/project.html:161
+#: taguette/templates/project.html:150
 msgctxt "permission level"
 msgid "View & make changes"
 msgstr "Melihat dan membuat perubahan"
 
-#: taguette/templates/project.html:162
+#: taguette/templates/project.html:151
 msgctxt "permission level"
 msgid "View only"
 msgstr "Melihat saja"
 
-#: taguette/templates/project.html:165
+#: taguette/templates/project.html:154
 msgctxt "form submit button"
 msgid "Add to project"
 msgstr "Tambah ke proyek"
 
-#: taguette/templates/project.html:169
+#: taguette/templates/project.html:158
 msgid "Current Collaborators"
 msgstr "Kolaborator saat ini"
 
-#: taguette/templates/project.html:175 taguette/templates/project.html:259
-#: taguette/templates/project.html:291 taguette/templates/project.html:318
+#: taguette/templates/project.html:164 taguette/templates/project.html:248
+#: taguette/templates/project.html:277 taguette/templates/project.html:304
 msgid "Save & Close"
 msgstr "Simpan & Tutup"
 
-#: taguette/templates/project.html:176 taguette/templates/project.html:219
-#: taguette/templates/project.html:319
+#: taguette/templates/project.html:165 taguette/templates/project.html:208
+#: taguette/templates/project.html:305
 msgid "Cancel"
 msgstr "Batal"
 
-#: taguette/templates/project.html:187
+#: taguette/templates/project.html:176
 msgctxt "modal window title"
 msgid "Add a document"
 msgstr "Tambah dokumen"
 
-#: taguette/templates/project.html:196
+#: taguette/templates/project.html:185
 msgctxt "form placeholder"
 msgid "Enter a document name"
 msgstr "Masukkan nama dokumen"
 
-#: taguette/templates/project.html:206 taguette/templates/project.html:247
+#: taguette/templates/project.html:195 taguette/templates/project.html:236
 msgid "Left to right"
 msgstr "Kiri ke kanan"
 
-#: taguette/templates/project.html:210 taguette/templates/project.html:251
+#: taguette/templates/project.html:199 taguette/templates/project.html:240
 msgid "Right to left"
 msgstr "Kanan ke kiri"
 
-#: taguette/templates/project.html:214
+#: taguette/templates/project.html:203
 msgctxt "document add form placeholder"
 msgid "Description"
 msgstr "Deskripsi"
 
-#: taguette/templates/project.html:218
+#: taguette/templates/project.html:207
 msgctxt "submit button"
 msgid "Import"
 msgstr "Impor"
 
-#: taguette/templates/project.html:230
+#: taguette/templates/project.html:219
 msgctxt "modal window title"
 msgid "Edit document"
 msgstr "Edit dokumen"
 
-#: taguette/templates/project.html:240
+#: taguette/templates/project.html:229
 msgctxt "document change form placeholder"
 msgid "Name"
 msgstr "Nama"
 
-#: taguette/templates/project.html:255
+#: taguette/templates/project.html:244
 msgctxt "document change form placeholder"
 msgid "Description"
 msgstr "Deskripsi"
 
-#: taguette/templates/project.html:260
+#: taguette/templates/project.html:249
 msgid "Delete document"
 msgstr "Hapus dokumen"
 
-#: taguette/templates/project.html:271
+#: taguette/templates/project.html:260
 msgctxt "modal window title"
 msgid "Highlight"
 msgstr "Sorotan"
 
-#: taguette/templates/project.html:292
+#: taguette/templates/project.html:278
 msgid "Delete highlight"
 msgstr "Hapus sorotan"
 
-#: taguette/templates/project.html:303
+#: taguette/templates/project.html:289
 msgctxt "modal window title"
 msgid "New tag"
 msgstr "Tag baru"
 
-#: taguette/templates/project.html:304
+#: taguette/templates/project.html:290
 msgctxt "modal window title"
 msgid "Change tag"
 msgstr "Ubah tag"
 
-#: taguette/templates/project.html:312
+#: taguette/templates/project.html:298
 msgctxt "tag change form placeholder"
 msgid "Name"
 msgstr "Nama"
 
-#: taguette/templates/project.html:313
+#: taguette/templates/project.html:299
 msgctxt "tag change form placeholder"
 msgid "Description"
 msgstr "Deskripsi"
 
-#: taguette/templates/project.html:317
+#: taguette/templates/project.html:303
 msgctxt "button in tag change modal window"
 msgid "Merge..."
 msgstr "Gabung..."
 
-#: taguette/templates/project.html:320
+#: taguette/templates/project.html:306
 msgid "Delete tag"
 msgstr "Hapus tag"
 
-#: taguette/templates/project.html:385
+#: taguette/templates/project.html:371
 msgid "<em>n</em>ew highlight <span class=\"sr-only\">(shortcut: n)</span>"
 msgstr "sorotan <em>b</em>aru <span class=\"sr-only\">(shortcut: b)</span>"
 
@@ -897,7 +881,7 @@ msgctxt "form label for user name"
 msgid "Login"
 msgstr "Login"
 
-#: taguette/templates/login.html:34 taguette/templates/login.html:66
+#: taguette/templates/login.html:34 taguette/templates/login.html:65
 #: taguette/templates/new_password.html:15
 msgctxt "form label"
 msgid "Password"
@@ -913,35 +897,30 @@ msgctxt "form link"
 msgid "Forgot password"
 msgstr "Lupa kata sandi"
 
-#: taguette/templates/login.html:62
-msgid "Please use only letters, numbers, dot, underscore, and dashes (._-)"
-msgstr "Mohon hanya menggunakan huruf, angka, titik, garis bawah, dan tanda hubung (._-)"
-
-#: taguette/templates/login.html:72 taguette/templates/new_password.html:21
+#: taguette/templates/login.html:71 taguette/templates/new_password.html:21
 msgctxt "form label"
 msgid "Confirm password"
 msgstr "Konfirmasi kata sandi"
 
-#: taguette/templates/account.html:23 taguette/templates/login.html:81
+#: taguette/templates/account.html:23 taguette/templates/login.html:80
 msgid ""
-"Optional. <em>We will not share your email with anyone. This is only used"
-" in case you forget your password.</em>"
+"Optional. <em>We will not share your email with anyone. This is only used in"
+" case you forget your password.</em>"
 msgstr ""
-"Opsional. <em>Kami tidak akan menyebarkan email Anda ke pihak lain. Email"
-" hanya digunakan jika Anda lupa kata sandi Anda.</em>"
+"Opsional. <em>Kami tidak akan menyebarkan email Anda ke pihak lain. Email "
+"hanya digunakan jika Anda lupa kata sandi Anda.</em>"
 
-
-#: taguette/templates/login.html:86
+#: taguette/templates/login.html:85
 msgctxt "link from registration form"
 msgid "Terms of service"
 msgstr "Syarat Layanan"
 
-#: taguette/templates/login.html:90
+#: taguette/templates/login.html:89
 #, python-format
 msgid "I accept the <a href=\"%(url)s\">terms of service</a>"
 msgstr "Saya menerima <a href=\"%(url)s\">Syarat Layanan</a>"
 
-#: taguette/templates/login.html:97
+#: taguette/templates/login.html:96
 msgctxt "form submit button"
 msgid "Register"
 msgstr "Daftar"
@@ -958,24 +937,23 @@ msgstr "Peringatan cookie"
 
 #: taguette/templates/cookies_prompt.html:7
 msgid ""
-"This website uses cookies to store your identity (if you choose to log "
-"in) and as a protection against <a href=\"https://en.wikipedia.org/wiki"
-"/Cross-site_request_forgery\">cross-site request forgery (CSRF)</a>. "
-"Before continuing, you must accept their use by clicking the button "
-"below. Those <strong>are not</strong> \"third-party\" or \"tracking\" "
-"cookies."
+"This website uses cookies to store your identity (if you choose to log in) "
+"and as a protection against <a href=\"https://en.wikipedia.org/wiki/Cross-"
+"site_request_forgery\">cross-site request forgery (CSRF)</a>. Before "
+"continuing, you must accept their use by clicking the button below. Those "
+"<strong>are not</strong> \"third-party\" or \"tracking\" cookies."
 msgstr ""
-"Website ini menggunakan cookie untuk menyimpan identitas Anda (jika Anda memilih login) "
-"dan sebagai perlindungan terhadap <a href=\"https://en.wikipedia.org/wiki"
-"/Cross-site_request_forgery\">cross-site request forgery (CSRF)</a>. "
-"Sebelum melanjutkan, Anda harus menerima penggunaan cookie dengan klik tombol "
-"berikut. <strong>Tidak ada</strong> cookie \"pihak ketiga\" atau cookie \"tracking\"."
+"Website ini menggunakan cookie untuk menyimpan identitas Anda (jika Anda "
+"memilih login) dan sebagai perlindungan terhadap <a "
+"href=\"https://en.wikipedia.org/wiki/Cross-site_request_forgery\">cross-site"
+" request forgery (CSRF)</a>. Sebelum melanjutkan, Anda harus menerima "
+"penggunaan cookie dengan klik tombol berikut. <strong>Tidak ada</strong> "
+"cookie \"pihak ketiga\" atau cookie \"tracking\"."
 
 #: taguette/templates/cookies_prompt.html:12
 msgctxt "button on cookie warning page"
 msgid "Accept cookies"
 msgstr "Terima cookie"
-
 
 #: taguette/templates/project_import.html:3
 msgctxt "page title"
@@ -1157,12 +1135,13 @@ msgstr "Nama: %(project_name)s"
 #, python-format
 msgid ""
 "Are you sure you want to delete this project? It currently has "
-"<strong>%(documents)s documents and %(highlights)s highlights in %(tags)s"
-" tags</strong>. There is no way to undo."
+"<strong>%(documents)s documents and %(highlights)s highlights in %(tags)s "
+"tags</strong>. There is no way to undo."
 msgstr ""
-"Apakah Anda yakin hendak menghapus proyek ini? Proyek ini mempunyai"
-"<strong>%(documents)s dokumen dan %(highlights)s sorotan/highlight dalam "
-"%(tags)s tag</strong>.  Proyek yang telah dihapus tidak dapat dikembalikan."
+"Apakah Anda yakin hendak menghapus proyek ini? Proyek ini "
+"mempunyai<strong>%(documents)s dokumen dan %(highlights)s sorotan/highlight "
+"dalam %(tags)s tag</strong>.  Proyek yang telah dihapus tidak dapat "
+"dikembalikan."
 
 #: taguette/templates/project_delete.html:13
 msgctxt "submit button"
@@ -1177,4 +1156,3 @@ msgstr "Mohon masukkan kata sandi baru di bawah ini:"
 msgctxt "form submit button"
 msgid "Set new password"
 msgstr "Atur kata sandi baru"
-
