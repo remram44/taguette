@@ -1,7 +1,8 @@
 FROM --platform=$BUILDPLATFORM python:3.10 AS build
 
 # Install Poetry
-RUN curl -sSL https://install.python-poetry.org | python3 - && /root/.local/bin/poetry config virtualenvs.create false
+RUN curl -sSL https://install.python-poetry.org | python3 - && /root/.local/bin/poetry config virtualenvs.create false && \
+    /root/.local/bin/poetry self add poetry-plugin-export
 
 # Copy files
 WORKDIR /usr/src/app
@@ -11,7 +12,7 @@ RUN mkdir scripts
 COPY scripts/update_translations.sh scripts/
 
 # Install translation dependencies
-RUN /root/.local/bin/poetry install --only=i18n
+RUN /root/.local/bin/poetry install --only=i18n --no-root
 
 # Compile translations
 RUN scripts/update_translations.sh
