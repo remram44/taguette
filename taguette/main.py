@@ -83,6 +83,9 @@ PORT = 7465
 # Base path of the application
 BASE_PATH = "/"
 
+# The domain of the application (used in emails)
+DOMAIN = ""
+
 # A unique secret key that will be used to sign cookies
 SECRET_KEY = "{secret}"
 
@@ -164,8 +167,10 @@ DEFAULT_CONFIG = {
     'HTML_OUT_SIZE_LIMIT': 2000000,  # 2 MB
 }
 
-REQUIRED_CONFIG = ['NAME', 'PORT', 'SECRET_KEY', 'DATABASE', 'TOS_FILE',
-                   'X_HEADERS', 'EMAIL', 'MAIL_SERVER', 'COOKIES_PROMPT']
+REQUIRED_CONFIG = [
+    'NAME', 'PORT', 'SECRET_KEY', 'DATABASE', 'TOS_FILE', 'DOMAIN',
+    'X_HEADERS', 'EMAIL', 'MAIL_SERVER', 'COOKIES_PROMPT',
+]
 
 
 async def _set_password(user):
@@ -352,11 +357,17 @@ def main():
                 missing = True
         if missing:
             sys.exit(2)
+
         if config['BASE_PATH'] and config['BASE_PATH'][0] != '/':
             print(_("Invalid BASE_PATH"))
+            sys.exit(2)
         config['BASE_PATH'] = config['BASE_PATH'].strip('/')
         if config['BASE_PATH']:
             config['BASE_PATH'] = '/' + config['BASE_PATH']
+
+        if not config['DOMAIN']:
+            print(_("Invalid DOMAIN"))
+            sys.exit(2)
     else:
         if args.debug:
             # Use a deterministic secret key, to avoid it changing during
@@ -369,6 +380,7 @@ def main():
         config = dict(
             DEFAULT_CONFIG,
             MULTIUSER=False,
+            DOMAIN='localhost:' + str(int(args.port)),
             BIND_ADDRESS=args.bind,
             X_HEADERS=False,
             SQLITE3_IMPORT_ENABLED=True,
