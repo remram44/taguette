@@ -324,7 +324,7 @@ class AskResetPassword(BaseHandler):
                 path = path[:-15]
             path = path + '/new_password'
             reset_link = urlunparse(['https',
-                                     self.request.host,
+                                     self.application.config['DOMAIN'],
                                      path,
                                      '',
                                      'reset_token=' + reset_token,
