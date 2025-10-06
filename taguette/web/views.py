@@ -717,40 +717,40 @@ class ImportCodebook(BaseHandler):
             )
 
 
+def html_safe_json_dumps(obj):
+    s = json.dumps(obj, sort_keys=True)
+    s = s.replace('<', '\\x3C')
+    return Markup(s)
+
+
 class Project(BaseHandler):
     @authenticated
     @PROM_REQUESTS.sync('project')
     def get(self, project_id):
         project, privileges = self.get_project(project_id)
-        documents_json = Markup(json.dumps(
-            {
-                str(doc.id): {'id': doc.id, 'name': doc.name,
-                              'description': doc.description,
-                              'text_direction': doc.text_direction.name}
-                for doc in project.documents
-            },
-            sort_keys=True,
-        ))
-        tags_json = Markup(json.dumps(
-            {
-                str(tag.id): {'id': tag.id,
-                              'path': tag.path,
-                              'description': tag.description,
-                              'count': tag.highlights_count}
-                for tag in project.tags
-            },
-            sort_keys=True,
-        ))
+        documents_json = html_safe_json_dumps({
+            str(doc.id): {'id': doc.id, 'name': doc.name,
+                          'description': doc.description,
+                          'text_direction': doc.text_direction.name}
+            for doc in project.documents
+        })
+        tags_json = html_safe_json_dumps({
+            str(tag.id): {'id': tag.id,
+                          'path': tag.path,
+                          'description': tag.description,
+                          'count': tag.highlights_count}
+            for tag in project.tags
+        })
         members = (
             self.db.query(database.ProjectMember)
             .filter(database.ProjectMember.project_id == project_id)
         ).all()
         can_import_codebook = privileges.can_import_codebook()
         can_delete_project = privileges.can_delete_project()
-        members_json = Markup(json.dumps(
-            {member.user_login: {'privileges': member.privileges.name}
-             for member in members}
-        ))
+        members_json = html_safe_json_dumps({
+            member.user_login: {'privileges': member.privileges.name}
+            for member in members
+        })
         _ = self.xsrf_token  # Make sure XSRF cookie is set
         return self.render(
             'project.html',
@@ -759,9 +759,7 @@ class Project(BaseHandler):
                         if project.last_event is not None
                         else -1),
             documents=documents_json,
-            user_login=Markup(
-                json.dumps(self.current_user)
-            ),
+            user_login=html_safe_json_dumps(self.current_user),
             tags=tags_json,
             members=members_json,
             can_import_codebook=can_import_codebook,
