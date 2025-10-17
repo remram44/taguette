@@ -17,74 +17,74 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.11.0\n"
 
-#: taguette/main.py:246
+#: taguette/main.py:265
 msgid "Port number on which to listen"
 msgstr ""
 
-#: taguette/main.py:248
+#: taguette/main.py:267
 msgid "Address to bind on"
 msgstr ""
 
-#: taguette/main.py:250
+#: taguette/main.py:269
 msgid "Open web browser to the application"
 msgstr ""
 
-#: taguette/main.py:252
+#: taguette/main.py:271
 msgid "Don't open the web browser"
 msgstr ""
 
-#: taguette/main.py:257
+#: taguette/main.py:276
 #, python-format
 msgid ""
 "Database location or connection string, for example 'project.db' or "
 "'postgresql://me:pw@localhost/mydb' (default: %(default)r)"
 msgstr ""
 
-#: taguette/main.py:264
+#: taguette/main.py:283
 msgid "Set the file creation mask (umask) on systems that support it."
 msgstr ""
 
-#: taguette/main.py:268
+#: taguette/main.py:287
 msgid "Don't change umask on startup"
 msgstr ""
 
-#: taguette/main.py:274
+#: taguette/main.py:293
 msgid "additional commands"
 msgstr ""
 
-#: taguette/main.py:278
+#: taguette/main.py:297
 msgid "Manually trigger a database migration"
 msgstr ""
 
-#: taguette/main.py:289
+#: taguette/main.py:308
 msgid "Print the default server configuration"
 msgstr ""
 
-#: taguette/main.py:291
+#: taguette/main.py:310
 msgid "Output to this file rather than stdout"
 msgstr ""
 
-#: taguette/main.py:297
+#: taguette/main.py:316
 msgid "Run in server mode, suitable for a multi-user deployment"
 msgstr ""
 
-#: taguette/main.py:299
+#: taguette/main.py:318
 msgid ""
 "Configuration file for the server. The default configuration can be "
 "generated using the `default-config` command"
 msgstr ""
 
-#: taguette/main.py:311
+#: taguette/main.py:330
 #, python-format
 msgid "Invalid umask: %(arg)s"
 msgstr ""
 
-#: taguette/main.py:335
+#: taguette/main.py:354
 #, python-format
 msgid "Missing required configuration variable %(var)s"
 msgstr ""
 
-#: taguette/main.py:342
+#: taguette/main.py:362
 msgid "Invalid BASE_PATH"
 msgstr ""
 
@@ -92,7 +92,7 @@ msgstr ""
 msgid "Invalid DOMAIN"
 msgstr ""
 
-#: taguette/main.py:416
+#: taguette/main.py:442
 #, python-format
 msgid ""
 "\n"
@@ -229,50 +229,50 @@ msgstr ""
 msgid "Not logged in"
 msgstr ""
 
-#: taguette/web/api.py:82 taguette/web/api.py:113 taguette/web/api.py:204
-#: taguette/web/api.py:243 taguette/web/api.py:308 taguette/web/api.py:343
-#: taguette/web/api.py:379 taguette/web/api.py:404 taguette/web/api.py:460
-#: taguette/web/api.py:519 taguette/web/api.py:605 taguette/web/api.py:711
+#: taguette/web/api.py:82 taguette/web/api.py:113 taguette/web/api.py:208
+#: taguette/web/api.py:247 taguette/web/api.py:312 taguette/web/api.py:347
+#: taguette/web/api.py:383 taguette/web/api.py:408 taguette/web/api.py:464
+#: taguette/web/api.py:523 taguette/web/api.py:609 taguette/web/api.py:715
 msgid "Unauthorized"
 msgstr ""
 
-#: taguette/web/api.py:348 taguette/web/api.py:382 taguette/web/api.py:414
-#: taguette/web/api.py:473 taguette/web/api.py:549
+#: taguette/web/api.py:352 taguette/web/api.py:386 taguette/web/api.py:418
+#: taguette/web/api.py:477 taguette/web/api.py:553
 msgid "No such tag"
 msgstr ""
 
-#: taguette/web/api.py:477
+#: taguette/web/api.py:481
 msgid "Empty highlight"
 msgstr ""
 
-#: taguette/web/api.py:523 taguette/web/api.py:608
+#: taguette/web/api.py:527 taguette/web/api.py:612
 msgid "No such highlight"
 msgstr ""
 
-#: taguette/web/api.py:774
+#: taguette/web/api.py:778
 msgid "There must be one admin"
 msgstr ""
 
-#: taguette/web/api.py:829
+#: taguette/web/api.py:833
 msgid ""
 "This database is an unknown version. It might have been written by a more"
 " recent version of Taguette, please check for updates"
 msgstr ""
 
-#: taguette/web/api.py:835
+#: taguette/web/api.py:839
 msgid "This database could not be updated to the current version"
 msgstr ""
 
-#: taguette/web/api.py:839 taguette/web/api.py:873
+#: taguette/web/api.py:843 taguette/web/api.py:877
 msgid "This is not a Taguette project file"
 msgstr ""
 
-#: taguette/web/__init__.py:60 taguette/web/base.py:575
+#: taguette/web/__init__.py:60 taguette/web/base.py:576
 msgctxt "page title"
 msgid "Error 404"
 msgstr ""
 
-#: taguette/web/__init__.py:61 taguette/web/base.py:576
+#: taguette/web/__init__.py:61 taguette/web/base.py:577
 msgid "This page does not exist."
 msgstr ""
 
@@ -281,7 +281,7 @@ msgid "Invalid login or password"
 msgstr ""
 
 #: taguette/web/views.py:184 taguette/web/views.py:267
-#: taguette/web/views.py:419
+#: taguette/web/views.py:423
 msgid "Passwords do not match"
 msgstr ""
 
@@ -305,57 +305,57 @@ msgstr ""
 msgid "Password reset for Taguette"
 msgstr ""
 
-#: taguette/web/views.py:376
+#: taguette/web/views.py:380
 msgid "Invalid token"
 msgstr ""
 
-#: taguette/web/views.py:380
+#: taguette/web/views.py:384
 msgid "No user associated with that token"
 msgstr ""
 
-#: taguette/web/views.py:383
+#: taguette/web/views.py:387
 msgid "Password has already been changed"
 msgstr ""
 
 #. Default tag name
-#: taguette/web/views.py:462
+#: taguette/web/views.py:466
 msgid "interesting"
 msgstr ""
 
 #. Default tag description
-#: taguette/web/views.py:464
+#: taguette/web/views.py:468
 msgid "Further review required"
 msgstr ""
 
-#: taguette/web/views.py:499
+#: taguette/web/views.py:503
 msgid "You don't have permission to delete this project"
 msgstr ""
 
-#: taguette/web/views.py:533 taguette/web/views.py:560
+#: taguette/web/views.py:537 taguette/web/views.py:564
 msgid "You don't have permission to import a codebook"
 msgstr ""
 
-#: taguette/web/views.py:579
+#: taguette/web/views.py:583
 #, python-format
 msgid "Row %d: %s"
 msgstr ""
 
-#: taguette/web/views.py:697
+#: taguette/web/views.py:701
 msgid "Error importing tags, concurrent changes caused a conflict"
 msgstr ""
 
-#: taguette/web/views.py:712
+#: taguette/web/views.py:716
 msgid "No file provided"
 msgstr ""
 
-#: taguette/web/base.py:467
+#: taguette/web/base.py:468
 msgid ""
 " | Please report issues via <a "
 "href=\"https://gitlab.com/remram44/taguette\">GitLab</a> or <a "
 "href=\"mailto:hi@taguette.org\">hi@taguette.org</a>!"
 msgstr ""
 
-#: taguette/web/base.py:582
+#: taguette/web/base.py:583
 #, python-format
 msgctxt "page title"
 msgid "Error %d"

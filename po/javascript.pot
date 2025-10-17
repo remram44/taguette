@@ -136,11 +136,11 @@ msgstr ""
 msgid "Error loading tag highlights!"
 msgstr ""
 
-#: taguette/static/js/taguette.js:1952
+#: taguette/static/js/taguette.js:1954
 msgid "It appears that you have been logged out."
 msgstr ""
 
-#: taguette/static/js/taguette.js:1955
+#: taguette/static/js/taguette.js:1957
 msgid "You can no longer access this project."
 msgstr ""
 
