@@ -1,8 +1,8 @@
 Changelog
 =========
 
-Unreleased (???)
-----------------
+1.5.0 (2025-10-17)
+------------------
 
 Bugfixes:
 * Use another region of the requested language if it exists instead of falling back to English
@@ -10,6 +10,8 @@ Bugfixes:
 * Don't use heuristics when importing .txt files
 * Fix sending emails to names starting or ending with a dot
 * Fix highlights appearing when created in another document
+* Escape HTML in embedded JSON. Thanks to Emil Virkii for the responsible security report
+* Add a setting for DOMAIN, use it in password reset emails. Thanks to Emil Virkii for the responsible security report
 
 Enhancements:
 * Automatically detect the character encoding of codebooks
