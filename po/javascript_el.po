@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Taguette\n"
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
-"POT-Creation-Date: 2023-05-27 11:38-0400\n"
+"POT-Creation-Date: 2025-10-17 12:53-0400\n"
 "PO-Revision-Date: 2019-05-08 22:49+0000\n"
 "Last-Translator: \n"
 "Language-Team: Greek (Greece) (https://app.transifex.com/remram44/teams/98824/el_GR/)\n"
@@ -140,10 +140,10 @@ msgstr "Δεν υπάρχουν ακόμα επισημάνσεις με αυτ�
 msgid "Error loading tag highlights!"
 msgstr "Σφάλμα κατά τη φόρτωση των επισημάνσεων της ετικέτας!"
 
-#: taguette/static/js/taguette.js:1952
+#: taguette/static/js/taguette.js:1954
 msgid "It appears that you have been logged out."
 msgstr "Φαίνεται ότι έχετε αποσυνδεθεί."
 
-#: taguette/static/js/taguette.js:1955
+#: taguette/static/js/taguette.js:1957
 msgid "You can no longer access this project."
 msgstr "Δεν έχετε πλέον πρόσβαση σε αυτό το έργο."

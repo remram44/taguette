@@ -9,142 +9,142 @@
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Taguette 1.1\n"
+"Project-Id-Version: Taguette\n"
 "Report-Msgid-Bugs-To: hi@taguette.org\n"
-"POT-Creation-Date: 2021-06-15 16:20-0400\n"
+"POT-Creation-Date: 2025-10-17 12:53-0400\n"
 "PO-Revision-Date: 2019-05-08 22:49+0000\n"
-"Last-Translator: Sinisa Obradovic <obradovic.sinisa@protonmail.com>, 2019\n"
-"Language-Team: Italian (https://www.transifex.com/remram44/teams/98824/it/)\n"
+"Last-Translator: \n"
+"Language-Team: Italian (https://app.transifex.com/remram44/teams/98824/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.9.0\n"
+"Generated-By: Babel 2.11.0\n"
 "Language: it\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
-#: taguette/static/js/taguette.js:494
+#: taguette/static/js/taguette.js:514
 msgid "Couldn't update project metadata!"
 msgstr "Non è stato possibile aggiornare i metadati del progetto!"
 
-#: taguette/static/js/taguette.js:550 taguette/static/js/taguette.js:803
+#: taguette/static/js/taguette.js:574 taguette/static/js/taguette.js:878
 msgid "Edit"
 msgstr "Modifica"
 
-#: taguette/static/js/taguette.js:559
+#: taguette/static/js/taguette.js:583
 msgid "There are no documents in this project yet."
 msgstr "Non ci sono ancora documenti in questo progetto."
 
-#: taguette/static/js/taguette.js:638 taguette/static/js/taguette.js:644
+#: taguette/static/js/taguette.js:677 taguette/static/js/taguette.js:683
 msgid "Error uploading file!"
 msgstr "Errore durante il caricamento del file!"
 
-#: taguette/static/js/taguette.js:674
+#: taguette/static/js/taguette.js:715
 msgid "Document name cannot be empty"
 msgstr "Il nome del documento non può essere vuoto"
 
-#: taguette/static/js/taguette.js:691
+#: taguette/static/js/taguette.js:732
 msgid "Couldn't update document!"
 msgstr "Non è stato possibile aggiornare il documento!"
 
-#: taguette/static/js/taguette.js:700
+#: taguette/static/js/taguette.js:741
 #, python-format
 msgid "Are you sure you want to delete the document '%(doc)s'?"
 msgstr "Sei sicuro di voler eliminare il documento '%(doc)s'?"
 
-#: taguette/static/js/taguette.js:712
+#: taguette/static/js/taguette.js:753
 msgid "Couldn't delete document!"
 msgstr "Non è stato possibile eliminare il documento!"
 
-#: taguette/static/js/taguette.js:812
+#: taguette/static/js/taguette.js:887
 msgid "There are no tags in this project yet."
 msgstr "Non ci sono ancora etichette in questo progetto."
 
-#: taguette/static/js/taguette.js:842
+#: taguette/static/js/taguette.js:966
 msgid "no tags"
 msgstr "nessuna etichetta"
 
-#: taguette/static/js/taguette.js:904
+#: taguette/static/js/taguette.js:1058
 msgid "Invalid tag name"
 msgstr "Nome etichetta non valido"
 
-#: taguette/static/js/taguette.js:931
+#: taguette/static/js/taguette.js:1093
 msgid "Couldn't create tag!"
 msgstr "Non è stato possibile creare l'etichetta!"
 
-#: taguette/static/js/taguette.js:940
+#: taguette/static/js/taguette.js:1102
 #, python-format
 msgid "Are you sure you want to delete the tag '%(tag)s'?"
 msgstr "Sei sicuro di voler eliminare l'etichetta '%(tag)s'?"
 
-#: taguette/static/js/taguette.js:955
+#: taguette/static/js/taguette.js:1117
 msgid "Couldn't delete tag!"
 msgstr "Non è stato possibile eliminare l'etichetta"
 
-#: taguette/static/js/taguette.js:1022
+#: taguette/static/js/taguette.js:1186
 msgid "Couldn't merge tags!"
 msgstr "Non è stato possibile unire le etichette!"
 
 #. Key used to create a new highlight
-#: taguette/static/js/taguette.js:1176
+#: taguette/static/js/taguette.js:1296
 msgid "n"
 msgstr "n"
 
-#: taguette/static/js/taguette.js:1183
+#: taguette/static/js/taguette.js:1360
 msgid "Couldn't create highlight!"
 msgstr "Impossibile creare l'evidenziazione!"
 
-#: taguette/static/js/taguette.js:1203
+#: taguette/static/js/taguette.js:1380
 msgid "Couldn't delete highlight!"
 msgstr "Impossibile eliminare l'evidenziazione!"
 
-#: taguette/static/js/taguette.js:1234
+#: taguette/static/js/taguette.js:1411
 msgid "Full permissions"
 msgstr "Permessi completi"
 
-#: taguette/static/js/taguette.js:1235
+#: taguette/static/js/taguette.js:1412
 msgid "Can't change collaborators / delete project"
 msgstr "Non è stato possibile cambiare collaboratori / eliminare il progetto"
 
-#: taguette/static/js/taguette.js:1236
+#: taguette/static/js/taguette.js:1413
 msgid "View & make changes"
 msgstr "Visualizza & modifica"
 
-#: taguette/static/js/taguette.js:1237
+#: taguette/static/js/taguette.js:1414
 msgid "View only"
 msgstr "Visualizza solo"
 
-#: taguette/static/js/taguette.js:1309
+#: taguette/static/js/taguette.js:1485
 msgid "Already a member!"
 msgstr ""
 
-#: taguette/static/js/taguette.js:1327
+#: taguette/static/js/taguette.js:1503
 msgid "This user doesn't exist!"
 msgstr ""
 
-#: taguette/static/js/taguette.js:1372
+#: taguette/static/js/taguette.js:1546
 msgid "Couldn't update collaborators!"
 msgstr "Non è stato possibile aggiornare i collaboratori!"
 
-#: taguette/static/js/taguette.js:1399
+#: taguette/static/js/taguette.js:1574
 msgid "Load a document on the left"
 msgstr "Carica un documento sulla sinistra"
 
-#: taguette/static/js/taguette.js:1456
+#: taguette/static/js/taguette.js:1648
 msgid "Error loading document!"
 msgstr "Errore durante il caricamento del documento!"
 
-#: taguette/static/js/taguette.js:1510
+#: taguette/static/js/taguette.js:1711
 msgid "No highlights with this tag yet."
 msgstr "Ancora nessuna evidenziazione con questo tag."
 
-#: taguette/static/js/taguette.js:1598
+#: taguette/static/js/taguette.js:1799
 msgid "Error loading tag highlights!"
 msgstr "Errore durante il caricamento delle evidenziazioni delle tag!"
 
-#: taguette/static/js/taguette.js:1775
+#: taguette/static/js/taguette.js:1954
 msgid "It appears that you have been logged out."
 msgstr "Sembra tu sia stato disconnesso."
 
-#: taguette/static/js/taguette.js:1778
+#: taguette/static/js/taguette.js:1957
 msgid "You can no longer access this project."
 msgstr "Non hai più accesso a questo progetto."
