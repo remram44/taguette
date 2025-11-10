@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.5.1 (2025-11-10)
+------------------
+
+Bugfixes:
+* Fix initialization on Python 3.14 (error "There is no current event loop")
+
 1.5.0 (2025-10-17)
 ------------------
 
