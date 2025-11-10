@@ -415,10 +415,10 @@ def main():
             release='taguette@%s' % exact_version(),
         )
 
+    loop = tornado.ioloop.IOLoop.current()
     app = make_app(config, debug=args.debug)
     app.listen(config['PORT'], address=config['BIND_ADDRESS'],
                xheaders=config.get('X_HEADERS', False))
-    loop = tornado.ioloop.IOLoop.current()
 
     db = app.DBSession()
     admin = db.query(database.User).get('admin')
