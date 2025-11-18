@@ -1309,15 +1309,15 @@ class TestMultiuser(MyHTTPTestCase):
                         <h1>Taguette Codebook</h1>
 
                           <h2>interesting</h2>
-                          <p class="number">1 highlight</p>
+                          <p class="number">1 highlight in 1 document</p>
                           <p>Further review required</p>
 
                           <h2>people</h2>
-                          <p class="number">2 highlights</p>
+                          <p class="number">2 highlights in 2 documents</p>
                           <p>People of interest</p>
 
                           <h2>interesting.places</h2>
-                          <p class="number">1 highlight</p>
+                          <p class="number">1 highlight in 1 document</p>
                           <p></p>
 
                       </body>
