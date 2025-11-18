@@ -12,7 +12,7 @@ from sqlalchemy import Column, ForeignKey, Index, TypeDecorator, MetaData, \
     Table, UniqueConstraint, select
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import column_property, deferred, relationship
-from sqlalchemy.sql import functions
+from sqlalchemy.sql import expression, functions
 from sqlalchemy.types import Boolean, DateTime, Enum, Integer, String, Text
 
 from .base import PROM_COMMAND
@@ -656,5 +656,18 @@ Tag.highlights_count = column_property(
         highlight_tags.c.tag_id == Tag.id,
     )
     .correlate_except(highlight_tags)
+    .scalar_subquery()
+)
+
+Tag.documents_count = column_property(
+    select(
+        [functions.count(expression.distinct(
+            Highlight.__table__.c.document_id,
+        ))],
+    )
+    .where(
+        highlight_tags.c.tag_id == Tag.id,
+        Highlight.__table__.c.id == highlight_tags.c.highlight_id,
+    )
     .scalar_subquery()
 )

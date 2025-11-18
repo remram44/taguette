@@ -13,7 +13,7 @@
     <h1>{% trans "exported codebook document title" %}Taguette Codebook{% endtrans %}</h1>
 {% for tag in tags %}
       <h2>{{ tag.path }}</h2>
-      <p class="number">{{ ngettext("%(number)d highlight", "%(number)d highlights", tag.highlights_count, number=tag.highlights_count) }}</p>
+      <p class="number">{{ ngettext("%(number)d highlight", "%(number)d highlights", tag.highlights_count, number=tag.highlights_count) }} {% trans "separate number of highlights from number of documents" %}in{% endtrans %} {{ ngettext("%(number)d document", "%(number)d documents", tag.documents_count, number=tag.documents_count) }}</p>
       <p>{{ tag.description }}</p>
 {% endfor %}
   </body>
