@@ -669,5 +669,6 @@ Tag.documents_count = column_property(
         highlight_tags.c.tag_id == Tag.id,
         Highlight.__table__.c.id == highlight_tags.c.highlight_id,
     )
+    .correlate_except(Highlight.__table__, highlight_tags)
     .scalar_subquery()
 )
