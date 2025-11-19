@@ -1281,10 +1281,10 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(
                 await response.text(),
                 textwrap.dedent('''\
-                    tag,description,number of highlights
-                    interesting,Further review required,1
-                    people,People of interest,2
-                    interesting.places,,1
+                    tag,description,number of highlights,number of documents
+                    interesting,Further review required,1,1
+                    people,People of interest,2,2
+                    interesting.places,,1,1
                     ''').replace('\n', '\r\n'),
             )
 
@@ -2170,9 +2170,9 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(
                 await response.text(),
                 textwrap.dedent('''\
-                    tag,description,number of highlights
-                    interesting,Further review required,0
-                    people,new,0
+                    tag,description,number of highlights,number of documents
+                    interesting,Further review required,0,0
+                    people,new,0,0
                     ''').replace('\n', '\r\n'),
             )
 
@@ -2224,9 +2224,9 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(
                 await response.text(),
                 textwrap.dedent('''\
-                    tag,description,number of highlights
-                    interesting,yes replace,0
-                    people,new,0
+                    tag,description,number of highlights,number of documents
+                    interesting,yes replace,0,0
+                    people,new,0,0
                     ''').replace('\n', '\r\n'),
             )
 
