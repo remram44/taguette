@@ -1281,10 +1281,10 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(
                 await response.text(),
                 textwrap.dedent('''\
-                    tag,description,number of highlights
-                    interesting,Further review required,1
-                    people,People of interest,2
-                    interesting.places,,1
+                    tag,description,number of highlights,number of documents
+                    interesting,Further review required,1,1
+                    people,People of interest,2,2
+                    interesting.places,,1,1
                     ''').replace('\n', '\r\n'),
             )
 
@@ -1309,15 +1309,15 @@ class TestMultiuser(MyHTTPTestCase):
                         <h1>Taguette Codebook</h1>
 
                           <h2>interesting</h2>
-                          <p class="number">1 highlight</p>
+                          <p class="number">1 highlight in 1 document</p>
                           <p>Further review required</p>
 
                           <h2>people</h2>
-                          <p class="number">2 highlights</p>
+                          <p class="number">2 highlights in 2 documents</p>
                           <p>People of interest</p>
 
                           <h2>interesting.places</h2>
-                          <p class="number">1 highlight</p>
+                          <p class="number">1 highlight in 1 document</p>
                           <p></p>
 
                       </body>
@@ -2170,9 +2170,9 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(
                 await response.text(),
                 textwrap.dedent('''\
-                    tag,description,number of highlights
-                    interesting,Further review required,0
-                    people,new,0
+                    tag,description,number of highlights,number of documents
+                    interesting,Further review required,0,0
+                    people,new,0,0
                     ''').replace('\n', '\r\n'),
             )
 
@@ -2224,9 +2224,9 @@ class TestMultiuser(MyHTTPTestCase):
             self.assertEqual(
                 await response.text(),
                 textwrap.dedent('''\
-                    tag,description,number of highlights
-                    interesting,yes replace,0
-                    people,new,0
+                    tag,description,number of highlights,number of documents
+                    interesting,yes replace,0,0
+                    people,new,0,0
                     ''').replace('\n', '\r\n'),
             )
 
