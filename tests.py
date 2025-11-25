@@ -695,7 +695,7 @@ class TestMultiuser(MyHTTPTestCase):
         #                         create
         #                         (tag 2 'interesting')
         #                         tag 3 'people'
-        #                         tag 4 'interesting.places'
+        #                         tag 4 'interesting\places'
         # doc 1
         #                         doc 2
         # hl 1 doc=1 tags=[]
@@ -806,13 +806,13 @@ class TestMultiuser(MyHTTPTestCase):
 
         async with self.apost(
             '/api/project/2/tag/new',
-            json=dict(path='interesting.places', description=''),
+            json=dict(path='interesting\\places', description=''),
         ) as response:
             self.assertEqual(response.status, 200)
         self.assertEqual(
             await poll_proj2,
             {'type': 'tag_add', 'id': 2, 'tag_id': 4,
-             'tag_path': 'interesting.places', 'description': ''})
+             'tag_path': 'interesting\\places', 'description': ''})
         poll_proj2 = await self.poll_event(2, 2)
 
         # Create document 1 in project 1
@@ -1053,9 +1053,9 @@ class TestMultiuser(MyHTTPTestCase):
                 'pages': 1,
             })
 
-        # List highlights in project 2 under 'interesting.places'
+        # List highlights in project 2 under 'interesting\places'
         async with self.aget(
-            '/api/project/2/highlights/interesting.places',
+            '/api/project/2/highlights/interesting%5Cplaces',
         ) as response:
             self.assertEqual(response.status, 200)
             self.assertEqual(await response.json(), {
@@ -1149,7 +1149,7 @@ class TestMultiuser(MyHTTPTestCase):
                   <body>
                     <h1>otherdoc</h1>
                 <span class="highlight">diff</span>\
-<span class="taglist"> [interesting.places]</span>erent con\
+<span class="taglist"> [interesting\\places]</span>erent con\
 <span class="highlight">tent</span><span class="taglist"> \
 [interesting, people]</span>
                   </body>
@@ -1191,7 +1191,7 @@ class TestMultiuser(MyHTTPTestCase):
                         <p>
                           <strong>Document:</strong> otherdoc
                           <strong>Tags:</strong>
-                            interesting.places
+                            interesting\\places
                         </p>
                         <hr>
 
@@ -1233,7 +1233,7 @@ class TestMultiuser(MyHTTPTestCase):
                         <p>
                           <strong>Document:</strong> otherdoc
                           <strong>Tags:</strong>
-                            interesting.places
+                            interesting\\places
                         </p>
                         <hr>
 
@@ -1266,9 +1266,22 @@ class TestMultiuser(MyHTTPTestCase):
                 await response.text(),
                 textwrap.dedent('''\
                 id,document,tag,content
-                2,otherdoc,interesting.places,diff
+                2,otherdoc,interesting\\places,diff
                 3,otherdoc,interesting,tent
                 3,otherdoc,people,tent
+                ''').replace('\n', '\r\n'),
+            )
+
+        # Export highlights in project 2 under 'interesting\places' to CSV
+        async with self.aget(
+            '/project/2/export/highlights/interesting%5C.csv',
+        ) as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(
+                await response.text(),
+                textwrap.dedent('''\
+                id,document,tag,content
+                2,otherdoc,interesting\\places,diff
                 ''').replace('\n', '\r\n'),
             )
 
@@ -1285,7 +1298,7 @@ class TestMultiuser(MyHTTPTestCase):
                     tag,description,number of highlights,number of documents
                     interesting,Further review required,1,1
                     people,People of interest,2,2
-                    interesting.places,,1,1
+                    interesting\\places,,1,1
                     ''').replace('\n', '\r\n'),
             )
 
@@ -1317,7 +1330,7 @@ class TestMultiuser(MyHTTPTestCase):
                           <p class="number">2 highlights in 2 documents</p>
                           <p>People of interest</p>
 
-                          <h2>interesting.places</h2>
+                          <h2>interesting\\places</h2>
                           <p class="number">1 highlight in 1 document</p>
                           <p></p>
 
@@ -1332,26 +1345,39 @@ class TestMultiuser(MyHTTPTestCase):
                 response.headers['Content-Type'],
                 'text/xml; charset=utf-8',
             )
-            def guid(path, expected, ns=uuid.UUID('51B2B2B7-27EB-4ECB-9D56-E75B0A0496C2')):
+
+            def guid(
+                    path,
+                    expected,
+                    ns=uuid.UUID('51B2B2B7-27EB-4ECB-9D56-E75B0A0496C2'),
+            ):
                 guid = str(uuid.uuid5(ns, path)).upper()
                 self.assertEqual(guid, expected)
                 return guid
             guids = [
-                guid('interesting', '0D62985D-B147-5D01-A9B5-CAE5DCD98342'),
-                guid('people', 'DFE5C38E-9449-5959-A1F7-E3D895CFA87F'),
-                guid('interesting\\places', '55BB6892-6F30-5129-8CB8-557A1B12137B'),
+                guid(
+                    'interesting',
+                    '0D62985D-B147-5D01-A9B5-CAE5DCD98342',
+                ),
+                guid(
+                    'people',
+                    'DFE5C38E-9449-5959-A1F7-E3D895CFA87F',
+                ),
+                guid(
+                    'interesting\\places',
+                    '55BB6892-6F30-5129-8CB8-557A1B12137B',
+                ),
             ]
 
-            r = await response.text()
             compare_xml(
                 await response.text(),
                 ('<?xml version="1.0" encoding="utf-8"?>\n'
                  '<CodeBook xmlns="urn:QDA-XML:codebook:1.0" origin="'
                  'Taguette {ver}"><Codes><Code guid="{guids[0]}" '
-                 'name="interesting" isCodable="true"/><Code guid="{guids[1]}" '
-                 'name="people" isCodable="true"/><Code guid="{guids[2]}" '
-                 'name="interesting\\places" isCodable="true"/>'
-                 '</Codes><Sets/></CodeBook>'
+                 'name="interesting" isCodable="true"/><Code '
+                 'guid="{guids[1]}" name="people" isCodable="true"/><Code '
+                 'guid="{guids[2]}" name="interesting\\places" '
+                 'isCodable="true"/></Codes><Sets/></CodeBook>'
                  ).format(ver=exact_version(), guids=guids),
             )
 
@@ -2680,10 +2706,10 @@ class TestSeleniumMultiuser(SeleniumTest):
         # hl 1 doc=1 tags=[1]
         # hl 2 doc=1 tags=[1, 2]
         # hl 3 doc=2 tags=[2]
-        # tag 3 'interesting.places'
+        # tag 3 'interesting\places'
         # hl 1 doc=1 tags=[3] (edit)
         # highlights 'people*': [2, 3]
-        # highlights 'interesting.places*': [1]
+        # highlights 'interesting\places*': [1]
         # highlights 'interesting*': [1, 2]
         # highlights: [1, 2, 3]
         # export doc 1
@@ -2895,7 +2921,7 @@ class TestSeleniumMultiuser(SeleniumTest):
         # Create tag 3 in project 1
         await self.s_click_button('Create a tag', tag='a')
         elem = self.driver.find_element(By.ID, 'tag-add-path')
-        elem.send_keys('interesting.places')
+        elem.send_keys('interesting\\places')
         await self.s_click_button(
             'Save & Close',
             parent=self.driver.find_element(By.ID, 'tag-add-form'),
@@ -2924,7 +2950,7 @@ class TestSeleniumMultiuser(SeleniumTest):
         )
         self.assertEqual(
             [link.text for link in tag_links],
-            ['interesting', 'interesting.places', 'people'],
+            ['interesting', 'interesting\\places', 'people'],
         )
 
         # Create highlight 3 in document 2
@@ -2953,12 +2979,12 @@ class TestSeleniumMultiuser(SeleniumTest):
             'tent\notherdoc interesting people\nOpinion\nthird people',
         )
 
-        # List highlights in project 1 under 'interesting.places'
-        await self.s_get('/project/1/highlights/interesting.places')
+        # List highlights in project 1 under 'interesting\places'
+        await self.s_get('/project/1/highlights/interesting%5Cplaces')
         await asyncio.sleep(1)  # Wait for XHR
         self.assertEqual(
             self.driver.find_element(By.ID, 'document-contents').text,
-            'diff\notherdoc interesting.places',
+            'diff\notherdoc interesting\\places',
         )
 
         # List highlights in project 1 under 'interesting'
@@ -2966,7 +2992,7 @@ class TestSeleniumMultiuser(SeleniumTest):
         await asyncio.sleep(1)  # Wait for XHR
         self.assertEqual(
             self.driver.find_element(By.ID, 'document-contents').text,
-            ('diff\notherdoc interesting.places\n'
+            ('diff\notherdoc interesting\\places\n'
              'tent\notherdoc interesting people'),
         )
 
@@ -2977,7 +3003,7 @@ class TestSeleniumMultiuser(SeleniumTest):
         self.assertEqual(self.s_path, '/project/1/highlights/')
         self.assertEqual(
             self.driver.find_element(By.ID, 'document-contents').text,
-            ('diff\notherdoc interesting.places\n'
+            ('diff\notherdoc interesting\\places\n'
              'tent\notherdoc interesting people\n'
              'Opinion\nthird people'),
         )
@@ -3065,7 +3091,7 @@ class TestSeleniumMultiuser(SeleniumTest):
         self.assertEqual(self.s_path, '/project/1/highlights/')
         self.assertEqual(
             self.driver.find_element(By.ID, 'document-contents').text,
-            ('diff\notherdoc interesting.places\n'
+            ('diff\notherdoc interesting\\places\n'
              'tent\notherdoc interesting\n'
              'Opinion\nthird interesting'),
         )
