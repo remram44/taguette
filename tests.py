@@ -20,6 +20,7 @@ from tornado.testing import AsyncTestCase, gen_test, AsyncHTTPTestCase
 import unittest
 from unittest import mock
 from urllib.parse import urlencode, urlparse
+import uuid
 from xml.etree import ElementTree
 
 from taguette import exact_version
@@ -40,7 +41,7 @@ else:
 
 def _compare_xml(e1, e2):
     assert e1.tag == e2.tag
-    assert e1.attrib == e2.attrib
+    assert e1.attrib == e2.attrib, '%r != %r' % (e1.attrib, e2.attrib)
     for c1, c2 in itertools.zip_longest(e1, e2):
         assert c1 is not None and c2 is not None
         _compare_xml(c1, c2)
@@ -1331,17 +1332,27 @@ class TestMultiuser(MyHTTPTestCase):
                 response.headers['Content-Type'],
                 'text/xml; charset=utf-8',
             )
+            def guid(path, expected, ns=uuid.UUID('51B2B2B7-27EB-4ECB-9D56-E75B0A0496C2')):
+                guid = str(uuid.uuid5(ns, path)).upper()
+                self.assertEqual(guid, expected)
+                return guid
+            guids = [
+                guid('interesting', '0D62985D-B147-5D01-A9B5-CAE5DCD98342'),
+                guid('people', 'DFE5C38E-9449-5959-A1F7-E3D895CFA87F'),
+                guid('interesting\\places', '55BB6892-6F30-5129-8CB8-557A1B12137B'),
+            ]
+
+            r = await response.text()
             compare_xml(
                 await response.text(),
                 ('<?xml version="1.0" encoding="utf-8"?>\n'
                  '<CodeBook xmlns="urn:QDA-XML:codebook:1.0" origin="'
-                 'Taguette {ver}"><Codes><Code guid="0D62985D-B147-5D01-A9B5-'
-                 'CAE5DCD98342" name="interesting" isCodable="true"/><Code '
-                 'guid="DFE5C38E-9449-5959-A1F7-E3D895CFA87F" name="people" '
-                 'isCodable="true"/><Code guid="725F0645-9CD3-598A-8D2B-'
-                 'EC3D39AB3C3F" name="interesting.places" isCodable="true"/>'
+                 'Taguette {ver}"><Codes><Code guid="{guids[0]}" '
+                 'name="interesting" isCodable="true"/><Code guid="{guids[1]}" '
+                 'name="people" isCodable="true"/><Code guid="{guids[2]}" '
+                 'name="interesting\\places" isCodable="true"/>'
                  '</Codes><Sets/></CodeBook>'
-                 ).format(ver=exact_version()),
+                 ).format(ver=exact_version(), guids=guids),
             )
 
         # Merge tag 3 into 2
