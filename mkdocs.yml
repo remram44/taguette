@@ -4,8 +4,7 @@ site_author: Vicky Rampin and Remi Rampin
 site_dir: public
 site_url: https://taguette.org/
 site_description: >-
-  Write your documentation in Markdown and create a professional static site in
-  minutes – searchable, customizable, in 60+ languages, for all devices
+  Taguette is a free and open source qualitative data analysis.
 
 # Repository
 repo_url: https://gitlab.com/remram44/taguette
@@ -41,8 +40,8 @@ theme:
     - toc.follow
     - toc.integrate
   palette:
-    primary: teal
-    accent: red
+    primary: #A190DA
+    accent: #81c1d5
   font:
     text: Didact Gothic
     code: Free Mono
@@ -70,8 +69,6 @@ extra:
     - icon: material/bullhorn-variant-outline
       link: https://groups.io/g/taguette-announce
       name: Taguette announcement mailing list
-    - icon: simple/twitter
-      link: https://twitter.com/TaguetteProject
       name: Taguette on Twitter
     - icon: material/gitlab
       link: https://gitlab.com/remram44/taguette

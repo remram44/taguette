@@ -15,7 +15,7 @@ Have you ever searched "free qualitative research software" only to be disappoin
 
 <div style="margin: 0.625em;" markdown>
 <h2 markdown>:material-laptop: Works Anywhere</h2>
-<p>Taguette works both on your local computer (macOS, Windows, Linux) and on a server. When running Taguette locally, <strong>your data is as secure as your computer</strong>. That means that if you can have your data on your computer, you can run Taguette with no worries.</p> 
+<p>Taguette works both on your local computer (macOS, Windows, Linux) and on a server. When running Taguette locally, <strong>your data is as secure as your computer</strong>. That means that if you can have your data on your computer, you can run Taguette with no worries.</p>
 <a href="install"><button class="md-button md-button--primary" type="button">Install now &raquo;</button></a>
 </div>
 
