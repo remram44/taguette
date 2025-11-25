@@ -2799,7 +2799,8 @@ class TestSeleniumMultiuser(SeleniumTest):
 
         # Change project 2 metadata
         self.assertEqual(
-            self.driver.find_element(By.CLASS_NAME, 'project-name').text,
+            self.driver.find_element(By.CLASS_NAME, 'project-name')
+            .get_attribute('innerText'),
             'one',
         )
         await self.s_click(self.driver.find_element(By.ID, 'project-tab'))
@@ -2824,7 +2825,8 @@ class TestSeleniumMultiuser(SeleniumTest):
         )
         await asyncio.sleep(10)  # Wait for XHR
         self.assertEqual(
-            self.driver.find_element(By.CLASS_NAME, 'project-name').text,
+            self.driver.find_element(By.CLASS_NAME, 'project-name')
+            .get_attribute('innerText'),
             'new project',
         )
         db = self.application.DBSession()
