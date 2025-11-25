@@ -111,7 +111,7 @@ def _get_highlights_for_export(db, project_id, path):
                     t_document.c.id == t_highlight.c.document_id,
                 )
             )
-            .where(t_tag_m.c.path.startswith(path))
+            .where(t_tag_m.c.path.startswith(path, autoescape=True))
             .where(t_document.c.project_id == project_id)
             .order_by(
                 t_highlight.c.document_id,
