@@ -1055,7 +1055,7 @@ class TestMultiuser(MyHTTPTestCase):
 
         # List highlights in project 2 under 'interesting\places'
         async with self.aget(
-            '/api/project/2/highlights/interesting\\places',
+            '/api/project/2/highlights/interesting%5Cplaces',
         ) as response:
             self.assertEqual(response.status, 200)
             self.assertEqual(await response.json(), {
@@ -1269,6 +1269,19 @@ class TestMultiuser(MyHTTPTestCase):
                 2,otherdoc,interesting\\places,diff
                 3,otherdoc,interesting,tent
                 3,otherdoc,people,tent
+                ''').replace('\n', '\r\n'),
+            )
+
+        # Export highlights in project 2 under 'interesting\places' to CSV
+        async with self.aget(
+            '/project/2/export/highlights/interesting%5C.csv',
+        ) as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(
+                await response.text(),
+                textwrap.dedent('''\
+                id,document,tag,content
+                2,otherdoc,interesting\\places,diff
                 ''').replace('\n', '\r\n'),
             )
 
