@@ -657,7 +657,7 @@ class Highlights(BaseHandler):
                 .join(hltag, hltag.c.highlight_id == database.Highlight.id)
                 .join(tag, hltag.c.tag_id == tag.id)
                 .join(document, document.id == database.Highlight.document_id)
-                .filter(tag.path.startswith(path))
+                .filter(tag.path.startswith(path, autoescape=True))
                 .filter(tag.project == project)
                 .order_by(database.Highlight.document_id,
                           database.Highlight.start_offset)
