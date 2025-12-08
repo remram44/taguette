@@ -26,6 +26,7 @@ from xml.etree import ElementTree
 from taguette import exact_version
 from taguette import convert, database, extract, import_codebook, main, \
     validate, web
+from taguette.web.base import is_next_url_safe
 from taguette.utils import sanitize_filename
 
 
@@ -379,6 +380,20 @@ class TestValidate(unittest.TestCase):
             "Rmis project",
         )
 
+    def test_next_url(self):
+        self.assertFalse(is_next_url_safe('https://google.com/', ''))
+        self.assertFalse(is_next_url_safe('https://goo.gl/', '/goo.gl'))
+        self.assertTrue(is_next_url_safe('/project/1', ''))
+        self.assertTrue(is_next_url_safe('/project?a=1&b=2', ''))
+        self.assertTrue(is_next_url_safe('/project/export.csv', ''))
+        self.assertFalse(is_next_url_safe('/a/../b', ''))
+        self.assertFalse(is_next_url_safe('/a', '/base'))
+        self.assertFalse(is_next_url_safe('/base/../a', '/base'))
+        self.assertTrue(is_next_url_safe('/base/project/1', '/base'))
+        self.assertTrue(is_next_url_safe('/b.se/project/1', '/b.se'))
+        self.assertFalse(is_next_url_safe('/bose/project/1', '/b.se'))
+        self.assertTrue(is_next_url_safe('/base/project/export.csv', '/base'))
+
 
 class TestReadCodebook(unittest.TestCase):
     def test_valid_csv(self):
@@ -660,6 +675,26 @@ class TestMultiuser(MyHTTPTestCase):
         ) as response:
             self.assertEqual(response.status, 303)
             self.assertEqual(response.headers['Location'], '/project/1')
+
+        # Login page now instantly redirects
+        async with self.aget(
+            '/login?' + urlencode(dict(next='/project/1')),
+        ) as response:
+            self.assertEqual(response.status, 302)
+            self.assertEqual(response.headers['Location'], '/project/1')
+
+        # Watch out for CVE-2025-67502
+        async def test_redirects_to_index(url):
+            async with self.aget(
+                '/login?' + urlencode(dict(next=url)),
+            ) as response:
+                self.assertEqual(response.status, 302)
+                self.assertEqual(response.headers['Location'], '/')
+
+        await test_redirects_to_index('https://google.com/')
+        await test_redirects_to_index('//google.com/')
+        await test_redirects_to_index('../something')
+        await test_redirects_to_index('/')
 
         # Check redirect to account
         async with self.aget('/.well-known/change-password') as response:

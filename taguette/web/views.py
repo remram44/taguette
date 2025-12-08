@@ -79,9 +79,7 @@ class CookiesPrompt(BaseHandler):
     @PROM_REQUESTS.sync('cookies_prompt')
     def post(self):
         self.set_cookie('cookies_accepted', 'yes', dont_check=True)
-        next_ = self.get_argument('next', '')
-        if not next_:
-            next_ = self.reverse_url('index')
+        next_ = self.sanitize_next_url(self.get_argument('next', ''))
         return self.redirect(next_)
 
     def check_xsrf_cookie(self):
@@ -138,9 +136,7 @@ class Login(BaseHandler):
         )
 
     def _go_to_next(self):
-        next_ = self.get_argument('next', '')
-        if not next_:
-            next_ = self.reverse_url('index')
+        next_ = self.sanitize_next_url(self.get_argument('next', ''))
         return self.redirect(next_)
 
 

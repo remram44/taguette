@@ -13,6 +13,7 @@ import opentelemetry.trace
 import os
 from prometheus_async.aio import time as prom_async_time
 import prometheus_client
+import re
 import redis.asyncio as aioredis
 import signal
 import smtplib
@@ -342,6 +343,13 @@ class HandleStreamClosed(RequestHandler):
         super(HandleStreamClosed, self).send_error(status_code, **kwargs)
 
 
+def is_next_url_safe(url, base_path):
+    return url and re.match(
+        re.escape(base_path) + r'/[a-z]([a-z0-9/_-]|\.[^.])+(?:\?.*)?$',
+        url,
+    )
+
+
 class BaseHandler(HandleStreamClosed, RequestHandler):
     """Base class for all request handlers.
     """
@@ -461,6 +469,12 @@ class BaseHandler(HandleStreamClosed, RequestHandler):
     def logout(self):
         logger.info("Logged out")
         self.clear_cookie('user')
+
+    def sanitize_next_url(self, url):
+        if is_next_url_safe(url, self.application.config['BASE_PATH']):
+            return url
+        else:
+            return self.reverse_url('index')
 
     def render_string(self, template_name, **kwargs):
         extra_footer = self.application.config['EXTRA_FOOTER']
