@@ -1,6 +1,16 @@
 Changelog
 =========
 
+1.5.2 (2025-12-08)
+------------------
+
+Bugfixes:
+* Fix sub-tags not being found when separated using backslashes
+* Fix open redirect vulnerability from login and cookies prompt. Fix CVE-2025-67502. Thanks to Knox Liu for the responsible security report
+
+Enhancements:
+* Add a count of documents per tag in the codebook export
+
 1.5.1 (2025-11-10)
 ------------------
 
