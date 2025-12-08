@@ -29,7 +29,7 @@ RUN chmod +x /tini
 
 # Install Calibre from Ubuntu distro
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends calibre wv && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends calibre wv && \
     rm -rf /var/lib/apt/lists/*
 
 # Install dependencies
