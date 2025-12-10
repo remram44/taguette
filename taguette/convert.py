@@ -494,7 +494,10 @@ async def to_html(body, content_type, filename, config):
         # Detect encoding
         charset = chardet.detect(body)['encoding'] or 'utf-8'
         file = io.BytesIO(body)
-        file = codecs.getreader(charset)(file)
+        try:
+            file = codecs.getreader(charset)(file)
+        except LookupError:
+            file = codecs.getreader('utf-8')(file)
 
         # Parse subtitle file
         try:

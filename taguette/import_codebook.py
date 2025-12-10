@@ -24,7 +24,11 @@ def list_tags_csv(reader):
     charset = detector.result['encoding'] or 'utf-8'
     reader.seek(0, 0)
 
-    reader = codecs.getreader(charset)(reader)
+    try:
+        reader = codecs.getreader(charset)(reader)
+    except LookupError:
+        reader = codecs.getreader('utf-8')(reader)
+
     reader = csv.reader(reader)
 
     # Read header
