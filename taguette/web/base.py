@@ -345,7 +345,7 @@ class HandleStreamClosed(RequestHandler):
 
 def is_next_url_safe(url, base_path):
     return url and re.match(
-        re.escape(base_path) + r'/[a-z]([a-z0-9/_-]|\.[^.])+(?:\?.*)?$',
+        re.escape(base_path) + r'/[a-z]([a-z0-9/_-]|\.[a-z0-9])+(?:\?.*)?$',
         url,
     )
 
