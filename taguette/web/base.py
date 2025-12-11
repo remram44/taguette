@@ -294,12 +294,33 @@ class Application(GracefulExitApplication):
 
     @tracer.start_as_current_span('send_mail')
     def send_mail(self, msg):
+        # Get config
         config = self.config['MAIL_SERVER']
-        if config.get('ssl', False):
+        ssl_opt = config.get('ssl', False)
+
+        # Parse SSL setting
+        cls = smtplib.SMTP
+        starttls = False
+        starttls_ignore_error = False
+        if ssl_opt == 'True' or ssl_opt == 'true' or ssl_opt is True:
             cls = smtplib.SMTP_SSL
+        elif ssl_opt == 'starttls':
+            starttls = True
+        elif ssl_opt == 'starttls-or-plaintext':
+            starttls = True
+            starttls_ignore_error = True
         else:
-            cls = smtplib.SMTP
+            raise ValueError("Invalid SMTP 'ssl' setting")
+
+        # Send email
         with cls(config['host'], config.get('port', 25)) as smtp:
+            if starttls:
+                try:
+                    if smtp.starttls()[0] != 220:
+                        raise smtplib.SMTPException
+                except smtplib.SMTPException:
+                    if not starttls_ignore_error:
+                        raise
             if 'user' in config or 'password' in config:
                 smtp.login(config['user'], config['password'])
             smtp.send_message(msg)
