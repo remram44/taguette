@@ -4,7 +4,7 @@ stages:
 
 sqlite3:
   stage: test
-  image: python:3.10
+  image: python:3.12
   script:
     - curl -sSL https://install.python-poetry.org | python3 -
     - $HOME/.local/bin/poetry config virtualenvs.create false
@@ -20,9 +20,29 @@ sqlite3:
     paths:
       - htmlcov
 
-sqlite3_valkey:
+sqlite3_py310:
   stage: test
   image: python:3.10
+  script:
+    - curl -sSL https://install.python-poetry.org | python3 -
+    - $HOME/.local/bin/poetry config virtualenvs.create false
+    - $HOME/.local/bin/poetry install --no-interaction
+    - scripts/update_translations.sh
+    - python -Wd tests.py -v
+
+sqlite3_py314:
+  stage: test
+  image: python:3.14
+  script:
+    - curl -sSL https://install.python-poetry.org | python3 -
+    - $HOME/.local/bin/poetry config virtualenvs.create false
+    - $HOME/.local/bin/poetry install --no-interaction
+    - scripts/update_translations.sh
+    - python -Wd tests.py -v
+
+sqlite3_valkey:
+  stage: test
+  image: python:3.12
   services:
     - name: valkey/valkey:latest
       alias: valkey
@@ -35,7 +55,7 @@ sqlite3_valkey:
 
 frontend_firefox:
   stage: test
-  image: python:3.10
+  image: python:3.12
   script:
     - apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -yy xvfb firefox-esr
     - curl -Lo /tmp/geckodriver.tar.gz https://github.com/mozilla/geckodriver/releases/download/v0.30.0/geckodriver-v0.30.0-linux64.tar.gz
@@ -49,7 +69,7 @@ frontend_firefox:
 
 frontend_chromium_valkey:
   stage: test
-  image: python:3.10
+  image: python:3.12
   services:
     - name: valkey/valkey:latest
       alias: valkey
@@ -63,7 +83,7 @@ frontend_chromium_valkey:
 
 frontend_chromium_subdir:
   stage: test
-  image: python:3.10
+  image: python:3.12
   script:
     - apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -yy xvfb chromium-driver
     - curl -sSL https://install.python-poetry.org | python3 -
@@ -101,7 +121,7 @@ sqlite3_latest_pip:
 
 postgres:
   stage: test
-  image: python:3.10
+  image: python:3.12
   services:
     - postgres:latest
   variables:
@@ -117,7 +137,7 @@ postgres:
 
 mariadb:
   stage: test
-  image: python:3.10
+  image: python:3.12
   services:
     - mariadb:latest
   variables:
