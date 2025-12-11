@@ -8,7 +8,7 @@ sqlite3:
   script:
     - curl -sSL https://install.python-poetry.org | python3 -
     - $HOME/.local/bin/poetry config virtualenvs.create false
-    - $HOME/.local/bin/poetry install --no-interaction
+    - $HOME/.local/bin/poetry install --no-interaction --with validation
     - scripts/update_translations.sh
     - python -m readme_renderer README.rst >/dev/null
     - python -Wd -m coverage run --branch --source=taguette tests.py -v
@@ -63,7 +63,7 @@ frontend_firefox:
     - chmod +x /usr/local/bin/geckodriver
     - curl -sSL https://install.python-poetry.org | python3 -
     - $HOME/.local/bin/poetry config virtualenvs.create false
-    - $HOME/.local/bin/poetry install --no-interaction
+    - $HOME/.local/bin/poetry install --no-interaction --with selenium
     - scripts/update_translations.sh
     - TAGUETTE_TEST_WEBDRIVER=firefox xvfb-run python tests.py -v TestSeleniumMultiuser
 
@@ -77,7 +77,7 @@ frontend_chromium_valkey:
     - apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -yy xvfb chromium-driver
     - curl -sSL https://install.python-poetry.org | python3 -
     - $HOME/.local/bin/poetry config virtualenvs.create false
-    - $HOME/.local/bin/poetry install --no-interaction
+    - $HOME/.local/bin/poetry install --no-interaction --with selenium
     - scripts/update_translations.sh
     - TAGUETTE_TEST_WEBDRIVER=chromium TAGUETTE_TEST_REDIS=redis://valkey:6379 xvfb-run python tests.py -v TestSeleniumMultiuser
 
@@ -88,7 +88,7 @@ frontend_chromium_subdir:
     - apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -yy xvfb chromium-driver
     - curl -sSL https://install.python-poetry.org | python3 -
     - $HOME/.local/bin/poetry config virtualenvs.create false
-    - $HOME/.local/bin/poetry install --no-interaction
+    - $HOME/.local/bin/poetry install --no-interaction --with selenium
     - scripts/update_translations.sh
     - TAGUETTE_TEST_WEBDRIVER=chromium TAGUETTE_TEST_BASE_PATH=/base/path xvfb-run python tests.py -v TestSeleniumMultiuser
 

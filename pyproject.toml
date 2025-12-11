@@ -89,14 +89,24 @@ psycopg2 = {version = ">=2.8,<3", optional = true}
 pymysql = {version = ">=1.0,<2", optional = true}
 cryptography = {version = "*", optional = true}
 
-[tool.poetry.group.dev.dependencies]
+[tool.poetry.group.validation]
+optional = true
+
+[tool.poetry.group.validation.dependencies]
 coverage = "*"
 flake8 = "*"
 readme_renderer = "*"
+
+[tool.poetry.group.selenium]
+optional = true
+
+[tool.poetry.group.selenium.dependencies]
+selenium = ">=4.5,<5"
+
+[tool.poetry.group.dev.dependencies]
 babel = ">=2.6,<3"
 bcrypt = ">=3.2.0,<6"
 aiohttp = ">=3.4,<4"
-selenium = ">=4.5,<5"
 
 [tool.poetry.group.i18n.dependencies]
 babel = ">=2.6,<3"
