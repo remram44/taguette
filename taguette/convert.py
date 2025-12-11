@@ -1,5 +1,4 @@
 import asyncio
-import bleach
 import bs4
 import chardet
 import codecs
@@ -7,6 +6,7 @@ import importlib_resources
 import io
 import jinja2
 import logging
+import nh3
 import opentelemetry.trace
 import os
 import prometheus_client
@@ -182,7 +182,7 @@ else:
 
 def get_html_body(body):
     # Use beautifulsoup to remove head, script, style elements
-    # (bleach can do that, but would keep the text inside them)
+    # (nh3 can do that, but would keep the text inside them)
     soup = bs4.BeautifulSoup(body, 'html5lib')
     for tag in ['head', 'script', 'style']:
         for e in soup.find_all(tag):
@@ -208,8 +208,8 @@ def get_html_body(body):
     body = str(soup)
     del soup
 
-    # Use bleach to sanitize the content
-    body = bleach.clean(
+    # Use nh3 to sanitize the content
+    body = nh3.clean(
         body,
         tags={
             'p', 'br', 'code', 'blockquote', 'pre',  # formatting
@@ -222,7 +222,6 @@ def get_html_body(body):
             'colgroup', 'col',  # columns
         },
         attributes={'a': {'href', 'title'}, 'img': {'src'}},
-        strip=True,
     )
 
     body = body.strip()
@@ -253,8 +252,8 @@ def is_html_safe(text):
         if e.attrs.get('src') != '/static/missing.png':
             return False
 
-    # Use bleach to sanitize the content
-    cleaned = bleach.clean(
+    # Use nh3 to sanitize the content
+    cleaned = nh3.clean(
         text,
         tags={
             'p', 'br', 'code', 'blockquote', 'pre',  # formatting
@@ -267,11 +266,10 @@ def is_html_safe(text):
             'colgroup', 'col',  # columns
         },
         attributes={'a': {'href', 'title'}, 'img': {'src', 'width', 'height'}},
-        strip=True,
     )
 
     # text.strip() == cleaned.strip()
-    # This doesn't work because bleach changed from outputting <br/> to <br>
+    # Doesn't work because bleach/nh3 changed from outputting <br/> to <br>
 
     return (
         text.strip().replace('/>', '>')

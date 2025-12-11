@@ -1,5 +1,4 @@
 import asyncio
-import bleach
 import contextlib
 import functools
 import hashlib
@@ -9,6 +8,7 @@ import logging
 import importlib_resources
 import jinja2
 from markupsafe import Markup
+import nh3
 import opentelemetry.trace
 import os
 from prometheus_async.aio import time as prom_async_time
@@ -206,7 +206,7 @@ class Application(GracefulExitApplication):
         self.messages = [
             {
                 'text': msg['text'],
-                'html': bleach.clean(
+                'html': nh3.clean(
                     msg['html'],
                     tags={'a', 'br', 'strong', 'em'},
                     attributes={'a': {'href', 'title'}},
