@@ -62,7 +62,7 @@ include = [
 "Open Collective" = "https://opencollective.com/taguette"
 
 [tool.poetry.dependencies]
-python = ">=3.7,<4"
+python = ">=3.10,<4"
 
 alembic = ">=1.6,<1.9"
 beautifulsoup4 = "*"
@@ -94,9 +94,9 @@ coverage = "*"
 flake8 = "*"
 readme_renderer = "*"
 babel = ">=2.6,<3"
-bcrypt = ">=3.2.0,<4"
+bcrypt = ">=3.2.0,<6"
 aiohttp = ">=3.4,<4"
-selenium = ">=4.5,<4.6"
+selenium = ">=4.5,<5"
 
 [tool.poetry.group.i18n.dependencies]
 babel = ">=2.6,<3"
