@@ -1,5 +1,5 @@
 import asyncio
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta, timezone
 from email.message import EmailMessage
 import io
 import itertools
@@ -303,7 +303,7 @@ class AskResetPassword(BaseHandler):
             )
         elif (
             user.email_sent is None
-            or user.email_sent + timedelta(days=1) < datetime.utcnow()
+            or user.email_sent + timedelta(days=1) < datetime.now(timezone.utc)
         ):
             # Generate a signed token
             reset_token = '%s|%s|%s' % (
@@ -354,7 +354,7 @@ class AskResetPassword(BaseHandler):
                 None,
                 lambda: self.application.send_mail(msg),
             )
-            user.email_sent = datetime.utcnow()
+            user.email_sent = datetime.now(timezone.utc)
             self.db.commit()
         else:
             logger.warning(

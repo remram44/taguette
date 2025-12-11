@@ -1,6 +1,6 @@
 import asyncio
 import binascii
-from datetime import datetime
+from datetime import datetime, timezone
 import enum
 import hashlib
 import hmac
@@ -52,7 +52,7 @@ class User(Base):
 
     login = Column(String(30), primary_key=True)
     created = Column(DateTime, nullable=False,
-                     default=lambda: datetime.utcnow())
+                     default=lambda: datetime.now(timezone.utc))
     hashed_password = Column(String(192), nullable=True)
     disabled = Column(Boolean, nullable=False, default=False)
     password_set_date = Column(DateTime, nullable=True)
@@ -128,7 +128,7 @@ class User(Base):
                 self.hashed_password = 'bcrypt:%s' % h.decode('utf-8')
         else:
             raise ValueError("Unsupported encryption method %r" % method)
-        self.password_set_date = datetime.utcnow()
+        self.password_set_date = datetime.now(timezone.utc)
 
     async def check_password(self, password):
         if self.hashed_password is None:
@@ -211,7 +211,7 @@ class Project(Base):
     name = Column(String(200), nullable=False)
     description = Column(Text, nullable=False)
     created = Column(DateTime, nullable=False,
-                     default=lambda: datetime.utcnow())
+                     default=lambda: datetime.now(timezone.utc))
     members = relationship('ProjectMember', cascade='all,delete-orphan',
                            back_populates='project')
     commands = relationship('Command', cascade='all,delete-orphan',
@@ -307,7 +307,7 @@ class Document(Base):
     description = Column(Text, nullable=False)
     filename = Column(String(200), nullable=False)
     created = Column(DateTime, nullable=False,
-                     default=lambda: datetime.utcnow())
+                     default=lambda: datetime.now(timezone.utc))
     project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'),
                         nullable=False, index=True)
     project = relationship('Project', back_populates='documents')
@@ -340,7 +340,7 @@ class Command(Base):
 
     id = Column(Integer, primary_key=True)
     date = Column(DateTime, nullable=False,
-                  default=lambda: datetime.utcnow(), index=True)
+                  default=lambda: datetime.now(timezone.utc), index=True)
     user_login = Column(String(30),
                         ForeignKey('users.login', onupdate='CASCADE'),
                         nullable=False, index=True)
