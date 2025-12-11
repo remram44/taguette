@@ -62,16 +62,16 @@ include = [
 "Open Collective" = "https://opencollective.com/taguette"
 
 [tool.poetry.dependencies]
-python = ">=3.7,<4"
+python = ">=3.10,<4"
 
 alembic = ">=1.6,<1.9"
 beautifulsoup4 = "*"
-bleach = ">=3,<6"
+bleach = ">=6,<7"
 chardet = ">=4,<6"
 html5lib = ">=1,<2"
 importlib-resources = "*"
 jinja2 = ">=3.1,<3.2"
-opentelemetry-api = ">=1.5,<1.11"
+opentelemetry-api = ">=1.5,<2"
 prometheus-async = "*"
 prometheus-client = "*"
 redis = ">=3,<5"
@@ -82,21 +82,31 @@ tornado = ">=6.1"
 XlsxWriter = ">=1.4,<4"
 
 opentelemetry-distro = {version = "*", optional = true, allow-prereleases = true}
-opentelemetry-instrumentation-sqlalchemy = {version = ">=0.24b0,<0.26", optional = true, allow-prereleases = true}
-opentelemetry-instrumentation-tornado = {version = ">=0.24b0,<0.26", optional = true, allow-prereleases = true}
+opentelemetry-instrumentation-sqlalchemy = {version = "0.60b0", optional = true, allow-prereleases = true}
+opentelemetry-instrumentation-tornado = {version = "0.60b0", optional = true, allow-prereleases = true}
 
 psycopg2 = {version = ">=2.8,<3", optional = true}
 pymysql = {version = ">=1.0,<2", optional = true}
 cryptography = {version = "*", optional = true}
 
-[tool.poetry.group.dev.dependencies]
+[tool.poetry.group.validation]
+optional = true
+
+[tool.poetry.group.validation.dependencies]
 coverage = "*"
 flake8 = "*"
 readme_renderer = "*"
+
+[tool.poetry.group.selenium]
+optional = true
+
+[tool.poetry.group.selenium.dependencies]
+selenium = ">=4.5,<5"
+
+[tool.poetry.group.dev.dependencies]
 babel = ">=2.6,<3"
-bcrypt = ">=3.2.0,<4"
+bcrypt = ">=3.2.0,<6"
 aiohttp = ">=3.4,<4"
-selenium = ">=4.5,<4.6"
 
 [tool.poetry.group.i18n.dependencies]
 babel = ">=2.6,<3"

@@ -208,8 +208,8 @@ class Application(GracefulExitApplication):
                 'text': msg['text'],
                 'html': bleach.clean(
                     msg['html'],
-                    tags=['a', 'br', 'strong', 'em'],
-                    attributes={'a': ['href', 'title']},
+                    tags={'a', 'br', 'strong', 'em'},
+                    attributes={'a': {'href', 'title'}},
                 )
             }
             for msg in obj['messages']

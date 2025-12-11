@@ -6,7 +6,7 @@ Create Date: 2022-05-14 23:33:03.709256
 
 """
 from alembic import op
-from datetime import datetime
+from datetime import datetime, timezone
 import sqlalchemy as sa
 
 
@@ -36,7 +36,7 @@ def upgrade():
         meta,
         sa.Column('login', sa.String(30), primary_key=True),
         sa.Column('created', sa.DateTime, nullable=False,
-                  default=lambda: datetime.utcnow()),
+                  default=lambda: datetime.now(timezone.utc)),
         sa.Column('hashed_password', sa.String(120), nullable=True),
         sa.Column('disabled', sa.Boolean, nullable=False, default=False),
         sa.Column('password_set_date', sa.DateTime, nullable=True),

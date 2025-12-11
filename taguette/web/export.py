@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 import logging
 import os
 import prometheus_client
@@ -285,7 +285,7 @@ class ExportSqlite(BaseHandler):
 
         # Result filename
         export_name = '%s_%s.sqlite3' % (
-            datetime.utcnow().strftime('%Y-%m-%d'),
+            datetime.now(timezone.utc).strftime('%Y-%m-%d'),
             safe_filename(project.name),
         )
 
