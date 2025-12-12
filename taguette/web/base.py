@@ -18,6 +18,7 @@ import redis.asyncio as aioredis
 import signal
 import smtplib
 from sqlalchemy.orm import joinedload, undefer
+import ssl
 import tornado.ioloop
 from tornado.httpclient import AsyncHTTPClient
 import tornado.locale
@@ -296,14 +297,20 @@ class Application(GracefulExitApplication):
     def send_mail(self, msg):
         # Get config
         config = self.config['MAIL_SERVER']
-        ssl_opt = config.get('ssl', False)
+        ssl_opt = config.get('ssl', 'starttls-or-plaintext')
 
         # Parse SSL setting
         cls = smtplib.SMTP
+        smtp_args = {
+            'host': config['host'],
+            'port': config.get('port', 25),
+            'timeout': 10,
+        }
         starttls = False
         starttls_ignore_error = False
         if ssl_opt == 'True' or ssl_opt == 'true' or ssl_opt is True:
             cls = smtplib.SMTP_SSL
+            smtp_args['context'] = ssl.create_default_context()
         elif ssl_opt == 'starttls':
             starttls = True
         elif ssl_opt == 'starttls-or-plaintext':
@@ -313,10 +320,12 @@ class Application(GracefulExitApplication):
             raise ValueError("Invalid SMTP 'ssl' setting")
 
         # Send email
-        with cls(config['host'], config.get('port', 25)) as smtp:
+        with cls(**smtp_args) as smtp:
             if starttls:
                 try:
-                    if smtp.starttls()[0] != 220:
+                    if smtp.starttls(
+                        context=ssl.create_default_context()
+                    )[0] != 220:
                         raise smtplib.SMTPException
                 except smtplib.SMTPException:
                     if not starttls_ignore_error:
