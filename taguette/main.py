@@ -119,7 +119,7 @@ DEFAULT_LANGUAGE = 'en_US'
 
 # SMTP server to use to send emails
 MAIL_SERVER = {{
-    "ssl": False,
+    "ssl": False,  # False | True | "starttls" | "starttls-or-plaintext"
     "host": "localhost",
     "port": 25,
 }}
