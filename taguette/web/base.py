@@ -316,6 +316,8 @@ class Application(GracefulExitApplication):
         elif ssl_opt == 'starttls-or-plaintext':
             starttls = True
             starttls_ignore_error = True
+        elif ssl_opt == 'plaintext' or ssl_opt is False:
+            starttls = False
         else:
             raise ValueError("Invalid SMTP 'ssl' setting")
 
