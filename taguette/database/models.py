@@ -10,6 +10,7 @@ import opentelemetry.trace
 import os
 from sqlalchemy import Column, ForeignKey, Index, TypeDecorator, MetaData, \
     Table, UniqueConstraint, select
+from sqlalchemy.dialects import mysql
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import column_property, deferred, relationship
 from sqlalchemy.sql import expression, functions
@@ -312,7 +313,13 @@ class Document(Base):
                         nullable=False, index=True)
     project = relationship('Project', back_populates='documents')
     text_direction = Column(Enum(TextDirection), nullable=False)
-    contents = deferred(Column(Text, nullable=False))
+    contents = deferred(Column(
+        Text()
+        # MariaDB "text" is 65kB, "longtext" allows 4GB
+        .with_variant(mysql.LONGTEXT(), "mysql")
+        .with_variant(mysql.LONGTEXT(), "mariadb"),
+        nullable=False,
+    ))
     highlights = relationship('Highlight', cascade='all,delete-orphan',
                               passive_deletes=True)
 
