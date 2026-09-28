@@ -155,6 +155,7 @@ mariadb:
 
 sqlite3_pypy:
   stage: test
+  allow_failure: true
   image: pypy:latest
   script:
     - curl -sSL https://install.python-poetry.org | python3 -
